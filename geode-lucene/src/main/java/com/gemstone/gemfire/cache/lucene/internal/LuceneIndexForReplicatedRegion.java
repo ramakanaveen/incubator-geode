@@ -29,6 +29,7 @@ import com.gemstone.gemfire.cache.Cache;
 public class LuceneIndexForReplicatedRegion extends LuceneIndexImpl {
 
   public LuceneIndexForReplicatedRegion(String indexName, String regionPath, Cache cache) {
+    super(indexName, regionPath, cache);
     throw new UnsupportedOperationException("Lucene indexes on replicated regions is not yet implemented");
   }
 
