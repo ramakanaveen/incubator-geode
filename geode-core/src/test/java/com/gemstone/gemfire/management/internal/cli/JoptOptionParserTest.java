@@ -71,7 +71,7 @@ public class JoptOptionParserTest {
   @Test
   public void foo() throws Exception {
     //assertThatThrownBy(() -> this.defaultJoptOptionParser.parse(null)
-}
+  }
 
 
 }
