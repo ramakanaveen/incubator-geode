@@ -36,10 +36,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.RegionShortcut;
@@ -60,6 +56,10 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 @Category(DistributedTest.class)
 public class SharedConfigurationEndToEndDUnitTest extends CliCommandTestBase {
@@ -116,7 +116,7 @@ public class SharedConfigurationEndToEndDUnitTest extends CliCommandTestBase {
   public void testStartServerAndExecuteCommands() throws Exception {
     final HeadlessGfsh gfsh = new HeadlessGfsh("gfsh2", 300, this.gfshDir);
     assertNotNull(gfsh);
-    shellConnect(jmxHost, jmxPort, httpPort, gfsh);
+    connect(jmxHost, jmxPort, httpPort, gfsh);
 
     serverNames.addAll(startServers(gfsh, locatorString, 2, "Server", 1));
     doCreateCommands();
@@ -226,6 +226,7 @@ public class SharedConfigurationEndToEndDUnitTest extends CliCommandTestBase {
       csb.addOption(CliStrings.CREATE_ASYNC_EVENT_QUEUE__DISPATCHERTHREADS, "4");
       csb.addOption(CliStrings.CREATE_ASYNC_EVENT_QUEUE__ENABLEBATCHCONFLATION, "true");
       csb.addOption(CliStrings.CREATE_ASYNC_EVENT_QUEUE__DISKSYNCHRONOUS, "true");
+      csb.addOption(CliStrings.CREATE_ASYNC_EVENT_QUEUE__IGNORE_EVICTION_EXPIRATION, "true");
       csb.addOption(CliStrings.CREATE_ASYNC_EVENT_QUEUE__MAXIMUM_QUEUE_MEMORY, "1000");
       csb.addOption(CliStrings.CREATE_ASYNC_EVENT_QUEUE__ORDERPOLICY, OrderPolicy.KEY.toString());
       csb.addOption(CliStrings.CREATE_ASYNC_EVENT_QUEUE__PERSISTENT, "true");
@@ -380,7 +381,7 @@ public class SharedConfigurationEndToEndDUnitTest extends CliCommandTestBase {
     int jmxPort = (Integer)result[2];
     int httpPort = (Integer)result[3];
 
-    shellConnect(jmxHost, jmxPort, httpPort, gfsh);
+    connect(jmxHost, jmxPort, httpPort, gfsh);
 
     // Create a cache in VM 1
     VM dataMember = getHost(0).getVM(1);

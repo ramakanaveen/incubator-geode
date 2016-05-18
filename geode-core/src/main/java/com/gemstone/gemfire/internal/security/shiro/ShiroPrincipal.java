@@ -30,7 +30,7 @@ public class ShiroPrincipal implements Principal {
 
   @Override
   public String getName() {
-    return subject.toString();
+    return subject.getPrincipal().toString();
   }
 
   public Subject getSubject(){
