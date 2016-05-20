@@ -19,6 +19,7 @@
 
 package com.gemstone.gemfire.cache.lucene.internal;
 
+import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.PartitionAttributes;
@@ -28,7 +29,6 @@ import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.RegionShortcut;
 import com.gemstone.gemfire.cache.asyncqueue.AsyncEventQueue;
 import com.gemstone.gemfire.cache.asyncqueue.internal.AsyncEventQueueFactoryImpl;
-import com.gemstone.gemfire.cache.asyncqueue.internal.AsyncEventQueueImpl;
 import com.gemstone.gemfire.cache.lucene.internal.filesystem.ChunkKey;
 import com.gemstone.gemfire.cache.lucene.internal.filesystem.File;
 import com.gemstone.gemfire.cache.lucene.internal.repository.serializer.HeterogeneousLuceneSerializer;
@@ -37,12 +37,8 @@ import com.gemstone.gemfire.internal.cache.PartitionedRegion;
 /* wrapper of IndexWriter */
 public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
 
-  private final Cache cache;
-
   public LuceneIndexForPartitionedRegion(String indexName, String regionPath, Cache cache) {
-    this.indexName = indexName;
-    this.regionPath = regionPath;
-    this.cache = cache;
+    super(indexName, regionPath, cache);
   }
 
   @Override
@@ -91,45 +87,36 @@ public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
       repositoryManager = new PartitionedRepositoryManager(dataRegion, (PartitionedRegion)fileRegion, (PartitionedRegion)chunkRegion, mapper, analyzer);
       
       // create AEQ, AEQ listener and specify the listener to repositoryManager
-      if (withPersistence) {
-        createAEQWithPersistence();
-      }
-      else {
-        createAEQ();
-      }
+      createAEQ(dataRegion);
 
       addExtension(dataRegion);
       hasInitialized = true;
     }
   }
 
-  private AsyncEventQueueFactoryImpl createAEQFactory() {
+  private AsyncEventQueueFactoryImpl createAEQFactory(final Region dataRegion) {
     AsyncEventQueueFactoryImpl factory = (AsyncEventQueueFactoryImpl) cache.createAsyncEventQueueFactory();
     factory.setParallel(true); // parallel AEQ for PR
     factory.setMaximumQueueMemory(1000);
     factory.setDispatcherThreads(1);
     factory.setIsMetaQueue(true);
+    if(dataRegion.getAttributes().getDataPolicy().withPersistence()) {
+      factory.setPersistent(true);
+    }
+    factory.setDiskSynchronous(dataRegion.getAttributes().isDiskSynchronous());
     return factory;
   }
 
-  AsyncEventQueue createAEQWithPersistence() {
-    AsyncEventQueueFactoryImpl factory = createAEQFactory();
-    factory.setPersistent(true);
-    return createAEQ(factory);
-  }
-
-  AsyncEventQueue createAEQ() {
-    return createAEQ(createAEQFactory());
+  AsyncEventQueue createAEQ(Region dataRegion) {
+    return createAEQ(createAEQFactory(dataRegion));
   }
 
   private AsyncEventQueue createAEQ(AsyncEventQueueFactoryImpl factory) {
     LuceneEventListener listener = new LuceneEventListener(repositoryManager);
     String aeqId = LuceneServiceImpl.getUniqueIndexName(getName(), regionPath);
-    AsyncEventQueueImpl aeq = (AsyncEventQueueImpl)cache.getAsyncEventQueue(aeqId);
     AsyncEventQueue indexQueue = factory.create(aeqId, listener);
     return indexQueue;
   }
-
 
   boolean fileRegionExists(String fileRegionName) {
     return cache.<String, File> getRegion(fileRegionName) != null;
@@ -138,16 +125,10 @@ public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
   Region createFileRegion(final RegionShortcut regionShortCut,
                                 final String fileRegionName,
                                 final PartitionAttributes partitionAttributes) {
-    PartitionAttributesFactory partitionAttributesFactory = new PartitionAttributesFactory<String, File>();
-    partitionAttributesFactory.setColocatedWith(regionPath);
-    configureLuceneRegionAttributesFactory(partitionAttributesFactory, partitionAttributes);
-
-    return cache.<String, File> createRegionFactory(regionShortCut)
-        .setPartitionAttributes(partitionAttributesFactory.create())
-        .create(fileRegionName);
+    return createRegion(fileRegionName, regionShortCut, this.regionPath, partitionAttributes);
   }
 
-  String createFileRegionName() {
+  public String createFileRegionName() {
     return LuceneServiceImpl.getUniqueIndexName(indexName, regionPath)+".files";
   }
 
@@ -158,23 +139,32 @@ public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
   Region<ChunkKey, byte[]> createChunkRegion(final RegionShortcut regionShortCut,
                            final String fileRegionName,
                            final PartitionAttributes partitionAttributes, final String chunkRegionName) {
-    PartitionAttributesFactory partitionAttributesFactory = new PartitionAttributesFactory<String, File>();
-    partitionAttributesFactory.setColocatedWith(fileRegionName);
-    configureLuceneRegionAttributesFactory(partitionAttributesFactory, partitionAttributes);
-
-    return cache.<ChunkKey, byte[]> createRegionFactory(regionShortCut)
-      .setPartitionAttributes(partitionAttributesFactory.create())
-      .create(chunkRegionName);
+    return createRegion(chunkRegionName, regionShortCut, fileRegionName, partitionAttributes);
   }
 
-  String createChunkRegionName() {
+  public String createChunkRegionName() {
     return LuceneServiceImpl.getUniqueIndexName(indexName, regionPath) + ".chunks";
   }
 
-  private PartitionAttributesFactory configureLuceneRegionAttributesFactory(PartitionAttributesFactory attributesFactory, PartitionAttributes dataRegionAttributes) {
+  private PartitionAttributesFactory configureLuceneRegionAttributesFactory(PartitionAttributesFactory attributesFactory, PartitionAttributes<?,?> dataRegionAttributes) {
     attributesFactory.setTotalNumBuckets(dataRegionAttributes.getTotalNumBuckets());
     attributesFactory.setRedundantCopies(dataRegionAttributes.getRedundantCopies());
     return attributesFactory;
+  }
+
+  protected <K, V> Region<K, V> createRegion(final String regionName, final RegionShortcut regionShortCut,
+      final String colocatedWithRegionName, final PartitionAttributes partitionAttributes) {
+    PartitionAttributesFactory partitionAttributesFactory = new PartitionAttributesFactory<String, File>();
+    partitionAttributesFactory.setColocatedWith(colocatedWithRegionName);
+    configureLuceneRegionAttributesFactory(partitionAttributesFactory, partitionAttributes);
+
+    // Create AttributesFactory based on input RegionShortcut
+    RegionAttributes baseAttributes = this.cache.getRegionAttributes(regionShortCut.toString());
+    AttributesFactory factory = new AttributesFactory(baseAttributes);
+    factory.setPartitionAttributes(partitionAttributesFactory.create());
+    RegionAttributes<K, V> attributes = factory.create();
+
+    return createRegion(regionName, attributes);
   }
 
   public void close() {

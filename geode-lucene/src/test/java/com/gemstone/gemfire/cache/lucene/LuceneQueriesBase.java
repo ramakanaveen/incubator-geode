@@ -18,7 +18,8 @@
  */
 package com.gemstone.gemfire.cache.lucene;
 
-import static org.junit.Assert.assertEquals;
+import static com.gemstone.gemfire.cache.lucene.test.LuceneTestUtilities.*;
+import static org.junit.Assert.*;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -27,6 +28,12 @@ import java.util.Map;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.cache.asyncqueue.AsyncEventQueue;
+import com.gemstone.gemfire.cache.lucene.internal.LuceneEventListener;
+import com.gemstone.gemfire.cache.lucene.internal.LuceneIndexImpl;
+import com.gemstone.gemfire.cache.lucene.internal.LuceneServiceImpl;
+import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientProxy;
+import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnableIF;
 import com.gemstone.gemfire.test.dunit.VM;
@@ -42,8 +49,6 @@ import org.junit.Test;
   */
 public abstract class LuceneQueriesBase extends JUnit4CacheTestCase {
 
-  protected static final String INDEX_NAME = "index";
-  protected static final String REGION_NAME = "index";
   private static final long serialVersionUID = 1L;
   protected VM dataStore1;
   protected VM dataStore2;
@@ -72,7 +77,40 @@ public abstract class LuceneQueriesBase extends JUnit4CacheTestCase {
     accessor.invoke(() -> initAccessor(createIndex));
 
     putDataInRegion(accessor);
+    assertTrue(waitForFlushBeforeExecuteTextSearch(accessor, 60000));
     executeTextSearch(accessor);
+  }
+
+  @Test
+  public void entriesFlushedToIndexAfterWaitForFlushCalled() {
+    SerializableRunnableIF createIndex = () -> {
+      LuceneService luceneService = LuceneServiceProvider.get(getCache());
+      luceneService.createIndex(INDEX_NAME, REGION_NAME, "text");
+    };
+    dataStore1.invoke(() -> initDataStore(createIndex));
+    dataStore2.invoke(() -> initDataStore(createIndex));
+    accessor.invoke(() -> initAccessor(createIndex));
+
+    //Pause the sender to make sure some entries are queued up
+    dataStore1.invoke(() -> pauseSender(getCache()));
+    dataStore2.invoke(() -> pauseSender(getCache()));
+    putDataInRegion(accessor);
+    assertFalse(waitForFlushBeforeExecuteTextSearch(accessor, 500));
+    dataStore1.invoke(() -> resumeSender(getCache()));
+    dataStore2.invoke(() -> resumeSender(getCache()));
+    assertTrue(waitForFlushBeforeExecuteTextSearch(accessor, 60000));
+    executeTextSearch(accessor);
+  }
+
+  protected boolean waitForFlushBeforeExecuteTextSearch(VM vm, int ms) {
+    return vm.invoke(() -> {
+      Cache cache = getCache();
+
+      LuceneService service = LuceneServiceProvider.get(cache);
+      LuceneIndexImpl index = (LuceneIndexImpl)service.getIndex(INDEX_NAME, REGION_NAME);
+
+      return index.waitUntilFlushed(ms);
+    });
   }
 
   protected void executeTextSearch(VM vm) {

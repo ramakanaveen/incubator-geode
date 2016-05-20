@@ -39,9 +39,9 @@ import org.junit.experimental.categories.Category;
 
 @Category(IntegrationTest.class)
 public class GfshCommandsSecurityTest {
-  private static int[] ports = AvailablePortHelper.getRandomAvailableTCPPorts(2);
-  private static int jmxPort = ports[0];
-  private static int httpPort = ports[1];
+  protected static int[] ports = AvailablePortHelper.getRandomAvailableTCPPorts(2);
+  protected static int jmxPort = ports[0];
+  protected static int httpPort = ports[1];
 
   private HeadlessGfsh gfsh = null;
 
@@ -50,11 +50,12 @@ public class GfshCommandsSecurityTest {
       jmxPort, httpPort, "cacheServer.json");
 
   @Rule
-  public GfshShellConnectionRule gfshConnection = null;
+  public GfshShellConnectionRule gfshConnection;
 
   public GfshCommandsSecurityTest(){
     gfshConnection = new GfshShellConnectionRule(jmxPort, httpPort, false);
   }
+
 
   @Before
   public void before(){
@@ -109,11 +110,31 @@ public class GfshCommandsSecurityTest {
     runCommandsWithAndWithout("DATA:MANAGE");
   }
 
+  @Test
+  @JMXConnectionConfiguration(user = "regionA-reader", password = "1234567")
+  public void testregionAReader() throws Exception{
+    runCommandsWithAndWithout("DATA:READ:RegionA");
+  }
+
+  @Test
+  @JMXConnectionConfiguration(user = "regionA-writer", password = "1234567")
+  public void testregionAWriter() throws Exception{
+    runCommandsWithAndWithout("DATA:WRITE:RegionA");
+  }
+
+  @Test
+  @JMXConnectionConfiguration(user = "regionA-manager", password = "1234567")
+  public void testregionAManager() throws Exception{
+    runCommandsWithAndWithout("DATA:MANAGE:RegionA");
+  }
+
 
   private void runCommandsWithAndWithout(String permission) throws Exception{
-    List<TestCommand> permitted = TestCommand.getPermittedCommands(new WildcardPermission(permission));
-    for(TestCommand clusterRead:permitted) {
-      LogService.getLogger().info("Processing authorized command: "+clusterRead.getCommand());gfsh.executeCommand(clusterRead.getCommand());
+    List<TestCommand> allPermitted = TestCommand.getPermittedCommands(new WildcardPermission(permission, true));
+    for(TestCommand permitted:allPermitted) {
+      LogService.getLogger().info("Processing authorized command: "+permitted.getCommand());
+
+      gfsh.executeCommand(permitted.getCommand());
       CommandResult result = (CommandResult) gfsh.getResult();
       assertNotNull(result);
 
@@ -126,7 +147,7 @@ public class GfshCommandsSecurityTest {
     }
 
     List<TestCommand> others = TestCommand.getCommands();
-    others.removeAll(permitted);
+    others.removeAll(allPermitted);
     for(TestCommand other:others) {
       // skip no permission commands
       if(other.getPermission()==null)
@@ -134,6 +155,7 @@ public class GfshCommandsSecurityTest {
 
       LogService.getLogger().info("Processing unauthorized command: "+other.getCommand());
       gfsh.executeCommand(other.getCommand());
+
       CommandResult result = (CommandResult) gfsh.getResult();
       int errorCode = ((ErrorResultData) result.getResultData()).getErrorCode();
 
@@ -144,7 +166,9 @@ public class GfshCommandsSecurityTest {
       }
 
       assertEquals(ResultBuilder.ERRORCODE_UNAUTHORIZED, ((ErrorResultData) result.getResultData()).getErrorCode());
-      assertTrue(result.getContent().toString().contains(other.getPermission().toString()));
+      String resultMessage = result.getContent().toString();
+      String permString = other.getPermission().toString();
+      assertTrue(resultMessage+" does not contain "+permString,resultMessage.contains(permString));
     }
   }
 
