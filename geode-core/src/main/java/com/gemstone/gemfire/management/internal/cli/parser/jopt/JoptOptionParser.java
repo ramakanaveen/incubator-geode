@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import joptsimple.ArgumentAcceptingOptionSpec;
-import joptsimple.MultipleArgumentsForOptionException;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSpecBuilder;
@@ -123,21 +122,22 @@ public class JoptOptionParser implements GfshOptionParser {
         joptOptionSet = parser.parse(preProcessedInput);
       } catch (OptionException e) {
         ce = processException(e);
-        joptOptionSet = e.getDetected();
+        // KIRK: joptOptionSet = e.getDetected();
       }
       if (joptOptionSet != null) {
 
         // Make sure there are no miscellaneous, unknown strings that cannot be identified as
         // either options or arguments.
         if (joptOptionSet.nonOptionArguments().size() > arguments.size()) {
-          String unknownString = joptOptionSet.nonOptionArguments().get(arguments.size());
+          // KIRK: String unknownString = joptOptionSet.nonOptionArguments().get(arguments.size());
+          String unknownString = (String)joptOptionSet.nonOptionArguments().get(arguments.size());
           // If the first option is un-parseable then it will be returned as "<option>=<value>" since it's
           // been interpreted as an argument. However, all subsequent options will be returned as "<option>".
           // This hack splits off the string before the "=" sign if it's the first case.
           if (unknownString.matches("^-*\\w+=.*$")) {
             unknownString = unknownString.substring(0, unknownString.indexOf('='));
           }
-          ce = processException(OptionException.createUnrecognizedOptionException(unknownString, joptOptionSet));
+          // KIRK: ce = processException(OptionException.createUnrecognizedOptionException(unknownString, joptOptionSet));
         }
         
         // First process the arguments
@@ -199,7 +199,7 @@ public class JoptOptionParser implements GfshOptionParser {
                   if (arguments.size() > 1 && !(option.getConverter() instanceof MultipleValueConverter) && option.getValueSeparator() == null) {
                     List<String> optionList = new ArrayList<String>(1);
                     optionList.add(string);
-                    ce = processException(new MultipleArgumentsForOptionException(optionList, joptOptionSet));
+                    // KIRK: ce = processException(new MultipleArgumentsForOptionException(optionList, joptOptionSet));
                   } else if ((arguments.size() == 1 && !(option.getConverter() instanceof MultipleValueConverter)) || option.getValueSeparator() == null) {
                     optionSet.put(option, arguments.get(0).toString().trim());
                   } else {

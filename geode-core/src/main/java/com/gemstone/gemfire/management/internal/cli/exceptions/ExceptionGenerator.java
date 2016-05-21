@@ -16,34 +16,32 @@
  */
 package com.gemstone.gemfire.management.internal.cli.exceptions;
 
-import joptsimple.MissingRequiredOptionException;
-import joptsimple.MultipleArgumentsForOptionException;
 import joptsimple.OptionException;
-import joptsimple.OptionMissingRequiredArgumentException;
-import joptsimple.UnrecognizedOptionException;
 
 import com.gemstone.gemfire.management.internal.cli.parser.Option;
 
 /**
  * Converts joptsimple exceptions into corresponding exceptions for cli
+ *
+ * TODO: delete this class
  */
 public class ExceptionGenerator {
 
   public static CliCommandOptionException generate(Option option, OptionException e) {
-    if (MissingRequiredOptionException.class.isInstance(e)) {
+    if (e.getClass().getSimpleName().contains("MissingRequiredOptionException")) {
       return new CliCommandOptionMissingException(e);
 
-    } else if (OptionMissingRequiredArgumentException.class.isInstance(e)) {
+    } else if (e.getClass().getSimpleName().contains("OptionMissingRequiredArgumentException")) {
       return new CliCommandOptionValueMissingException(e);
 
-    } else if (UnrecognizedOptionException.class.isInstance(e)) {
+    } else if (e.getClass().getSimpleName().contains("UnrecognizedOptionException")) {
       return new CliCommandOptionNotApplicableException(e);
 
-    } else if (MultipleArgumentsForOptionException.class.isInstance(e)) {
+    } else if (e.getClass().getSimpleName().contains("MultipleArgumentsForOptionException")) {
       return new CliCommandOptionHasMultipleValuesException(e);
 
     } else {
-      return null;
+      return new CliCommandOptionException(e);
     }
   }
 }
