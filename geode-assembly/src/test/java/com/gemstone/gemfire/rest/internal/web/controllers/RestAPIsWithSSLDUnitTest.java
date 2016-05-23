@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.rest.internal.web.controllers;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.ClientCache;
 import com.gemstone.gemfire.cache.client.ClientCacheFactory;
@@ -57,6 +66,7 @@ import java.util.Properties;
 /**
  * @since 8.0
  */
+@Category(DistributedTest.class)
 public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
 
   private static final long serialVersionUID = -254776154266339226L;
@@ -65,8 +75,8 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
 
   private File jks;
 
-  public RestAPIsWithSSLDUnitTest(String name) {
-    super(name);
+  public RestAPIsWithSSLDUnitTest() {
+    super();
     this.jks = findTrustedJKS();
   }
 
@@ -400,6 +410,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
 
   // Actual Tests starts here.
 
+  @Test
   public void testSimpleSSL() throws Exception {
 
     Properties props = new Properties();
@@ -411,6 +422,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "SSL");
   }
 
+  @Test
   public void testSSLWithoutKeyStoreType() throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -421,6 +433,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "SSL");
   }
 
+  @Test
   public void testSSLWithSSLProtocol() throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -432,6 +445,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "SSL");
   }
 
+  @Test
   public void testSSLWithTLSProtocol() throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -443,6 +457,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "TLS");
   }
 
+  @Test
   public void testSSLWithTLSv11Protocol() throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -454,6 +469,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "TLSv1.1");
   }
 
+  @Test
   public void testSSLWithTLSv12Protocol() throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -465,6 +481,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "TLSv1.2");
   }
 
+  @Test
   public void testWithMultipleProtocol() throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -476,6 +493,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "TLSv1.2");
   }
 
+  @Test
   public void testSSLWithCipherSuite() throws Exception {
     System.setProperty("javax.net.debug", "ssl");
     Properties props = new Properties();
@@ -495,6 +513,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "TLSv1.2");
   }
 
+  @Test
   public void testSSLWithMultipleCipherSuite() throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -513,6 +532,7 @@ public class RestAPIsWithSSLDUnitTest extends LocatorTestBase {
     validateConnection(restEndpoint, "TLSv1.2");
   }
 
+  @Test
   public void testMutualAuthentication() throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.HTTP_SERVICE_SSL_ENABLED_NAME, "true");

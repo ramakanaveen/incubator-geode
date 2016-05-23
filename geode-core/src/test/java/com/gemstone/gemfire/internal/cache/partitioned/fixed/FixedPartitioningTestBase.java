@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned.fixed;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -82,7 +91,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * This is the base class to do operations
  */
 
-public class FixedPartitioningTestBase extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class FixedPartitioningTestBase extends JUnit4DistributedTestCase {
 
   private static final long serialVersionUID = 1L;
   
@@ -131,17 +141,17 @@ public class FixedPartitioningTestBase extends DistributedTestCase {
     OCT, NOV, DEC
   };
 
-  public FixedPartitioningTestBase(String name) {
-    super(name);
+  public FixedPartitioningTestBase() {
+    super();
   }
 
   public static void createCacheOnMember() {
-    new FixedPartitioningTestBase("Temp").createCache();
+    new FixedPartitioningTestBase().createCache();
   }
 
   public static void createCacheOnMember_DisableMovePrimary() {
     System.setProperty("gemfire.DISABLE_MOVE_PRIMARIES_ON_STARTUP", "true");
-    new FixedPartitioningTestBase("Temp").createCache();
+    new FixedPartitioningTestBase().createCache();
   }
   
   private void createCache() {

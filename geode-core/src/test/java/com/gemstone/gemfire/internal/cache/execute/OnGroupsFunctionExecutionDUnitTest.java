@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
@@ -56,10 +65,11 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  * 
  */
-public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class OnGroupsFunctionExecutionDUnitTest extends JUnit4DistributedTestCase {
 
-  public OnGroupsFunctionExecutionDUnitTest(String name) {
-    super(name);
+  public OnGroupsFunctionExecutionDUnitTest() {
+    super();
   }
 
   @Override
@@ -205,10 +215,12 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testBasicP2PFunctionNoCache() {
     doBasicP2PFunctionNoCache(false);
   }
 
+  @Test
   public void testBasicP2pRegisteredFunctionNoCache() {
     doBasicP2PFunctionNoCache(true);
   }
@@ -318,6 +330,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     verifyAndResetInvocationCount(vm2, 1);
   }
 
+  @Test
   public void testonMember() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -384,6 +397,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     }
   }
 
+  @Test
   public void testBasicP2PFunction() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -487,6 +501,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     }
   }
 
+  @Test
   public void testP2PException () {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -541,6 +556,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testP2PMemberFailure() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -571,6 +587,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testP2POneMemberFailure() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -602,6 +619,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testP2PIgnoreMemberFailure() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -637,18 +655,22 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testBasicClientServerFunction() {
     dotestBasicClientServerFunction(false, true);
   }
 
+  @Test
   public void testBasicClientServerRegisteredFunction() {
     dotestBasicClientServerFunction(true, true);
   }
 
+  @Test
   public void testBasicClientServerFunctionNoArgs() {
     dotestBasicClientServerFunction(false, false);
   }
 
+  @Test
   public void testBasicClientServerRegisteredFunctionNoArgs() {
     dotestBasicClientServerFunction(true, false);
   }
@@ -757,6 +779,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     verifyAndResetInvocationCount(server2, 1);
   }
 
+  @Test
   public void testStreamingClientServerFunction() {
     Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -834,6 +857,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testOnServer() {
     Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -914,6 +938,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     assertEquals(2, c0 + c1 + c2);
   }
 
+  @Test
   public void testClientServerException() {
     Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -991,6 +1016,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testClientServerMemberFailure() {
     Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -1040,6 +1066,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testClientServerOneMemberFailure() {
     Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -1089,6 +1116,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     });
   }
 
+  @Test
   public void testClientServerIgnoreMemberFailure() {
     Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -1153,6 +1181,7 @@ public class OnGroupsFunctionExecutionDUnitTest extends DistributedTestCase {
     }
   }
 
+  @Test
   public void testNoAckGroupsFunction() {
     //Workaround for #52005. This is a product bug
     //that should be fixed

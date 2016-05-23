@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -99,7 +108,8 @@ import com.gemstone.gemfire.cache.NoSubscriptionServersAvailableException;
  *
  *
  */
-public class InterestListDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class InterestListDUnitTest extends JUnit4DistributedTestCase
 {
   static Cache cache = null;
 
@@ -128,8 +138,8 @@ public class InterestListDUnitTest extends DistributedTestCase
   static InterestListener interestListener;
 
   /** constructor */
-  public InterestListDUnitTest(String name) {
-    super(name);
+  public InterestListDUnitTest() {
+    super();
   }
 
   @Override
@@ -161,7 +171,8 @@ public class InterestListDUnitTest extends DistributedTestCase
    * c1 : validate (k1 == vm1-k1-again) AND (k2 == vm1-k2-again)// as both are not registered
    *
    */
-    public void testInterestListRegistration()
+  @Test
+  public void testInterestListRegistration()
     {
 
       vm1.invoke(() -> InterestListDUnitTest.createClientCache(
@@ -217,6 +228,7 @@ public class InterestListDUnitTest extends DistributedTestCase
  * c1:  put k1->k1 (old value)
  * c2:  validate k1 == vm-k1 (no interest, so missing update)
  */
+  @Test
   public void testValueRefresh()
   {
 
@@ -263,6 +275,7 @@ public class InterestListDUnitTest extends DistributedTestCase
  * register ALL_KEYS and verifies that updates are receiving to all the keys
  *
  */
+  @Test
   public void testInterestListRegistration_ALL_KEYS()
   {
 
@@ -290,6 +303,7 @@ public class InterestListDUnitTest extends DistributedTestCase
   * then verify that updates has occured as a result of interest registration.
   *
   */
+  @Test
   public void testInitializationOfRegionFromInterestList()
   {
     // directly put on server
@@ -328,7 +342,8 @@ public class InterestListDUnitTest extends DistributedTestCase
    * c1 : validate (k1 == vm1-k1-again) AND (k2 == vm1-k2-again)// as both are not registered
    *
    */
-    public void testInterestListRegistrationOnServer()
+  @Test
+  public void testInterestListRegistrationOnServer()
     {
 
       DistributedMember c1 = (DistributedMember)vm1
@@ -379,7 +394,8 @@ public class InterestListDUnitTest extends DistributedTestCase
      * are properly invoked
      * @throws Exception 
      */
-    public void testInterestRegistrationListeners() throws Exception {
+  @Test
+  public void testInterestRegistrationListeners() throws Exception {
       int port2;
 
       createCache();
@@ -444,6 +460,7 @@ public class InterestListDUnitTest extends DistributedTestCase
    * This tests whether an exception is thrown in register/unregister when no
    * server is available.
    */
+  @Test
   public void testNoAvailableServer() {
 
     // Register interest in key1.
@@ -460,10 +477,12 @@ public class InterestListDUnitTest extends DistributedTestCase
     vm1.invoke(() -> InterestListDUnitTest.registerKeyEx( key2 ));
   }
 
+  @Test
   public void testRegisterInterestOnReplicatedRegionWithCacheLoader() {
     runRegisterInterestWithCacheLoaderTest(true);
   }
 
+  @Test
   public void testRegisterInterestOnPartitionedRegionWithCacheLoader() {
     runRegisterInterestWithCacheLoaderTest(false);
   }
@@ -524,7 +543,7 @@ public class InterestListDUnitTest extends DistributedTestCase
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
     props.setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME, "false");
 
-    new InterestListDUnitTest("temp").createCache(props);
+    new InterestListDUnitTest().createCache(props);
     PoolFactory pfactory = PoolManager.createFactory()
       .addServer(host, port)
       .setThreadLocalConnections(true)
@@ -556,7 +575,7 @@ public class InterestListDUnitTest extends DistributedTestCase
   private static void createCache(boolean addReplicatedRegion) throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME, "false");
-    new InterestListDUnitTest("temp").createCache(props);
+    new InterestListDUnitTest().createCache(props);
     if (addReplicatedRegion) {
       addReplicatedRegion();
     } else {

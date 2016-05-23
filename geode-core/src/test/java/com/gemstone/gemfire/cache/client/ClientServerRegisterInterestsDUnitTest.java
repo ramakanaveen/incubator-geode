@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.client;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Stack;
@@ -47,7 +56,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * @see com.gemstone.gemfire.test.dunit.DistributedTestCase
  * @since 8.0
  */
-public class ClientServerRegisterInterestsDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class ClientServerRegisterInterestsDUnitTest extends JUnit4DistributedTestCase {
 
   protected static final long WAIT_TIME_MILLISECONDS = TimeUnit.SECONDS.toMillis(5);
 
@@ -206,6 +216,7 @@ public class ClientServerRegisterInterestsDUnitTest extends DistributedTestCase 
     }
   }
 
+  @Test
   public void testClientRegisterInterests() {
     ClientCache clientCache = setupGemFireClientCache();
 

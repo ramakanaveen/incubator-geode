@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -44,7 +53,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  */
 
-public class VerifyEventIDGenerationInP2PDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class VerifyEventIDGenerationInP2PDUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
 
@@ -62,8 +72,8 @@ public class VerifyEventIDGenerationInP2PDUnitTest extends DistributedTestCase
 
   /* Constructor */
 
-  public VerifyEventIDGenerationInP2PDUnitTest(String name) {
-    super(name);
+  public VerifyEventIDGenerationInP2PDUnitTest() {
+    super();
   }
 
   @Override
@@ -84,6 +94,7 @@ public class VerifyEventIDGenerationInP2PDUnitTest extends DistributedTestCase
     assertFalse(pass.booleanValue());
   }
 
+  @Test
   public void testDummy() throws Exception
   {
     
@@ -106,7 +117,7 @@ public class VerifyEventIDGenerationInP2PDUnitTest extends DistributedTestCase
 
   public static void createServerCache() throws Exception
   {
-    new VerifyEventIDGenerationInP2PDUnitTest("temp")
+    new VerifyEventIDGenerationInP2PDUnitTest()
         .createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);

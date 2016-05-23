@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +62,8 @@ import com.gemstone.gemfire.test.dunit.Wait;
  *
  * @since 6.5
  */
-public class EventTrackerDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class EventTrackerDUnitTest extends JUnit4CacheTestCase {
 
   /** The port on which the <code>CacheServer</code> was started in this VM */
   private static int cacheServerPort;
@@ -64,8 +74,8 @@ public class EventTrackerDUnitTest extends CacheTestCase {
   /**
    * Creates a new <code>EventTrackerDUnitTest</code>
    */
-  public EventTrackerDUnitTest(String name) {
-    super(name);
+  public EventTrackerDUnitTest() {
+    super();
   }
 
   ////////  Test Methods
@@ -86,6 +96,7 @@ public class EventTrackerDUnitTest extends CacheTestCase {
    * Tests <code>EventTracker</code> is created and destroyed when a <code>Region</code> is created 
    * and destroyed.
    */
+  @Test
   public void testEventTrackerCreateDestroy() throws CacheException {
     // Verify the Cache's ExpiryTask contains no EventTrackers
     GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -124,6 +135,7 @@ public class EventTrackerDUnitTest extends CacheTestCase {
   /**
    * Tests adding threads to an <code>EventTracker</code>.
    */
+  @Test
   public void testEventTrackerAddThreadIdentifier() throws CacheException {
     Host host = Host.getHost(0);
     VM serverVM = host.getVM(0);
@@ -194,6 +206,7 @@ public class EventTrackerDUnitTest extends CacheTestCase {
   /**
    * Tests adding events to and removing events from an <code>EventTracker</code>.
    */
+  @Test
   public void testEventTrackerAddRemoveThreadIdentifier() throws CacheException {
     Host host = Host.getHost(0);
     VM serverVM = host.getVM(0);
@@ -277,6 +290,7 @@ public class EventTrackerDUnitTest extends CacheTestCase {
    * Test to make sure we don't leak put all events in the event tracker
    * after multiple putAlls
    */
+  @Test
   public void testPutAllHoldersInEventTracker() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

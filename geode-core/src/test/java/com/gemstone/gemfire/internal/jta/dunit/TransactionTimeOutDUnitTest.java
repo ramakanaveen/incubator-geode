@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -53,14 +62,15 @@ import com.gemstone.gemfire.util.test.TestUtil;
 /**
 *This test tests TransactionTimeOut functionality
 */
-public class TransactionTimeOutDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class TransactionTimeOutDUnitTest extends JUnit4DistributedTestCase {
 
   static DistributedSystem ds;
   static Cache cache = null;
   private static String tblName;
 
-  public TransactionTimeOutDUnitTest(String name) {
-    super(name);
+  public TransactionTimeOutDUnitTest() {
+    super();
   }
 
   public static void init() throws Exception {
@@ -79,7 +89,7 @@ public class TransactionTimeOutDUnitTest extends DistributedTestCase {
 //    props.setProperty("mcast-port", "10321");
     try {
 //      ds = DistributedSystem.connect(props);
-        ds = (new TransactionTimeOutDUnitTest("temp")).getSystem(props);
+        ds = (new TransactionTimeOutDUnitTest()).getSystem(props);
       if (cache == null || cache.isClosed()) cache = CacheFactory.create(ds);
     }
     catch (Exception e) {

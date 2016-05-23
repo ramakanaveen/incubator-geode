@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.Properties;
 
@@ -53,7 +62,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  */
 
-public class Bug40299DUnitTest extends CacheTestCase
+@Category(DistributedTest.class)
+public class Bug40299DUnitTest extends JUnit4CacheTestCase
 {
 
   protected static String regionName = "TestRegion";
@@ -72,8 +82,8 @@ public class Bug40299DUnitTest extends CacheTestCase
    * 
    * @param name
    */
-  public Bug40299DUnitTest(String name) {
-    super(name);
+  public Bug40299DUnitTest() {
+    super();
   }
 
   @Override
@@ -101,7 +111,7 @@ public class Bug40299DUnitTest extends CacheTestCase
       {
         try {
 
-          distributedSystem = (new Bug40299DUnitTest("vm0_diskReg"))
+          distributedSystem = (new Bug40299DUnitTest())
               .getSystem(props);
           assertTrue(distributedSystem != null);
           cache = CacheFactory.create(distributedSystem);
@@ -286,6 +296,7 @@ public class Bug40299DUnitTest extends CacheTestCase
    * The Test verifies that fix prevents this.
    */
 
+  @Test
   public void testQueryGetWithClear()
   {
     IgnoredException.addIgnoredException("Entry has been cleared and is not present on disk");

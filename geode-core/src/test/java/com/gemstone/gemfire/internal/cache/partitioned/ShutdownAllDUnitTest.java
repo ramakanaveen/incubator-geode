@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import static com.gemstone.gemfire.internal.lang.ThrowableUtils.getRootCause;
 
 import java.io.IOException;
@@ -72,14 +81,15 @@ import com.gemstone.gemfire.test.dunit.Wait;
  * Tests the basic use cases for PR persistence.
  *
  */
-public class ShutdownAllDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ShutdownAllDUnitTest extends JUnit4CacheTestCase {
   protected static HangingCacheListener listener;
 
 
   final String expectedExceptions = InternalGemFireError.class.getName()+"||ShutdownAllRequest: disconnect distributed without response";
 
-  public ShutdownAllDUnitTest(String name) {
-    super(name);
+  public ShutdownAllDUnitTest() {
+    super();
   }
   /**
    * 
@@ -94,6 +104,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
     DistributedTestCase.disconnectAllFromDS();
   }
 
+  @Test
   public void testShutdownAll2Servers() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -136,6 +147,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
     checkData(vm0, numBuckets, 113, "b", "region");
   }
 
+  @Test
   public void testShutdownAllWithEncounterIGE1() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -161,6 +173,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
     vm0.invoke(removeExceptionTag1(expectedExceptions));
   }
 
+  @Test
   public void testShutdownAllWithEncounterIGE2() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -198,6 +211,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
     vm1.invoke(removeExceptionTag1(expectedExceptions));
   }
 
+  @Test
   public void testShutdownAllOneServerAndRecover() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -219,6 +233,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
     createData(vm0, 1, 10, "b", "region");
   }
 
+  @Test
   public void testPRWithDR() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -244,6 +259,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
     checkData(vm0, 0, 1, "c", "region_dr");
   }
   
+  @Test
   public void testShutdownAllFromServer() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -282,6 +298,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
   }
   
   // shutdownAll, then restart to verify
+  @Test
   public void testCleanStop() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -326,6 +343,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
   }
 
   // shutdownAll, then restart to verify
+  @Test
   public void testCleanStopWithConflictCachePort() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -364,6 +382,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
   }
   
   /*
+  @Test
   public void testStopNonPersistRegions() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -388,6 +407,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
   }
   */
 
+  @Test
   public void testMultiPRDR() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -428,6 +448,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
   }
 
 
+  @Test
   public void testShutdownAllTimeout() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -523,6 +544,7 @@ public class ShutdownAllDUnitTest extends CacheTestCase {
    * members waiting on recovery.
    * @throws Throwable
    */
+  @Test
   public void testShutdownAllWithMembersWaiting() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

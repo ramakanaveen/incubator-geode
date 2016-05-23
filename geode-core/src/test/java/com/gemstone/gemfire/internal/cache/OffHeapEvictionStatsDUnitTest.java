@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -30,10 +39,11 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
  * Performs eviction stat dunit tests for off-heap regions.
  * @since 9.0
  */
+@Category(DistributedTest.class)
 public class OffHeapEvictionStatsDUnitTest extends EvictionStatsDUnitTest {
 
-  public OffHeapEvictionStatsDUnitTest(String name) {
-    super(name);
+  public OffHeapEvictionStatsDUnitTest() {
+    super();
     // TODO Auto-generated constructor stub
   }
 

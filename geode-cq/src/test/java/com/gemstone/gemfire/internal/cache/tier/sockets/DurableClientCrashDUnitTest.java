@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 
@@ -26,10 +35,11 @@ import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
  * 
  * @since 5.2
  */
+@Category(DistributedTest.class)
 public class DurableClientCrashDUnitTest extends DurableClientTestCase {
 
-  public DurableClientCrashDUnitTest(String name) {
-    super(name);
+  public DurableClientCrashDUnitTest() {
+    super();
   }
 
   @Override
@@ -91,8 +101,10 @@ public class DurableClientCrashDUnitTest extends DurableClientTestCase {
   
   // AB: Following tests are not relevant for client crash case.
   
+  @Test
   public void testCqCloseExceptionDueToActiveConnection() throws Exception {}
 
+  @Test
   public void testCloseCacheProxy() throws Exception {}
 
 }

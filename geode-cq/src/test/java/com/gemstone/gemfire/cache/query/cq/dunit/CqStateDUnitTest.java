@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.query.CqQuery;
@@ -34,13 +43,15 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
+@Category(DistributedTest.class)
 public class CqStateDUnitTest extends HelperTestCase {
 
   
-  public CqStateDUnitTest(String name) {
-    super(name);
+  public CqStateDUnitTest() {
+    super();
   }
   
+  @Test
   public void testNothingBecauseBug51953() {
     // remove when bug #51953 is fixed
   }

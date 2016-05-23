@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -61,6 +70,7 @@ import com.gemstone.gemfire.test.dunit.ThreadUtils;
  * 
  * 
  */
+@Category(DistributedTest.class)
 public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
     DistributedTestCase {
   
@@ -85,8 +95,8 @@ public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
   /**
    * @param name
    */
-  public ConcurrentIndexUpdateWithoutWLDUnitTest(String name) {
-    super(name);
+  public ConcurrentIndexUpdateWithoutWLDUnitTest() {
+    super();
   }
 
   public void setCacheInVMs(VM... vms) {
@@ -132,6 +142,7 @@ public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
     }
   }
   // Tests on Local/Replicated Region
+  @Test
   public void testCompactRangeIndex() {
     // Create a Local Region.
     Host host = Host.getHost(0);
@@ -161,6 +172,7 @@ public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
     
   }
 
+  @Test
   public void testMultiIndexCreation() {
     // Create a Local Region.
     Host host = Host.getHost(0);
@@ -217,6 +229,7 @@ public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
     };
   }
 
+  @Test
   public void testRangeIndex() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -245,6 +258,7 @@ public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
   }
 
   // Tests on Partition Region
+  @Test
   public void testCompactRangeIndexOnPR() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -307,6 +321,7 @@ public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
     vm3.invoke(getCacheSerializableRunnableForIndexValidation(regionName, indexName));
   }
 
+  @Test
   public void testRangeIndexOnPR() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -368,6 +383,7 @@ public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
     vm3.invoke(getCacheSerializableRunnableForIndexValidation(regionName, rindexName));
   }
 
+  @Test
   public void testMultiIndexOnPR() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,12 +42,13 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  *
  */
-public class DistributionAdvisorDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DistributionAdvisorDUnitTest extends JUnit4DistributedTestCase {
   private transient DistributionAdvisor.Profile profiles[];
   protected transient DistributionAdvisor advisor;
   
-  public DistributionAdvisorDUnitTest(String name) {
-    super(name);
+  public DistributionAdvisorDUnitTest() {
+    super();
   }
 
   @Override
@@ -88,6 +98,7 @@ public class DistributionAdvisorDUnitTest extends DistributedTestCase {
   }
   
     
+  @Test
   public void testGenericAdvice() {
     Set expected = new HashSet();
     for (int i = 0; i < profiles.length; i++) {

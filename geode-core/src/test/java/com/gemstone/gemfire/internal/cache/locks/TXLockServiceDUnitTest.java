@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.locks;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,7 +54,8 @@ import com.gemstone.gemfire.test.dunit.ThreadUtils;
 /**
  * This class tests distributed ownership via the DistributedLockService api.
  */
-public class TXLockServiceDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class TXLockServiceDUnitTest extends JUnit4DistributedTestCase {
   
   private static DistributedSystem system;
   
@@ -54,8 +64,8 @@ public class TXLockServiceDUnitTest extends DistributedTestCase {
   
   private InternalDistributedMember lockGrantor;
 
-  public TXLockServiceDUnitTest(String name) {
-    super(name);
+  public TXLockServiceDUnitTest() {
+    super();
   }
   
   // -------------------------------------------------------------------------
@@ -111,6 +121,7 @@ public class TXLockServiceDUnitTest extends DistributedTestCase {
   //   Test methods
   // -------------------------------------------------------------------------
   
+  @Test
   public void testGetAndDestroy() {
     forEachVMInvoke("checkGetAndDestroy", new Object[] {});
     /*invokeInEveryVM(TXLockServiceDUnitTest.class,
@@ -181,6 +192,7 @@ public class TXLockServiceDUnitTest extends DistributedTestCase {
   }
   
   protected static volatile TXLockId testTXLock_TXLockId;
+  @Test
   public void testTXLock() {
     LogWriterUtils.getLogWriter().info("[testTXLock]");
     final int grantorVM = 0;
@@ -292,6 +304,7 @@ public class TXLockServiceDUnitTest extends DistributedTestCase {
   }
   
   protected static volatile TXLockId testTXOriginatorRecoveryProcessor_TXLockId;
+  @Test
   public void testTXOriginatorRecoveryProcessor() {
     LogWriterUtils.getLogWriter().info("[testTXOriginatorRecoveryProcessor]");
     final int originatorVM = 0;
@@ -414,6 +427,7 @@ public class TXLockServiceDUnitTest extends DistributedTestCase {
     });
   }
   
+  @Test
   public void testDTLSIsDistributed() {
     LogWriterUtils.getLogWriter().info("[testDTLSIsDistributed]");
     
@@ -487,7 +501,7 @@ public class TXLockServiceDUnitTest extends DistributedTestCase {
    * Connects a DistributedSystem, saves it in static variable "system"
    */
   private static void connectDistributedSystem() {
-    system = (new TXLockServiceDUnitTest("dummy")).getSystem();
+    system = (new TXLockServiceDUnitTest()).getSystem();
   }
   
   private static InternalDistributedMember identifyLockGrantor(String serviceName) {

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -57,12 +66,13 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  *
  * @since 5.1
  */
+@Category(DistributedTest.class)
 public class PartitionedRegionDUnitTest extends MultiVMRegionTestCase {
   
   static int oldLogLevel;
 
-  public PartitionedRegionDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionDUnitTest() {
+    super();
   }
   
   /*
@@ -95,16 +105,19 @@ public class PartitionedRegionDUnitTest extends MultiVMRegionTestCase {
    */
   protected boolean supportsLocalDestroyAndLocalInvalidate() { return false; }
   
+  @Test
   public void testCacheLoaderModifyingArgument() throws InterruptedException {
     // TODO, implement a specific PR related test that properly reflects primary allocation
     // and event deliver based on that allocation
   }
 
+  @Test
   public void testLocalAndRemoteCacheWriters() throws InterruptedException {
     // TODO, implement a specific PR related test that properly reflects primary allocation
     // and event deliver based on that allocation
   }
 
+  @Test
   public void testLocalCacheLoader() {
     // TODO, implement a specific PR related test that properly reflects primary allocation
     // and event deliver based on that allocation
@@ -174,6 +187,7 @@ public class PartitionedRegionDUnitTest extends MultiVMRegionTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testRegionInvalidationWithAdjunctMessages() throws Exception {
     final String name = getUniqueName();
     VM vm1 = Host.getHost(0).getVM(1);
@@ -216,6 +230,7 @@ public class PartitionedRegionDUnitTest extends MultiVMRegionTestCase {
    *
    * @see Region#createSubregion
    */
+  @Test
   public void testIncompatibleSubregions()
     throws CacheException, InterruptedException {
 
@@ -313,6 +328,7 @@ public class PartitionedRegionDUnitTest extends MultiVMRegionTestCase {
    * test with multiple vms and a decent spread of keys
    */
   @Category(FlakyTest.class) // GEODE-555: retry loops, use of Random
+  @Test
   public void testExtendedKeysValues() {
     final String regionName = getUniqueName();
     final int numEntries = 20000;
@@ -375,9 +391,11 @@ public class PartitionedRegionDUnitTest extends MultiVMRegionTestCase {
   }
   
   // these tests make no sense for partitioned regions
+  @Test
   public void testDefinedEntryUpdated() {
     unimplemented();
   }
+  @Test
   public void testRemoteCacheListener() {
     unimplemented();
   }
@@ -418,24 +436,30 @@ public class PartitionedRegionDUnitTest extends MultiVMRegionTestCase {
   
 
   // user attributes aren't supported in partitioned regions at this time (5.1)
+  @Test
   public void testEntryUserAttribute() {
     unimplemented();
   }
 
   
   // these tests require misc Region operations not currently supported by PRs
+  @Test
   public void testInvalidateRegion() {
     unimplemented();
   }
+  @Test
   public void testLocalDestroyRegion() {
     unimplemented();
   }
+  @Test
   public void testLocalInvalidateRegion() {
     unimplemented();
   }
+  @Test
   public void testSnapshot() {
     unimplemented();
   }
+  @Test
   public void testRootSnapshot() {
     unimplemented();
   }
@@ -490,6 +514,7 @@ public class PartitionedRegionDUnitTest extends MultiVMRegionTestCase {
     }
   }
   
+  @Test
   public void testBadHash() {
     final String regionName = getUniqueName();
     Host host = Host.getHost(0);

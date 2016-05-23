@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Arrays;
 import java.util.Set;
 
@@ -45,10 +54,11 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  *
  * @since 3.0
  */
+@Category(DistributedTest.class)
 public class DistributedNoAckRegionDUnitTest extends MultiVMRegionTestCase {
 
-  public DistributedNoAckRegionDUnitTest(String name) {
-    super(name);
+  public DistributedNoAckRegionDUnitTest() {
+    super();
   }
 
   /**
@@ -67,6 +77,7 @@ public class DistributedNoAckRegionDUnitTest extends MultiVMRegionTestCase {
   /** Tests creating a distributed subregion of a local scope region,
    * which should fail.
    */
+  @Test
   public void testDistSubregionOfLocalRegion() throws CacheException {
     // creating a distributed subregion of a LOCAL region is illegal.
     AttributesFactory factory = new AttributesFactory();
@@ -87,6 +98,7 @@ public class DistributedNoAckRegionDUnitTest extends MultiVMRegionTestCase {
    *
    * @see Region#createSubregion
    */
+  @Test
   public void testIncompatibleSubregions()
     throws CacheException, InterruptedException {
     Host host = Host.getHost(0);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.net.SocketException;
 import java.util.Properties;
 import com.gemstone.gemfire.LogWriter;
@@ -46,7 +55,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class HASlowReceiverDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class HASlowReceiverDUnitTest extends JUnit4DistributedTestCase {
   protected static Cache cache = null;
 
   private static VM serverVM1 = null;
@@ -69,8 +79,8 @@ public class HASlowReceiverDUnitTest extends DistributedTestCase {
   
   private static boolean isUnresponsiveClientRemoved = false;
 
-  public HASlowReceiverDUnitTest(String name) {
-    super(name);
+  public HASlowReceiverDUnitTest() {
+    super();
   }
 
   @Override
@@ -119,7 +129,7 @@ public class HASlowReceiverDUnitTest extends DistributedTestCase {
     Properties prop = new Properties();
     prop.setProperty(DistributionConfig.REMOVE_UNRESPONSIVE_CLIENT_PROP_NAME,
         "true");
-    new HASlowReceiverDUnitTest("temp").createCache(prop);
+    new HASlowReceiverDUnitTest().createCache(prop);
 
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -149,7 +159,7 @@ public class HASlowReceiverDUnitTest extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new HASlowReceiverDUnitTest("temp").createCache(props);
+    new HASlowReceiverDUnitTest().createCache(props);
 
     AttributesFactory factory = new AttributesFactory();
     PoolImpl p = (PoolImpl)PoolManager.createFactory().addServer("localhost",
@@ -242,6 +252,7 @@ public class HASlowReceiverDUnitTest extends DistributedTestCase {
   }
 
   // Test slow client
+  @Test
   public void testSlowClient() throws Exception {
     setBridgeObeserverForAfterQueueDestroyMessage();
     Host host = Host.getHost(0);

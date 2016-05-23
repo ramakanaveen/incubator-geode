@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -65,7 +74,8 @@ import com.gemstone.gemfire.cache.client.internal.QueueStateImpl.SequenceIdAndEx
  * 
  * 
  */
-public class EventIdOptimizationDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class EventIdOptimizationDUnitTest extends JUnit4DistributedTestCase
 {
 
   /** Cache-server1 */
@@ -149,8 +159,8 @@ public class EventIdOptimizationDUnitTest extends DistributedTestCase
       new EventID(new byte[] { 1, 1 }, ID_VALUE_LONG, ID_VALUE_LONG) };
 
   /** Constructor */
-  public EventIdOptimizationDUnitTest(String name) {
-    super(name);
+  public EventIdOptimizationDUnitTest() {
+    super();
   }
 
   /**
@@ -194,7 +204,7 @@ public class EventIdOptimizationDUnitTest extends DistributedTestCase
   /** Creates cache and starts the bridge-server */
   public static Integer createServerCache() throws Exception
   {
-    new EventIdOptimizationDUnitTest("temp").createCache(new Properties());
+    new EventIdOptimizationDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setMirrorType(MirrorType.KEYS_VALUES);
@@ -228,7 +238,7 @@ public class EventIdOptimizationDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new EventIdOptimizationDUnitTest("temp").createCache(props);
+    new EventIdOptimizationDUnitTest().createCache(props);
 
     AttributesFactory factory = new AttributesFactory();
     ClientServerTestCase.configureConnectionPool(factory, hostName, port.intValue(),-1, true, -1, 2, null);
@@ -251,7 +261,7 @@ public class EventIdOptimizationDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new EventIdOptimizationDUnitTest("temp").createCache(props);
+    new EventIdOptimizationDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     ClientServerTestCase.configureConnectionPool(factory, hostName, port.intValue(),-1, true, -1, 2, null);
     
@@ -381,6 +391,7 @@ public class EventIdOptimizationDUnitTest extends DistributedTestCase
    * @throws Exception -
    *           thrown if any exception occurs in test
    */
+  @Test
   public void testEventIdOptimizationByPutOperation() throws Exception
   {
     client1.invoke(() -> EventIdOptimizationDUnitTest.generateEventsByPutOperation());
@@ -396,6 +407,7 @@ public class EventIdOptimizationDUnitTest extends DistributedTestCase
    * @throws Exception -
    *           thrown if any exception occurs in test
    */
+  @Test
   public void testEventIdOptimizationByDestroyEntryOperation() throws Exception
   {
     client1.invoke(() -> EventIdOptimizationDUnitTest.generateEventsByDestroyEntryOperation());
@@ -410,6 +422,7 @@ public class EventIdOptimizationDUnitTest extends DistributedTestCase
    * @throws Exception -
    *           thrown if any exception occurs in test
    */
+  @Test
   public void testEventIdOptimizationByDestroyRegionOperation()
       throws Exception
   {
@@ -425,6 +438,7 @@ public class EventIdOptimizationDUnitTest extends DistributedTestCase
    * @throws Exception -
    *           thrown if any exception occurs in test
    */
+  @Test
   public void testEventIdOptimizationByClearRegionOperation() throws Exception
   {
     client1.invoke(() -> EventIdOptimizationDUnitTest.generateEventsByClearRegionOperation());

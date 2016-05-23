@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.xml.sax.Locator;
@@ -40,11 +49,12 @@ import com.gemstone.gemfire.test.dunit.IgnoredException;
  *
  * @since 8.1
  */
+@Category(DistributedTest.class)
 public class CacheXml81DUnitTest extends CacheXml80DUnitTest {
   private static final long serialVersionUID = 1L;
   
-  public CacheXml81DUnitTest(String name) {
-    super(name);
+  public CacheXml81DUnitTest() {
+    super();
   }
 
   protected String getGemFireVersion() {
@@ -61,6 +71,7 @@ public class CacheXml81DUnitTest extends CacheXml80DUnitTest {
    * 
    * @since 8.1
    */
+  @Test
   public void testCacheExtension() {
     final CacheCreation cache = new CacheCreation();
     final MockCacheExtension extension = new MockCacheExtension("testCacheExtension");
@@ -93,6 +104,7 @@ public class CacheXml81DUnitTest extends CacheXml80DUnitTest {
    * 
    * @since 8.1
    */
+  @Test
   public void testRegionExtension() {
     final String regionName = "testRegionExtension";
     final CacheCreation cache = new CacheCreation();
@@ -131,6 +143,7 @@ public class CacheXml81DUnitTest extends CacheXml80DUnitTest {
    * 
    * @since 8.2
    */
+  @Test
   @Test
   public void testLocatorInException() {
     final String regionName = "testRegionExtension";

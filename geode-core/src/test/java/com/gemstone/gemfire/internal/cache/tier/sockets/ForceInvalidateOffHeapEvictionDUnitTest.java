@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
@@ -27,11 +36,12 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
  * Runs force invalidate eviction tests with off-heap regions.
  * @since 9.0
  */
+@Category(DistributedTest.class)
 public class ForceInvalidateOffHeapEvictionDUnitTest extends
     ForceInvalidateEvictionDUnitTest {
 
-  public ForceInvalidateOffHeapEvictionDUnitTest(String name) {
-    super(name);
+  public ForceInvalidateOffHeapEvictionDUnitTest() {
+    super();
   }
 
   @Override

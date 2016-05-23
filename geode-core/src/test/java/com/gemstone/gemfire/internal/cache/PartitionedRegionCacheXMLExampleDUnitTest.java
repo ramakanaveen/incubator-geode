@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.CacheException;
@@ -29,16 +38,18 @@ import com.gemstone.gemfire.util.test.TestUtil;
 /**
  * This class tests regions created by xml files
  */
+@Category(DistributedTest.class)
 public class PartitionedRegionCacheXMLExampleDUnitTest extends
 		PartitionedRegionDUnitTestCase {
 
 	protected static Cache cache;
 
-	public PartitionedRegionCacheXMLExampleDUnitTest(String name) {
-		super(name);
+	public PartitionedRegionCacheXMLExampleDUnitTest() {
+		super();
 	}
 
-	public void testExampleWithBothRootRegion() {
+  @Test
+  public void testExampleWithBothRootRegion() {
 		Host host = Host.getHost(0);
 		VM vm0 = host.getVM(0);
 		VM vm1 = host.getVM(1);
@@ -92,7 +103,8 @@ public class PartitionedRegionCacheXMLExampleDUnitTest extends
 		vm1.invoke(validateRegion);		
 	}
 
-	public void testExampleWithSubRegion() {
+  @Test
+  public void testExampleWithSubRegion() {
 		Host host = Host.getHost(0);
 		VM vm2 = host.getVM(2);
 		VM vm3 = host.getVM(3);

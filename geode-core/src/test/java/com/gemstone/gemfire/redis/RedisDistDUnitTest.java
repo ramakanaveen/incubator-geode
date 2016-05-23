@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.redis;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Random;
 
 import org.junit.experimental.categories.Category;
@@ -34,7 +43,8 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
-public class RedisDistDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class RedisDistDUnitTest extends JUnit4DistributedTestCase {
 
   public static final String TEST_KEY = "key";
   public static int pushes = 200;
@@ -108,6 +118,7 @@ public class RedisDistDUnitTest extends DistributedTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-1092: random ports, failure stack involves TCPTransport ConnectionHandler (are we eating BindExceptions somewhere?), uses Random, async actions
+  @Test
   public void testConcListOps() throws Throwable {
     final Jedis jedis1 = new Jedis(localHost, server1Port, JEDIS_TIMEOUT);
     final Jedis jedis2 = new Jedis(localHost, server2Port, JEDIS_TIMEOUT);
@@ -143,6 +154,7 @@ public class RedisDistDUnitTest extends DistributedTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-717: random ports, BindException in failure stack, async actions
+  @Test
   public void testConcCreateDestroy() throws Throwable {
     IgnoredException.addIgnoredException("RegionDestroyedException");
     IgnoredException.addIgnoredException("IndexInvalidException");
@@ -203,6 +215,7 @@ public class RedisDistDUnitTest extends DistributedTestCase {
    * Just make sure there are no unexpected server crashes
    * @throws Throwable 
    */
+  @Test
   public void testConcOps() throws Throwable {
 
     final int ops = 100;

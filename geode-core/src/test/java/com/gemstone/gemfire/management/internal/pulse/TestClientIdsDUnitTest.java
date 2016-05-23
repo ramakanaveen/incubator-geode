@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.management.internal.pulse;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -53,7 +62,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  */
 
-public class TestClientIdsDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class TestClientIdsDUnitTest extends JUnit4DistributedTestCase {
 
   private static final String k1 = "k1";
   private static final String k2 = "k2";
@@ -75,8 +85,8 @@ public class TestClientIdsDUnitTest extends DistributedTestCase {
 
   private ManagementTestBase helper;
 
-  public TestClientIdsDUnitTest(String name) {
-    super(name);
+  public TestClientIdsDUnitTest() {
+    super();
     this.helper = new ManagementTestBase(name);
   }
 
@@ -101,6 +111,7 @@ public class TestClientIdsDUnitTest extends DistributedTestCase {
 
   private static final long serialVersionUID = 1L;
 
+  @Test
   public void testClientIds() throws Exception {
     helper.createManagementCache(managingNode);
     helper.startManagingNode(managingNode);

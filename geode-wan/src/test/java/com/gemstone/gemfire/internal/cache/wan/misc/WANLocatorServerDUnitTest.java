@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -39,12 +48,13 @@ import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 
+@Category(DistributedTest.class)
 public class WANLocatorServerDUnitTest extends WANTestBase {
 
   static PoolImpl proxy;
 
-  public WANLocatorServerDUnitTest(String name) {
-    super(name);
+  public WANLocatorServerDUnitTest() {
+    super();
   }
 
   @Override
@@ -52,6 +62,7 @@ public class WANLocatorServerDUnitTest extends WANTestBase {
     final Host host = Host.getHost(0);
   }
 
+  @Test
   public void test_3Locators_2Servers() {
 
     int port1 = AvailablePortHelper.getRandomAvailablePortForDUnitSite();

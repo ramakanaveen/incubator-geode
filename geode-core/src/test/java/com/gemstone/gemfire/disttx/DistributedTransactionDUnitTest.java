@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.disttx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -70,7 +79,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  */
 @SuppressWarnings("deprecation")
-public class DistributedTransactionDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
   final protected String CUSTOMER_PR = "customerPRRegion";
   final protected String ORDER_PR = "orderPRRegion";
   final protected String D_REFERENCE = "distrReference";
@@ -117,8 +127,8 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     }); 
   }
   
-  public DistributedTransactionDUnitTest(String name) {
-    super(name);
+  public DistributedTransactionDUnitTest() {
+    super();
   }
 
   public Object execute(VM vm, SerializableCallable c) {
@@ -380,6 +390,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testTransactionalPutOnReplicatedRegion() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -449,6 +460,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testTransactionalPutOnPartitionedRegion() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -530,6 +542,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
   }
 
   @SuppressWarnings("serial")
+  @Test
   public void testCommitOnPartitionedAndReplicatedRegions() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -574,6 +587,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testGetIsolated() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -618,6 +632,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testCommitAndRollback() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -658,6 +673,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
    * We create 2 partitioned regions one on each server and have a third node
    * as accessor and fire transactional operations on it.
    */
+  @Test
   public void testNonColocatedPutByPartitioning() {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0); // datastore
@@ -765,6 +781,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testTransactionalKeyBasedUpdates() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0); 
@@ -816,6 +833,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testTransactionalKeyBasedDestroys_PR() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0); 
@@ -861,6 +879,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testTransactionalKeyBasedDestroys_RR() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0); 
@@ -904,6 +923,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testTransactionalUpdates() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0); 
@@ -960,6 +980,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testPutAllWithTransactions() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0); 
@@ -1077,6 +1098,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testRemoveAllWithTransactions() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0); 
@@ -1146,6 +1168,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testTxWithSingleDataStore() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0); // datastore
@@ -1221,6 +1244,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testMultipleOpsOnSameKeyInTx() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -1520,6 +1544,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     execute(secondary, verifySecondary);
   }
   
+  @Test
   public void testBasicDistributedTX() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -1555,6 +1580,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
 
   }
 
+  @Test
   public void testRegionAndEntryVersionsPR() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -1648,6 +1674,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
 
   }
 
+  @Test
   public void testRegionAndEntryVersionsRR() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -1741,6 +1768,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
   }
   
   
+  @Test
   public void testTxWorksWithNewNodeJoining() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -1889,6 +1917,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
    * Start two concurrent transactions that put same entries. Make sure that
    * conflict is detected at the commit time.
    */
+  @Test
   public void testCommitConflicts_PR() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -1909,6 +1938,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
    * Start two concurrent transactions that put same entries. Make sure that
    * conflict is detected at the commit time.
    */
+  @Test
   public void testCommitConflicts_RR() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -2036,6 +2066,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
    * transaction in a new thread that modifies same entries as in the earlier
    * transaction. Make sure that conflict is detected
    */
+  @Test
   public void testCommitConflicts_PR_after_locks_acquired() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -2053,6 +2084,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
    * transaction in a new thread that modifies same entries as in the earlier
    * transaction. Make sure that conflict is detected
    */
+  @Test
   public void testCommitConflicts_RR_after_locks_acquired() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -2163,7 +2195,8 @@ private class TxOps_no_conflicts extends SerializableCallable {
    * transaction in a new thread that modifies different entries Make sure that
    * there is no conflict or exception.
    */
-public void testCommitNoConflicts_PR() throws Exception {
+  @Test
+  public void testCommitNoConflicts_PR() throws Exception {
   Host host = Host.getHost(0);
   VM server1 = host.getVM(0);
   VM server2 = host.getVM(1);
@@ -2178,7 +2211,8 @@ public void testCommitNoConflicts_PR() throws Exception {
  * transaction in a new thread that modifies different entries Make sure that
  * there is no conflict or exception.
  */
-public void testCommitNoConflicts_RR() throws Exception {
+  @Test
+  public void testCommitNoConflicts_RR() throws Exception {
   Host host = Host.getHost(0);
   VM server1 = host.getVM(0);
   VM server2 = host.getVM(1);

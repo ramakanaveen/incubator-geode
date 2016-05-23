@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,7 +81,8 @@ import junit.framework.TestSuite;
  * @since 5.7
  *
  */
-public class CQListGIIDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
   private final static int CREATE = 0;
 
   private final static int UPDATE = 1;
@@ -150,8 +160,8 @@ public class CQListGIIDUnitTest extends DistributedTestCase {
    * @param name
    *          name of the test
    */
-  public CQListGIIDUnitTest(String name) {
-    super(name);
+  public CQListGIIDUnitTest() {
+    super();
   }
 
   /**
@@ -204,7 +214,7 @@ public class CQListGIIDUnitTest extends DistributedTestCase {
 
   public static Integer createServerCache(String ePolicy, Integer cap)
       throws Exception {
-    new CQListGIIDUnitTest("temp").createCache(new Properties());
+    new CQListGIIDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -335,7 +345,7 @@ public class CQListGIIDUnitTest extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new CQListGIIDUnitTest("temp").createCache(props);
+    new CQListGIIDUnitTest().createCache(props);
 
     PoolFactory pf = PoolManager.createFactory();
     int endPointCount = 1;
@@ -646,6 +656,7 @@ public class CQListGIIDUnitTest extends DistributedTestCase {
    *
    * @throws Exception
    */
+  @Test
   public void testClientCQNotLostAtGIIReceiver() throws Exception {
     Integer size = Integer.valueOf(10);
     VM serverVM2 = clientVM2;

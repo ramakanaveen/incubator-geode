@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.disttx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import org.junit.Ignore;
@@ -29,6 +38,7 @@ import com.gemstone.gemfire.internal.cache.partitioned.PersistentPartitionedRegi
  * {@link PersistentPartitionedRegionWithTransactionDUnitTest} after setting
  * "distributed-transactions" property to true
  */
+@Category(DistributedTest.class)
 public class PersistentPartitionedRegionWithDistTXDUnitTest extends
     PersistentPartitionedRegionWithTransactionDUnitTest {
 
@@ -40,7 +50,7 @@ public class PersistentPartitionedRegionWithDistTXDUnitTest extends
     return props;
   }
   
-  public PersistentPartitionedRegionWithDistTXDUnitTest(String name) {
-    super(name);
+  public PersistentPartitionedRegionWithDistTXDUnitTest() {
+    super();
   }
 }

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.management;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,19 +84,21 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  * TODO: javadoc this test properly and cleanup the helper methods to be
  * more flexible and understandable
  */
-public class ResourceManagerDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ResourceManagerDUnitTest extends JUnit4CacheTestCase {
   private static final Logger logger = LogService.getLogger();
 
   public static final int SYSTEM_LISTENERS = 1;
 
   public ResourceManagerDUnitTest(final String name) {
-    super(name);
+    super();
   }
 
   /**
    * Creates a cache in the controller and exercises all methods on the
    * ResourceManager without having any partitioned regions defined.
    */
+  @Test
   public void testResourceManagerBasics() {
     Cache cache = getCache();
     
@@ -131,6 +142,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
    * Creates partitioned regions in multiple vms and fully exercises the
    * getPartitionedRegionDetails API on ResourceManager.
    */
+  @Test
   public void testGetPartitionedRegionDetails() {
     // two regions
     final String[] regionPath = new String[] {
@@ -299,6 +311,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
    * Creates partitioned regions in multiple vms and fully exercises the
    * internal-only getInternalPRDetails API on ResourceManager.
    */
+  @Test
   public void testGetInternalPRDetails() {
     // two regions
     final String[] regionPath = new String[] {
@@ -681,6 +694,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testDeposePrimaryBucketMessage() {
     final String[] regionPath = new String[] {
         getUniqueName() + "-PR-0"
@@ -749,6 +763,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
     assertTrue(deposedPrimary);
   }
 
+  @Test
   public void testBecomePrimaryBucketMessage() {
     final String[] regionPath = new String[] {
         getUniqueName() + "-PR-0"
@@ -959,6 +974,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testRemoveDuringGetEntry() {
     doOpDuringBucketRemove(new OpDuringBucketRemove() {
         public void runit(PartitionedRegion pr, Object key, Object value) {
@@ -971,6 +987,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-755: thread unsafe test hook (bucketReadHook), remove bucket fails, possible product bug in rebalancing
+  @Test
   public void testRemoveDuringGet() {
     doOpDuringBucketRemove(new OpDuringBucketRemove() {
         public void runit(PartitionedRegion pr, Object key, Object value) {
@@ -980,6 +997,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-673: thread unsafe test hook (bucketReadHook), remove bucket fails, possible product bug in rebalancing
+  @Test
   public void testRemoveDuringContainsKey() {
     doOpDuringBucketRemove(new OpDuringBucketRemove() {
         public void runit(PartitionedRegion pr, Object key, Object value) {
@@ -988,6 +1006,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
       });
   }
 
+  @Test
   public void testRemoveDuringContainsValueForKey() {
     doOpDuringBucketRemove(new OpDuringBucketRemove() {
         public void runit(PartitionedRegion pr, Object key, Object value) {
@@ -996,6 +1015,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
       });
   }
 
+  @Test
   public void testRemoveDuringKeySet() {
     doOpDuringBucketRemove(new OpDuringBucketRemove() {
         public void runit(PartitionedRegion pr, Object key, Object value) {
@@ -1004,6 +1024,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
       });
   }
 
+  @Test
   public void testRemoveDuringValues() {
     doOpDuringBucketRemove(new OpDuringBucketRemove() {
         public void runit(PartitionedRegion pr, Object key, Object value) {
@@ -1012,6 +1033,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
       });
   }
 
+  @Test
   public void testRemoveDuringEntrySet() {
     doOpDuringBucketRemove(new OpDuringBucketRemove() {
         public void runit(PartitionedRegion pr, Object key, Object value) {
@@ -1024,6 +1046,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
       });
   }
 
+  @Test
   public void testRemoveDuringQuery() {
     doOpDuringBucketRemove(new OpDuringBucketRemove() {
         public void runit(PartitionedRegion pr, Object key, Object value) {
@@ -1040,6 +1063,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
       });
   }
 
+  @Test
   public void testRemoveBucketMessage() {
     final String[] regionPath = new String[] {
         getUniqueName() + "-PR-0"
@@ -1139,6 +1163,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
    * to make sure that all colocated buckets are removed together.
    */
   @Category(FlakyTest.class) // GEODE-928: RemoveBucketMessage failure?
+  @Test
   public void testRemoveColocatedBuckets() {
     final String[] regionPath = new String[] {
         getUniqueName() + "-PR-0", 
@@ -1259,6 +1284,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
    * Creates a bucket on two members. Then brings up a third member and creates
    * an extra redundant copy of the bucket on it.
    */
+  @Test
   public void testCreateRedundantBucket() {
     final String[] regionPath = new String[] {
         getUniqueName() + "-PR-0"
@@ -1370,6 +1396,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
    * Creates colocated buckets on two members. Then brings up a third member
    * and creates an extra redundant copy of the buckets on it.
    */
+  @Test
   public void testCreateRedundantColocatedBuckets() {
     final String[] regionPath = new String[] {
         getUniqueName() + "-PR-0", 
@@ -1508,6 +1535,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
    * Creates a bucket on two members. Then brings up a third member and moves
    * the non-primary bucket to it.
    */
+  @Test
   public void testMoveBucket() {
     final String[] regionPath = new String[] {
         getUniqueName() + "-PR-0"
@@ -1652,6 +1680,7 @@ public class ResourceManagerDUnitTest extends CacheTestCase {
    * Creates colocated buckets on two members. Then brings up a third member 
    * and moves the non-primary colocated buckets to it.
    */
+  @Test
   public void testMoveColocatedBuckets() {
     final String[] regionPath = new String[] {
         getUniqueName() + "-PR-0", 

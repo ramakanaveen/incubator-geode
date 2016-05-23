@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -59,11 +68,12 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
+@Category(DistributedTest.class)
 public class CacheClientNotifierDUnitTest extends WANTestBase {
   private static final int NUM_KEYS = 10;
   
-  public CacheClientNotifierDUnitTest(String name) {
-    super(name);
+  public CacheClientNotifierDUnitTest() {
+    super();
     // TODO Auto-generated constructor stub
   }
 
@@ -174,6 +184,7 @@ public class CacheClientNotifierDUnitTest extends WANTestBase {
    * Shutdown them and verify the CacheClientNofifier for each server is correct
    */
   // GEODE-1183: random ports, failure to start threads, eats exceptions, time sensitive
+  @Test
   public void testNormalClient2MultipleCacheServer() throws Exception {
     doMultipleCacheServer(false);
   }

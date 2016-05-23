@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.internal.logging.LogService;
@@ -36,14 +45,15 @@ import com.gemstone.gemfire.security.templates.UserPasswordAuthInit;
 
 import org.apache.logging.log4j.Logger;
 
+@Category(DistributedTest.class)
 public class NewWanAuthenticationDUnitTest extends WANTestBase {
 
   private static final long serialVersionUID = 1L;
 
   public static final Logger logger = LogService.getLogger();
 
-  public NewWanAuthenticationDUnitTest(String name) {
-    super(name);
+  public NewWanAuthenticationDUnitTest() {
+    super();
   }
 
   /**
@@ -51,6 +61,7 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
    * related to authentication has been changed in new WAN, this test case is
    * added on request from QA for defect 44650.
    */
+  @Test
   public void testWanAuthValidCredentials() {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     logger.info("Created locator on local site");
@@ -115,6 +126,7 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
    * nothing related to authentication has been changed in new WAN, this test
    * case is added on request from QA for defect 44650.
    */
+  @Test
   public void testWanAuthInvalidCredentials() {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     logger.info("Created locator on local site");
@@ -250,6 +262,7 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
     isDifferentServerInGetCredentialCall = false;
   }
 
+  @Test
   public void testWanAuthValidCredentialsWithServer() {
     disconnectAllFromDS();
     {

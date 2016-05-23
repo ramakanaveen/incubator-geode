@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,10 +51,11 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.util.test.TestUtil;
 
 @Category(DistributedTest.class)
-public class PartitionedRegionCompactRangeIndexDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class PartitionedRegionCompactRangeIndexDUnitTest extends JUnit4DistributedTestCase {
 
-  public PartitionedRegionCompactRangeIndexDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionCompactRangeIndexDUnitTest() {
+    super();
   }
 
   private Properties getSystemProperties(String cacheXML) {
@@ -70,6 +80,7 @@ public class PartitionedRegionCompactRangeIndexDUnitTest extends DistributedTest
     QueryTestUtils.closeCacheInVM(vm2);
   }
   
+  @Test
   @Test
   public void testGIIUpdateWithIndexDoesNotDuplicateEntryInIndexWhenAlreadyRecoveredFromPersistence() throws Exception {
     Host host = Host.getHost(0);

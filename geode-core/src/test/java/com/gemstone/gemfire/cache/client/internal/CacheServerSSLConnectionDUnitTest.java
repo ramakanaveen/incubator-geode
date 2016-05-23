@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.client.internal;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -42,7 +51,8 @@ import com.gemstone.gemfire.util.test.TestUtil;
 /**
  * Tests cacheserver ssl support added. See https://svn.gemstone.com/trac/gemfire/ticket/48995 for details
  */
-public class CacheServerSSLConnectionDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class CacheServerSSLConnectionDUnitTest extends JUnit4DistributedTestCase {
 
   private static final long serialVersionUID = 1L;
 
@@ -52,7 +62,7 @@ public class CacheServerSSLConnectionDUnitTest extends DistributedTestCase {
   private static final String SERVER_KEY_STORE = "cacheserver.keystore";
   private static final String SERVER_TRUST_STORE = "cacheserver.truststore";
 
-  private static CacheServerSSLConnectionDUnitTest instance = new CacheServerSSLConnectionDUnitTest("CacheServerSSLConnectionDUnit");
+  private static CacheServerSSLConnectionDUnitTest instance = new CacheServerSSLConnectionDUnitTest();
 
   private Cache cache;
   private CacheServer cacheServer;
@@ -65,8 +75,8 @@ public class CacheServerSSLConnectionDUnitTest extends DistributedTestCase {
     disconnectAllFromDS();
   }
 
-  public CacheServerSSLConnectionDUnitTest(String name) {
-    super(name);
+  public CacheServerSSLConnectionDUnitTest() {
+    super();
   }
 
   public Cache createCache(Properties props) throws Exception
@@ -241,6 +251,7 @@ public class CacheServerSSLConnectionDUnitTest extends DistributedTestCase {
     }
   }
 
+  @Test
   public void testCacheServerSSL() throws Exception {
     final Host host = Host.getHost(0);
     VM serverVM = host.getVM(1);
@@ -264,6 +275,7 @@ public class CacheServerSSLConnectionDUnitTest extends DistributedTestCase {
   }
 
 
+  @Test
   public void testNonSSLClient() throws Exception {
     final Host host = Host.getHost(0);
     VM serverVM = host.getVM(1);
@@ -306,6 +318,7 @@ public class CacheServerSSLConnectionDUnitTest extends DistributedTestCase {
     }
   }
 
+  @Test
   public void testSSLClientWithNoAuth() throws Exception {
     final Host host = Host.getHost(0);
     VM serverVM = host.getVM(1);
@@ -342,6 +355,7 @@ public class CacheServerSSLConnectionDUnitTest extends DistributedTestCase {
     }
   }
 
+  @Test
   public void testSSLClientWithNonSSLServer() throws Exception {
     final Host host = Host.getHost(0);
     VM serverVM = host.getVM(1);

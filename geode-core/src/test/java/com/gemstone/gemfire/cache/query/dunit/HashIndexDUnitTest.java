@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.CacheException;
@@ -30,13 +39,14 @@ import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class HashIndexDUnitTest extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class HashIndexDUnitTest extends JUnit4DistributedTestCase{
 
   QueryTestUtils utils;
   VM vm0;
   
-  public HashIndexDUnitTest(String name) {
-    super(name);
+  public HashIndexDUnitTest() {
+    super();
   }
 
   @Override
@@ -57,6 +67,7 @@ public class HashIndexDUnitTest extends DistributedTestCase{
   }
   
 
+  @Test
   public void testHashIndexForIndexElemArray() throws Exception{
     doPut(200);// around 66 entries for a key in the index (< 100 so does not create a ConcurrentHashSet)
     doQuery();
@@ -67,6 +78,7 @@ public class HashIndexDUnitTest extends DistributedTestCase{
     Thread.sleep(5000);
   }
   
+  @Test
   public void testHashIndexForConcurrentHashSet() throws Exception{
     doPut(333); //111 entries for a key in the index (> 100 so creates a ConcurrentHashSet)
     doQuery();

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.process;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,10 +41,11 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
  * @since 7.0
  */
 @SuppressWarnings("serial")
-public class LocalProcessLauncherDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class LocalProcessLauncherDUnitTest extends JUnit4DistributedTestCase {
 
-  public LocalProcessLauncherDUnitTest(String name) {
-    super(name);
+  public LocalProcessLauncherDUnitTest() {
+    super();
   }
 
   @Override
@@ -43,6 +53,7 @@ public class LocalProcessLauncherDUnitTest extends DistributedTestCase {
     new File(getClass().getSimpleName()).mkdir();
   }
   
+  @Test
   public void testExistingPidFileThrows() throws Exception {
     final File pidFile = new File(getClass().getSimpleName() 
         + File.separator + "testExistingPidFileThrows.pid");
@@ -71,6 +82,7 @@ public class LocalProcessLauncherDUnitTest extends DistributedTestCase {
     });
   }
   
+  @Test
   public void testForceReplacesExistingPidFile() throws Exception {
     final File pidFile = new File(getClass().getSimpleName() 
         + File.separator + "testForceReplacesExistingPidFile.pid");
@@ -111,6 +123,7 @@ public class LocalProcessLauncherDUnitTest extends DistributedTestCase {
     });
   }
   
+  @Test
   public void testPidFileReadByOtherProcess() throws Exception {
     final File pidFile = new File(getClass().getSimpleName() 
         + File.separator + "testPidFileReadByOtherProcess.pid");

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,15 +60,16 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  */
 @Category(DistributedTest.class)
 @Ignore("Test was disabled by renaming to DisabledTest")
-public class PutAllWithIndexPerfDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class PutAllWithIndexPerfDUnitTest extends JUnit4CacheTestCase {
 
   /** The port on which the bridge server was started in this VM */
   private static int bridgeServerPort;
   static long timeWithoutStructTypeIndex = 0;
   static long timeWithStructTypeIndex = 0;
   
-  public PutAllWithIndexPerfDUnitTest(String name) {
-    super(name);
+  public PutAllWithIndexPerfDUnitTest() {
+    super();
   }
 
   @Override
@@ -72,6 +82,7 @@ public class PutAllWithIndexPerfDUnitTest extends CacheTestCase {
     disconnectAllFromDS();
   }
 
+  @Test
   public void testPutAllWithIndexes() {
     final String name = "testRegion";
     final Host host = Host.getHost(0);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.InternalGemFireException;
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -42,15 +51,15 @@ import com.gemstone.gemfire.test.dunit.VM;
  * number of convenient helper classes.
  */
 public abstract class DistributedCacheTestCase
-  extends DistributedTestCase {
+  extends JUnit4DistributedTestCase {
 
   /** The current cache in this VM */
   protected static Cache cache = null;
 
   ///////////////////////  Constructors  ///////////////////////
 
-  public DistributedCacheTestCase(String name) {
-    super(name);
+  public DistributedCacheTestCase() {
+    super();
   }
 
   @Override
@@ -93,7 +102,7 @@ public abstract class DistributedCacheTestCase
 
     Assert.assertTrue(cache == null, "cache should be null");
 
-    DistributedCacheTestCase x = new DistributedCacheTestCase("Lame") { };
+    DistributedCacheTestCase x = new DistributedCacheTestCase() { };
     cache = CacheFactory.create(x.getSystem());
     
     AttributesFactory factory = new AttributesFactory();

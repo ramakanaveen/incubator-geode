@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +75,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  *
  */
-public class DeltaPropagationWithCQDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
   
   private static GemFireCache cache = null;
 
@@ -96,8 +106,8 @@ public class DeltaPropagationWithCQDUnitTest extends DistributedTestCase {
   /**
    * @param name
    */
-  public DeltaPropagationWithCQDUnitTest(String name) {
-    super(name);
+  public DeltaPropagationWithCQDUnitTest() {
+    super();
   }
 
   @Override
@@ -127,6 +137,7 @@ public class DeltaPropagationWithCQDUnitTest extends DistributedTestCase {
     cqErrors = 0;
   }
 
+  @Test
   public void testCqWithRI() throws Exception {
     // 1. setup a cache server
     int port = (Integer)server1.invoke(() -> DeltaPropagationWithCQDUnitTest.createCacheServer());
@@ -160,6 +171,7 @@ public class DeltaPropagationWithCQDUnitTest extends DistributedTestCase {
         .get("SAMPLE_KEY"));
   }
 
+  @Test
   public void testFullValueRequestsWithCqWithoutRI() throws Exception {
     int numOfListeners = 5;
     int numOfKeys = 10;
@@ -247,7 +259,7 @@ public class DeltaPropagationWithCQDUnitTest extends DistributedTestCase {
   }
 
   public static Integer createCacheServer() throws Exception {
-    DeltaPropagationWithCQDUnitTest instance = new DeltaPropagationWithCQDUnitTest("temp");
+    DeltaPropagationWithCQDUnitTest instance = new DeltaPropagationWithCQDUnitTest();
     Properties props = new Properties();
     DistributedSystem ds = instance.getSystem(props);
     ds.disconnect();
@@ -272,7 +284,7 @@ public class DeltaPropagationWithCQDUnitTest extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    DeltaPropagationWithCQDUnitTest instance = new DeltaPropagationWithCQDUnitTest("temp");
+    DeltaPropagationWithCQDUnitTest instance = new DeltaPropagationWithCQDUnitTest();
     DistributedSystem ds = instance.getSystem(props);
     ds.disconnect();
     ds = instance.getSystem(props);

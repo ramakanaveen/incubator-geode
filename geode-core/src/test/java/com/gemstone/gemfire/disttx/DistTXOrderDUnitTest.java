@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.disttx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.CacheException;
@@ -27,10 +36,11 @@ import com.gemstone.gemfire.distributed.internal.DistributionConfig;
  * Same tests as that of {@link TXOrderDUnitTest} after setting
  * "distributed-transactions" property to true
  */
+@Category(DistributedTest.class)
 public class DistTXOrderDUnitTest extends TXOrderDUnitTest {
 
-  public DistTXOrderDUnitTest(String name) {
-    super(name);
+  public DistTXOrderDUnitTest() {
+    super();
   }
   
   @Override
@@ -42,12 +52,14 @@ public class DistTXOrderDUnitTest extends TXOrderDUnitTest {
   }
   
   @Override
+  @Test
   public void testFarSideOrder() throws CacheException {
     // [DISTTX] TODO test overridden intentionally and left blank as it fails
     // fix this 
   }
   
   @Override
+  @Test
   public void testInternalRegionNotExposed() {
     // [DISTTX] TODO test overridden intentionally and left blank as it fails
     // fix this 

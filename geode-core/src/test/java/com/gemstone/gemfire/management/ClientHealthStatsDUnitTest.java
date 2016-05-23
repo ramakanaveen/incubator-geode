@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.management;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
@@ -51,7 +60,8 @@ import junit.framework.AssertionFailedError;
  * 
  * 
  */
-public class ClientHealthStatsDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
 
   private static final String k1 = "k1";
 
@@ -81,8 +91,8 @@ public class ClientHealthStatsDUnitTest extends DistributedTestCase {
   
   private static GemFireCacheImpl cache = null;
 
-  public ClientHealthStatsDUnitTest(String name) {
-    super(name);
+  public ClientHealthStatsDUnitTest() {
+    super();
   }
 
   @Override
@@ -117,6 +127,7 @@ public class ClientHealthStatsDUnitTest extends DistributedTestCase {
 
   private static final long serialVersionUID = 1L;
 
+  @Test
   public void testClientHealthStats_SubscriptionEnabled() throws Exception {
 
     helper.createManagementCache(managingNode);
@@ -137,6 +148,7 @@ public class ClientHealthStatsDUnitTest extends DistributedTestCase {
     helper.stopManagingNode(managingNode);
   }
   
+  @Test
   public void testClientHealthStats_SubscriptionDisabled() throws Exception {
 
     helper.createManagementCache(managingNode);
@@ -157,6 +169,7 @@ public class ClientHealthStatsDUnitTest extends DistributedTestCase {
     helper.stopManagingNode(managingNode);
   }
   
+  @Test
   public void testClientHealthStats_DurableClient() throws Exception {
 
     helper.createManagementCache(managingNode);
@@ -181,6 +194,7 @@ public class ClientHealthStatsDUnitTest extends DistributedTestCase {
     helper.stopManagingNode(managingNode);
   }
   
+  @Test
   public void testStatsMatchWithSize() throws Exception {
     // start a server
     int port = (Integer) server.invoke(() -> ClientHealthStatsDUnitTest.createServerCache());

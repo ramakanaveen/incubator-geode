@@ -17,6 +17,15 @@
  */
 package com.gemstone.gemfire.rest.internal.web.controllers;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.execute.Function;
@@ -48,7 +57,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
-public class RestAPITestBase extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class RestAPITestBase extends JUnit4DistributedTestCase {
   protected Cache cache = null;
   protected List<String> restURLs = new ArrayList();
   protected VM vm0 = null;
@@ -56,8 +66,8 @@ public class RestAPITestBase extends DistributedTestCase {
   protected VM vm2 = null;
   protected VM vm3 = null;
 
-  public RestAPITestBase(String name) {
-    super(name);
+  public RestAPITestBase() {
+    super();
   }
 
   @Override

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
@@ -53,14 +62,15 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class CopyOnReadIndexDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class CopyOnReadIndexDUnitTest extends JUnit4CacheTestCase {
 
   VM vm0;
   VM vm1;
   VM vm2;
 
-  public CopyOnReadIndexDUnitTest(String name) {
-    super(name);
+  public CopyOnReadIndexDUnitTest() {
+    super();
   }
 
   @Override
@@ -83,6 +93,7 @@ public class CopyOnReadIndexDUnitTest extends CacheTestCase {
   }
 
   //test different queries against partitioned region
+  @Test
   public void testPRQueryOnLocalNode() throws Exception {
     QueryTestUtils utils = new QueryTestUtils();
     configureServers();
@@ -100,6 +111,7 @@ public class CopyOnReadIndexDUnitTest extends CacheTestCase {
   }
   
   //tests different queries with a transaction for replicated region
+  @Test
   public void testTransactionsOnReplicatedRegion() throws Exception {
     QueryTestUtils utils = new QueryTestUtils();
     configureServers();

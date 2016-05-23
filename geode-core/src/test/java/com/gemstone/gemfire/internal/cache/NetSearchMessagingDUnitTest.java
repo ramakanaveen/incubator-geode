@@ -17,6 +17,15 @@
 package com.gemstone.gemfire.internal.cache;
 
 import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.DataPolicy;
@@ -44,12 +53,14 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
-public class NetSearchMessagingDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class NetSearchMessagingDUnitTest extends JUnit4CacheTestCase {
 
-  public NetSearchMessagingDUnitTest(String name) {
-    super(name);
+  public NetSearchMessagingDUnitTest() {
+    super();
   }
   
+  @Test
   public void testOneMessageWithReplicates() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -108,6 +119,7 @@ public class NetSearchMessagingDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-1155: time sensitive, waitForCriterion
+  @Test
   public void testNetSearchNormals() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -165,6 +177,7 @@ public class NetSearchMessagingDUnitTest extends CacheTestCase {
    * demonstrate that a netsearch that gets the value of an overflow entry
    * does not update the LRU status of that entry.
    */
+  @Test
   public void testNetSearchNoLRU() {
     Host host = Host.getHost(0);
     VM vm2 = host.getVM(2);
@@ -226,6 +239,7 @@ public class NetSearchMessagingDUnitTest extends CacheTestCase {
    * Make sure that even if we start out by net searching replicates,
    * we'll fall back to net searching normal members.
    */
+  @Test
   public void testNetSearchFailoverFromReplicate() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -277,6 +291,7 @@ public class NetSearchMessagingDUnitTest extends CacheTestCase {
     
   }
   
+  @Test
   public void testNetSearchFailoverFromOneReplicateToAnother() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

@@ -17,6 +17,15 @@
 
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -43,6 +52,7 @@ import com.gemstone.gemfire.test.dunit.VM;
  * creation of bucket.
  * 
  */
+@Category(DistributedTest.class)
 public class PartitionedRegionLocalMaxMemoryDUnitTest extends
     PartitionedRegionDUnitTestCase
 {
@@ -59,8 +69,8 @@ public class PartitionedRegionLocalMaxMemoryDUnitTest extends
   /** to store references of 4 vms */
   VM vm[] = new VM[4];
 
-  public PartitionedRegionLocalMaxMemoryDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionLocalMaxMemoryDUnitTest() {
+    super();
   }
 
   /**
@@ -73,6 +83,7 @@ public class PartitionedRegionLocalMaxMemoryDUnitTest extends
    * <br>4.Test should throw PartitionedRegionStorageException
    * when it tries to create new bucket</br>
    */
+  @Test
   public void testLocalMaxMemoryInPartitionedRegion()
   {
     Host host = Host.getHost(0);
@@ -107,6 +118,7 @@ public class PartitionedRegionLocalMaxMemoryDUnitTest extends
    * This test makes sure that we don't enforce the localMaxMemory setting
    * when eviction is enabled.
    */
+  @Test
   public void testLocalMaxMemoryInPartitionedRegionWithEviction()
   {
     Host host = Host.getHost(0);

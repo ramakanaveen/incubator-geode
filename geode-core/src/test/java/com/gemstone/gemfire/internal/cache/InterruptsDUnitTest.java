@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,14 +47,15 @@ import com.gemstone.gemfire.test.dunit.VM;
  * Tests interrupting gemfire threads during a put operation to see what happens
  *
  */
-public class InterruptsDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class InterruptsDUnitTest extends JUnit4CacheTestCase {
 
   private static volatile Thread puttingThread;
   private static final long MAX_WAIT = 60 * 1000;
   private static AtomicBoolean doInterrupt = new AtomicBoolean(false);
 
-  public InterruptsDUnitTest(String name) {
-    super(name);
+  public InterruptsDUnitTest() {
+    super();
   }
   
   
@@ -78,6 +88,7 @@ public class InterruptsDUnitTest extends CacheTestCase {
    * persisting with a PR.
    * @throws Throwable 
    */
+  @Test
   public void testDRPutWithInterrupt() throws Throwable {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);

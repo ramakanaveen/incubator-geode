@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -54,6 +63,7 @@ import com.gemstone.gemfire.test.dunit.VM;
  * This class tests bucket Creation and distribution for the multiple Partition
  * regions.
  */
+@Category(DistributedTest.class)
 public class PartitionedRegionBucketCreationDistributionDUnitTest extends
     PartitionedRegionDUnitTestCase
 {
@@ -77,8 +87,8 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
   VM vm[] = new VM[4];
 
   /** constructor */
-  public PartitionedRegionBucketCreationDistributionDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionBucketCreationDistributionDUnitTest() {
+    super();
   }
 
   /**
@@ -99,6 +109,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    * (c) In case of the partition regions with redundancy > 0 no two bucket
    * regions with same bucketId should not be present on the same node.</br>
    */
+  @Test
   public void testBucketCreationInMultiplePartitionRegion() throws Throwable
   {
     Host host = Host.getHost(0);
@@ -148,6 +159,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    * 3. Validates bucket distribution over all the nodes for multiple partition
    * regions.</br>
    */
+  @Test
   public void testBucketCreationInPRPutFromOneNode() throws Throwable
   {
     Host host = Host.getHost(0);
@@ -204,6 +216,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    * 3. Validates bucket distribution over all the nodes for multiple partition
    * regions.</br>
    */
+  @Test
   public void testBucketCreationInMultiplePartitionRegionFromAllNodes()
       throws Throwable
   {
@@ -264,6 +277,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    * to enIndexForRegion.</br><br>
    * 5. Validate bucket creation on new node.</br>
    */
+  @Test
   public void testBucketDistributionAfterNodeAdditionInPR() throws Throwable
   {
     Host host = Host.getHost(0);
@@ -339,6 +353,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    * for the keys in the range 0 to 100 4.test number of buckets created. It
    * should be = 11
    */
+  @Test
   public void testTotalNumBucketProperty() throws Throwable
   {
     Host host = Host.getHost(0);
@@ -421,6 +436,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    * different reasons, in this case VMs may refuse because they are above
    * their maximum.
    */
+  @Test
   public void testCompleteBucketAllocation() throws Exception {
     final String regionName = getUniqueName();
     final int maxBuckets = 23;
@@ -468,6 +484,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    * enforce-unique-host = true
    * redundancy-zone = "zone"
    */
+  @Test
   public void testEnforceUniqueHostForLonerDistributedSystem() {
 	  Cache myCache = createLonerCacheWithEnforceUniqueHost();
     try {

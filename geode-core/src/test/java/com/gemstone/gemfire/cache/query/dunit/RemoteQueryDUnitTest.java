@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -61,13 +70,14 @@ import org.junit.experimental.categories.Category;
  *
  * @since 5.0.1
  */
-public class RemoteQueryDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class RemoteQueryDUnitTest extends JUnit4CacheTestCase {
 
   /** The port on which the bridge server was started in this VM */
   private static int bridgeServerPort;
 
-  public RemoteQueryDUnitTest(String name) {
-    super(name);
+  public RemoteQueryDUnitTest() {
+    super();
   }
 
   ////////  Test Methods
@@ -85,6 +95,7 @@ public class RemoteQueryDUnitTest extends CacheTestCase {
   /**
    * Tests remote predicate query execution.
    */
+  @Test
   public void testRemotePredicateQueries() throws CacheException {
 
     final String name = this.getName();
@@ -228,6 +239,7 @@ public class RemoteQueryDUnitTest extends CacheTestCase {
   /**
    * Tests remote import query execution.
    */
+  @Test
   public void testRemoteImportQueries() throws CacheException {
 
     final String name = this.getName();
@@ -356,6 +368,7 @@ public class RemoteQueryDUnitTest extends CacheTestCase {
   /**
    * Tests remote struct query execution.
    */
+  @Test
   public void testRemoteStructQueries() throws CacheException {
 
     final String name = this.getName();
@@ -676,6 +689,7 @@ public class RemoteQueryDUnitTest extends CacheTestCase {
   /**
    * Tests remote full region query execution.
    */
+  @Test
   public void testRemoteFullRegionQueries() throws CacheException {
 
     final String name = this.getName();
@@ -841,6 +855,7 @@ public class RemoteQueryDUnitTest extends CacheTestCase {
   /**
    * Tests remote join query execution.
    */
+  @Test
   public void testRemoteJoinRegionQueries() throws CacheException {
 
     final String name = this.getName();
@@ -942,6 +957,7 @@ public class RemoteQueryDUnitTest extends CacheTestCase {
    * and CacheLoader.
    */
   @Category(FlakyTest.class) // GEODE-490: random port
+  @Test
   public void testRemoteBridgeClientQueries() throws CacheException {
 
     final String name = this.getName();
@@ -1101,7 +1117,8 @@ public class RemoteQueryDUnitTest extends CacheTestCase {
    * @throws Exception
    */
 
-   public void testBug36434() throws Exception
+  @Test
+  public void testBug36434() throws Exception
    {
      final String name = this.getName();
      final Host host = Host.getHost(0);
@@ -1205,7 +1222,8 @@ public class RemoteQueryDUnitTest extends CacheTestCase {
     * @throws Exception
     */
 
-    public void testBug36969() throws Exception
+  @Test
+  public void testBug36969() throws Exception
     {
       final String name = this.getName();
       final Host host = Host.getHost(0);

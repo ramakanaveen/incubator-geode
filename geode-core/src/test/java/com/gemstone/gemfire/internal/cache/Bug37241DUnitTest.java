@@ -17,6 +17,15 @@
 
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.*;
 
@@ -39,7 +48,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * CleanupFailedInitialization on should also clean disk files created
  */
 
-public class Bug37241DUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class Bug37241DUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
 
@@ -54,8 +64,8 @@ public class Bug37241DUnitTest extends DistributedTestCase
   static final String expectedException = IllegalStateException.class.getName();
   /* Constructor */
 
-  public Bug37241DUnitTest(String name) {
-    super(name);
+  public Bug37241DUnitTest() {
+    super();
   }
 
   @Override
@@ -71,6 +81,7 @@ public class Bug37241DUnitTest extends DistributedTestCase
    *  3.Region creation should fail . Check for all files created in the directory for server 2
    *    gets deleted.
    */
+  @Test
   public void testBug37241ForNewDiskRegion()
   {
     server1.invoke(() -> Bug37241DUnitTest.createRegionOnServer1());   
@@ -84,6 +95,7 @@ public class Bug37241DUnitTest extends DistributedTestCase
     }
   }
 
+  @Test
   public void testBug37241ForRecreatedDiskRegion()
   {
     server1.invoke(() -> Bug37241DUnitTest.createRegionOnServer1());
@@ -110,7 +122,7 @@ public class Bug37241DUnitTest extends DistributedTestCase
 
   public static void createRegionOnServer1() throws Exception
   {
-    new Bug37241DUnitTest("temp").createCache(new Properties());
+    new Bug37241DUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.GLOBAL);
     factory.setDataPolicy(DataPolicy.PERSISTENT_REPLICATE);
@@ -133,7 +145,7 @@ public class Bug37241DUnitTest extends DistributedTestCase
 
   public static void createRegionOnServer2(Scope scope) throws Exception
   {
-    new Bug37241DUnitTest("temp").createCache(new Properties());
+    new Bug37241DUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(scope);
     factory.setDataPolicy(DataPolicy.PERSISTENT_REPLICATE);

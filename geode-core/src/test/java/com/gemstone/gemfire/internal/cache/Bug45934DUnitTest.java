@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,11 +41,13 @@ import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class Bug45934DUnitTest extends CacheTestCase {
-  public Bug45934DUnitTest(String name) {
-    super(name);
+@Category(DistributedTest.class)
+public class Bug45934DUnitTest extends JUnit4CacheTestCase {
+  public Bug45934DUnitTest() {
+    super();
   }
   
+  @Test
   public void testNormal() throws Exception {
     int count = 1000;
     Host host = Host.getHost(0);

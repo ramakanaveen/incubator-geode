@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,13 +40,15 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 @Ignore("Test was disabled by renaming to DisabledTest")
+@Category(DistributedTest.class)
 public class EvictionDUnitTest extends EvictionTestBase {
   private static final long serialVersionUID = 270073077723092256L;
 
-  public EvictionDUnitTest(String name) {
-    super(name);
+  public EvictionDUnitTest() {
+    super();
   }
  
+  @Test
   public void testDummyInlineNCentralizedEviction() {
     prepareScenario1(EvictionAlgorithm.LRU_HEAP,0);
     putData("PR1", 50, 1);
@@ -53,6 +64,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
     validateNoOfEvictions("PR1", 4 + expectedEviction1 + expectedEviction2);
   }
   
+  @Test
   public void testThreadPoolSize() {
     prepareScenario1(EvictionAlgorithm.LRU_HEAP,0);
     putData("PR1", 50, 1);
@@ -60,6 +72,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
     verifyThreadPoolTaskCount(HeapEvictor.MAX_EVICTOR_THREADS);
   }
   
+  @Test
   public void testCentralizedEvictionnForDistributedRegionWithDummyEvent() {
     prepareScenario1(EvictionAlgorithm.LRU_HEAP,0);
     createDistributedRegion();
@@ -77,6 +90,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
    * goes down and then comes up again causing GII to take place, the system
    * doesnot throw an OOME.
    */
+  @Test
   public void testEvictionWithNodeDown() {
     prepareScenario2(EvictionAlgorithm.LRU_HEAP, "PR3", "PR4");
     putDataInDataStore3("PR3", 100, 1);
@@ -88,6 +102,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
     assertEquals(0, getPRSize("PR4"));
   }
   
+  @Test
   public void testEntryLruEvictions() {
     int extraEntries=1;
     createCache();
@@ -106,6 +121,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
   }
   
   
+  @Test
   public void testEntryLru() {
     createCache();
     maxEnteries=12;
@@ -132,6 +148,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
    assertEquals(0,((AbstractLRURegionMap)pr.entries)._getLruList().stats().getEvictions());
   }
 
+  @Test
   public void testCheckEntryLruEvictionsIn1DataStore() {
     int extraEntries=10;
     createCache();
@@ -162,6 +179,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
     }
   }
   
+  @Test
   public void testCheckEntryLruEvictionsIn2DataStore() {
     maxEnteries=20;
     prepareScenario1(EvictionAlgorithm.LRU_ENTRY,maxEnteries);
@@ -170,6 +188,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
   }
   
   
+  @Test
   public void testMemLruForPRAndDR() {
     createCache();
     createPartitionedRegion(true, EvictionAlgorithm.LRU_MEMORY, "PR1", 4, 1, 1000,40);
@@ -195,6 +214,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
    assertTrue(((AbstractLRURegionMap)dr.entries)._getLruList().stats().getEvictions()<=2);
   }
   
+  @Test
   public void testEachTaskSize() {
     createCache();
     createPartitionedRegion(true, EvictionAlgorithm.LRU_HEAP, "PR1", 6, 1,

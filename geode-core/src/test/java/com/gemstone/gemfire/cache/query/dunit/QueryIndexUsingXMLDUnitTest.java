@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,7 +84,8 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.util.test.TestUtil;
 
-public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class QueryIndexUsingXMLDUnitTest extends JUnit4CacheTestCase {
 
   static private final String WAIT_PROPERTY = "QueryIndexBuckets.maxWaitTime";
 
@@ -129,8 +139,8 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   private String persistentOverFlowRegName = "PersistentOverflowPortfolios";
 
   /** Creates a new instance of QueryIndexUsingXMLDUnitTest */
-  public QueryIndexUsingXMLDUnitTest(String name) {
-    super(name);
+  public QueryIndexUsingXMLDUnitTest() {
+    super();
   }
 
   @Override
@@ -150,6 +160,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   /**
    * Creates partitioned index from an xml description.
    */
+  @Test
   public void testCreateIndexThroughXML() throws Exception
   {
 
@@ -217,6 +228,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   /**
    * Creates partitioned index from an xml description.
    */
+  @Test
   public void testCreateIndexWhileDoingGII() throws Exception
   {
 
@@ -272,6 +284,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   /**
    * Creates partitioned index from an xml description.
    */
+  @Test
   public void testReplicatedRegionCreateIndexWhileDoingGII() throws Exception
   {
 
@@ -320,6 +333,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   /**
    * Creates persistent partitioned index from an xml description.
    */
+  @Test
   public void testPersistentPRRegionCreateIndexWhileDoingGII() throws Exception
   {
 
@@ -385,6 +399,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   /**
    * Creates partitioned index from an xml description.
    */
+  @Test
   public void testCreateIndexWhileDoingGIIWithEmptyPRRegion() throws Exception
   {
 
@@ -422,6 +437,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   /**
    * Creats partitioned index from an xml discription.
    */
+  @Test
   public void testCreateAsyncIndexWhileDoingGII() throws Exception
   {
 
@@ -468,6 +484,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   /**
    * Creates indexes and compares the results between index and non-index results.
    */
+  @Test
   public void testCreateIndexWhileDoingGIIAndCompareQueryResults() throws Exception
   {
 
@@ -531,6 +548,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
   /**
    * Creates async partitioned index from an xml description.
    */
+  @Test
   public void testCreateAsyncIndexWhileDoingGIIAndQuery() throws Exception
   {
 
@@ -625,6 +643,7 @@ public class QueryIndexUsingXMLDUnitTest extends CacheTestCase {
     vm1.invoke(close());
   }
   
+  @Test
   public void testIndexCreationForReplicatedPersistentOverFlowRegionOnRestart() throws Exception
   {
     Host host = Host.getHost(0);

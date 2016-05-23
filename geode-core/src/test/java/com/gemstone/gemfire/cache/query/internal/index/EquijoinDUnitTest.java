@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -48,6 +57,7 @@ import com.gemstone.gemfire.cache.query.functional.StructSetOrResultsSet;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 @Category(IntegrationTest.class)
+@Category(DistributedTest.class)
 public class EquijoinDUnitTest extends TestCase {
   QueryService qs;
   Region region1, region2, region3, region4;
@@ -84,6 +94,7 @@ public class EquijoinDUnitTest extends TestCase {
   }
 
   @Test
+  @Test
   public void testSingleFilterWithSingleEquijoinOneToOneMapping() throws Exception {
     createRegions();
 
@@ -102,6 +113,7 @@ public class EquijoinDUnitTest extends TestCase {
     executeQueriesWithIndexCombinations(queries);
   }
   
+  @Test
   @Test
   public void testSingleFilterWithSingleEquijoinOneToOneMappingWithAdditionalJoins() throws Exception {
     createRegions();
@@ -134,6 +146,7 @@ public class EquijoinDUnitTest extends TestCase {
    * We do not want to test this with Primary Key on the many side or else only 1 result will be returned
    */
   @Test
+  @Test
   public void testSingleFilterWithSingleEquijoinOneToManyMapping() throws Exception {
     createRegions();
 
@@ -156,6 +169,7 @@ public class EquijoinDUnitTest extends TestCase {
     }, false);
   }
 
+  @Test
   @Test
   public void testSingleFilterWithSingleEquijoinMultipleFiltersOnSameRegionOnSameIteratorMapping() throws Exception {
     createRegions();
@@ -190,6 +204,7 @@ public class EquijoinDUnitTest extends TestCase {
   }
 
   @Test  
+  @Test
   public void testSingleFilterWithSingleEquijoinWithRangeFilters() throws Exception {
     createRegions();
 
@@ -212,6 +227,7 @@ public class EquijoinDUnitTest extends TestCase {
   }
 
   @Test 
+  @Test
   public void testSingleFilterWithSingleEquijoinLimit() throws Exception {
     //In this test we are hoping the index being used will properly use the limit while taking into consideration the filters of c.id and c.pkid
     //This test is set up so that if the pkid index is used and limit applied, if id is not taken into consideration until later stages, it will lead to incorrect results (0)
@@ -244,6 +260,7 @@ public class EquijoinDUnitTest extends TestCase {
     }, true);
   }
 
+  @Test
   @Test
   public void testSingleFilterWithSingleEquijoinNestedQuery() throws Exception {
     createRegions();

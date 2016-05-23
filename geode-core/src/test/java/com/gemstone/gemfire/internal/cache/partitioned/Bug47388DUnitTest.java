@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -59,7 +68,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  */
 @SuppressWarnings("serial")
-public class Bug47388DUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
 
   private static VM vm0 = null;
   private static VM vm1 = null;
@@ -75,8 +85,8 @@ public class Bug47388DUnitTest extends DistributedTestCase {
   /**
    * @param name
    */
-  public Bug47388DUnitTest(String name) {
-    super(name);
+  public Bug47388DUnitTest() {
+    super();
   }
 
   @Override
@@ -122,7 +132,7 @@ public class Bug47388DUnitTest extends DistributedTestCase {
   public static Integer createCacheServerWithPRDatastore()//Integer mcastPort)
       throws Exception {
     Properties props = new Properties();
-    Bug47388DUnitTest test = new Bug47388DUnitTest("Bug47388DUnitTest");
+    Bug47388DUnitTest test = new Bug47388DUnitTest();
     DistributedSystem ds = test.getSystem(props);
     ds.disconnect();
     cache = (GemFireCacheImpl)CacheFactory.create(test.getSystem());
@@ -153,7 +163,7 @@ public class Bug47388DUnitTest extends DistributedTestCase {
         "my-durable-client-" + ports.length);
     props.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, "300000");
 
-    DistributedSystem ds = new Bug47388DUnitTest("Bug47388DUnitTest").getSystem(props);
+    DistributedSystem ds = new Bug47388DUnitTest().getSystem(props);
     ds.disconnect();
     ClientCacheFactory ccf = new ClientCacheFactory(props);
     ccf.setPoolSubscriptionEnabled(doRI);
@@ -279,6 +289,7 @@ public class Bug47388DUnitTest extends DistributedTestCase {
     vm0.invoke(() -> Bug47388DUnitTest.verifyClientSubscriptionStats( isvm0Primary, totalEvents ));
     vm1.invoke(() -> Bug47388DUnitTest.verifyClientSubscriptionStats( !isvm0Primary, totalEvents ));
   }
+  @Test
   public void testNothingBecauseOfBug51931() {
     // remove this when bug #51931 is fixed
   }

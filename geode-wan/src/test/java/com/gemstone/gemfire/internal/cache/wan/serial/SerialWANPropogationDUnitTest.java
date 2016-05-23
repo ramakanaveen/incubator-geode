@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.serial;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -34,12 +43,13 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnableIF;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
+@Category(DistributedTest.class)
 public class SerialWANPropogationDUnitTest extends WANTestBase {
 
   private static final long serialVersionUID = 1L;
 
-  public SerialWANPropogationDUnitTest(String name) {
-    super(name);
+  public SerialWANPropogationDUnitTest() {
+    super();
   }
 
   @Override
@@ -101,6 +111,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
   }
 
   @Category(FlakyTest.class) // GEODE-935 AND GEODE-1062: time sensitive, random ports, thread sleeps
+  @Test
   public void testReplicatedSerialPropagation_withoutRemoteSite() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -151,6 +162,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagationWithoutRemoteSite_defect46595()
       throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -204,6 +216,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
 
   }
 
+  @Test
   public void testReplicatedSerialPropagation() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -239,6 +252,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
         getTestMethodName() + "_RR", 1000 ));
   }
   
+  @Test
   public void testReplicatedSerialPropagationWithLocalSiteClosedAndRebuilt() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -317,6 +331,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagationWithLocalRegionDestroy() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -396,6 +411,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagationWithRemoteRegionDestroy() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -464,6 +480,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagationWithRemoteRegionDestroy2() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -541,6 +558,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
 
   }
 
+  @Test
   public void testReplicatedSerialPropagationWithRemoteRegionDestroy3()
       throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -644,6 +662,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagationWithRemoteReceiverStopped() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -700,6 +719,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
     vm4.invoke(() -> WANTestBase.verifyRegionQueueNotEmpty("ln" ));
   }
   
+  @Test
   public void testReplicatedSerialPropagationWithRemoteReceiverRestarted()
       throws Exception {
     Integer lnPort = (Integer) vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -765,6 +785,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
     vm2.invoke(() -> WANTestBase.checkMinimumGatewayReceiverStats( 1, 1 ));
   }
 
+  @Test
   public void testReplicatedSerialPropagationWithRemoteReceiverRestarted_SenderReceiverPersistent()
       throws Exception {
     Integer lnPort = (Integer) vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -818,6 +839,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
     vm2.invoke(() -> WANTestBase.validateRegionSize(getTestMethodName() + "_RR_1", 8000));
   }
 
+  @Test
   public void testReplicatedSerialPropagationWithRemoteSiteBouncedBack_ReceiverPersistent()
       throws Exception {
     Integer lnPort = (Integer) vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -890,6 +912,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
     vm2.invoke(() -> WANTestBase.checkMinimumGatewayReceiverStats( 1, 1 ));
   }
 
+  @Test
   public void testReplicatedSerialPropagationWithRemoteSiteBouncedBackWithMultipleRemoteLocators()
       throws Exception {
     Integer lnPort = (Integer) vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -955,6 +978,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
   }
 
   @Category(FlakyTest.class) // GEODE-975 AND GEODE-1032: random ports, waitForCriterion, short timeouts, async actions
+  @Test
   public void testReplicatedSerialPropagationWithRemoteReceiverRestartedOnOtherNode() throws Exception {
     Integer lnPort = (Integer) vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer) vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -1010,6 +1034,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
     vm3.invoke(() -> WANTestBase.validateRegionSize(getTestMethodName() + "_RR_1", 8000));
   }
   
+  @Test
   public void testReplicatedSerialPropagationToTwoWanSites() throws Exception {
 
     Integer lnPort = createFirstLocatorWithDSId(1);
@@ -1059,6 +1084,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
         getTestMethodName() + "_RR", 1000 ));
   }
 
+  @Test
   public void testReplicatedSerialPropagationHA() throws Exception {
 
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -1282,6 +1308,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
         getTestMethodName() + "_RR", 10000 ));
   }
 
+  @Test
   public void testNormalRegionSerialPropagation() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -1335,6 +1362,7 @@ public class SerialWANPropogationDUnitTest extends WANTestBase {
    * Site 1 (LN site): vm4, vm5, vm6, vm7
    * Site 2 (NY site): vm2, vm3
    */
+  @Test
   public void testReplicatedSerialPropagationWithRemoteSenderConfiguredButNotStarted() {
 	Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
 	Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));

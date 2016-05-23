@@ -26,6 +26,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -40,9 +49,10 @@ import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 
-public class TXRestrictionsDUnitTest extends CacheTestCase {
-  public TXRestrictionsDUnitTest(String name) {
-    super(name);
+@Category(DistributedTest.class)
+public class TXRestrictionsDUnitTest extends JUnit4CacheTestCase {
+  public TXRestrictionsDUnitTest() {
+    super();
   }
 
   protected RegionAttributes getRegionAttributes() {
@@ -69,6 +79,7 @@ public class TXRestrictionsDUnitTest extends CacheTestCase {
   /** 
    * Check that remote persistent regions cause conflicts
    */
+  @Test
   public void testPersistentRestriction() throws Exception {
     final CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
     final String misConfigRegionName = getUniqueName();

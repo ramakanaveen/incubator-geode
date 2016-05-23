@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import static com.gemstone.gemfire.test.dunit.DistributedTestUtils.*;
 
 import java.io.DataInput;
@@ -56,7 +65,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase {
   private static Cache cache = null;
 
   private static VM client1 = null;
@@ -86,8 +96,8 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
 
 
 
-  public InstantiatorPropagationDUnitTest(String name) {
-    super(name);
+  public InstantiatorPropagationDUnitTest() {
+    super();
     // TODO Auto-generated constructor stub
   }
 
@@ -114,7 +124,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new InstantiatorPropagationDUnitTest("temp").createCache(props);
+    new InstantiatorPropagationDUnitTest().createCache(props);
     Pool p = PoolManager.createFactory().addServer(host, port1.intValue())
         .setMinConnections(1).setSubscriptionEnabled(true).setPingInterval(200)
         .create("ClientServerInstantiatorRegistrationDUnitTestPool");
@@ -136,7 +146,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
   }
 
   public static Integer createServerCache(Integer maxThreads) throws Exception {
-    new InstantiatorPropagationDUnitTest("temp").createCache(new Properties());
+    new InstantiatorPropagationDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setMirrorType(MirrorType.KEYS_VALUES);
@@ -464,6 +474,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
    * Verified if the 2 instantiators get propagated to client when client gets
    * connected.
    */
+  @Test
   public void testServerUpFirstClientLater() throws Exception {
     PORT1 = initServerCache(server1);
 
@@ -533,6 +544,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
    * the client is connected to(server1), to the other server(server2) in the DS
    * and the client(client2) that is connected to server2.
    */
+  @Test
   public void testInstantiatorsWith2ClientsN2Servers() throws Exception {
     PORT1 = initServerCache(server1);
     PORT2 = initServerCache(server2);
@@ -572,6 +584,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
    * instantiators. Client1 should have only 1 instantiator since the server1
    * was stopped when 2 instantiators were added on it.
    */
+  @Test
   public void testInstantiatorsWithServerKill() throws Exception {
     PORT1 = initServerCache(server1);
     PORT2 = initServerCache(server2);
@@ -618,6 +631,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
    * stopped.So registering an instantiator on server should propagate that to
    * client as well.
    */
+  @Test
   public void testInstantiators() throws Exception {
     PORT1 = initServerCache(server1);
     PORT2 = initServerCache(server2);
@@ -711,6 +725,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
    * server(server2) in the DS and the client that is connected to server2.
    * 
    */
+  @Test
   public void testInstantiatorCount() throws Exception {
     PORT1 = initServerCache(server1);
     PORT2 = initServerCache(server2);
@@ -748,7 +763,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new InstantiatorPropagationDUnitTest("temp").createCache(props);
+    new InstantiatorPropagationDUnitTest().createCache(props);
     Pool p = PoolManager.createFactory()
       .addServer(host, port1.intValue())
       .setSubscriptionEnabled(true)
@@ -789,6 +804,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
 
   }
   
+  @Test
   public void testLazyRegistrationOfInstantiators()
       throws Exception {
     try {
@@ -873,7 +889,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
   public static Integer createServerCacheTwo(Integer maxThreads)
       throws Exception
   {
-    new InstantiatorPropagationDUnitTest("temp")
+    new InstantiatorPropagationDUnitTest()
         .createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -900,7 +916,7 @@ public class InstantiatorPropagationDUnitTest extends DistributedTestCase {
   public static Integer createServerCacheOne(Integer maxThreads)
       throws Exception
   {
-    new InstantiatorPropagationDUnitTest("temp")
+    new InstantiatorPropagationDUnitTest()
         .createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);

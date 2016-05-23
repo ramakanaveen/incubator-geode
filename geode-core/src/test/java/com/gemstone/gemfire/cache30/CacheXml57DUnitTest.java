@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -67,6 +76,7 @@ import junit.framework.Assert;
  * @since 5.7
  */
 
+@Category(DistributedTest.class)
 public class CacheXml57DUnitTest extends CacheXml55DUnitTest
 {
   //
@@ -91,8 +101,8 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
 
   // ////// Constructors
 
-  public CacheXml57DUnitTest(String name) {
-    super(name);
+  public CacheXml57DUnitTest() {
+    super();
   }
 
   // ////// Helper methods
@@ -105,6 +115,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
   /**
    * Tests the groups subelement on bridge-server.
    */
+  @Test
   public void testDefaultCacheServerGroups() throws CacheException {
     CacheCreation cache = new CacheCreation();
     CacheServer bs = cache.addCacheServer();
@@ -117,6 +128,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertNotNull(server);
     assertEquals(CacheServer.DEFAULT_GROUPS, server.getGroups());
   }
+  @Test
   public void testOneCacheServerGroups() throws CacheException {
     CacheCreation cache = new CacheCreation();
     CacheServer bs = cache.addCacheServer();
@@ -130,6 +142,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertNotNull(server);
     assertEquals(Arrays.asList(groups), Arrays.asList(server.getGroups()));
   }
+  @Test
   public void testTwoCacheServerGroups() throws CacheException {
     CacheCreation cache = new CacheCreation();
     CacheServer bs = cache.addCacheServer();
@@ -143,6 +156,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertNotNull(server);
     assertEquals(Arrays.asList(groups), Arrays.asList(server.getGroups()));
   }
+  @Test
   public void testDefaultCacheServerBindAddress() throws CacheException {
     CacheCreation cache = new CacheCreation();
     CacheServer bs = cache.addCacheServer();
@@ -154,6 +168,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertNotNull(server);
     assertEquals(CacheServer.DEFAULT_BIND_ADDRESS, server.getBindAddress());
   }
+  @Test
   public void testCacheServerBindAddress() throws CacheException {
     CacheCreation cache = new CacheCreation();
     CacheServer bs = cache.addCacheServer();
@@ -167,6 +182,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertNotNull(server);
     assertEquals(BA, server.getBindAddress());
   }
+  @Test
   public void testCacheServerHostnameForClients() throws CacheException {
     CacheCreation cache = new CacheCreation();
     CacheServer bs = cache.addCacheServer();
@@ -182,6 +198,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertEquals(BA, server.getBindAddress());
     assertEquals("clientHostName", server.getHostnameForClients());
   }
+  @Test
   public void testExplicitConnectionPool() throws CacheException {
     getSystem();
     CacheCreation cache = new CacheCreation();
@@ -239,6 +256,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertEquals(12345, cp.getSubscriptionMessageTrackingTimeout());
     assertEquals(333, cp.getSubscriptionAckInterval());
   }
+  @Test
   public void testDefaultConnectionPool() throws CacheException {
     getSystem();
     CacheCreation cache = new CacheCreation();
@@ -276,6 +294,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertEquals(PoolFactory.DEFAULT_SUBSCRIPTION_MESSAGE_TRACKING_TIMEOUT, cp.getSubscriptionMessageTrackingTimeout());
     assertEquals(PoolFactory.DEFAULT_SUBSCRIPTION_ACK_INTERVAL, cp.getSubscriptionAckInterval());
   }
+  @Test
   public void testTwoConnectionPools() throws CacheException {
     getSystem();
     CacheCreation cache = new CacheCreation();
@@ -322,6 +341,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
       throw ex;
     }
   }
+  @Test
   public void testNoConnectionPools() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -336,6 +356,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
       expectedException.remove();
     }
   }
+  @Test
   public void testAlreadyExistingPool() throws CacheException {
     getSystem();
     PoolFactoryImpl f = (PoolFactoryImpl)
@@ -358,6 +379,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     }
   }
 
+  @Test
   public void testDynamicRegionFactoryConnectionPool() throws CacheException, IOException {
     IgnoredException.addIgnoredException("Connection reset");
     IgnoredException.addIgnoredException("SocketTimeoutException");
@@ -407,6 +429,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
    * @throws CacheException
    * @since 5.7
    */
+  @Test
   public void testBridgeAttributesRelatedToHAOverFlow() throws CacheException {
     CacheCreation cache = new CacheCreation();
     cache.setMessageSyncInterval(3445);
@@ -438,6 +461,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertEquals("overFlow", chaqf.getOverflowDirectory());
   }
   
+  @Test
   public void testBridgeLoadProbe() {
     CacheCreation cache = new CacheCreation();
     CacheServer server = cache.addCacheServer();
@@ -451,6 +475,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     Assert.assertEquals(MyLoadProbe.class,server.getLoadProbe().getClass());
   }
   
+  @Test
   public void testLoadPollInterval() {
     CacheCreation cache = new CacheCreation();
     CacheServer server = cache.addCacheServer();
@@ -550,6 +575,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
   /**
    * Test both customEntryIdleTime and customEntryTimeToLife
    */
+  @Test
   public void testCustomEntryXml() {
     CacheCreation cache = new CacheCreation();
 
@@ -595,6 +621,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     testXml(cache);
   }
 
+  @Test
   public void testPreloadDataPolicy() throws CacheException {
     CacheCreation cache = new CacheCreation();
 
@@ -645,6 +672,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
    * Test EnableSubscriptionConflation region attribute
    * @since 5.7
    */
+  @Test
   public void testEnableSubscriptionConflationAttribute() throws CacheException {
 
     CacheCreation cache = new CacheCreation();

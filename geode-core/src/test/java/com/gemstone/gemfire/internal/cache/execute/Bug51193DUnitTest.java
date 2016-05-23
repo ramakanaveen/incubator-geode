@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -47,10 +56,11 @@ import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
 
 @SuppressWarnings("serial")
-public class Bug51193DUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class Bug51193DUnitTest extends JUnit4DistributedTestCase {
 
-  public Bug51193DUnitTest(String name) {
-    super(name);
+  public Bug51193DUnitTest() {
+    super();
   }
 
   private static GemFireCacheImpl cache;
@@ -97,7 +107,7 @@ public class Bug51193DUnitTest extends DistributedTestCase {
 //      props.setProperty("statistic-archive-file", "client_" + OSProcess.getId()
 //          + ".gfs");
 //      props.setProperty("statistic-sampling-enabled", "true");
-      DistributedSystem ds = new Bug51193DUnitTest("Bug51193DUnitTest")
+      DistributedSystem ds = new Bug51193DUnitTest()
           .getSystem(props);
       ds.disconnect();
       ClientCacheFactory ccf = new ClientCacheFactory(props);
@@ -119,7 +129,7 @@ public class Bug51193DUnitTest extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
 
-    Bug51193DUnitTest test = new Bug51193DUnitTest("Bug51193DUnitTest");
+    Bug51193DUnitTest test = new Bug51193DUnitTest();
     DistributedSystem ds = test.getSystem(props);
     ds.disconnect();
     cache = (GemFireCacheImpl)CacheFactory.create(test.getSystem());
@@ -181,26 +191,32 @@ public class Bug51193DUnitTest extends DistributedTestCase {
     client0.invoke(() -> Bug51193DUnitTest.executeFunction( mode, timeout ));
   }
 
+  @Test
   public void testExecuteFunctionReadsDefaultTimeout() throws Throwable {
     doTest(false, 0, "server");
   }
 
+  @Test
   public void testExecuteRegionFunctionReadsDefaultTimeout() throws Throwable {
     doTest(false, 0, "region");
   }
 
+  @Test
   public void testExecuteRegionFunctionSingleHopReadsDefaultTimeout() throws Throwable {
     doTest(true, 0, "region");
   }
 
+  @Test
   public void testExecuteFunctionReadsTimeout() throws Throwable {
     doTest(false, 6000, "server");
   }
 
+  @Test
   public void testExecuteRegionFunctionReadsTimeout() throws Throwable {
     doTest(false, 6000, "region");
   }
 
+  @Test
   public void testExecuteRegionFunctionSingleHopReadsTimeout() throws Throwable {
     doTest(true, 6000, "region");
   }

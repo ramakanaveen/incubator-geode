@@ -20,6 +20,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.List;
 import java.util.Properties;
 
@@ -40,11 +49,12 @@ import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 
 
+@Category(DistributedTest.class)
 public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
   private static final long serialVersionUID = -6437436147079728413L;
 
-  public CacheXmlGeode10DUnitTest(String name) {
-    super(name);
+  public CacheXmlGeode10DUnitTest() {
+    super();
   }
 
   
@@ -56,6 +66,7 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
   }
 
   @SuppressWarnings("rawtypes")
+  @Test
   public void testEnableOffHeapMemory() {
     try {
       System.setProperty("gemfire."+DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "1m");
@@ -87,6 +98,7 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
   }
 
   @SuppressWarnings("rawtypes")
+  @Test
   public void testEnableOffHeapMemoryRootRegionWithoutOffHeapMemoryThrowsException() {
     final String regionName = getUniqueName();
     
@@ -113,6 +125,7 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
   }
   
   @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
+  @Test
   public void testEnableOffHeapMemorySubRegionWithoutOffHeapMemoryThrowsException() {
     final String rootRegionName = getUniqueName();
     final String subRegionName = "subRegion";
@@ -152,6 +165,7 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
    * eviction-off-heap-percentage attributes
    * @throws Exception
    */
+  @Test
   public void testResourceManagerThresholds() throws Exception {
     CacheCreation cache = new CacheCreation();
     final float low = 90.0f;
@@ -241,6 +255,7 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
   }
 
   @SuppressWarnings("rawtypes")
+  @Test
   public void testAsyncEventQueueIsEnableEvictionAndExpirationAttribute() {
 
     final String regionName = "testAsyncEventQueueIsEnableEvictionAndExpirationAttribute";

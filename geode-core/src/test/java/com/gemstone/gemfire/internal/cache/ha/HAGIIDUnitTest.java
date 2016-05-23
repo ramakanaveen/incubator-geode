@@ -17,6 +17,15 @@
 
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -109,7 +118,8 @@ class GIIChecker extends CacheListenerAdapter
   }
 }
 
-public class HAGIIDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class HAGIIDUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
   //server
@@ -123,8 +133,8 @@ public class HAGIIDUnitTest extends DistributedTestCase
   private int PORT2;
 
   /** constructor */
-  public HAGIIDUnitTest(String name) {
-    super(name);
+  public HAGIIDUnitTest() {
+    super();
   }
 
   @Override
@@ -149,6 +159,7 @@ public class HAGIIDUnitTest extends DistributedTestCase
     client0.invoke(() -> HAGIIDUnitTest.createClientCache( NetworkUtils.getServerHostName(host), new Integer(PORT1),new Integer(PORT2)));
   }
   
+  @Test
   public void testGIIRegionQueue()
   {
     client0.invoke(() -> HAGIIDUnitTest.createEntries());
@@ -182,7 +193,7 @@ public class HAGIIDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new HAGIIDUnitTest("temp").createCache(props);
+    new HAGIIDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     ClientServerTestCase.configureConnectionPool(factory, host, new int[] {PORT1,PORT2}, true, -1, 2, null, 1000, -1, false, -1);
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -193,7 +204,7 @@ public class HAGIIDUnitTest extends DistributedTestCase
 
   public static Integer createServer1Cache() throws Exception
   {
-    new HAGIIDUnitTest("temp").createCache(new Properties());
+    new HAGIIDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -209,7 +220,7 @@ public class HAGIIDUnitTest extends DistributedTestCase
 
   public static void createServer2Cache(Integer port) throws Exception
   {
-    new HAGIIDUnitTest("temp").createCache(new Properties());
+    new HAGIIDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);

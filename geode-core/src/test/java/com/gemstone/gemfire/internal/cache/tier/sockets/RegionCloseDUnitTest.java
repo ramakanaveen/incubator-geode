@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.*;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -47,7 +56,8 @@ import com.gemstone.gemfire.cache.client.*;
  *
  */
 
-public class RegionCloseDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class RegionCloseDUnitTest extends JUnit4DistributedTestCase
 {
 
   VM server1 = null;
@@ -63,8 +73,8 @@ public class RegionCloseDUnitTest extends DistributedTestCase
   private static Cache cache = null;
 
   /** constructor */
-  public RegionCloseDUnitTest(String name) {
-    super(name);
+  public RegionCloseDUnitTest() {
+    super();
   }
 
   @Override
@@ -91,6 +101,7 @@ public class RegionCloseDUnitTest extends DistributedTestCase
   }
 
 
+  @Test
   public void testCloseRegionOnClient()
   {
     server1.invoke(() -> RegionCloseDUnitTest.VerifyClientProxyOnServerBeforeClose());
@@ -105,7 +116,7 @@ public class RegionCloseDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new RegionCloseDUnitTest("temp").createCache(props);
+    new RegionCloseDUnitTest().createCache(props);
     Pool p = PoolManager.createFactory()
       .addServer(host, PORT1)
       .setSubscriptionEnabled(true)
@@ -128,7 +139,7 @@ public class RegionCloseDUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new RegionCloseDUnitTest("temp").createCache(new Properties());
+    new RegionCloseDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
@@ -28,11 +37,12 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  * 
  */
+@Category(DistributedTest.class)
 public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
 {
     /** constructor */
-  public RedundancyLevelPart1DUnitTest(String name) {
-    super(name);
+  public RedundancyLevelPart1DUnitTest() {
+    super();
   }
   
   public static void caseSetUp() throws Exception {
@@ -56,6 +66,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * Redundancy level not specifed, an EP which dies of should be removed from
    * the fail over set as well as the live server map
    */
+  @Test
   public void testRedundancyNotSpecifiedNonPrimaryServerFail()
   {    
     try {
@@ -91,6 +102,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * then the EP should be removed from the live server map, added to dead
    * server map. 
    */
+  @Test
   public void testRedundancyNotSpecifiedPrimaryServerFails()
   {
     /*ClientServerObserver oldBo = ClientServerObserverHolder.setInstance(new ClientServerObserverAdapter() {
@@ -145,6 +157,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * added to dead server map. It should not change the current failover set.
    * Failover detection by LSM
    */
+  @Test
   public void testRedundancySpecifiedNonFailoverEPFails()
   {
     try {
@@ -299,6 +312,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * added to dead server map. It should not change the current failover set.
    * Failover detection by Put operation.
    */
+  @Test
   public void testRedundancySpecifiedNonFailoverEPFailsDetectionByPut()
   {
     try {
@@ -339,6 +353,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * Failure Detection by LSM.
    */
 
+  @Test
   public void testRedundancySpecifiedNonPrimaryEPFails()
   {
     try {
@@ -377,6 +392,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * Failure Detection by CCU.
    */
 
+  @Test
   public void testRedundancySpecifiedNonPrimaryEPFailsDetectionByCCU()
   {
     try {
@@ -417,6 +433,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * Failure Detection by Register Interest.
    */
   
+  @Test
   public void testRedundancySpecifiedNonPrimaryEPFailsDetectionByRegisterInterest()
   {
     try {
@@ -457,6 +474,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * Failure Detection by Unregister Interest.
    */
 
+  @Test
   public void testRedundancySpecifiedNonPrimaryEPFailsDetectionByUnregisterInterest()
   {
     try {
@@ -497,6 +515,7 @@ public class RedundancyLevelPart1DUnitTest extends RedundancyLevelTestBase
    * Failure Detection by Put operation.
    */
 
+  @Test
   public void testRedundancySpecifiedNonPrimaryEPFailsDetectionByPut()
   {
     try {

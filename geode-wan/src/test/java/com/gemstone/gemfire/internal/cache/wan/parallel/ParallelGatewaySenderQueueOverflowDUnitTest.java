@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.parallel;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.Properties;
 import java.util.Set;
@@ -48,14 +57,16 @@ import com.gemstone.gemfire.test.dunit.Wait;
  * 
  *
  */
+@Category(DistributedTest.class)
 public class ParallelGatewaySenderQueueOverflowDUnitTest extends WANTestBase {
 
   private static final long serialVersionUID = 1L;
   
-  public ParallelGatewaySenderQueueOverflowDUnitTest(String name) {
-    super(name);
+  public ParallelGatewaySenderQueueOverflowDUnitTest() {
+    super();
   }
   
+  @Test
   public void testParallelSenderQueueEventsOverflow_NoDiskStoreSpecified() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));

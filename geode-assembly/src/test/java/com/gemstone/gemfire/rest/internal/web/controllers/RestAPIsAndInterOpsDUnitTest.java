@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.rest.internal.web.controllers;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.ClientCache;
 import com.gemstone.gemfire.cache.client.ClientCacheFactory;
@@ -56,6 +65,7 @@ import java.util.*;
  * @since 8.0
  */
 
+@Category(DistributedTest.class)
 public class RestAPIsAndInterOpsDUnitTest extends LocatorTestBase {
 
   private static final long serialVersionUID = -254776154266339226L;
@@ -146,8 +156,8 @@ public class RestAPIsAndInterOpsDUnitTest extends LocatorTestBase {
       + " \"middleName\": \"kiran12\"," + " \"lastName\": \"Patel\","
       + " \"birthDate\": \"23/08/2012\"," + "\"gender\": \"MALE\"" + "}" + "]";
 
-  public RestAPIsAndInterOpsDUnitTest(String name) {
-    super(name);
+  public RestAPIsAndInterOpsDUnitTest() {
+    super();
     this.helper = new ManagementTestBase(name);
 
   }
@@ -758,6 +768,7 @@ public class RestAPIsAndInterOpsDUnitTest extends LocatorTestBase {
    * @throws Exception
    */
 
+  @Test
   public void testInterOpsWithReplicatedRegion() throws Exception {
 
     final Host host = Host.getHost(0);

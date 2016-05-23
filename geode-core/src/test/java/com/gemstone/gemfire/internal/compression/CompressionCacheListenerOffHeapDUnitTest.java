@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.compression;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.compression.SnappyCompressor;
@@ -25,11 +34,12 @@ import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 
 @SuppressWarnings("serial")
+@Category(DistributedTest.class)
 public class CompressionCacheListenerOffHeapDUnitTest extends
     CompressionCacheListenerDUnitTest {
 
-  public CompressionCacheListenerOffHeapDUnitTest(String name) {
-    super(name);
+  public CompressionCacheListenerOffHeapDUnitTest() {
+    super();
   }
   
   public static void caseSetUp() {

@@ -16,13 +16,23 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
+@Category(DistributedTest.class)
 public class InterruptsConserveSocketsFalseDUnitTest extends
     InterruptsDUnitTest {
 
-  public InterruptsConserveSocketsFalseDUnitTest(String name) {
-    super(name);
+  public InterruptsConserveSocketsFalseDUnitTest() {
+    super();
   }
 
   @Override

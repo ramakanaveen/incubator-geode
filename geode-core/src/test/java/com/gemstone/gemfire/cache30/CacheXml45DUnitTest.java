@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.company.app.DBLoader;
 import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.server.CacheServer;
@@ -35,12 +44,13 @@ import java.util.*;
  *
  * @since 5.0
  */
+@Category(DistributedTest.class)
 public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
 
   ////////  Constructors
 
-  public CacheXml45DUnitTest(String name) {
-    super(name);
+  public CacheXml45DUnitTest() {
+    super();
   }
 
   ////////  Helper methods
@@ -59,6 +69,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
     bridge1.setMaxConnections(100);
   }
 
+  @Test
   public void testDataPolicy() throws CacheException {
     CacheCreation cache = new CacheCreation();
 
@@ -120,6 +131,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
   /**
    * Test xml support of MembershipAttributes.
    */
+  @Test
   public void testMembershipAttributes() throws Exception {
     final String MY_ROLES = "Foo, Bip, BAM";
     final String[][] roles = new String[][] {{"Foo"}, {"Bip", "BAM"}};
@@ -179,6 +191,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
    * Tests multiple cache listeners on one region
    * @since 5.0
    */
+  @Test
   public void testMultipleCacheListener() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -229,6 +242,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
     }
   }
 
+  @Test
   public void testHeapLRUEviction() throws Exception {
     final String name = getUniqueName();
     beginCacheXml();
@@ -249,6 +263,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
    * Tests multiple transaction listeners
    * @since 5.0
    */
+  @Test
   public void testMultipleTXListener() throws CacheException {
     CacheCreation cache = new CacheCreation();
     CacheTransactionManagerCreation txMgrCreation = new CacheTransactionManagerCreation();
@@ -298,6 +313,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
    * Tests that a region created with a named attributes has the correct
    * attributes.
    */
+  @Test
   public void testPartitionedRegionXML() throws CacheException
   {
     setXmlFile(findFile("partitionedRegion.xml"));
@@ -371,6 +387,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
    * attributes.
    * 
    */
+  @Test
   public void testPartitionedRegionInstantiation() throws CacheException
   {
     CacheCreation cache = new CacheCreation();

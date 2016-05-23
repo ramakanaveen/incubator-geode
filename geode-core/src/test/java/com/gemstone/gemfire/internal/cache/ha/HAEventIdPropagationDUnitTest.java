@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -62,7 +71,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * @since 5.1
  */
 
-public class HAEventIdPropagationDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase
 {
 
   /** server VM * */
@@ -81,8 +91,8 @@ public class HAEventIdPropagationDUnitTest extends DistributedTestCase
   static CacheServerImpl server = null;
 
   /** test constructor * */
-  public HAEventIdPropagationDUnitTest(String name) {
-    super(name);
+  public HAEventIdPropagationDUnitTest() {
+    super();
   }
 
   /** get the hosts and the VMs * */
@@ -129,7 +139,7 @@ public class HAEventIdPropagationDUnitTest extends DistributedTestCase
   /** create the server * */
   public static Integer createServerCache() throws Exception
   {
-    new HAEventIdPropagationDUnitTest("temp").createCache(new Properties());
+    new HAEventIdPropagationDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -166,7 +176,7 @@ public class HAEventIdPropagationDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new HAEventIdPropagationDUnitTest("temp").createCache(props);
+    new HAEventIdPropagationDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     PoolImpl pi = (PoolImpl)ClientServerTestCase.configureConnectionPool(factory, hostName, new int[] {PORT1}, true, -1, 2, null);
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -311,6 +321,7 @@ public class HAEventIdPropagationDUnitTest extends DistributedTestCase
    *
    * @throws Exception
    */
+  @Test
   public void testEventIDPropagation() throws Exception
   {
     try {
@@ -400,6 +411,7 @@ public class HAEventIdPropagationDUnitTest extends DistributedTestCase
   }
 
 
+  @Test
   public void testEventIDPropagationForClear() throws Exception
   {
     createClientServerConfiguration();

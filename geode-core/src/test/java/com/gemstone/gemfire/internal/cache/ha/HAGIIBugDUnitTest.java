@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
@@ -58,7 +67,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  */
 
-public class HAGIIBugDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class HAGIIBugDUnitTest extends JUnit4DistributedTestCase
 {
 
   VM vm0 = null;
@@ -134,6 +144,7 @@ public class HAGIIBugDUnitTest extends DistributedTestCase
   }
 
   
+  @Test
   public void testDummy() throws Exception
   {
     LogWriterUtils.getLogWriter().info("This is Dummy test for the GII");  
@@ -336,7 +347,7 @@ public class HAGIIBugDUnitTest extends DistributedTestCase
 
   public static void createRegionQueue() throws Exception
   {
-    new HAGIIBugDUnitTest("temp").createCache(new Properties());
+    new HAGIIBugDUnitTest().createCache(new Properties());
     HARegionQueueAttributes hattr = new HARegionQueueAttributes();
     // setting expiry time for the regionqueue.
     hattr.setExpiryTime(12000000);

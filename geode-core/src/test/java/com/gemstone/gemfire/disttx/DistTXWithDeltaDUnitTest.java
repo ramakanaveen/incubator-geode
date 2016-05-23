@@ -16,15 +16,25 @@
  */
 package com.gemstone.gemfire.disttx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.TransactionsWithDeltaDUnitTest;
 
+@Category(DistributedTest.class)
 public class DistTXWithDeltaDUnitTest extends TransactionsWithDeltaDUnitTest {
 
-  public DistTXWithDeltaDUnitTest(String name) {
-    super(name);
+  public DistTXWithDeltaDUnitTest() {
+    super();
   }
   
   @Override

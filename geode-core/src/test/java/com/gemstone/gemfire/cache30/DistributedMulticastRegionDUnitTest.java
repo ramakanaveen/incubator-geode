@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,7 +57,8 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class DistributedMulticastRegionDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class DistributedMulticastRegionDUnitTest extends JUnit4CacheTestCase {
 
   static int locatorVM = 3;
   static String mcastport = "42786";
@@ -56,8 +66,8 @@ public class DistributedMulticastRegionDUnitTest extends CacheTestCase {
   
   private int locatorPort;
 
-  public DistributedMulticastRegionDUnitTest(String name) {
-    super(name);
+  public DistributedMulticastRegionDUnitTest() {
+    super();
   }
   
   @Override
@@ -80,6 +90,7 @@ public class DistributedMulticastRegionDUnitTest extends CacheTestCase {
     Invoke.invokeInEveryVM(cleanVM);    
   }
   
+  @Test
   public void testMulticastEnabled() {
     final String name = "mcastRegion";
     SerializableRunnable create =
@@ -151,6 +162,7 @@ public class DistributedMulticastRegionDUnitTest extends CacheTestCase {
     
   }
   
+  @Test
   public void testMulticastWithRegionOpsException() {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);

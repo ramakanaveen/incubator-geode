@@ -22,6 +22,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 import java.util.Set;
 
@@ -42,7 +51,8 @@ import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class CacheMapTxnDUnitTest extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase{
     
     protected static Cache cache;
     protected static Properties props = new Properties();
@@ -52,8 +62,8 @@ public class CacheMapTxnDUnitTest extends DistributedTestCase{
     protected static CacheTransactionManager cacheTxnMgr;
     
     /** Creates a new instance of CacheMapTxnDUnitTest */
-    public CacheMapTxnDUnitTest(String name) {
-        super(name);
+    public CacheMapTxnDUnitTest() {
+        super();
     }
     
     @Override
@@ -82,7 +92,7 @@ public class CacheMapTxnDUnitTest extends DistributedTestCase{
         try{
             //            props.setProperty("mcast-port", "1234");
             //            ds = DistributedSystem.connect(props);
-            ds = (new CacheMapTxnDUnitTest("temp")).getSystem(props);
+            ds = (new CacheMapTxnDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
             factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -104,21 +114,24 @@ public class CacheMapTxnDUnitTest extends DistributedTestCase{
         }
     }
     
-    public void testCommitTxn() {
+  @Test
+  public void testCommitTxn() {
         //this is to test single VM region transactions
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         vm0.invoke(() -> CacheMapTxnDUnitTest.commitTxn());
     }//end of testCommitTxn
     
-    public void testRollbackTxn() {
+  @Test
+  public void testRollbackTxn() {
         //this is to test single VM region transactions
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         vm0.invoke(() -> CacheMapTxnDUnitTest.rollbackTxn());
     }//end of testRollbackTxn
     
-    public void testRollbackTxnClear() {
+  @Test
+  public void testRollbackTxnClear() {
         //this is to test single VM region transactions
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
@@ -143,7 +156,8 @@ public class CacheMapTxnDUnitTest extends DistributedTestCase{
         }
     }//end of testRollbackTxnClear
     
-    public void testMiscMethods() throws Throwable{
+  @Test
+  public void testMiscMethods() throws Throwable{
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.pdx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import org.junit.experimental.categories.Category;
@@ -31,10 +40,11 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
-public class DistributedSystemIdDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DistributedSystemIdDUnitTest extends JUnit4DistributedTestCase {
   
-  public DistributedSystemIdDUnitTest(String name) {
-    super(name);
+  public DistributedSystemIdDUnitTest() {
+    super();
   }
 
   @Override
@@ -42,6 +52,7 @@ public class DistributedSystemIdDUnitTest extends DistributedTestCase {
     disconnectAllFromDS(); // GEODE-558 test fails due to infection from another test
   }
 
+  @Test
   public void testMatchingIds() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -58,6 +69,7 @@ public class DistributedSystemIdDUnitTest extends DistributedTestCase {
     
   }
   
+  @Test
   public void testInfectiousId() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -69,6 +81,7 @@ public class DistributedSystemIdDUnitTest extends DistributedTestCase {
     checkId(vm1, 1);
   }
   
+  @Test
   public void testMismatch() {
     IgnoredException.addIgnoredException("Rejected new system node");
     Host host = Host.getHost(0);
@@ -87,6 +100,7 @@ public class DistributedSystemIdDUnitTest extends DistributedTestCase {
     checkId(vm0, 1);
   }
   
+  @Test
   public void testInvalid() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

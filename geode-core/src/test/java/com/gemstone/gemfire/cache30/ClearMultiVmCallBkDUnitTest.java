@@ -22,6 +22,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -43,11 +52,12 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class ClearMultiVmCallBkDUnitTest extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class ClearMultiVmCallBkDUnitTest extends JUnit4DistributedTestCase{
     
     /** Creates a new instance of ClearMultiVmCallBkDUnitTest */
-    public ClearMultiVmCallBkDUnitTest(String name) {
-        super(name);
+    public ClearMultiVmCallBkDUnitTest() {
+        super();
     }
     
     static Cache cache;
@@ -83,7 +93,7 @@ public class ClearMultiVmCallBkDUnitTest extends DistributedTestCase{
             CacheListener aListener = new ListenerCallBk();
 //            props.setProperty("mcast-port", "1234");
 //            ds = DistributedSystem.connect(props);
-            ds = (new ClearMultiVmCallBkDUnitTest("temp")).getSystem(props);            
+            ds = (new ClearMultiVmCallBkDUnitTest()).getSystem(props);            
             
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
@@ -115,7 +125,8 @@ public class ClearMultiVmCallBkDUnitTest extends DistributedTestCase{
     
     //test methods
     
-    public void testClearSingleVM(){
+  @Test
+  public void testClearSingleVM(){
         
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
@@ -143,7 +154,8 @@ public class ClearMultiVmCallBkDUnitTest extends DistributedTestCase{
         
     }//end of test case1
     
-     public void testClearMultiVM(){
+  @Test
+  public void testClearMultiVM(){
         
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);

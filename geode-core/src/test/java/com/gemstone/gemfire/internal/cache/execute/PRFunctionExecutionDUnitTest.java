@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,6 +87,7 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
+@Category(DistributedTest.class)
 public class PRFunctionExecutionDUnitTest extends
     PartitionedRegionDUnitTestCase {
   private static final String TEST_FUNCTION7 = TestFunction.TEST_FUNCTION7;
@@ -86,14 +96,15 @@ public class PRFunctionExecutionDUnitTest extends
   static String regionName = null;
   private static final long serialVersionUID = 1L;
 
-  public PRFunctionExecutionDUnitTest(String name) {
-    super(name);
+  public PRFunctionExecutionDUnitTest() {
+    super();
   }
 
   /**
    * Test to validate that the function execution is successful on PR with Loner Distributed System
    * @throws Exception
    */
+  @Test
   public void testFunctionExecution() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -141,6 +152,7 @@ public class PRFunctionExecutionDUnitTest extends
         });
   }
 
+  @Test
   public void testHAFunctionExecution() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -197,6 +209,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteSingleKeyExecution_byName() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -285,6 +298,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testLocalSingleKeyExecution_byName_FunctionInvocationTargetException()
       throws Exception {
     final String rName = getUniqueName();
@@ -337,6 +351,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteSingleKeyExecution_byName_FunctionInvocationTargetException()
       throws Exception {
     final String rName = getUniqueName();
@@ -408,6 +423,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteSingleKeyExecution_byInstance() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -495,6 +511,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteSingleKeyExecution_byInlineFunction() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -575,6 +592,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecution_byName() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -672,6 +690,7 @@ public class PRFunctionExecutionDUnitTest extends
   }
 
   
+  @Test
   public void testRemoteMultiKeyExecution_BucketMoved() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -754,6 +773,7 @@ public class PRFunctionExecutionDUnitTest extends
     
   }
   
+  @Test
   public void testLocalMultiKeyExecution_BucketMoved() throws Exception {
     IgnoredException.addIgnoredException("BucketMovedException");
     final String rName = getUniqueName();
@@ -830,6 +850,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteMultipleKeyExecution_byName_FunctionInvocationTargetException()
       throws Exception {
     final String rName = getUniqueName();
@@ -906,6 +927,7 @@ public class PRFunctionExecutionDUnitTest extends
     assertEquals(Boolean.TRUE, o);
   }
  
+  @Test
   public void testRemoteMultiKeyExecutionHA_CacheClose() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1003,6 +1025,7 @@ public class PRFunctionExecutionDUnitTest extends
     assertEquals(2, l.size());
   }
  
+  @Test
   public void testRemoteMultiKeyExecutionHA_Disconnect() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1122,6 +1145,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecution_byInlineFunction() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1214,6 +1238,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecutionWithCollector_byName() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1290,6 +1315,7 @@ public class PRFunctionExecutionDUnitTest extends
    * haveResults = false;
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecutionNoResult_byName() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1373,6 +1399,7 @@ public class PRFunctionExecutionDUnitTest extends
    * expected result to be 0.(as the execution gets the timeout)
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecution_timeout() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1452,6 +1479,7 @@ public class PRFunctionExecutionDUnitTest extends
    * haveResults = false;
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecutionWithCollectorNoResult_byName() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1531,6 +1559,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecution_byInstance() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1640,6 +1669,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testBucketFilter_1() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1769,6 +1799,7 @@ public class PRFunctionExecutionDUnitTest extends
     
   }
   
+  @Test
   public void testBucketFilterOverride() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1859,6 +1890,7 @@ public class PRFunctionExecutionDUnitTest extends
    * haveResult = true
    * @throws Exception
    */
+  @Test
   public void testLocalMultiKeyExecution_byName() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1940,6 +1972,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testLocalMultiKeyExecution_byInstance() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -2024,6 +2057,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testMultiKeyExecutionOnASingleBucket_byName() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -2107,6 +2141,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testMultiKeyExecutionOnASingleBucket_byInstance()
       throws Exception {
     final String rName = getUniqueName();
@@ -2189,6 +2224,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testExecutionOnAllNodes_byName()
       throws Exception {
     final String rName = getUniqueName();
@@ -2271,6 +2307,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testExecutionOnAllNodes_byInstance()
       throws Exception {
     final String rName = getUniqueName();
@@ -2360,6 +2397,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testExecutionOnAllNodes_byInlineFunction()
       throws Exception {
     final String rName = getUniqueName();
@@ -2444,6 +2482,7 @@ public class PRFunctionExecutionDUnitTest extends
     assertEquals(Boolean.TRUE, o);
   }
    
+  @Test
   public void testBug40714() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -2555,6 +2594,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testExecutionOnAllNodes_LocalReadPR()
       throws Exception {
     final String rName = getUniqueName();
@@ -2639,6 +2679,7 @@ public class PRFunctionExecutionDUnitTest extends
    *
    * @throws Exception
    */
+  @Test
   public void testExecutionOnMultiNodes_LocalReadPR()
       throws Exception {
     //final String rName = getUniqueName();
@@ -2769,6 +2810,7 @@ public class PRFunctionExecutionDUnitTest extends
   /**
    * Assert the {@link RegionFunctionContext} yields the proper objects.
    */
+  @Test
   public void testLocalDataContext() throws Exception
   {
     final String rName = getUniqueName();
@@ -2844,6 +2886,7 @@ public class PRFunctionExecutionDUnitTest extends
   /**
    * Assert the {@link RegionFunctionContext} yields the proper objects.
    */
+  @Test
   public void testLocalDataContextWithColocation() throws Exception
   {
     String rName = getUniqueName();
@@ -2989,6 +3032,7 @@ public class PRFunctionExecutionDUnitTest extends
    * Just making sure that the function executed on lonerDistribuedSystem
    */
  
+  @Test
   public void testBug41118() {
     Host host = Host.getHost(0);
     final VM lonerVM = host.getVM(1);
@@ -2996,7 +3040,7 @@ public class PRFunctionExecutionDUnitTest extends
   }
  
   public static void bug41118(){
-    InternalDistributedSystem ds = new PRFunctionExecutionDUnitTest("temp").getSystem();
+    InternalDistributedSystem ds = new PRFunctionExecutionDUnitTest().getSystem();
     assertNotNull(ds);
     ds.disconnect();
     Properties props = new Properties();
@@ -3094,6 +3138,7 @@ public class PRFunctionExecutionDUnitTest extends
     }
   }
 
+  @Test
   public void testFunctionExecutionException_41779() throws Exception {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,13 +60,14 @@ import com.gemstone.gemfire.test.dunit.IgnoredException;
  * @since 4.1
  */
 
+@Category(DistributedTest.class)
 public class CacheXml41DUnitTest extends CacheXml40DUnitTest
 {
 
   // ////// Constructors
 
-  public CacheXml41DUnitTest(String name) {
-    super(name);
+  public CacheXml41DUnitTest() {
+    super();
   }
 
   // ////// Helper methods
@@ -82,6 +92,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
    * Tests that named region attributes are registered when the cache is
    * created.
    */
+  @Test
   public void testRegisteringNamedRegionAttributes()
   {
     CacheCreation cache = new CacheCreation();
@@ -113,6 +124,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
    * Tests that a region created with a named attributes has the correct
    * attributes.
    */
+  @Test
   public void testNamedAttributes() throws CacheException
   {
     setXmlFile(findFile("namedAttributes.xml"));
@@ -158,6 +170,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
    * attributes refer to an unknown named region attributes throws an
    * {@link IllegalStateException}.
    */
+  @Test
   public void testUnknownNamedAttributes()
   {
     setXmlFile(findFile("unknownNamedAttributes.xml"));
@@ -179,6 +192,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
    * Tests to make sure that we cannot create the same region multiple times in
    * a <code>cache.xml</code> file.
    */
+  @Test
   public void testCreateSameRegionTwice() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -221,6 +235,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
    * Tests to make sure that we cannot create the same subregion multiple times
    * in a <code>cache.xml</code> file.
    */
+  @Test
   public void testCreateSameSubregionTwice() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -283,6 +298,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   /**
    * Tests that loading cache XML effects mutable cache attributes.
    */
+  @Test
   public void testModifyCacheAttributes() throws CacheException
   {
     boolean copyOnRead1 = false;
@@ -332,6 +348,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   /**
    * Tests that loading cache XML can create a region.
    */
+  @Test
   public void testAddRegionViaCacheXml() throws CacheException
   {
     CacheCreation creation = new CacheCreation();
@@ -394,6 +411,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   /**
    * Tests that loading cache XML can modify a region.
    */
+  @Test
   public void testModifyRegionViaCacheXml() throws CacheException
   {
     CacheCreation creation = new CacheCreation();
@@ -467,6 +485,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   /**
    * Tests that loading cache XML can add/update entries to a region.
    */
+  @Test
   public void testAddEntriesViaCacheXml() throws CacheException
   {
     String key1 = "KEY1";
@@ -535,6 +554,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
    * @since 4.2.3
    * @deprecated as of GemFire 6.5.
    */
+  @Test
   public void testPublisherAttribute() throws CacheException {
 
 //    CacheCreation cache = new CacheCreation();
@@ -549,6 +569,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
    * Test EnableBridgeConflation region attribute
    * @since 4.2
    */
+  @Test
   public void testEnableBridgeConflationAttribute() throws CacheException {
 
     CacheCreation cache = new CacheCreation();
@@ -563,6 +584,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
    * Test EnableAsyncConflation region attribute
    * @since 4.2
    */
+  @Test
   public void testEnableAsyncConflationAttribute() throws CacheException {
 
     CacheCreation cache = new CacheCreation();
@@ -575,6 +597,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   /**
    * @since 4.3
    */
+  @Test
   public void testDynamicRegionFactoryDefault() throws CacheException {
     CacheCreation cache = new CacheCreation();
     cache.setDynamicRegionFactoryConfig(new DynamicRegionFactory.Config());
@@ -593,6 +616,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
     }
     
   }
+  @Test
   public void testDynamicRegionFactoryNonDefault() throws CacheException {
     CacheCreation cache = new CacheCreation();
     cache.setDynamicRegionFactoryConfig(new DynamicRegionFactory.Config((File)null, null, false, false));
@@ -615,6 +639,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   /**
    * @since 4.3
    */
+  @Test
   public void testDynamicRegionFactoryDiskDir() throws CacheException {
     CacheCreation cache = new CacheCreation();
     File f = new File("diskDir");
@@ -636,6 +661,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   /**
    * Remove this override when bug #52052 is fixed.
    */
+  @Test
   public void testExampleCacheXmlFile() {
     return;
   }

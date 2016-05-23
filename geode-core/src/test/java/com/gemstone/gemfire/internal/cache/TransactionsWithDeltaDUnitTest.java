@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.Delta;
 import com.gemstone.gemfire.InvalidDeltaException;
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -57,7 +66,8 @@ import java.util.Iterator;
 /**
  *
  */
-public class TransactionsWithDeltaDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class TransactionsWithDeltaDUnitTest extends JUnit4CacheTestCase {
 
   private static final String D_REFERENCE = "ref";
   private static final String CUSTOMER = "Customer";
@@ -66,8 +76,8 @@ public class TransactionsWithDeltaDUnitTest extends CacheTestCase {
   /**
    * @param name
    */
-  public TransactionsWithDeltaDUnitTest(String name) {
-    super(name);
+  public TransactionsWithDeltaDUnitTest() {
+    super();
   }
 
   private Integer createRegionOnServer(VM vm, final boolean startServer, final boolean accessor) {
@@ -212,6 +222,7 @@ public class TransactionsWithDeltaDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testTxWithCloning() {
     AttributesFactory af = new AttributesFactory();
     af.setDataPolicy(DataPolicy.REPLICATE);
@@ -220,6 +231,7 @@ public class TransactionsWithDeltaDUnitTest extends CacheTestCase {
     basicTest(af.create());
   }
   
+  @Test
   public void testExceptionThrown() {
     AttributesFactory af = new AttributesFactory();
     af.setDataPolicy(DataPolicy.REPLICATE);
@@ -316,6 +328,7 @@ public class TransactionsWithDeltaDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testClientServerDelta() {
     Host host = Host.getHost(0);
     VM server = host.getVM(0);

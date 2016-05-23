@@ -21,6 +21,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -41,11 +50,12 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class RemoveDAckDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class RemoveDAckDUnitTest extends JUnit4DistributedTestCase {
     
     /** Creates a new instance of RemoveDAckDUnitTest */
-    public RemoveDAckDUnitTest(String name) {
-        super(name);
+    public RemoveDAckDUnitTest() {
+        super();
     }
     
     static Cache cache;
@@ -78,7 +88,7 @@ public class RemoveDAckDUnitTest extends DistributedTestCase {
     
     public static void createCacheVM0(){
         try{            
-            ds = (new RemoveDAckDUnitTest("temp")).getSystem(props);
+            ds = (new RemoveDAckDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);            
             AttributesFactory factory  = new AttributesFactory();
             factory.setScope(Scope.DISTRIBUTED_ACK);            
@@ -91,7 +101,7 @@ public class RemoveDAckDUnitTest extends DistributedTestCase {
     } //end of create cache for VM0
     public static void createCacheVM1(){
         try{            
-            ds = (new RemoveDAckDUnitTest("temp")).getSystem(props);
+            ds = (new RemoveDAckDUnitTest()).getSystem(props);
             AttributesFactory factory  = new AttributesFactory();
             cache = CacheFactory.create(ds);
             factory.setScope(Scope.DISTRIBUTED_ACK);            
@@ -113,7 +123,8 @@ public class RemoveDAckDUnitTest extends DistributedTestCase {
     }
     
     
-    public void testRemoveMultiVM(){
+  @Test
+  public void testRemoveMultiVM(){
         //Commented the Test.As it is failing @ line no 133 : AssertionFailedError
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);

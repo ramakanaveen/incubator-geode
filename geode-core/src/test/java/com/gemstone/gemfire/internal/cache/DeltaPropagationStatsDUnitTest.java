@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.DeltaTestImpl;
@@ -52,7 +61,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  * 
  */
-public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DeltaPropagationStatsDUnitTest extends JUnit4DistributedTestCase {
 
   protected static VM vm0 = null;
 
@@ -80,8 +90,8 @@ public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
 
   private static final int CLIENT_TO_SERVER = 3;
 
-  public DeltaPropagationStatsDUnitTest(String name) {
-    super(name);
+  public DeltaPropagationStatsDUnitTest() {
+    super();
   }
 
   @Override
@@ -123,6 +133,7 @@ public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testS2CDeltaPropagationCleanStats() throws Exception {
     int numOfKeys = 50;
     long updates = 50;
@@ -148,6 +159,7 @@ public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testS2CDeltaPropagationFailedStats1() throws Exception {
     int numOfKeys = 25;
     long updates = 50;
@@ -186,6 +198,7 @@ public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testP2PDeltaPropagationCleanStats() throws Exception {
     int numOfKeys = 50;
     long updates = 50;
@@ -214,6 +227,7 @@ public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testP2PDeltaPropagationFailedStats1() throws Exception {
     int numOfKeys = 50, numOfkeys2 = 10;
     long updates = 50, updates2 = 50;
@@ -258,6 +272,7 @@ public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testC2SDeltaPropagationCleanStats() throws Exception {
     int numOfKeys = 50;
     long updates = 50;
@@ -290,6 +305,7 @@ public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testC2SDeltaPropagationFailedStats1() throws Exception {
     int numOfKeys = 50;
     long updates = 50;
@@ -524,7 +540,7 @@ public class DeltaPropagationStatsDUnitTest extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    cache = new DeltaPropagationStatsDUnitTest("temp").createCache(props);
+    cache = new DeltaPropagationStatsDUnitTest().createCache(props);
     pool = PoolManager.createFactory().addServer(host, port)
         .setThreadLocalConnections(true).setMinConnections(1)
         .setSubscriptionEnabled(true).setSubscriptionRedundancy(0)

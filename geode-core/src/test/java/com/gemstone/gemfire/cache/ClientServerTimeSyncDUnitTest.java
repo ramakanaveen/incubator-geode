@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -38,10 +47,11 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class ClientServerTimeSyncDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ClientServerTimeSyncDUnitTest extends JUnit4CacheTestCase {
 
-  public ClientServerTimeSyncDUnitTest(String name) {
-    super(name);
+  public ClientServerTimeSyncDUnitTest() {
+    super();
   }
 
   @Ignore("Bug 52327")
@@ -117,6 +127,7 @@ public class ClientServerTimeSyncDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testNothing() {
     // place-holder to keep dunit runner from barfing
   }

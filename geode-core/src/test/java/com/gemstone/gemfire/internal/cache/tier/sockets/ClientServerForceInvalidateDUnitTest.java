@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import static com.jayway.awaitility.Awaitility.with;
 
 import java.util.Properties;
@@ -55,7 +64,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  * Tests client server FORCE_INVALIDATE
  */
-public class ClientServerForceInvalidateDUnitTest extends CacheTestCase
+@Category(DistributedTest.class)
+public class ClientServerForceInvalidateDUnitTest extends JUnit4CacheTestCase
 {
   private static final long serialVersionUID = 1L;
 
@@ -71,8 +81,8 @@ public class ClientServerForceInvalidateDUnitTest extends CacheTestCase
   private static VM server2;
 
   /** constructor */
-  public ClientServerForceInvalidateDUnitTest(String name) {
-    super(name);
+  public ClientServerForceInvalidateDUnitTest() {
+    super();
   }
 
   @Override
@@ -87,27 +97,35 @@ public class ClientServerForceInvalidateDUnitTest extends CacheTestCase
     return vm.invoke(() -> createServerCache(concurrencyChecksEnabled, partitioned, 0));
   }
 
+  @Test
   public void testForceInvalidateOnCachingProxyWithConcurrencyChecks() throws Exception {
     dotestForceInvalidate(true, true, false, true);
   }
+  @Test
   public void testForceInvalidateOnCachingProxyWithConcurrencyChecksOnlyOnServer() throws Exception {
     dotestForceInvalidate(true, false, false, true);
   }
+  @Test
   public void testForceInvalidateOnCachingProxyWithConcurrencyChecksOnlyOnClient() throws Exception {
     dotestForceInvalidate(false, true, false, true);
   }
+  @Test
   public void testForceInvalidateOnProxyWithConcurrencyChecks() throws Exception {
     dotestForceInvalidate(true, true, true, true);
   }
+  @Test
   public void testForceInvalidateOnProxyWithConcurrencyChecksOnlyOnServer() throws Exception {
     dotestForceInvalidate(true, false, true, true);
   }
+  @Test
   public void testForceInvalidateOnProxyWithConcurrencyChecksOnlyOnClient() throws Exception {
     dotestForceInvalidate(false, true, true, true);
   }
+  @Test
   public void testForceInvalidateOnCachingProxyWithConcurrencyChecksServerReplicated() throws Exception {
     dotestForceInvalidate(true, true, false, false);
   }
+  @Test
   public void testForceInvalidateOnProxyWithConcurrencyChecksServerReplicated() throws Exception {
     dotestForceInvalidate(true, true, true, false);
   }
@@ -124,6 +142,7 @@ public class ClientServerForceInvalidateDUnitTest extends CacheTestCase
    *    It will arrive late and not be done because of concurrency checks.
    * 7. verify that afterInvalidate was invoked on the client.
    */
+  @Test
   public void testInvalidateLosingOnConcurrencyChecks() throws Exception {
     try {
       setupServerAndClientVMs(true, true, false, false);
@@ -258,7 +277,7 @@ public class ClientServerForceInvalidateDUnitTest extends CacheTestCase
   throws Exception {
     AbstractRegionMap.FORCE_INVALIDATE_EVENT = true;
     Properties props = new Properties();
-    Cache cache = new ClientServerForceInvalidateDUnitTest("temp").createCacheV(props);
+    Cache cache = new ClientServerForceInvalidateDUnitTest().createCacheV(props);
     RegionFactory<String, String> factory = cache.createRegionFactory();
     if (partitioned) {
       factory.setDataPolicy(DataPolicy.PARTITION);
@@ -291,7 +310,7 @@ public class ClientServerForceInvalidateDUnitTest extends CacheTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    Cache cache = new ClientServerForceInvalidateDUnitTest("temp").createCacheV(props);
+    Cache cache = new ClientServerForceInvalidateDUnitTest().createCacheV(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(h, port1)
       .addServer(h, port2)
@@ -404,7 +423,7 @@ public class ClientServerForceInvalidateDUnitTest extends CacheTestCase
   private static void closeForceInvalidateCache()
   {
     AbstractRegionMap.FORCE_INVALIDATE_EVENT = false;
-    Cache cache = new ClientServerForceInvalidateDUnitTest("temp").getCache();
+    Cache cache = new ClientServerForceInvalidateDUnitTest().getCache();
     if (cache != null && !cache.isClosed()) {
       cache.close();
       cache.getDistributedSystem().disconnect();

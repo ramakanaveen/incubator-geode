@@ -22,6 +22,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -51,7 +60,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class DistAckMapMethodsDUnitTest extends JUnit4DistributedTestCase{
     static Cache cache;
     static Properties props = new Properties();
     static DistributedSystem ds = null;
@@ -65,8 +75,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
     static Object afterDestroyObj;
     
     /** Creates a new instance of DistAckMapMethodsDUnitTest */
-    public DistAckMapMethodsDUnitTest(String name) {
-        super(name);
+    public DistAckMapMethodsDUnitTest() {
+        super();
     }
     
     @Override
@@ -93,7 +103,7 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
         try{
             //props.setProperty("mcast-port", "1234");
             //ds = DistributedSystem.connect(props);
-            ds = (new DistAckMapMethodsDUnitTest("temp")).getSystem(props);
+            ds = (new DistAckMapMethodsDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
             factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -145,7 +155,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
     
     //testMethods
     
-    public void testPutMethod(){
+  @Test
+  public void testPutMethod(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -174,7 +185,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
         }
     }
     
-    public void testRemoveMethod(){
+  @Test
+  public void testRemoveMethod(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -207,7 +219,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
         }
     }
     
-    public void testRemoveMethodDetails(){
+  @Test
+  public void testRemoveMethodDetails(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -230,7 +243,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
         );
     }//end of testRemoveMethodDetails
     
-    public void testIsEmptyMethod(){
+  @Test
+  public void testIsEmptyMethod(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -254,7 +268,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
         }
     }
     
-    public void testContainsValueMethod(){
+  @Test
+  public void testContainsValueMethod(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -278,7 +293,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
         }
     }
     
-    public void testKeySetMethod(){
+  @Test
+  public void testKeySetMethod(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -311,7 +327,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
     }
     
     
-    public void testEntrySetMethod(){
+  @Test
+  public void testEntrySetMethod(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -343,7 +360,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
         }
     }
     
-    public void testSizeMethod(){
+  @Test
+  public void testSizeMethod(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -366,7 +384,8 @@ public class DistAckMapMethodsDUnitTest extends DistributedTestCase{
         }
     }
     
-    public void testallMethodsArgs(){
+  @Test
+  public void testallMethodsArgs(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         vm0.invoke(() -> DistAckMapMethodsDUnitTest.allMethodsArgs());

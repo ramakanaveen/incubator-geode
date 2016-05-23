@@ -20,6 +20,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import org.junit.Ignore;
@@ -47,13 +56,14 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  * 
  */
+@Category(DistributedTest.class)
 public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
 
   /**
    * @param name
    */
-  public GlobalRegionCCEDUnitTest(String name) {
-    super(name);
+  public GlobalRegionCCEDUnitTest() {
+    super();
   }
 
   protected boolean supportsTransactions() {
@@ -95,11 +105,13 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
   }
 
   @Override
+  @Test
   public void testLocalDestroy() throws InterruptedException {
     // replicates don't allow local destroy
   }
 
   @Override
+  @Test
   public void testEntryTtlLocalDestroy() throws InterruptedException {
     // replicates don't allow local destroy
   }
@@ -110,6 +122,7 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
    * client cache is created in vm2 and the same sort of check is performed for
    * register-interest.
    */
+  @Test
   public void testGIISendsTombstones() throws Exception {
     versionTestGIISendsTombstones();
   }
@@ -124,6 +137,7 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
    * conflation happens correctly and that the statistic is being updated
    * properly
    */
+  @Test
   public void testConcurrentEvents() throws Exception {
     versionTestConcurrentEvents();
   }
@@ -142,6 +156,7 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
 //    versionTestClearOnNonReplicateWithConcurrentEvents();
 //  }
 
+  @Test
   public void testTombstones() {
     versionTestTombstones();
   }
@@ -151,6 +166,7 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
    * tombstone has been reaped is accepted by another member that has yet to
    * reap the tombstone
    */
+  @Test
   public void testTombstoneExpirationRace() {
     VM vm0 = Host.getHost(0).getVM(0);
     VM vm1 = Host.getHost(0).getVM(1);
@@ -230,12 +246,14 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
    * conflation happens correctly and that the statistic is being updated
    * properly
    */
+  @Test
   public void testConcurrentEventsOnNonReplicatedRegion() {
     // Shobhit: Just commenting out for now as it is being fixed by Bruce.
     // TODO: uncomment the test asa the bug is fixed.
     //versionTestConcurrentEventsOnNonReplicatedRegion();
   }
 
+  @Test
   public void testGetAllWithVersions() {
     versionTestGetAllWithVersions();
   }

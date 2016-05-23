@@ -21,6 +21,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -42,11 +51,12 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class Bug33359DUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class Bug33359DUnitTest extends JUnit4DistributedTestCase {
     
     /** Creates a new instance of Bug33359DUnitTest */
-    public Bug33359DUnitTest(String name) {
-        super(name);
+    public Bug33359DUnitTest() {
+        super();
     }
     
     static Cache cache;
@@ -80,7 +90,7 @@ public class Bug33359DUnitTest extends DistributedTestCase {
     
     public static void createCacheVM0(){
         try{
-            ds = (new Bug33359DUnitTest("temp")).getSystem(props);
+            ds = (new Bug33359DUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             
             AttributesFactory factory  = new AttributesFactory();
@@ -98,7 +108,7 @@ public class Bug33359DUnitTest extends DistributedTestCase {
     } //end of create cache for VM0
     public static void createCacheVM1(){
         try{
-            ds = (new Bug33359DUnitTest("temp")).getSystem(props);
+            ds = (new Bug33359DUnitTest()).getSystem(props);
             DistributedSystem.setThreadsSocketPolicy(false);
             
             cache = CacheFactory.create(ds);
@@ -128,7 +138,8 @@ public class Bug33359DUnitTest extends DistributedTestCase {
     //test methods
     
     
-    public void testClearMultiVM(){
+  @Test
+  public void testClearMultiVM(){
         
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);

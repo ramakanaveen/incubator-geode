@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -56,7 +65,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * @since 5.1
  */
 
-public class PutAllDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class PutAllDUnitTest extends JUnit4DistributedTestCase
 {
 
   /** server1 VM **/
@@ -85,8 +95,8 @@ public class PutAllDUnitTest extends DistributedTestCase
   static CacheServerImpl server = null;
 
   /** test constructor **/
-  public PutAllDUnitTest(String name) {
-    super(name);
+  public PutAllDUnitTest() {
+    super();
   }
 
   /** get the hosts and the VMs **/
@@ -143,7 +153,7 @@ public class PutAllDUnitTest extends DistributedTestCase
   /** create the server **/
   public static Integer createServerCache() throws Exception
   {
-    new PutAllDUnitTest("temp").createCache(new Properties());
+    new PutAllDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -180,7 +190,7 @@ public class PutAllDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new PutAllDUnitTest("temp").createCache(props);
+    new PutAllDUnitTest().createCache(props);
     props.setProperty("retryAttempts", "2");
     props.setProperty("endpoints", "ep1="+host+":" + PORT1);
     props.setProperty("redundancyLevel", "-1");
@@ -211,7 +221,7 @@ public class PutAllDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new PutAllDUnitTest("temp").createCache(props);
+    new PutAllDUnitTest().createCache(props);
     props.setProperty("retryAttempts", "2");
     props.setProperty("endpoints", "ep1="+host+":" + PORT1);
     props.setProperty("redundancyLevel", "-1");
@@ -345,6 +355,7 @@ public class PutAllDUnitTest extends DistributedTestCase
    *
    * @throws Exception
    */
+  @Test
   public void testPutAll() throws Exception
   {
     setReceivedOperationToFalse();

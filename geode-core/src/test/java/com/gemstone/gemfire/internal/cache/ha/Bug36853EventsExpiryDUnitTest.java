@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -56,7 +65,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  * 
  */
-public class Bug36853EventsExpiryDUnitTest extends CacheTestCase
+@Category(DistributedTest.class)
+public class Bug36853EventsExpiryDUnitTest extends JUnit4CacheTestCase
 {
 
   /** Cache-server */
@@ -91,8 +101,8 @@ public class Bug36853EventsExpiryDUnitTest extends CacheTestCase
    * 
    * @param name
    */
-  public Bug36853EventsExpiryDUnitTest(String name) {
-    super(name);
+  public Bug36853EventsExpiryDUnitTest() {
+    super();
   }
 
   /**
@@ -140,7 +150,7 @@ public class Bug36853EventsExpiryDUnitTest extends CacheTestCase
     System.setProperty(HARegionQueue.REGION_ENTRY_EXPIRY_TIME, "1");
     System.setProperty("slowStartTimeForTesting", String
         .valueOf(DISPATCHER_SLOWSTART_TIME));
-    new Bug36853EventsExpiryDUnitTest("temp").createCache(new Properties());
+    new Bug36853EventsExpiryDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -170,7 +180,7 @@ public class Bug36853EventsExpiryDUnitTest extends CacheTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new Bug36853EventsExpiryDUnitTest("temp").createCache(props);
+    new Bug36853EventsExpiryDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     ClientServerTestCase.configureConnectionPool(factory, hostName, port.intValue(),-1, true, -1, 2, null);
@@ -239,6 +249,7 @@ public class Bug36853EventsExpiryDUnitTest extends CacheTestCase
    * @throws Exception -
    *           thrown if any exception occurs in test
    */
+  @Test
   public void testEventsExpiryBug() throws Exception
   {
     IgnoredException.addIgnoredException("Unexpected IOException");

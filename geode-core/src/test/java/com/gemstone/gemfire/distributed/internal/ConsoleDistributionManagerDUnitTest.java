@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
@@ -54,14 +63,15 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * This class tests the functionality of the {@linkplain com.gemstone.gemfire.internal.admin internal
  * admin} API.
  */
+@Category(DistributedTest.class)
 public class ConsoleDistributionManagerDUnitTest 
-  extends CacheTestCase implements AlertListener {
+  extends JUnit4CacheTestCase implements AlertListener {
 
   protected GfManagerAgent agent = null;
   private static boolean firstTime = true;
   
-  public ConsoleDistributionManagerDUnitTest(String name) {
-    super(name);
+  public ConsoleDistributionManagerDUnitTest() {
+    super();
   }
 
 //  private volatile Alert lastAlert = null;
@@ -158,12 +168,14 @@ public class ConsoleDistributionManagerDUnitTest
     }
   }
 
+  @Test
   public void testGetDistributionVMType() {
     DM dm = this.agent.getDM();
     InternalDistributedMember ipaddr = dm.getId();
     assertEquals(DistributionManager.ADMIN_ONLY_DM_TYPE, ipaddr.getVmKind());
   }
 
+  @Test
   public void testAgent() {
     assertEquals("expected empty peer array", 0, agent.listPeers().length);
     int systemCount = 0;
@@ -177,6 +189,7 @@ public class ConsoleDistributionManagerDUnitTest
     assertTrue("agent should have been disconnected", !agent.isConnected());
   }
 
+  @Test
   public void testApplications() throws Exception {
     {
       WaitCriterion ev = new WaitCriterion() {

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 
 
 import java.util.Properties;
@@ -46,7 +55,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  */
 
-public class HABugInPutDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class HABugInPutDUnitTest extends JUnit4DistributedTestCase
 {
 
   VM server1 = null;
@@ -65,8 +75,8 @@ public class HABugInPutDUnitTest extends DistributedTestCase
 
   protected static Cache cache = null;
 
-  public HABugInPutDUnitTest(String name) {
-    super(name);
+  public HABugInPutDUnitTest() {
+    super();
   }
 
   @Override
@@ -125,7 +135,7 @@ public class HABugInPutDUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new HABugInPutDUnitTest("temp").createCache(new Properties());
+    new HABugInPutDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -148,7 +158,7 @@ public class HABugInPutDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new HABugInPutDUnitTest("temp").createCache(props);
+    new HABugInPutDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     ClientServerTestCase.configureConnectionPool(factory, hostName, new int[] {PORT1,PORT2}, true, -1, 2, null);
@@ -160,6 +170,7 @@ public class HABugInPutDUnitTest extends DistributedTestCase
 
   }
 
+  @Test
   public void testBugInPut() throws Exception
   {
     client1.invoke(new CacheSerializableRunnable("putFromClient1") {

@@ -20,6 +20,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -68,6 +77,7 @@ import com.gemstone.gemfire.test.dunit.IgnoredException;
  * 
  * @since 6.5
  */
+@Category(DistributedTest.class)
 public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
   
   private final static String ALIAS1;
@@ -106,8 +116,8 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
   }
   // ////// Constructors
 
-  public CacheXml65DUnitTest(String name) {
-    super(name);
+  public CacheXml65DUnitTest() {
+    super();
   }
 
   // ////// Helper methods
@@ -120,6 +130,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
    * test for checking default value of PR_Single_Hop feature.
    * Test for checking default value of multiuser-authentication attribute.
    */
+  @Test
   public void testDefaultConnectionPool() throws CacheException {
     getSystem();
     CacheCreation cache = new CacheCreation();
@@ -171,6 +182,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
         .getMultiuserAuthentication());
   }
 
+  @Test
   public void testDiskStore() throws CacheException {
     CacheCreation cache = new CacheCreation();
     DiskStoreFactory dsf = cache.createDiskStoreFactory();
@@ -224,6 +236,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
    * test for enabling PRsingleHop feature.
    * Test for enabling multiuser-authentication attribute.
    */
+  @Test
   public void testExplicitConnectionPool() throws CacheException {
     getSystem();
     CacheCreation cache = new CacheCreation();
@@ -282,6 +295,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(true, cp.getMultiuserAuthentication());
   }
   
+  @Test
   public void testDiskStoreValidation() throws CacheException {
     CacheCreation cache = new CacheCreation();
     DiskStoreFactory dsf = cache.createDiskStoreFactory();
@@ -342,6 +356,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     testXml(cache);
   }
 
+  @Test
   public void testDiskStoreFactory() throws CacheException {
     CacheCreation cache = new CacheCreation();
     DiskStoreFactory dsf = cache.createDiskStoreFactory();
@@ -403,6 +418,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
 
     testXml(cache);
   }
+  @Test
   public void testRedefineOfDefaultDiskStore() throws CacheException {
     CacheCreation cache = new CacheCreation();
     DiskStoreFactory dsf = cache.createDiskStoreFactory();
@@ -435,6 +451,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
   /**
    * Make sure you can create a persistent partitioned region from xml.
    */
+  @Test
   public void testPersistentPartition() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -458,6 +475,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     region.localDestroyRegion();
   }
   
+  @Test
   public void testBridgeAttributesRelatedToHAOverFlow65() throws CacheException {
     CacheCreation cache = new CacheCreation();
     cache.setMessageSyncInterval(3445);
@@ -505,6 +523,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals("overFlow", dsi.getDiskDirs()[0].toString());
   }
   
+  @Test
   public void testClientSubscriptionQueueUsingDefaultDS() throws CacheException {
     CacheCreation cache = new CacheCreation();
     cache.setMessageSyncInterval(3445);
@@ -543,6 +562,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
    * for delta propogation has the correct attributes.
    * 
    */
+  @Test
   public void testTransactionWriter() throws CacheException
   {
     CacheCreation creation = new CacheCreation();
@@ -563,6 +583,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
   /**
    * Tests that a region created with a named attributes with diskstore
    */
+  @Test
   public void testDiskStoreInTemplates() throws CacheException
   {
     File dir = new File("west");
@@ -628,6 +649,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(DataPolicy.PERSISTENT_PARTITION, attrs.getDataPolicy());
   }
   
+  @Test
   public void testBackupFiles() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -640,6 +662,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Arrays.asList(new File[] {backup1, backup2}), c.getBackupFiles());
   }
 
+  @Test
   public void testClientCache() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     cache.setCopyOnRead(true);
@@ -653,6 +676,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(ClientRegionShortcut.values().length,
                  c.listRegionAttributes().size());
   }
+  @Test
   public void testNormalCache() throws CacheException {
     CacheCreation cache = new CacheCreation();
     cache.setCopyOnRead(true);
@@ -666,6 +690,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(RegionShortcut.values().length,
                  c.listRegionAttributes().size());
   }
+  @Test
   public void testPARTITION() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -679,6 +704,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertNotNull(ra.getPartitionAttributes());
     assertEquals(0, ra.getPartitionAttributes().getRedundantCopies());
   }
+  @Test
   public void testPARTITION_REDUNDANT() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -692,6 +718,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertNotNull(ra.getPartitionAttributes());
     assertEquals(1, ra.getPartitionAttributes().getRedundantCopies());
   }
+  @Test
   public void testPARTITION_PERSISTENT() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -705,6 +732,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertNotNull(ra.getPartitionAttributes());
     assertEquals(0, ra.getPartitionAttributes().getRedundantCopies());
   }
+  @Test
   public void testPARTITION_REDUNDANT_PERSISTENT() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -718,6 +746,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertNotNull(ra.getPartitionAttributes());
     assertEquals(1, ra.getPartitionAttributes().getRedundantCopies());
   }
+  @Test
   public void testPARTITION_OVERFLOW() throws CacheException {
     CacheCreation cache = new CacheCreation();
     ResourceManagerCreation rmc = new ResourceManagerCreation();
@@ -740,6 +769,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(80.0f,
                  c.getResourceManager().getCriticalHeapPercentage());
   }
+  @Test
   public void testPARTITION_REDUNDANT_OVERFLOW() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -756,6 +786,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testPARTITION_PERSISTENT_OVERFLOW() throws CacheException {
     CacheCreation cache = new CacheCreation();
     ResourceManagerCreation rmc = new ResourceManagerCreation();
@@ -777,6 +808,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(75.0f,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testPARTITION_REDUNDANT_PERSISTENT_OVERFLOW() throws CacheException {
     CacheCreation cache = new CacheCreation();
     ResourceManagerCreation rmc = new ResourceManagerCreation();
@@ -796,6 +828,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(0.0f,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testPARTITION_HEAP_LRU() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -812,6 +845,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testPARTITION_REDUNDANT_HEAP_LRU() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -829,6 +863,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
                  c.getResourceManager().getEvictionHeapPercentage());
   }
 
+  @Test
   public void testREPLICATE() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -841,6 +876,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(DataPolicy.REPLICATE, ra.getDataPolicy());
     assertEquals(Scope.DISTRIBUTED_ACK, ra.getScope());
   }
+  @Test
   public void testREPLICATE_PERSISTENT() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -853,6 +889,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(DataPolicy.PERSISTENT_REPLICATE, ra.getDataPolicy());
     assertEquals(Scope.DISTRIBUTED_ACK, ra.getScope());
   }
+  @Test
   public void testREPLICATE_OVERFLOW() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -868,6 +905,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testREPLICATE_PERSISTENT_OVERFLOW() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -883,6 +921,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testREPLICATE_HEAP_LRU() throws CacheException, IOException
   {
     CacheCreation cache = new CacheCreation();
@@ -901,6 +940,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testLOCAL() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -913,6 +953,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(DataPolicy.NORMAL, ra.getDataPolicy());
     assertEquals(Scope.LOCAL, ra.getScope());
   }
+  @Test
   public void testLOCAL_PERSISTENT() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -925,6 +966,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(DataPolicy.PERSISTENT_REPLICATE, ra.getDataPolicy());
     assertEquals(Scope.LOCAL, ra.getScope());
   }
+  @Test
   public void testLOCAL_HEAP_LRU() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -940,6 +982,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testLOCAL_OVERFLOW() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -955,6 +998,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testLOCAL_PERSISTENT_OVERFLOW() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -971,6 +1015,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
                  c.getResourceManager().getEvictionHeapPercentage());
   }
 
+  @Test
   public void testPARTITION_PROXY() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -985,6 +1030,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(0, ra.getPartitionAttributes().getRedundantCopies());
     assertEquals(0, ra.getPartitionAttributes().getLocalMaxMemory());
   }
+  @Test
   public void testPARTITION_PROXY_REDUNDANT() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -999,6 +1045,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(1, ra.getPartitionAttributes().getRedundantCopies());
     assertEquals(0, ra.getPartitionAttributes().getLocalMaxMemory());
   }
+  @Test
   public void testREPLICATE_PROXY() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1012,6 +1059,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.DISTRIBUTED_ACK, ra.getScope());
   }
 
+  @Test
   public void testPROXY() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1026,6 +1074,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.LOCAL, ra.getScope());
     assertEquals("DEFAULT", ra.getPoolName());
   }
+  @Test
   public void testCACHING_PROXY() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1040,6 +1089,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.LOCAL, ra.getScope());
     assertEquals("DEFAULT", ra.getPoolName());
   }
+  @Test
   public void testCACHING_PROXY_HEAP_LRU() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1057,6 +1107,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testCACHING_PROXY_OVERFLOW() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1074,6 +1125,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testClientLOCAL() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1088,6 +1140,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.LOCAL, ra.getScope());
     assertEquals(null, ra.getPoolName());
   }
+  @Test
   public void testClientLOCAL_HEAP_LRU() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1105,6 +1158,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testClientLOCAL_OVERFLOW() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1122,6 +1176,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
                  c.getResourceManager().getEvictionHeapPercentage());
   }
+  @Test
   public void testClientLOCAL_PERSISTENT() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)
@@ -1136,6 +1191,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.LOCAL, ra.getScope());
     assertEquals(null, ra.getPoolName());
   }
+  @Test
   public void testClientLOCAL_PERSISTENT_OVERFLOW() throws CacheException {
     ClientCacheCreation cache = new ClientCacheCreation();
     RegionCreation root = (RegionCreation)

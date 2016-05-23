@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.client.PoolFactory;
 import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.test.dunit.DistributedTestCase;
@@ -29,6 +38,7 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
  * Test reconnecting a durable client that is using
  * the locator to discover its servers
  */
+@Category(DistributedTest.class)
 public class DurableClientReconnectAutoDUnitTest extends
     DurableClientReconnectDUnitTest {
 
@@ -36,14 +46,16 @@ public class DurableClientReconnectAutoDUnitTest extends
     DistributedTestCase.disconnectAllFromDS();
   }
  
-  public DurableClientReconnectAutoDUnitTest(String name) {
-    super(name);
+  public DurableClientReconnectAutoDUnitTest() {
+    super();
   }
   
+  @Test
   public void testDurableReconnectSingleServerWithZeroConnPerServer() {
     //do nothing, this test doesn't make sense with the locator
   }
 
+  @Test
   public void testDurableReconnectSingleServer() throws Exception {
     //do nothing, this test doesn't make sense with the locator
   }

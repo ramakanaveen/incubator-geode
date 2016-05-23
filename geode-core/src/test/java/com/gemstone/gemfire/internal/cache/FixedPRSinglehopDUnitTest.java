@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,7 +68,8 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
-public class FixedPRSinglehopDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
 
   private static final long serialVersionUID = 1L;
 
@@ -95,10 +105,11 @@ public class FixedPRSinglehopDUnitTest extends CacheTestCase {
   
   private static final Date q4dateDec1 = new Date(2010, 11, 1);
   
-  public FixedPRSinglehopDUnitTest(String name) {
-    super(name);
+  public FixedPRSinglehopDUnitTest() {
+    super();
   }
   
+  @Test
   public void testNoClientConnected() {
     final Host host = Host.getHost(0);
     VM accessorServer = host.getVM(0);
@@ -155,6 +166,7 @@ public class FixedPRSinglehopDUnitTest extends CacheTestCase {
   // 2 AccessorServers, 2 Peers
   // 1 Client connected to 2 AccessorServers. Hence metadata should not be
   // fetched.
+  @Test
   public void testClientConnectedToAccessors() {
     final Host host = Host.getHost(0);
     VM accessorServer1 = host.getVM(0);
@@ -198,6 +210,7 @@ public class FixedPRSinglehopDUnitTest extends CacheTestCase {
   // Now verify that metadata has all 8 buckets info.
   // Now update and ensure the fetch service is never called.
   @Category(FlakyTest.class) // GEODE-1176: random ports, time sensitive, waitForCriterion
+  @Test
   public void test_MetadataContents() {
     
     final Host host = Host.getHost(0);
@@ -263,6 +276,7 @@ public class FixedPRSinglehopDUnitTest extends CacheTestCase {
    * the metadata are fetched and then later up one more partition and do some operations on them. It should
    * fetch new fpa. 
    */
+  @Test
   public void test_FPAmetadataFetch() {
     
     final Host host = Host.getHost(0);

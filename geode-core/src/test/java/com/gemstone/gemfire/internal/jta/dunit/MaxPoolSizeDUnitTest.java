@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -46,7 +55,8 @@ import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.util.test.TestUtil;
 
-public class MaxPoolSizeDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
 
   static DistributedSystem ds;
   static Cache cache;
@@ -69,8 +79,8 @@ public class MaxPoolSizeDUnitTest extends DistributedTestCase {
     return sb.toString();
   }
 
-  public MaxPoolSizeDUnitTest(String name) {
-    super(name);
+  public MaxPoolSizeDUnitTest() {
+    super();
   }
 
   private static String modifyFile(String str) throws IOException {
@@ -143,7 +153,7 @@ public class MaxPoolSizeDUnitTest extends DistributedTestCase {
     //	        props.setProperty("mcast-port", "10339");
     try {
       //	  	      ds = DistributedSystem.connect(props);
-      ds = (new MaxPoolSizeDUnitTest("temp")).getSystem(props);
+      ds = (new MaxPoolSizeDUnitTest()).getSystem(props);
       cache = CacheFactory.create(ds);
       if (className != null && !className.equals("")) {
         String time = new Long(System.currentTimeMillis()).toString();

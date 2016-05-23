@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.statistics;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -82,7 +91,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * @since 7.0
  */
 @SuppressWarnings("serial")
-public class StatisticsDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class StatisticsDUnitTest extends JUnit4CacheTestCase {
 
   private static final String dir = "StatisticsDUnitTest";
 
@@ -120,8 +130,8 @@ public class StatisticsDUnitTest extends CacheTestCase {
     return puts.get();
   }
   
-  public StatisticsDUnitTest(String name) {
-    super(name);
+  public StatisticsDUnitTest() {
+    super();
   }
   
   @Override
@@ -130,6 +140,7 @@ public class StatisticsDUnitTest extends CacheTestCase {
     disconnectAllFromDS(); // because this test enabled stat sampling!
   }
   
+  @Test
   public void testPubAndSubCustomStats() throws Exception {
     final String testName = "testPubAndSubCustomStats";
 

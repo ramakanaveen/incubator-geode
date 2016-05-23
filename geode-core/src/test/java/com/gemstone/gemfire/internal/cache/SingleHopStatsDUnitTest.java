@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.ClientCache;
 import com.gemstone.gemfire.cache.client.Pool;
@@ -39,7 +48,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class SingleHopStatsDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class SingleHopStatsDUnitTest extends JUnit4CacheTestCase {
 
   private final String Region_Name = "42010";
   private final String ORDER_REGION_NAME = "ORDER";
@@ -60,8 +70,8 @@ public class SingleHopStatsDUnitTest extends CacheTestCase {
   private static long nonSingleHopsCount_Shipment;
 
 
-  public SingleHopStatsDUnitTest(String name) {
-    super(name);
+  public SingleHopStatsDUnitTest() {
+    super();
   }
 
   @Override
@@ -107,6 +117,7 @@ public class SingleHopStatsDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-364: random ports, time sensitive, waitForCriterions, magic numbers (113, 226)
+  @Test
   public void testClientStatsPR() {
     Integer port0 = (Integer) member0.invoke(() -> createServerForStats(0, 113, "No_Colocation"));
     Integer port1 = (Integer) member1.invoke(() -> createServerForStats(0, 113, "No_Colocation"));
@@ -124,6 +135,7 @@ public class SingleHopStatsDUnitTest extends CacheTestCase {
     member3.invoke(() -> updatePR("FirstClient", "No_Colocation"));
   }
 
+  @Test
   public void testClientStatsColocationPR() {
     Integer port0 = (Integer) member0.invoke(() -> createServerForStats(0, 4, "Colocation"));
     Integer port1 = (Integer) member1.invoke(() -> createServerForStats(0, 4, "Colocation"));

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,10 +63,11 @@ import com.gemstone.gemfire.test.dunit.VM;
  * in its cache if K is invalid on the server.
  *
  */
-public class ClientServerInvalidAndDestroyedEntryDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ClientServerInvalidAndDestroyedEntryDUnitTest extends JUnit4CacheTestCase {
   
-  public ClientServerInvalidAndDestroyedEntryDUnitTest(String name) {
-    super(name);
+  public ClientServerInvalidAndDestroyedEntryDUnitTest() {
+    super();
   }
 
   @Override
@@ -65,21 +75,25 @@ public class ClientServerInvalidAndDestroyedEntryDUnitTest extends CacheTestCase
     disconnectAllFromDS();
   }
   
+  @Test
   public void testClientGetsInvalidEntry() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestClientGetsInvalidEntry(regionName, false, false);
   }
   
+  @Test
   public void testClientGetsInvalidEntryPR() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestClientGetsInvalidEntry(regionName, true, false);
   }
 
+  @Test
   public void testClientGetsTombstone() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestClientGetsTombstone(regionName, false, false);
   }
   
+  @Test
   public void testClientGetsTombstonePR() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestClientGetsTombstone(regionName, true, false);
@@ -91,21 +105,25 @@ public class ClientServerInvalidAndDestroyedEntryDUnitTest extends CacheTestCase
   
   
 
+  @Test
   public void testClientGetsInvalidEntryTX() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestClientGetsInvalidEntry(regionName, false, true);
   }
   
+  @Test
   public void testClientGetsInvalidEntryPRTX() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestClientGetsInvalidEntry(regionName, true, true);
   }
 
+  @Test
   public void testClientGetsTombstoneTX() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestClientGetsTombstone(regionName, false, true);
   }
 
+  @Test
   public void testClientGetsTombstonePRTX() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestClientGetsTombstone(regionName, true, true);
@@ -114,11 +132,13 @@ public class ClientServerInvalidAndDestroyedEntryDUnitTest extends CacheTestCase
   
   // tests for bug #46780, tombstones left in client after RI
   
+  @Test
   public void testRegisterInterestRemovesOldEntry() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestRegisterInterestRemovesOldEntry(regionName, false);
   }
   
+  @Test
   public void testRegisterInterestRemovesOldEntryPR() throws Exception {
     final String regionName = getUniqueName()+"Region";
     doTestRegisterInterestRemovesOldEntry(regionName, true);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 
 /**
  * Class <code>DurableClientCrashDUnitTest</code> tests durable client
@@ -24,10 +33,11 @@ package com.gemstone.gemfire.internal.cache.tier.sockets;
  * 
  * @since 5.2
  */
+@Category(DistributedTest.class)
 public class DurableClientNetDownDUnitTest extends DurableClientCrashDUnitTest {
 
-  public DurableClientNetDownDUnitTest(String name) {
-    super(name);
+  public DurableClientNetDownDUnitTest() {
+    super();
   }
   
   @Override

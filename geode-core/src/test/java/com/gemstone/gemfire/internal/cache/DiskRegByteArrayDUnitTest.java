@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Properties;
@@ -44,7 +53,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  */
 
-public class DiskRegByteArrayDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class DiskRegByteArrayDUnitTest extends JUnit4CacheTestCase {
   static Cache cache;
   static Properties props = new Properties();
   static Properties propsWork = new Properties();
@@ -55,8 +65,8 @@ public class DiskRegByteArrayDUnitTest extends CacheTestCase {
   final static byte[] value = new byte[1024];
   
    
-    public DiskRegByteArrayDUnitTest(String name) {
-        super(name);
+    public DiskRegByteArrayDUnitTest() {
+        super();
         File file1 = new File( name + "1");
         file1.mkdir();
         file1.deleteOnExit();
@@ -103,7 +113,7 @@ public class DiskRegByteArrayDUnitTest extends CacheTestCase {
     
     public static void createCacheForVM0(){
         try{
-            ds = (new DiskRegByteArrayDUnitTest("vm0_diskReg")).getSystem(props);
+            ds = (new DiskRegByteArrayDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
             factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -124,7 +134,7 @@ public class DiskRegByteArrayDUnitTest extends CacheTestCase {
     public static void createCacheForVM1(){
         try{
             
-            ds = (new DiskRegByteArrayDUnitTest("vm1_diskReg")).getSystem(props);
+            ds = (new DiskRegByteArrayDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
             factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -154,7 +164,8 @@ public class DiskRegByteArrayDUnitTest extends CacheTestCase {
     
     //test methods
  
-    public void testPutGetByteArray(){
+  @Test
+  public void testPutGetByteArray(){
         
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.rest.internal.web.controllers;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheClosedException;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -30,12 +39,13 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.util.Properties;
 
+@Category(DistributedTest.class)
 public class RestAPIsOnMembersFunctionExecutionDUnitTest extends RestAPITestBase {
 
   private static final long serialVersionUID = 1L;
 
-  public RestAPIsOnMembersFunctionExecutionDUnitTest(String name) {
-    super(name);
+  public RestAPIsOnMembersFunctionExecutionDUnitTest() {
+    super();
   }
 
   private class OnMembersFunction extends RestFunctionTemplate {
@@ -82,12 +92,12 @@ public class RestAPIsOnMembersFunctionExecutionDUnitTest extends RestAPITestBase
 
     Cache c = null;
     try {
-      c = CacheFactory.getInstance(new RestAPIsOnMembersFunctionExecutionDUnitTest("temp").getSystem(props));
+      c = CacheFactory.getInstance(new RestAPIsOnMembersFunctionExecutionDUnitTest().getSystem(props));
       c.close();
     } catch (CacheClosedException cce) {
     }
 
-    c = CacheFactory.create(new RestAPIsOnMembersFunctionExecutionDUnitTest("temp").getSystem(props));
+    c = CacheFactory.create(new RestAPIsOnMembersFunctionExecutionDUnitTest().getSystem(props));
     FunctionService.registerFunction(new OnMembersFunction());
 
     String restEndPoint = "http://" + hostName + ":" + servicePort + "/gemfire-api/v1";
@@ -100,6 +110,7 @@ public class RestAPIsOnMembersFunctionExecutionDUnitTest extends RestAPITestBase
     return OnMembersFunction.Id;
   }
 
+  @Test
   public void testFunctionExecutionOnAllMembers() {
     createCacheForVMs();
 
@@ -120,6 +131,7 @@ public class RestAPIsOnMembersFunctionExecutionDUnitTest extends RestAPITestBase
     restURLs.add(vm3.invoke("createCacheAndRegisterFunction",() -> createCacheAndRegisterFunction(vm3.getHost().getHostName(), "m4")));
   }
 
+  @Test
   public void testFunctionExecutionEOnSelectedMembers() {
     createCacheForVMs();
 
@@ -133,6 +145,7 @@ public class RestAPIsOnMembersFunctionExecutionDUnitTest extends RestAPITestBase
     restURLs.clear();
   }
 
+  @Test
   public void testFunctionExecutionOnMembersWithFilter() {
     createCacheForVMs();
 

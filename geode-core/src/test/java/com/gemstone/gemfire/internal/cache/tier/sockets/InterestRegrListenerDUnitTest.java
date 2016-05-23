@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.HashMap;
@@ -49,7 +58,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * Written to test fix for Bug #47132
  *
  */
-public class InterestRegrListenerDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class InterestRegrListenerDUnitTest extends JUnit4DistributedTestCase {
   
   private Cache cache;
   private DistributedSystem ds;
@@ -63,11 +73,11 @@ public class InterestRegrListenerDUnitTest extends DistributedTestCase {
   private static final String REGISTER_INTEREST = "RegisterInterest";
   private static final int DURABLE_CLIENT_TIMEOUT=20;  
   
-  private static InterestRegrListenerDUnitTest instance = new InterestRegrListenerDUnitTest("InterestRegrListenerDUnitTest");
+  private static InterestRegrListenerDUnitTest instance = new InterestRegrListenerDUnitTest();
 
 
-  public InterestRegrListenerDUnitTest(String name) {
-    super(name);    
+  public InterestRegrListenerDUnitTest() {
+    super();    
   }
   
   private static final long serialVersionUID = 1L;
@@ -250,6 +260,7 @@ public class InterestRegrListenerDUnitTest extends DistributedTestCase {
     instance.doClientRegionRegisterInterest(isDurable);
   }
   
+  @Test
   public void testDurableClientExit_ClientExpressedInterest() throws Exception {
     final Host host = Host.getHost(0);
     VM serverVM = host.getVM(0);
@@ -315,6 +326,7 @@ public class InterestRegrListenerDUnitTest extends DistributedTestCase {
   }
   
   
+  @Test
   public void testDurableClientExit_ServerExpressedInterest() throws Exception {
     final Host host = Host.getHost(0);
     VM serverVM = host.getVM(0);
@@ -379,6 +391,7 @@ public class InterestRegrListenerDUnitTest extends DistributedTestCase {
   
   
   
+  @Test
   public void testDurableClientExit_ServerExpressedInterest_NonDurableInterest() throws Exception {
     final Host host = Host.getHost(0);
     final VM serverVM = host.getVM(0);

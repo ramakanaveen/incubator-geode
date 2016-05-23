@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -49,7 +58,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class ColocationFailoverDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class ColocationFailoverDUnitTest extends JUnit4DistributedTestCase {
 
   private static final long serialVersionUID = 1L;
 
@@ -73,8 +83,8 @@ public class ColocationFailoverDUnitTest extends DistributedTestCase {
   public static String orderPR_Name = "ColocationFailoverDUnitTest_OrderPR" ;
   public static String shipmentPR_Name = "ColocationFailoverDUnitTest_ShipmentPR" ;
 
-  public ColocationFailoverDUnitTest(String name) {
-    super(name);
+  public ColocationFailoverDUnitTest() {
+    super();
   }
 
   @Override
@@ -86,6 +96,7 @@ public class ColocationFailoverDUnitTest extends DistributedTestCase {
     dataStore4 = host.getVM(3);
   }
 
+  @Test
   public void testPrimaryColocationFailover() throws Throwable {    
     createCacheInAllVms();
     createCustomerPR();
@@ -97,6 +108,7 @@ public class ColocationFailoverDUnitTest extends DistributedTestCase {
     verifyPrimaryColocationAfterFailover();
   }
   
+  @Test
   public void testColocationFailover() throws Throwable {
     createCacheInAllVms();
     createCustomerPR();
@@ -362,7 +374,7 @@ public class ColocationFailoverDUnitTest extends DistributedTestCase {
   }
 
   public static void createCacheInVm() {
-    new ColocationFailoverDUnitTest("temp").createCache();
+    new ColocationFailoverDUnitTest().createCache();
   }
 
   public void createCache() {

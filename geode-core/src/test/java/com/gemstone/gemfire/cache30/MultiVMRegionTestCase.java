@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import static com.gemstone.gemfire.internal.lang.ThrowableUtils.*;
 
 import java.io.ByteArrayInputStream;
@@ -164,8 +173,8 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
   final int removeRange_2End = 9;
 
-  public MultiVMRegionTestCase(String name) {
-    super(name);
+  public MultiVMRegionTestCase() {
+    super();
   }
   
   public static void caseTearDown() throws Exception {
@@ -194,6 +203,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * 4 VMs are used to
    * create the region and operations are performed on one of the nodes
    */
+  @Test
   public void testConcurrentOperations() throws Exception {
     SerializableRunnable createRegion = new CacheSerializableRunnable(
     "createRegion") {
@@ -360,6 +370,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that doing a {@link Region#put put} in a distributed region
    * one VM updates the value in another VM.
    */
+  @Test
   public void testDistributedUpdate() {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -523,6 +534,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that doing a distributed get results in a
    * <code>netSearch</code>.
    */
+  @Test
   public void testDistributedGet() {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -557,6 +569,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * in one VM does not effect a region in a different VM that does
    * not have that key defined.
    */
+  @Test
   public void testDistributedPutNoUpdate()
     throws InterruptedException {
 
@@ -613,6 +626,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * VM defines that entry.  The first VM updates the entry.  The
    * second VM should see the updated value.
    */
+  @Test
   public void testDefinedEntryUpdated() {
     final String name = this.getUniqueName();
     final Object key = "KEY";
@@ -669,6 +683,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that {@linkplain Region#destroy destroying} an entry is
    * propagated to all VMs that define that entry.
    */
+  @Test
   public void testDistributedDestroy() throws InterruptedException {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -759,6 +774,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that {@linkplain Region#destroy destroying} a region is
    * propagated to all VMs that define that region.
    */
+  @Test
   public void testDistributedRegionDestroy()
     throws InterruptedException {
 
@@ -808,6 +824,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a {@linkplain Region#localDestroy} does not effect
    * other VMs that define that entry.
    */
+  @Test
   public void testLocalDestroy() throws InterruptedException {
     if (!supportsLocalDestroyAndLocalInvalidate()) {
       return;
@@ -877,6 +894,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a {@link Region#localDestroyRegion} is not propagated
    * to other VMs that define that region.
    */
+  @Test
   public void testLocalRegionDestroy()
     throws InterruptedException {
 
@@ -925,6 +943,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that {@linkplain Region#invalidate invalidating} an entry is
    * propagated to all VMs that define that entry.
    */
+  @Test
   public void testDistributedInvalidate() {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -1000,6 +1019,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that {@linkplain Region#invalidate invalidating} an entry
    * in multiple VMs does not cause any problems.
    */
+  @Test
   public void testDistributedInvalidate4() throws InterruptedException {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -1072,6 +1092,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that {@linkplain Region#invalidateRegion invalidating} a
    * region is propagated to all VMs that define that entry.
    */
+  @Test
   public void testDistributedRegionInvalidate()
     throws InterruptedException {
     if (!supportsSubregions()) {
@@ -1166,6 +1187,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a {@link CacheListener} is invoked in a remote VM.
    */
   @Category(FlakyTest.class) // GEODE-153 & GEODE-932: time sensitive, waitForInvocation (waitForCriterion), 3 second timeouts
+  @Test
   public void testRemoteCacheListener() throws InterruptedException {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -1396,6 +1418,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   /**
    * Tests that a {@link CacheListener} is invoked in a remote VM.
    */
+  @Test
   public void testRemoteCacheListenerInSubregion() throws InterruptedException {
     if (!supportsSubregions()) {
       return;
@@ -1494,6 +1517,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a {@link CacheLoader} is invoked in a remote VM.  This
    * essentially tests <code>netLoad</code>.
    */
+  @Test
   public void testRemoteCacheLoader() throws InterruptedException {
     if (!supportsNetLoad()) {
       return;
@@ -1557,6 +1581,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that the parameter passed to a remote {@link CacheLoader}
    * is actually passed.
    */
+  @Test
   public void testRemoteCacheLoaderArg() throws InterruptedException {
     if (!supportsNetLoad()) {
       return;
@@ -1638,6 +1663,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a remote {@link CacheLoader} that throws a {@link
    * CacheLoaderException} results is propagated back to the caller.
    */
+  @Test
   public void testRemoteCacheLoaderException() throws InterruptedException {
     if (!supportsNetLoad()) {
       return;
@@ -1705,6 +1731,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   }
 
 
+  @Test
   public void testCacheLoaderWithNetSearch() throws CacheException {
     if (!supportsNetLoad()) {
       return;
@@ -1800,6 +1827,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   }
 
 
+  @Test
   public void testCacheLoaderWithNetLoad() throws CacheException {
 
 
@@ -1884,6 +1912,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that {@link Region#get} returns <code>null</code> when
    * there is no remote loader.
    */
+  @Test
   public void testNoRemoteCacheLoader() throws InterruptedException {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -1918,6 +1947,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * the remote region has an invalid entry (that is, a key, but no
    * value).
    */
+  @Test
   public void testNoLoaderWithInvalidEntry() {
     if (!supportsNetLoad()) {
       return;
@@ -1979,6 +2009,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * <code>CacheWriter</code> arguments and {@link
    * CacheWriterException}s are propagated appropriately.
    */
+  @Test
   public void testRemoteCacheWriter() throws InterruptedException {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -2364,6 +2395,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that, when given a choice, a local <code>CacheWriter</code>
    * is invoked instead of a remote one.
    */
+  @Test
   public void testLocalAndRemoteCacheWriters()
     throws InterruptedException {
 
@@ -2461,6 +2493,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * argument in place, the change is visible to the
    * <code>CacheWriter</code> even if it is in another VM.
    */
+  @Test
   public void testCacheLoaderModifyingArgument()
     throws InterruptedException {
 
@@ -2570,6 +2603,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that invoking <code>netSearch</code> in a remote loader
    * returns <code>null</code> instead of causing infinite recursion.
    */
+  @Test
   public void testRemoteLoaderNetSearch() throws CacheException {
     if (!supportsNetLoad()) {
       return;
@@ -2618,6 +2652,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   /**
    * Tests that a local loader is preferred to a remote one
    */
+  @Test
   public void testLocalCacheLoader() {
     final String name = this.getUniqueName();
     final Object key = "KEY";
@@ -2681,6 +2716,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that an entry update is propagated to other caches that
    * have that same entry defined.
    */
+  @Test
   public void testDistributedPut() throws Exception {
     final String rgnName = getUniqueName();
 
@@ -2869,6 +2905,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that keys and values are pushed with {@link
    * DataPolicy#REPLICATE}.
    */
+  @Test
   public void testReplicate() throws InterruptedException {
     if (!supportsReplication()) {
       return;
@@ -2997,6 +3034,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a Delta is applied correctly both locally and on a replicate
    * region.
    */
+  @Test
   public void testDeltaWithReplicate() throws InterruptedException {
     if (!supportsReplication()) {
       return;
@@ -3106,6 +3144,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a newly-created mirrored region contains all of the
    * entries of another region.
    */
+  @Test
   public void testGetInitialImage() {
     if (!supportsReplication()) {
       return;
@@ -3190,6 +3229,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a newly-created mirrored region contains all of the
    * entries of another region, with a large quantity of data.
    */
+  @Test
   public void testLargeGetInitialImage() {
     if (!supportsReplication()) {
       return;
@@ -3269,6 +3309,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a mirrored region gets data pushed to it from a
    * non-mirrored region and the afterCreate event is invoked on a listener.
    */
+  @Test
   public void testMirroredDataFromNonMirrored()
     throws InterruptedException {
     if (!supportsReplication()) {
@@ -3387,6 +3428,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a mirrored region does not push data to a non-mirrored
    * region.
    */
+  @Test
   public void testNoMirroredDataToNonMirrored()
     throws InterruptedException {
     if (!supportsReplication()) {
@@ -3470,6 +3512,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   /**
    * Tests that a local load occurs, even with mirroring
    */
+  @Test
   public void testMirroredLocalLoad() {
     if (!supportsReplication()) {
       return;
@@ -3547,6 +3590,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests sure that a <code>netLoad</code> occurs, even with
    * mirroring
    */
+  @Test
   public void testMirroredNetLoad() {
     if (!supportsReplication()) {
       return;
@@ -3610,6 +3654,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   /**
    * Tests that a region is not kept alive
    */
+  @Test
   public void testNoRegionKeepAlive() throws InterruptedException {
     final String name = this.getUniqueName();
     final Object key = "KEEP_ALIVE_KEY";
@@ -3655,6 +3700,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
 
 
+  @Test
   public void testNetSearchObservesTtl()
   throws InterruptedException
   {
@@ -3744,6 +3790,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     });
   }
 
+  @Test
   public void testNetSearchObservesIdleTime()
   throws InterruptedException
   {
@@ -3843,6 +3890,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * destroy causes an event in other VM with isExpiration flag set.
    */
   @Category(FlakyTest.class) // GEODE-583: time sensitive, expiration, waitForCriterion, short timeouts
+  @Test
   public void testEntryTtlDestroyEvent() throws InterruptedException {
       
       if(getRegionAttributes().getPartitionAttributes() != null)
@@ -4000,6 +4048,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * destroy after a given time to live.
    */
   @Category(FlakyTest.class) // GEODE-671: time sensitive, expiration, retry loop, async actions, waitForCriterion
+  @Test
   public void testEntryTtlLocalDestroy() throws InterruptedException {
       if(getRegionAttributes().getPartitionAttributes() != null)
         return;
@@ -4168,7 +4217,8 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
      * Tests to makes sure that a distributed update resets the
      * expiration timer.
      */
-    public void testUpdateResetsIdleTime() throws InterruptedException {
+  @Test
+  public void testUpdateResetsIdleTime() throws InterruptedException {
 
       final String name = this.getUniqueName();
       // test no longer waits for this timeout to expire
@@ -4263,6 +4313,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that distributed ack operations do not block while
    * another cache is doing a getInitialImage.
    */
+  @Test
   public void testNonblockingGetInitialImage() throws Throwable {
     if (!supportsReplication()) {
       return;
@@ -4593,6 +4644,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that distributed ack operations do not block while
    * another cache is doing a getInitialImage.
    */
+  @Test
   public void testTXNonblockingGetInitialImage() throws Throwable {
     if (!supportsReplication()) {
       return;
@@ -5234,6 +5286,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       });
   }
 
+  @Test
   public void testNBRegionDestructionDuringGetInitialImage() throws Throwable {
     if (!supportsReplication()) {
       return;
@@ -5450,6 +5503,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    *
    * @since 3.5
    */
+  @Test
   public void testNoDataSerializer() {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -5602,6 +5656,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    *
    * @since 3.5
    */
+  @Test
   public void testNoInstantiator() {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
@@ -6037,6 +6092,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that an entry update is propagated to other caches that
    * have that same entry defined.
    */
+  @Test
   public void testTXSimpleOps() throws Exception {
     if (!supportsTransactions()) {
       return;
@@ -6332,6 +6388,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that the push of a loaded value does not cause a conflict
    * on the side receiving the update
    */
+  @Test
   public void testTXUpdateLoadNoConflict() throws Exception {
     /*
      * this no longer holds true - we have load conflicts now
@@ -6575,6 +6632,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
   }
 
+  @Test
   public void testTXMultiRegion() throws Exception {
     if (!supportsTransactions()) {
       return;
@@ -7316,6 +7374,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
   }
 
+  @Test
   public void testTXRmtMirror() throws Exception {
     if (!supportsTransactions()) {
       return;

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.DataSerializable;
 import com.gemstone.gemfire.DataSerializer;
 import com.gemstone.gemfire.cache.*;
@@ -52,7 +61,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @since 5.0.1
  */
-public class QueryUsingPoolDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class QueryUsingPoolDUnitTest extends JUnit4CacheTestCase {
 
   /**
    * The port on which the bridge server was started in this VM
@@ -78,8 +88,8 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Creates a new <code>GemFireMemberStatusDUnitTest</code>
    */
-  public QueryUsingPoolDUnitTest(String name) {
-    super(name);
+  public QueryUsingPoolDUnitTest() {
+    super();
   }
 
   ////////  Test Methods
@@ -130,6 +140,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests remote import query execution.
    */
+  @Test
   public void testRemoteImportQueries() throws CacheException {
 
     final String name = this.getName();
@@ -248,6 +259,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests remote struct query execution.
    */
+  @Test
   public void testRemoteStructQueries() throws CacheException {
 
     final String name = this.getName();
@@ -370,6 +382,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests remote full region query execution.
    */
+  @Test
   public void testRemoteFullRegionQueries() throws CacheException {
 
     final String name = this.getName();
@@ -539,6 +552,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests client-server query using parameters (compiled queries).
    */
+  @Test
   public void testClientServerQueriesWithParams() throws CacheException {
     final Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -647,6 +661,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests client-server query using parameters (compiled queries).
    */
+  @Test
   public void testMulitipleClientServerQueriesWithParams() throws CacheException {
     final Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -762,6 +777,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests client-server compiled query register and cleanup.
    */
+  @Test
   public void testClientServerCompiledQueryRegisterAndCleanup() throws CacheException {
 
     final String name = this.getName();
@@ -820,6 +836,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests client-server compiled query register and cleanup.
    */
+  @Test
   public void testClientServerCompiledQueryTimeBasedCleanup() throws CacheException {
 
     final String name = this.getName();
@@ -903,6 +920,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
    * It creates the client connections without the subscription
    * enabled. This doesn't create any client proxy on the server.
    */
+  @Test
   public void testClientServerCompiledQueryCleanup() throws CacheException {
 
     final String name = this.getName();
@@ -996,6 +1014,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
    * Tests client-server query using parameters (compiled queries).
    */
   @Category(FlakyTest.class) // GEODE-1146: time senstiive, thread sleeps, uses zero port for servers (good!), async actions, AsyncInvocation orphans
+  @Test
   public void testBindParamsWithMulitipleClients() throws CacheException {
 
     final Host host = Host.getHost(0);
@@ -1118,6 +1137,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests remote join query execution.
    */
+  @Test
   public void testRemoteJoinRegionQueries() throws CacheException {
 
     final String name = this.getName();
@@ -1202,6 +1222,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
    * Tests remote query execution using a BridgeClient as the CacheWriter
    * and CacheLoader.
    */
+  @Test
   public void testRemoteBridgeClientQueries() throws CacheException {
 
     final String name = this.getName();
@@ -1295,6 +1316,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
    * @throws Exception
    */
 
+  @Test
   public void testBug36969() throws Exception {
     final String name = this.getName();
     final String rootRegionName = "root";
@@ -1366,6 +1388,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
   /**
    * Tests remote full region query execution.
    */
+  @Test
   public void testRemoteSortQueriesUsingIndex() throws CacheException {
     final String name = this.getName();
     final String rootRegionName = "root";
@@ -1498,6 +1521,7 @@ public class QueryUsingPoolDUnitTest extends CacheTestCase {
     vm0.invoke("Stop CacheServer", () -> stopBridgeServer(getCache()));
   }
 
+  @Test
   public void testUnSupportedOps() throws Exception {
     final String name = this.getName();
     final String rootRegionName = "root";

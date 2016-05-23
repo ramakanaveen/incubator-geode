@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.Properties;
 
@@ -69,7 +78,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  * @since 6.1
  */
-public class DeltaPropagationDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   private final static Compressor compressor = SnappyCompressor.getDefaultInstance();
   
   protected static Cache cache = null;
@@ -145,8 +155,8 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
   /**
    * @param name
    */
-  public DeltaPropagationDUnitTest(String name) {
-    super(name);
+  public DeltaPropagationDUnitTest() {
+    super();
   }
 
   @Override
@@ -179,6 +189,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     disconnectAllFromDS();
   }
 
+  @Test
   public void testS2CSuccessfulDeltaPropagationWithCompression() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache(
             HARegionQueue.HA_EVICTION_POLICY_NONE, new Integer(1),
@@ -211,6 +222,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     assertTrue(listenerError.toString(), areListenerResultsValid);
   }
   
+  @Test
   public void testS2CSuccessfulDeltaPropagation() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -236,6 +248,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     assertTrue(listenerError.toString(), areListenerResultsValid);
   }
 
+  @Test
   public void testS2CFailureInToDeltaMethod() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -270,6 +283,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     assertTrue(listenerError.toString(), areListenerResultsValid);
   }
 
+  @Test
   public void testS2CFailureInFromDeltaMethod() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -298,6 +312,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     assertTrue(listenerError.toString(), areListenerResultsValid);
   }
 
+  @Test
   public void testS2CWithOldValueAtClientOverflownToDisk() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -332,6 +347,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     assertTrue(listenerError.toString(), areListenerResultsValid);
   }
 
+  @Test
   public void testS2CWithLocallyDestroyedOldValueAtClient() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -366,6 +382,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     verifyData(4, EVENTS_SIZE - 2);
   }
 
+  @Test
   public void testS2CWithInvalidatedOldValueAtClient() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -395,6 +412,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     assertTrue(listenerError.toString(), areListenerResultsValid);
   }
 
+  @Test
   public void testS2CDeltaPropagationWithClientConflationON() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -414,6 +432,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
         .getFromDeltaInvokations().longValue() == 0);
   }
 
+  @Test
   public void testS2CDeltaPropagationWithServerConflationON() throws Exception {
     VM0.invoke(() -> DeltaPropagationDUnitTest.closeCache());
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache(
@@ -446,6 +465,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
         (fromDeltaInvocations == (EVENTS_SIZE - 1)));
   }
 
+  @Test
   public void testS2CDeltaPropagationWithOnlyCreateEvents() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -468,6 +488,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testC2S2SDeltaPropagation() throws Exception {
     prepareDeltas();
     VM0.invoke(() -> DeltaPropagationDUnitTest.prepareDeltas());
@@ -515,6 +536,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
         .deltaFeatureUsed());
   }
 
+  @Test
   public void testS2S2CDeltaPropagationWithHAOverflow() throws Exception {
     prepareDeltas();
     VM0.invoke(() -> DeltaPropagationDUnitTest.prepareDeltas());
@@ -562,6 +584,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
         + fromDeltasOnClient, fromDeltasOnClient == (EVENTS_SIZE - 1));
   }
 
+  @Test
   public void testS2CDeltaPropagationWithGIIAndFailover() throws Exception {
     prepareDeltas();
     VM0.invoke(() -> DeltaPropagationDUnitTest.prepareDeltas());
@@ -630,6 +653,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     }
   }
 
+  @Test
   public void testBug40165ClientReconnects() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -700,6 +724,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
 
   }
 
+  @Test
   public void testBug40165ClientFailsOver() throws Exception {
     PORT1 = ((Integer)VM0.invoke(() -> DeltaPropagationDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_MEMORY ))).intValue();
     
@@ -1080,7 +1105,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
   public static Integer createServerCache(String ePolicy, Integer cap,
       Integer listenerCode, Boolean conflate, Compressor compressor) throws Exception {
     ConnectionTable.threadWantsSharedResources();
-    new DeltaPropagationDUnitTest("temp").createCache(new Properties());
+    new DeltaPropagationDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setEnableSubscriptionConflation(conflate);
     if (listenerCode.intValue() != 0) {
@@ -1331,7 +1356,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
     props.setProperty(DistributionConfig.CLIENT_CONFLATION_PROP_NAME, conflate);
-    new DeltaPropagationDUnitTest("temp").createCache(props);
+    new DeltaPropagationDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     pool = ClientServerTestCase.configureConnectionPool(factory, "localhost", ports,
         true, Integer.parseInt(rLevel), 2, null, 1000, 250, false, -2);
@@ -1394,7 +1419,7 @@ public class DeltaPropagationDUnitTest extends DistributedTestCase {
 
   public static void createDurableCacheClient(Pool poolAttr, String regionName,
       Properties dsProperties, Integer listenerCode, Boolean close) throws Exception {
-    new DeltaPropagationDUnitTest("temp").createCache(dsProperties);
+    new DeltaPropagationDUnitTest().createCache(dsProperties);
     PoolFactoryImpl pf = (PoolFactoryImpl)PoolManager.createFactory();
     pf.init(poolAttr);
     PoolImpl p = (PoolImpl)pf.create("DeltaPropagationDUnitTest");

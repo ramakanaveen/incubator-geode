@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -44,7 +53,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  */
 @SuppressWarnings("serial")
-public class DurableClientQueueSizeDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
 
   private static VM vm0 = null;
   private static VM vm1 = null;
@@ -70,8 +80,8 @@ public class DurableClientQueueSizeDUnitTest extends DistributedTestCase {
   /**
    * @param name
    */
-  public DurableClientQueueSizeDUnitTest(String name) {
-    super(name);
+  public DurableClientQueueSizeDUnitTest() {
+    super();
   }
 
   @Override
@@ -98,6 +108,7 @@ public class DurableClientQueueSizeDUnitTest extends DistributedTestCase {
     vm1.invoke(() -> DurableClientQueueSizeDUnitTest.closeCache());
   }
 
+  @Test
   public void testNonDurableClientFails() throws Exception {
     vm2.invoke(DurableClientQueueSizeDUnitTest.class, "createClientCache",
         new Object[] { vm2.getHost(), new Integer[] { port0, port1 }, false });
@@ -129,6 +140,7 @@ public class DurableClientQueueSizeDUnitTest extends DistributedTestCase {
 
   }
 
+  @Test
   public void testSinglePoolClientReconnectsAfterTimeOut() throws Exception {
     int num = 10;
     long timeoutSeconds = 10;
@@ -151,6 +163,7 @@ public class DurableClientQueueSizeDUnitTest extends DistributedTestCase {
     vm2.invoke(() -> DurableClientQueueSizeDUnitTest.verifyQueueSize( PoolImpl.PRIMARY_QUEUE_TIMED_OUT ));
   }
 
+  @Test
   public void testPrimaryServerRebootReturnsCorrectResponse() throws Exception {
     int num = 10;
     vm2.invoke(DurableClientQueueSizeDUnitTest.class, "createClientCache",

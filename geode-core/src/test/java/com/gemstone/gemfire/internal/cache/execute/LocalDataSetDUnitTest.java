@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -52,7 +61,8 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class LocalDataSetDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class LocalDataSetDUnitTest extends JUnit4CacheTestCase {
 
   private static final long serialVersionUID = 1L;
 
@@ -70,8 +80,8 @@ public class LocalDataSetDUnitTest extends CacheTestCase {
 
   protected static Region shipmentPR = null;
 
-  public LocalDataSetDUnitTest(String name) {
-    super(name);
+  public LocalDataSetDUnitTest() {
+    super();
   }
 
   @Override
@@ -83,6 +93,7 @@ public class LocalDataSetDUnitTest extends CacheTestCase {
     accessor = host.getVM(3);
   }
 
+  @Test
   public void testLocalDataSet() {
     createCacheInAllVms();
     createCustomerPR();
@@ -93,6 +104,7 @@ public class LocalDataSetDUnitTest extends CacheTestCase {
     executeFunctions();
   }
 
+  @Test
   public void testLocalDataSetIteration() {
     createCacheInAllVms();
     createCustomerPR();
@@ -242,7 +254,7 @@ public class LocalDataSetDUnitTest extends CacheTestCase {
   }
 
   public static void createCacheInVm() {
-    new LocalDataSetDUnitTest("temp").createCache();
+    new LocalDataSetDUnitTest().createCache();
   }
 
   public void createCache() {

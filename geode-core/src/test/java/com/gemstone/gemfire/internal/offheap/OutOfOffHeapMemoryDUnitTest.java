@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.offheap;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -55,15 +64,16 @@ import static org.hamcrest.CoreMatchers.equalTo;
  * 
  */
 @SuppressWarnings("serial")
-public class OutOfOffHeapMemoryDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class OutOfOffHeapMemoryDUnitTest extends JUnit4CacheTestCase {
   private static final Logger logger = LogService.getLogger();
   
   protected static final AtomicReference<Cache> cache = new AtomicReference<Cache>();
   protected static final AtomicReference<DistributedSystem> system = new AtomicReference<DistributedSystem>();
   protected static final AtomicBoolean isSmallerVM = new AtomicBoolean();
   
-  public OutOfOffHeapMemoryDUnitTest(String name) {
-    super(name);
+  public OutOfOffHeapMemoryDUnitTest() {
+    super();
   }
 
   @Override
@@ -128,6 +138,7 @@ public class OutOfOffHeapMemoryDUnitTest extends CacheTestCase {
     return props;
   }
   
+  @Test
   public void testSimpleOutOfOffHeapMemoryMemberDisconnects() {
     final DistributedSystem system = getSystem();
     final Cache cache = getCache();
@@ -198,6 +209,7 @@ public class OutOfOffHeapMemoryDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testOtherMembersSeeOutOfOffHeapMemoryMemberDisconnects() {
     final int vmCount = Host.getHost(0).getVMCount();
 

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -46,10 +55,11 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  * @since 5.7
  */
-public class GridAdvisorDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class GridAdvisorDUnitTest extends JUnit4DistributedTestCase {
 
-  public GridAdvisorDUnitTest(String name) {
-    super(name);
+  public GridAdvisorDUnitTest() {
+    super();
   }
 
   ////////  Test Methods
@@ -57,6 +67,7 @@ public class GridAdvisorDUnitTest extends DistributedTestCase {
   /**
    * Tests 2 controllers and 2 bridge servers
    */
+  @Test
   public void test2by2() throws Exception {
     disconnectAllFromDS();
 
@@ -566,6 +577,7 @@ public class GridAdvisorDUnitTest extends DistributedTestCase {
       });
     vm3.invoke(stopLocator);
   }
+  @Test
   public void test2by2usingGroups() throws Exception {
     disconnectAllFromDS();
 

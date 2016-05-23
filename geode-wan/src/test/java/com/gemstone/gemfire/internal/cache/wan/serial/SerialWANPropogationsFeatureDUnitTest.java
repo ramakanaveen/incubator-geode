@@ -16,17 +16,28 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.serial;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
 
 
+@Category(DistributedTest.class)
 public class SerialWANPropogationsFeatureDUnitTest extends WANTestBase{
 
   private static final long serialVersionUID = 1L;
 
-  public SerialWANPropogationsFeatureDUnitTest(String name) {
-    super(name);
+  public SerialWANPropogationsFeatureDUnitTest() {
+    super();
   }
 
+  @Test
   public void testSerialReplicatedWanWithOverflow() {
 
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -67,6 +78,7 @@ public class SerialWANPropogationsFeatureDUnitTest extends WANTestBase{
         getTestMethodName() + "_RR", 120, 240000 ));
   }
 
+  @Test
   public void testSerialReplicatedWanWithPersistence() {
 
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -108,6 +120,7 @@ public class SerialWANPropogationsFeatureDUnitTest extends WANTestBase{
 
   }
 
+  @Test
   public void testReplicatedSerialPropagationWithConflation() throws Exception {
 
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -148,6 +161,7 @@ public class SerialWANPropogationsFeatureDUnitTest extends WANTestBase{
         getTestMethodName() + "_RR", 1000 ));
   }
   
+  @Test
   public void testReplicatedSerialPropagationWithParallelThreads()
       throws Exception {
 
@@ -189,6 +203,7 @@ public class SerialWANPropogationsFeatureDUnitTest extends WANTestBase{
         getTestMethodName() + "_RR", 1000 ));
   }
   
+  @Test
   public void testSerialPropogationWithFilter() throws Exception {
 
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId(1));
@@ -228,6 +243,7 @@ public class SerialWANPropogationsFeatureDUnitTest extends WANTestBase{
         getTestMethodName(), 800 ));
   }
 
+  @Test
   public void testReplicatedSerialPropagationWithFilter() throws Exception {
 
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
@@ -269,6 +285,7 @@ public class SerialWANPropogationsFeatureDUnitTest extends WANTestBase{
         getTestMethodName(), 800 ));
   }
   
+  @Test
   public void testReplicatedSerialPropagationWithFilter_AfterAck()
       throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));

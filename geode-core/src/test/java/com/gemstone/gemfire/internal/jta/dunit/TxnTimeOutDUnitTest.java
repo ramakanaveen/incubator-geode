@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -47,15 +56,16 @@ import com.gemstone.gemfire.util.test.TestUtil;
 /**
 *This test sees if the TransactionTimeOut works properly
 */
-public class TxnTimeOutDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class TxnTimeOutDUnitTest extends JUnit4DistributedTestCase {
 
   static DistributedSystem ds;
   static Cache cache = null;
   private static String tblName;
   private boolean exceptionOccured = false;
 
-  public TxnTimeOutDUnitTest(String name) {
-    super(name);
+  public TxnTimeOutDUnitTest() {
+    super();
   }
 
   public static void init() throws Exception {
@@ -74,7 +84,7 @@ public class TxnTimeOutDUnitTest extends DistributedTestCase {
     props.setProperty("log-level", LogWriterUtils.getDUnitLogLevel());
     try {
 //      ds = DistributedSystem.connect(props);
-      ds = (new TxnTimeOutDUnitTest("temp")).getSystem(props);
+      ds = (new TxnTimeOutDUnitTest()).getSystem(props);
       if (cache == null || cache.isClosed()) cache = CacheFactory.create(ds);
     }
     catch (Exception e) {
@@ -128,6 +138,7 @@ public class TxnTimeOutDUnitTest extends DistributedTestCase {
     vm0.invoke(() -> TxnTimeOutDUnitTest.closeCache());
   }
 
+  @Test
   public void testMultiThreaded() throws NamingException, SQLException,Throwable {
     try{
 	Host host = Host.getHost(0);

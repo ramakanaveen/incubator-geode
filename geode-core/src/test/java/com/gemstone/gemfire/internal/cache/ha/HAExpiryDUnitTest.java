@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -52,7 +61,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  *
  */
 
-public class HAExpiryDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class HAExpiryDUnitTest extends JUnit4DistributedTestCase
 {
 
   VM vm0 = null;
@@ -73,8 +83,8 @@ public class HAExpiryDUnitTest extends DistributedTestCase
 
   protected static int regionQueueSize = -1;
 
-  public HAExpiryDUnitTest(String name) {
-    super(name);
+  public HAExpiryDUnitTest() {
+    super();
   }
 
   /**
@@ -103,6 +113,7 @@ public class HAExpiryDUnitTest extends DistributedTestCase
     Invoke.invokeInEveryVM(new SerializableRunnable() { public void run() { cache = null; } });
   }
 
+  @Test
   public void testExpiryPeriod() throws Exception
   {
     vm0.invoke(() -> HAExpiryDUnitTest.createRegionQueue(new Boolean(false)));
@@ -132,6 +143,7 @@ public class HAExpiryDUnitTest extends DistributedTestCase
     vm3.invoke(() -> HAExpiryDUnitTest.checkSizeAfterExpiration());
   }
   
+  @Test
   public void testDurableExpiryPeriod() throws Exception
   {
     vm0.invoke(() -> HAExpiryDUnitTest.createRegionQueue(new Boolean(true)));
@@ -234,7 +246,7 @@ public class HAExpiryDUnitTest extends DistributedTestCase
 
   public static void createRegionQueue(Boolean isDurable) throws Exception
   {
-    new HAExpiryDUnitTest("temp").createCache(new Properties());
+    new HAExpiryDUnitTest().createCache(new Properties());
     HARegionQueueAttributes hattr = new HARegionQueueAttributes();
     // setting expiry time for the regionqueue.
     hattr.setExpiryTime(4);

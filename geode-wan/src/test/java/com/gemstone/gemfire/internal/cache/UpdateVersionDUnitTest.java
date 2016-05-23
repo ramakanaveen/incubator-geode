@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -67,7 +76,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  * @since 7.0.1
  */
-public class UpdateVersionDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class UpdateVersionDUnitTest extends JUnit4DistributedTestCase {
 
   protected static final String regionName = "testRegion";
   protected static Cache cache;
@@ -75,8 +85,8 @@ public class UpdateVersionDUnitTest extends DistributedTestCase {
 
   
   
-  public UpdateVersionDUnitTest(String name) {
-    super(name);
+  public UpdateVersionDUnitTest() {
+    super();
   }
   
   @Override
@@ -87,6 +97,7 @@ public class UpdateVersionDUnitTest extends DistributedTestCase {
      } });
   }
   
+  @Test
   public void testUpdateVersionAfterCreateWithSerialSender() {
 
     Host host = Host.getHost(0);
@@ -225,6 +236,7 @@ public class UpdateVersionDUnitTest extends DistributedTestCase {
     assertEquals("Local and remote site have different timestamps", tag.getVersionTimeStamp(), remoteTag.getVersionTimeStamp());
   }
 
+  @Test
   public void testUpdateVersionAfterCreateWithSerialSenderOnDR() {
 
     Host host = Host.getHost(0);
@@ -350,6 +362,7 @@ public class UpdateVersionDUnitTest extends DistributedTestCase {
     assertEquals("Local and remote site have different timestamps", tag.getVersionTimeStamp(), remoteTag.getVersionTimeStamp());
   }
 
+  @Test
   public void testUpdateVersionAfterCreateWithParallelSender() {
 
     Host host = Host.getHost(0);
@@ -489,6 +502,7 @@ public class UpdateVersionDUnitTest extends DistributedTestCase {
     assertEquals("Local and remote site have different timestamps", tag.getVersionTimeStamp(), remoteTag.getVersionTimeStamp());
   }
 
+  @Test
   public void testUpdateVersionAfterCreateWithConcurrentSerialSender() {
 
     Host host = Host.getHost(0);

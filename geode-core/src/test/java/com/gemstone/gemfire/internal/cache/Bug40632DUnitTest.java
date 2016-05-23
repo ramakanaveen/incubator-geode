@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
@@ -60,15 +69,17 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class Bug40632DUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class Bug40632DUnitTest extends JUnit4CacheTestCase {
 
   /**
    * @param name
    */
-  public Bug40632DUnitTest(String name) {
-    super(name);
+  public Bug40632DUnitTest() {
+    super();
   }
   
+  @Test
   public void testLocalDestroyIdleTimeout() {
     Cache cache = getCache();
     AttributesFactory attr = new AttributesFactory();
@@ -88,6 +99,7 @@ public class Bug40632DUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testLocalDestroyTimeToLive() {
     Cache cache = getCache();
     AttributesFactory attr = new AttributesFactory();
@@ -107,6 +119,7 @@ public class Bug40632DUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testLocalInvalidateIdleTimeout() {
     Cache cache = getCache();
     AttributesFactory attr = new AttributesFactory();
@@ -126,6 +139,7 @@ public class Bug40632DUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testLocalInvalidateTimeToLive() {
     Cache cache = getCache();
     AttributesFactory attr = new AttributesFactory();

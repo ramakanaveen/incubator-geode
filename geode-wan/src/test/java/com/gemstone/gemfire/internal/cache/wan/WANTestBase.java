@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -127,7 +136,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.util.test.TestUtil;
 import com.jayway.awaitility.Awaitility;
 
-public class WANTestBase extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class WANTestBase extends JUnit4DistributedTestCase{
 
   protected static Cache cache;
   protected static Region region;
@@ -164,8 +174,8 @@ public class WANTestBase extends DistributedTestCase{
   //this will be set for each test method run with one of the values from above list
   protected static int numDispatcherThreadsForTheRun = 1;
 
-  public WANTestBase(String name) {
-    super(name);
+  public WANTestBase() {
+    super();
   }
 
   @Override

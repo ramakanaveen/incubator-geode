@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -61,11 +70,12 @@ import com.gemstone.gemfire.util.test.TestUtil;
  *  
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TxnManagerMultiThreadDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class TxnManagerMultiThreadDUnitTest extends JUnit4DistributedTestCase {
 
   /////constructor/////
-  public TxnManagerMultiThreadDUnitTest(String name) {
-    super(name);
+  public TxnManagerMultiThreadDUnitTest() {
+    super();
   }
 
   public static DistributedSystem ds;
@@ -202,7 +212,7 @@ public class TxnManagerMultiThreadDUnitTest extends DistributedTestCase {
     //    props.setProperty("mcast-port", "10339");
     try {
       //        ds = DistributedSystem.connect(props);
-      ds = (new TxnManagerMultiThreadDUnitTest("temp")).getSystem(props);
+      ds = (new TxnManagerMultiThreadDUnitTest()).getSystem(props);
       CacheUtils.ds = ds;
       cache = CacheFactory.create(ds);
       if (className != null && !className.equals("")) {
@@ -514,5 +524,6 @@ public class TxnManagerMultiThreadDUnitTest extends DistributedTestCase {
    *  
    */
 
-   public void testFoo() {}
+  @Test
+  public void testFoo() {}
 }

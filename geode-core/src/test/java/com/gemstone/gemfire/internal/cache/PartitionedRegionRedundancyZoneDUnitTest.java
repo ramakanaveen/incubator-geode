@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -33,7 +42,8 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class PartitionedRegionRedundancyZoneDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class PartitionedRegionRedundancyZoneDUnitTest extends JUnit4CacheTestCase {
 
   @Override
   public final void postTearDownCacheTestCase() throws Exception {
@@ -44,14 +54,15 @@ public class PartitionedRegionRedundancyZoneDUnitTest extends CacheTestCase {
     disconnectAllFromDS();
   }
   
-  public PartitionedRegionRedundancyZoneDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionRedundancyZoneDUnitTest() {
+    super();
   }
 
   /**
    * Test that we don't try to put buckets in the same
    * zone when we don't have enough zones.
    */
+  @Test
   public void testNotEnoughZones() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

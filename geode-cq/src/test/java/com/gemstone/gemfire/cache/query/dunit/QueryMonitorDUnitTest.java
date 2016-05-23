@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -66,7 +75,8 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  * Tests for QueryMonitoring service.
  * @since 6.0
  */
-public class QueryMonitorDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class QueryMonitorDUnitTest extends JUnit4CacheTestCase {
 
   private static int bridgeServerPort;
 
@@ -137,8 +147,8 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
   
   private int numServers;
 
-  public QueryMonitorDUnitTest(String name) {
-    super(name);
+  public QueryMonitorDUnitTest() {
+    super();
   }
 
   public void setup(int numServers) throws Exception {
@@ -310,6 +320,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
   /**
    * Tests query execution from client to server (single server).
    */
+  @Test
   public void testQueryMonitorClientServer() throws Exception {
 
     setup(1);
@@ -386,6 +397,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
   /**
    * Tests query execution from client to server (multi server).
    */
+  @Test
   public void testQueryMonitorMultiClientMultiServer() throws Exception {
 
     setup(2);
@@ -476,6 +488,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
    * Tests query execution on local vm.
    */
   @Category(FlakyTest.class) // GEODE-577: eats exceptions
+  @Test
   public void testQueryExecutionLocally() throws Exception {
 
     setup(2);
@@ -554,6 +567,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
   /**
    * Tests query execution on local vm.
    */
+  @Test
   public void testQueryExecutionLocallyAndCacheOp() throws Exception {
 
     setup(2);
@@ -640,6 +654,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
   /**
    * Tests query execution from client to server (multiple server) on Partition Region .
    */
+  @Test
   public void testQueryMonitorOnPR() throws Exception {
 
     setup(2);
@@ -723,6 +738,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
   /**
    * Tests query execution on Partition Region, executes query locally.
    */
+  @Test
   public void testQueryMonitorWithLocalQueryOnPR() throws Exception {
 
     setup(2);
@@ -878,6 +894,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
   /**
    * Tests query execution on region with indexes.
    */
+  @Test
   public void testQueryMonitorRegionWithIndex() throws Exception {
 
     setup(2);
@@ -1011,6 +1028,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
    * and is not affecting other query related tests.
    * @throws Exception
    */
+  @Test
   public void testCQWithDestroysAndInvalidates() throws Exception
   {
     setup(1);
@@ -1088,6 +1106,7 @@ public class QueryMonitorDUnitTest extends CacheTestCase {
   /**
    * Tests cache operation right after query cancellation.
    */
+  @Test
   public void testCacheOpAfterQueryCancel() throws Exception {
 
     setup(4);

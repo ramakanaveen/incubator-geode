@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.LogWriter;
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.EvictionAction;
@@ -39,7 +48,8 @@ import com.gemstone.gemfire.test.dunit.standalone.DUnitLauncher;
  * This class is extended by some PartitionedRegion related DUnit test cases 
  *
  */
-public class PartitionedRegionDUnitTestCase extends CacheTestCase
+@Category(DistributedTest.class)
+public class PartitionedRegionDUnitTestCase extends JUnit4CacheTestCase
 {
   static int oldLogLevel;
   public void setVMInfoLogLevel() {
@@ -84,8 +94,8 @@ public class PartitionedRegionDUnitTestCase extends CacheTestCase
     return ret;
   }
 
-  public PartitionedRegionDUnitTestCase(String name) {
-    super(name);
+  public PartitionedRegionDUnitTestCase() {
+    super();
   }
 
   /**

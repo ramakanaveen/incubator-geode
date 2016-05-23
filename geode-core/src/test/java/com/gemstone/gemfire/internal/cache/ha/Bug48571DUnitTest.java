@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
@@ -51,7 +60,8 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
-public class Bug48571DUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class Bug48571DUnitTest extends JUnit4DistributedTestCase {
 
   private static VM server = null;
   private VM client = null;
@@ -63,8 +73,8 @@ public class Bug48571DUnitTest extends DistributedTestCase {
   private static int numOfInvalidates = 0;
   private static boolean lastKeyReceived = false;
 
-  public Bug48571DUnitTest(String name) {
-    super(name);
+  public Bug48571DUnitTest() {
+    super();
   }
 
   @Override
@@ -118,6 +128,7 @@ public class Bug48571DUnitTest extends DistributedTestCase {
     Wait.waitForCriterion(criterion, 15 * 1000, 200, true);
   }
   
+  @Test
   public void testStatsMatchWithSize() throws Exception {
     IgnoredException.addIgnoredException("Unexpected IOException||Connection reset");
     // start a server
@@ -151,7 +162,7 @@ public class Bug48571DUnitTest extends DistributedTestCase {
     props.setProperty("statistic-sampling-enabled", "true");
     CacheFactory cf = new CacheFactory(props);
 
-    DistributedSystem ds = new Bug48571DUnitTest("Bug48571DUnitTest").getSystem(props);
+    DistributedSystem ds = new Bug48571DUnitTest().getSystem(props);
     ds.disconnect();
 
     cache = (GemFireCacheImpl)cf.create();
@@ -190,7 +201,7 @@ public class Bug48571DUnitTest extends DistributedTestCase {
     ccf.setPoolSubscriptionRedundancy(0);
     ccf.addPoolServer(host.getHostName(), port);
 
-    DistributedSystem ds = new Bug48571DUnitTest("Bug48571DUnitTest").getSystem(props);
+    DistributedSystem ds = new Bug48571DUnitTest().getSystem(props);
     ds.disconnect();
 
     cache = (GemFireCacheImpl) ccf.create();

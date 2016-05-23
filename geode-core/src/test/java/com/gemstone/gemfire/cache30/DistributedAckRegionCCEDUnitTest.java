@@ -20,6 +20,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.Properties;
@@ -73,10 +82,11 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
+@Category(DistributedTest.class)
 public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitTest {
 
-  public DistributedAckRegionCCEDUnitTest(String name) {
-    super(name);
+  public DistributedAckRegionCCEDUnitTest() {
+    super();
   }
   
   protected boolean supportsTransactions() {
@@ -117,6 +127,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
   }
 
   @Override
+  @Test
   public void testLocalDestroy() throws InterruptedException {
     // replicates don't allow local destroy
   }
@@ -132,6 +143,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
 
 
   @Override
+  @Test
   public void testEntryTtlLocalDestroy() throws InterruptedException {
     // replicates don't allow local destroy
   }
@@ -144,6 +156,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
    * for register-interest.
    */
 
+  @Test
   public void testGIISendsTombstones() throws Exception {
     versionTestGIISendsTombstones();
   }
@@ -154,6 +167,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
    * a later destroy() is received in initial image and while the version info
    * from the destroy is recorded we keep the value from the create event
    */
+  @Test
   public void testConcurrentOpWithGII() {
     if (this.getClass() != DistributedAckRegionCCEDUnitTest.class) {
       return; // not really a scope-related thing
@@ -279,24 +293,29 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
    * This tests the concurrency versioning system to ensure that event conflation
    * happens correctly and that the statistic is being updated properly
    */
+  @Test
   public void testConcurrentEvents() throws Exception {
     versionTestConcurrentEvents();
   }
   
   @Category(FlakyTest.class) // GEODE-720: time sensitive, async actions, thread sleeps
+  @Test
   public void testClearWithConcurrentEvents() throws Exception {
     z_versionTestClearWithConcurrentEvents(true);
   }
 
   @Category(FlakyTest.class) // GEODE-599 and GEODE-1046: async actions, thread sleeps -- // GEODE-1046: this may be hitting a product bug!
+  @Test
   public void testClearWithConcurrentEventsAsync() throws Exception {
     versionTestClearWithConcurrentEventsAsync();
   }
 
+  @Test
   public void testClearOnNonReplicateWithConcurrentEvents() throws Exception {
     versionTestClearOnNonReplicateWithConcurrentEvents();
   }
 
+  @Test
   public void testTombstones() {
     versionTestTombstones();
   }
@@ -306,6 +325,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
    * a tombstone has been reaped is accepted by another member that has yet to
    * reap the tombstone
    */
+  @Test
   public void testTombstoneExpirationRace() {
     VM vm0 = Host.getHost(0).getVM(0);
     VM vm1 = Host.getHost(0).getVM(1);
@@ -369,6 +389,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
    * Test for bug #46087 and #46089 where the waiting thread pool is flooded with
    * threads performing distributed-GC.  This could be moved to a JUnit test class.
    */
+  @Test
   public void testAggressiveTombstoneReaping() {
     if (this.getClass() != DistributedAckRegionCCEDUnitTest.class) {
       return; // not really a scope-related thing
@@ -421,6 +442,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
    * This tests the concurrency versioning system to ensure that event conflation
    * happens correctly and that the statistic is being updated properly
    */
+  @Test
   public void testConcurrentEventsOnEmptyRegion() {
     versionTestConcurrentEventsOnEmptyRegion();
   }
@@ -432,16 +454,19 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
    * This tests the concurrency versioning system to ensure that event conflation
    * happens correctly and that the statistic is being updated properly
    */
+  @Test
   public void testConcurrentEventsOnNonReplicatedRegion() {
     versionTestConcurrentEventsOnNonReplicatedRegion();
   }
   
   
+  @Test
   public void testGetAllWithVersions() {
     versionTestGetAllWithVersions();
   }
 
   
+  @Test
   public void testEntryVersionRollover() throws Exception {
     if (this.getClass() != DistributedAckRegionCCEDUnitTest.class) {
       return;

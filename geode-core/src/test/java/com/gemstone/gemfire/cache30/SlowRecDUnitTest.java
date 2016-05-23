@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -55,10 +64,11 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  */
 @Category(DistributedTest.class)
 @Ignore("Test was disabled by renaming to DisabledTest")
-public class SlowRecDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class SlowRecDUnitTest extends JUnit4CacheTestCase {
 
-  public SlowRecDUnitTest(String name) {
-    super(name);
+  public SlowRecDUnitTest() {
+    super();
   }
 
   // this test has special config of its distributed system so
@@ -255,6 +265,7 @@ public class SlowRecDUnitTest extends CacheTestCase {
    * Make sure that noack puts to a receiver
    * will eventually queue and then catch up.
    */
+  @Test
   public void testNoAck() throws CacheException {
     final AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_NO_ACK);
@@ -330,6 +341,7 @@ public class SlowRecDUnitTest extends CacheTestCase {
    * Make sure that noack puts to a receiver
    * will eventually queue and then catch up with conflation
    */
+  @Test
   public void testNoAckConflation() throws CacheException {
     final AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_NO_ACK);
@@ -397,6 +409,7 @@ public class SlowRecDUnitTest extends CacheTestCase {
    * make sure ack does not hang
    * make sure two ack updates do not conflate but are both queued
    */
+  @Test
   public void testAckConflation() throws CacheException {
     final AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_NO_ACK);
@@ -639,6 +652,7 @@ public class SlowRecDUnitTest extends CacheTestCase {
   /**
    * Make sure that exceeding the queue size limit causes a disconnect.
    */
+  @Test
   public void testSizeDisconnect() throws CacheException {
     final String expected = 
       "com.gemstone.gemfire.internal.tcp.ConnectionException: Forced disconnect sent to" +
@@ -1129,6 +1143,7 @@ public class SlowRecDUnitTest extends CacheTestCase {
   /**
    * Make sure a disconnect causes queue memory to be released.
    */
+  @Test
   public void testDisconnectCleanup() throws Throwable {
     try {
       doTestDisconnectCleanup();

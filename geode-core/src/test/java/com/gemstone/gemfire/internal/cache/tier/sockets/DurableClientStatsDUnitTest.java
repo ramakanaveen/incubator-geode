@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.RejectedExecutionException;
@@ -52,7 +61,8 @@ import com.gemstone.gemfire.test.dunit.Wait;
  * In the given test DurableClient comes up and goes down discreetly with
  * different DurableClientTimeouts so as to increment the counts
  */
-public class DurableClientStatsDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
 
   private VM server1VM;
 
@@ -64,8 +74,8 @@ public class DurableClientStatsDUnitTest extends DistributedTestCase {
 
   private final String K1 = "Key1";
 
-  public DurableClientStatsDUnitTest(String name) {
-    super(name);
+  public DurableClientStatsDUnitTest() {
+    super();
   }
 
   @Override
@@ -84,6 +94,7 @@ public class DurableClientStatsDUnitTest extends DistributedTestCase {
     CacheServerTestUtil.resetDisableShufflingOfEndpointsFlag();
   }
   
+  @Test
   public void testNonDurableClientStatistics() {
 
 
@@ -125,6 +136,7 @@ public class DurableClientStatsDUnitTest extends DistributedTestCase {
   
     
   }
+  @Test
   public void testDurableClientStatistics() {
 
     // Step 1: Starting the servers

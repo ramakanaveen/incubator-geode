@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.management;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.LogWriter;
 import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.distributed.DistributedMember;
@@ -31,10 +40,11 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.util.*;
 
-public class ManagementTestBase extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class ManagementTestBase extends JUnit4DistributedTestCase {
 
-  public ManagementTestBase(String name) {
-    super(name);
+  public ManagementTestBase() {
+    super();
 
   }
 
@@ -203,7 +213,7 @@ public class ManagementTestBase extends DistributedTestCase {
   public Cache createCache(Properties props) {
     System.setProperty("dunitLogPerTest", "true");
     props.setProperty(DistributionConfig.LOG_FILE_NAME, getTestMethodName() + "-.log");
-    ds = (new ManagementTestBase("temp")).getSystem(props);
+    ds = (new ManagementTestBase()).getSystem(props);
     cache = CacheFactory.create(ds);
     managementService = ManagementService.getManagementService(cache);
     logWriter = ds.getLogWriter();
@@ -227,7 +237,7 @@ public class ManagementTestBase extends DistributedTestCase {
     props.setProperty(DistributionConfig.ENABLE_TIME_STATISTICS_NAME, "true");
     props.setProperty(DistributionConfig.STATISTIC_SAMPLING_ENABLED_NAME, "true");
     props.setProperty(DistributionConfig.LOG_FILE_NAME, getTestMethodName() + "-.log");
-    ds = (new ManagementTestBase("temp")).getSystem(props);
+    ds = (new ManagementTestBase()).getSystem(props);
     cache = CacheFactory.create(ds);
     managementService = ManagementService.getManagementService(cache);
     logWriter = ds.getLogWriter();

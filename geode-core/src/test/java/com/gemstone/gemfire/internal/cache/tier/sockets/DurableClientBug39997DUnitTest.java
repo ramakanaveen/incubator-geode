@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -39,18 +48,20 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class DurableClientBug39997DUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class DurableClientBug39997DUnitTest extends JUnit4CacheTestCase {
 
   private static final long serialVersionUID = -2712855295338732543L;
 
-  public DurableClientBug39997DUnitTest(String name) {
-    super(name);
+  public DurableClientBug39997DUnitTest() {
+    super();
   }
 
   public final void postTearDownCacheTestCase() {
     Host.getHost(0) .getVM(0).invoke(() -> disconnectFromDS());
   }
 
+  @Test
   public void testNoServerAvailableOnStartup() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

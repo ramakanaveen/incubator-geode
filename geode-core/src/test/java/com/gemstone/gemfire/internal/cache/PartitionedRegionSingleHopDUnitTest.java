@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.File;
@@ -81,7 +90,8 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
-public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
 
   private static final long serialVersionUID = 1L;
 
@@ -109,8 +119,8 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
 
   private static Locator locator = null;
 
-  public PartitionedRegionSingleHopDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionSingleHopDUnitTest() {
+    super();
   }
 
   @Override
@@ -256,6 +266,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   }
 
   // 2 peers 2 servers 1 accessor.No client.Should work without any exceptions.
+  @Test
   public void test_NoClient() {
     member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
     member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
@@ -298,6 +309,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   // 2 AccessorServers, 2 Peers
   // 1 Client connected to 2 AccessorServers. Hence metadata should not be
   // fetched.
+  @Test
   public void test_ClientConnectedToAccessors() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createAccessorServer());
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createAccessorServer());
@@ -319,6 +331,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
 
   // 1 server 2 accesorservers 2 peers.i client connected to the server
   // Since only 1 server hence Metadata should not be fetched.
+  @Test
   public void test_ClientConnectedTo1Server() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
 
@@ -342,6 +355,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   // Put data, get data and make the metadata stable.
   // Now verify that metadata has all 8 buckets info.
   // Now update and ensure the fetch service is never called.
+  @Test
   public void test_MetadataContents() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
@@ -367,6 +381,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   // once,
   // fetchservice has to be triggered.
   // Now put again from c2.There should be no hop at all.
+  @Test
   public void test_MetadataServiceCallAccuracy() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
@@ -401,6 +416,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
     Awaitility.waitAtMost(60, TimeUnit.SECONDS).until(() -> cms.isRefreshMetadataTestOnly() == false);
   }
 
+  @Test
   public void test_MetadataServiceCallAccuracy_FromDestroyOp() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 4 ));
@@ -424,6 +440,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
     Awaitility.waitAtMost(60, TimeUnit.SECONDS).until(() -> cms.isRefreshMetadataTestOnly() == true);
   }
 
+  @Test
   public void test_MetadataServiceCallAccuracy_FromGetOp() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 4 ));
@@ -458,6 +475,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
 
   }
 
+  @Test
   public void test_SingleHopWithHA() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 8 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 8 ));
@@ -488,6 +506,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
     }
   }
 
+  @Test
   public void test_SingleHopWithHAWithLocator() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -525,6 +544,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   }
 
 
+  @Test
   public void test_NoMetadataServiceCall_ForGetOp() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 4 ));
@@ -556,7 +576,8 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   }
 
 
- public void test_NoMetadataServiceCall() {
+  @Test
+  public void test_NoMetadataServiceCall() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 1, 4 ));
 
@@ -605,6 +626,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
 
   }
 
+  @Test
   public void test_NoMetadataServiceCall_ForDestroyOp() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 0, 4 ));
@@ -628,6 +650,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-853: random ports, pause sleeps, time sensitive, 5 second thread sleeps
+  @Test
   public void testServerLocationRemovalThroughPing() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 3, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 3, 4 ));
@@ -659,6 +682,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
     verifyDeadServer(regionMetaData, region, port0, port1);
   }
 
+  @Test
   public void testMetadataFetchOnlyThroughFunctions() {
     //Workaround for 52004
     IgnoredException.addIgnoredException("InternalFunctionInvocationTargetException");
@@ -700,6 +724,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
 //    assertIndexDetailsEquals(4/*numBuckets*/, prMetaData.getBucketServerLocationsMap_TEST_ONLY().size());
   }
 
+  @Test
   public void testMetadataFetchOnlyThroughputAll() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 3, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 3, 4 ));
@@ -893,6 +918,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
 
   }
 
+  @Test
   public void testMetadataIsSameOnAllServersAndClientsHA() {
     Integer port0 = (Integer)member0.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 2, 4 ));
     Integer port1 = (Integer)member1.invoke(() -> PartitionedRegionSingleHopDUnitTest.createServer( 2, 4 ));

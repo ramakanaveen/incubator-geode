@@ -29,6 +29,15 @@
 
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -90,9 +99,10 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
-public class TXDistributedDUnitTest extends CacheTestCase {
-  public TXDistributedDUnitTest(String name) {
-    super(name);
+@Category(DistributedTest.class)
+public class TXDistributedDUnitTest extends JUnit4CacheTestCase {
+  public TXDistributedDUnitTest() {
+    super();
   }
 
   protected RegionAttributes getRegionAttributes() {
@@ -111,6 +121,7 @@ public class TXDistributedDUnitTest extends CacheTestCase {
   /**
    * Test a remote grantor
    */
+  @Test
   public void testRemoteGrantor() throws Exception {
     IgnoredException.addIgnoredException("killing members ds");
     final CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
@@ -210,6 +221,7 @@ public class TXDistributedDUnitTest extends CacheTestCase {
   /**
    * Test the internal callbacks used for what else... testing
    */
+  @Test
   public void testInternalCallbacks() throws Exception {
     final CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
     final String rgnName1 = getUniqueName() + "_1";
@@ -452,6 +464,7 @@ public class TXDistributedDUnitTest extends CacheTestCase {
    * Test distributed ack transactions that consist only of 
    * data from loaded values
    */
+  @Test
   public void testDACKLoadedMessage() throws Exception {
     final CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
     final String rgnName = getUniqueName();
@@ -531,6 +544,7 @@ public class TXDistributedDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-635: eats and logs exceptions, retry loops
+  @Test
   public void testHighAvailabilityFeatures() throws Exception {
     IgnoredException.addIgnoredException("DistributedSystemDisconnectedException");
 //    final CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
@@ -1099,6 +1113,7 @@ public class TXDistributedDUnitTest extends CacheTestCase {
    * discovered between a commit's locking phase and the applicatoin of the
    * Region's data. See bug 32999
    */
+  @Test
   public void testLockBatchParticipantsUpdate() throws Exception {
 //    final CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
     final String rgnName = getUniqueName();

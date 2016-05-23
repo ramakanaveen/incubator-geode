@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +58,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  *
  */
 
-public class OperationsPropagationDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase
 {
 
   /**
@@ -92,8 +102,8 @@ public class OperationsPropagationDUnitTest extends DistributedTestCase
    *
    * @param name
    */
-  public OperationsPropagationDUnitTest(String name) {
-    super(name);
+  public OperationsPropagationDUnitTest() {
+    super();
   }
 
   /**
@@ -168,7 +178,7 @@ public class OperationsPropagationDUnitTest extends DistributedTestCase
    */
   public static Integer createServerCache() throws Exception
   {
-    new OperationsPropagationDUnitTest("temp").createCache(new Properties());
+    new OperationsPropagationDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -197,7 +207,7 @@ public class OperationsPropagationDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new OperationsPropagationDUnitTest("temp").createCache(props);
+    new OperationsPropagationDUnitTest().createCache(props);
     props.setProperty("retryAttempts", "2");
     props.setProperty("endpoints", "ep1="+host+":" + PORT2);
     props.setProperty("redundancyLevel", "-1");
@@ -254,6 +264,7 @@ public class OperationsPropagationDUnitTest extends DistributedTestCase
    *
    * @throws Exception
    */
+  @Test
   public void testOperationsPropagation() throws Exception
   {
     server1.invoke(() -> OperationsPropagationDUnitTest.initialPutKeyValue());

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.wan.GatewaySender;
 import com.gemstone.gemfire.internal.cache.BucketRegion;
 import com.gemstone.gemfire.internal.cache.PartitionedRegion;
@@ -35,12 +44,14 @@ import java.util.Set;
 /**
  *
  */
+@Category(DistributedTest.class)
 public class CommonParallelGatewaySenderDUnitTest extends WANTestBase {
 
   public CommonParallelGatewaySenderDUnitTest(String name ){
-    super(name);
+    super();
   }
   
+  @Test
   public void testSameSenderWithNonColocatedRegions() throws Exception {
     IgnoredException.addIgnoredException("cannot have the same parallel");
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));

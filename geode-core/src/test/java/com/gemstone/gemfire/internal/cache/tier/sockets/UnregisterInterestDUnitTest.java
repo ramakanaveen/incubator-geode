@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -47,7 +56,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
 /**
  */
-public class UnregisterInterestDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class UnregisterInterestDUnitTest extends JUnit4DistributedTestCase {
 
   private VM server0 = null;
   private VM client1 = null;
@@ -65,8 +75,8 @@ public class UnregisterInterestDUnitTest extends DistributedTestCase {
   /**
    * @param name
    */
-  public UnregisterInterestDUnitTest(String name) {
-    super(name);
+  public UnregisterInterestDUnitTest() {
+    super();
   }
 
   @Override
@@ -105,6 +115,7 @@ public class UnregisterInterestDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testUnregisterInterestAllKeys() throws Exception {
     server0.invoke(() -> UnregisterInterestDUnitTest.checkRIArtifacts(all_keys, 0, 0));
     client1.invoke(() -> UnregisterInterestDUnitTest.registerInterest(all_keys, receiveValuesConstant, null));
@@ -124,6 +135,7 @@ public class UnregisterInterestDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testUnregisterInterestKeys() throws Exception {
     server0.invoke(() -> UnregisterInterestDUnitTest.checkRIArtifacts(list, 0, 0));
     client1.invoke(UnregisterInterestDUnitTest.class, "registerInterest", new Object[] {list, receiveValuesConstant, new String[]{"key_1", "key_2", "key_3", "key_4", "key_5"}});
@@ -144,6 +156,7 @@ public class UnregisterInterestDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testUnregisterInterestPatterns() throws Exception {
     server0.invoke(() -> UnregisterInterestDUnitTest.checkRIArtifacts(regex, 0, 0));
     client1.invoke(UnregisterInterestDUnitTest.class, "registerInterest", new Object[] {regex, receiveValuesConstant, new String[] {"[a-z]*[0-9]"}});
@@ -165,6 +178,7 @@ public class UnregisterInterestDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testUnregisterInterestKeysInvForOneClientDoesNotAffectOtherClient() throws Exception {
     server0.invoke(() -> UnregisterInterestDUnitTest.checkRIArtifacts(list, 0, 0));
     client1.invoke(UnregisterInterestDUnitTest.class, "registerInterest", new Object[] {list, !receiveValuesConstant, new String[] {"key_1", "key_2", "key_3", "key_4", "key_5"}});
@@ -188,6 +202,7 @@ public class UnregisterInterestDUnitTest extends DistributedTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testUnregisterInterestRegexInvForOneClientDoesNotAffectOtherClient() throws Exception {
     server0.invoke(() -> UnregisterInterestDUnitTest.checkRIArtifacts(regex, 0, 0));
     client1.invoke(UnregisterInterestDUnitTest.class, "registerInterest", new Object[] {regex, !receiveValuesConstant, new String[] {"[a-z]*[0-9]"}});
@@ -310,7 +325,7 @@ public class UnregisterInterestDUnitTest extends DistributedTestCase {
   }
 
   public static Integer createCacheAndStartServer() throws Exception {
-    DistributedSystem ds = new UnregisterInterestDUnitTest("UnregisterInterestDUnitTest").getSystem();
+    DistributedSystem ds = new UnregisterInterestDUnitTest().getSystem();
     ds.disconnect();
     Properties props = new Properties();
     props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
@@ -325,7 +340,7 @@ public class UnregisterInterestDUnitTest extends DistributedTestCase {
   }
 
   public static void createClientCache(Host host, Integer port) throws Exception {
-    DistributedSystem ds = new UnregisterInterestDUnitTest("UnregisterInterestDUnitTest").getSystem();
+    DistributedSystem ds = new UnregisterInterestDUnitTest().getSystem();
     ds.disconnect();
 
     Properties props = new Properties();

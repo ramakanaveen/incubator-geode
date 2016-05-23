@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.CacheException;
@@ -36,13 +45,14 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 
-public class CompactRangeIndexDUnitTest extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class CompactRangeIndexDUnitTest extends JUnit4DistributedTestCase{
 
   QueryTestUtils utils;
   VM vm0;
   
-  public CompactRangeIndexDUnitTest(String name) {
-    super(name);
+  public CompactRangeIndexDUnitTest() {
+    super();
   }
 
   @Override
@@ -65,6 +75,7 @@ public class CompactRangeIndexDUnitTest extends DistributedTestCase{
   /*
    * Tests that the message component of the exception is not null
    */
+  @Test
   public void testIndexInvalidDueToExpressionOnPartitionedRegion() throws Exception {
     Host host = Host.getHost(0);
     utils.createPartitionRegion("examplePartitionedRegion", Portfolio.class, vm0);
@@ -84,6 +95,7 @@ public class CompactRangeIndexDUnitTest extends DistributedTestCase{
   }
   
 
+  @Test
   public void testCompactRangeIndexForIndexElemArray() throws Exception{
     doPut(200);// around 66 entries for a key in the index (< 100 so does not create a ConcurrentHashSet)
     doQuery();
@@ -94,6 +106,7 @@ public class CompactRangeIndexDUnitTest extends DistributedTestCase{
     Thread.sleep(5000);
   }
   
+  @Test
   public void testCompactRangeIndexForConcurrentHashSet() throws Exception{
     doPut(333); //111 entries for a key in the index (> 100 so creates a ConcurrentHashSet)
     doQuery();
@@ -103,6 +116,7 @@ public class CompactRangeIndexDUnitTest extends DistributedTestCase{
     doQuery();
   }
 
+  @Test
   public void testNoSuchElemException() throws Exception{
     setHook();
     doPutSync(300);

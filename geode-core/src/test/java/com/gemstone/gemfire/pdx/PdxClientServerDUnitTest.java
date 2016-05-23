@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.pdx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.Properties;
@@ -52,12 +61,14 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class PdxClientServerDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class PdxClientServerDUnitTest extends JUnit4CacheTestCase {
 
-  public PdxClientServerDUnitTest(String name) {
-    super(name);
+  public PdxClientServerDUnitTest() {
+    super();
   }
 
+  @Test
   public void testSimplePut() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -96,6 +107,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
    * registry if the server is restarted and PDX serialization
    * for a class has changed.  This was reported in Pivotal bug #47338
    */
+  @Test
   public void testNonPersistentServerRestart() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -181,6 +193,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
    * Test of bug 47338 - what happens to the client type
    * registry if the server is restarted.
    */
+  @Test
   public void testNonPersistentServerRestartAutoSerializer() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -268,6 +281,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
    * Test that we through an exception if one of the servers has persistent
    * regions but not a persistent registry.
    */
+  @Test
   public void testServersWithPersistence() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -305,6 +319,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testPutThreadLocalConnections() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -339,6 +354,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
 
   }
   
+  @Test
   public void testSimplePdxInstancePut() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -390,6 +406,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
    * in multiple distributed systems.
    * @throws Exception 
    */
+  @Test
   public void testMultipleServerDSes() throws Exception {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
@@ -457,6 +474,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
     assertEquals(new SimpleClass(57, (byte) 3), r.get(1));
   }
   
+  @Test
   public void testUserSerializesObject() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -498,6 +516,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
    * Test that we still use the client
    * type registry, even if pool is created late.
    */
+  @Test
   public void testLatePoolCreation() {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
@@ -550,6 +569,7 @@ public class PdxClientServerDUnitTest extends CacheTestCase {
    * tries to create a pool after we were forced to use a peer
    * type registry.
    */
+  @Test
   public void testExceptionWithPoolAfterTypeRegistryCreation() {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);

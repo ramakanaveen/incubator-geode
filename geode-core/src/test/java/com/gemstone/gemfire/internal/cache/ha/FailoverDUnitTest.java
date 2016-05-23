@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 
 
 import java.util.Iterator;
@@ -57,7 +66,8 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
  *
  *
  */
-public class FailoverDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class FailoverDUnitTest extends JUnit4DistributedTestCase
 {
   protected static Cache cache = null;
   //server
@@ -71,8 +81,8 @@ public class FailoverDUnitTest extends DistributedTestCase
   private static final String regionName = "interestRegion";
 
   /** constructor */
-  public FailoverDUnitTest(String name) {
-    super(name);
+  public FailoverDUnitTest() {
+    super();
   }
 
   @Override
@@ -101,6 +111,7 @@ public class FailoverDUnitTest extends DistributedTestCase
     }
   }
 
+  @Test
   public void testFailover()
   {
     createEntries();
@@ -130,7 +141,7 @@ public class FailoverDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new FailoverDUnitTest("temp").createCache(props);
+    new FailoverDUnitTest().createCache(props);
 
     /*props.setProperty("retryAttempts", "5");
     props.setProperty("endpoints", "ep1=" + hostName + ":"+PORT1+",ep2="
@@ -160,7 +171,7 @@ public class FailoverDUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new FailoverDUnitTest("temp").createCache(new Properties());
+    new FailoverDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);

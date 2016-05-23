@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.pdx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,10 +61,11 @@ import org.json.JSONObject;
 /**
  *
  */
-public class JSONPdxClientServerDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class JSONPdxClientServerDUnitTest extends JUnit4CacheTestCase {
 
-  public JSONPdxClientServerDUnitTest(String name) {
-    super(name);
+  public JSONPdxClientServerDUnitTest() {
+    super();
   }
   
   @Override
@@ -66,6 +76,7 @@ public class JSONPdxClientServerDUnitTest extends CacheTestCase {
     disconnectAllFromDS();
   }
 
+  @Test
   public void testSimplePut() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -95,6 +106,7 @@ public class JSONPdxClientServerDUnitTest extends CacheTestCase {
   }
   
   //this is for unquote fielnames in json string
+  @Test
   public void testSimplePut2() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -117,6 +129,7 @@ public class JSONPdxClientServerDUnitTest extends CacheTestCase {
      
   }
   
+  @Test
   public void testPdxInstanceAndJSONConversion() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

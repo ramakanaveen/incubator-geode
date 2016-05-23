@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -37,7 +46,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.cache.client.*;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 
-public class Bug36995DUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class Bug36995DUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
 
@@ -52,8 +62,8 @@ public class Bug36995DUnitTest extends DistributedTestCase
   private static final String regionName = "Bug36995DUnitTest_Region";
 
   /** constructor */
-  public Bug36995DUnitTest(String name) {
-    super(name);
+  public Bug36995DUnitTest() {
+    super();
   }
 
   @Override
@@ -80,7 +90,7 @@ public class Bug36995DUnitTest extends DistributedTestCase
       Properties props = new Properties();
       props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
       props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-      new Bug36995DUnitTest("temp").createCache(props);
+      new Bug36995DUnitTest().createCache(props);
       PoolImpl p = (PoolImpl)PoolManager.createFactory()
         .addServer(host, port1)
         .addServer(host, port2)
@@ -109,7 +119,7 @@ public class Bug36995DUnitTest extends DistributedTestCase
       Properties props = new Properties();
       props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
       props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-      new Bug36995DUnitTest("temp").createCache(props);
+      new Bug36995DUnitTest().createCache(props);
       PoolImpl p = (PoolImpl)PoolManager.createFactory()
         .addServer(host, port1)
         .addServer(host, port2)
@@ -128,7 +138,7 @@ public class Bug36995DUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new Bug36995DUnitTest("temp").createCache(new Properties());
+    new Bug36995DUnitTest().createCache(new Properties());
     // no region is created on server 
     int port = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     CacheServer server1 = cache.addCacheServer();
@@ -156,6 +166,7 @@ public class Bug36995DUnitTest extends DistributedTestCase
   /**
    * Tests messageTrackingTimeout is set correctly to default or not if not specified
    */
+  @Test
   public void testBug36995_Default()
   {
     Integer port1 = ((Integer)server1.invoke(() -> Bug36995DUnitTest.createServerCache()));
@@ -171,6 +182,7 @@ public class Bug36995DUnitTest extends DistributedTestCase
   /**
    * Tests messageTrackingTimeout is set correctly as pwr user specified
    */
+  @Test
   public void testBug36995_UserSpecified()
   {
     //work around GEODE-507
@@ -186,6 +198,7 @@ public class Bug36995DUnitTest extends DistributedTestCase
   /**
    * BugTest for 36526 : 
    */
+  @Test
   public void testBug36526()
   {
     Integer port1 = ((Integer)server1.invoke(() -> Bug36995DUnitTest.createServerCache()));

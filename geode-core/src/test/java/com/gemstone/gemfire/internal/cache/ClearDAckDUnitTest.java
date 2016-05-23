@@ -21,6 +21,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -46,11 +55,12 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class ClearDAckDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class ClearDAckDUnitTest extends JUnit4DistributedTestCase {
     
     /** Creates a new instance of ClearDAckDUnitTest */
-    public ClearDAckDUnitTest(String name) {
-        super(name);
+    public ClearDAckDUnitTest() {
+        super();
     }
     
     static Cache cache;
@@ -104,7 +114,7 @@ public class ClearDAckDUnitTest extends DistributedTestCase {
             //            props.setProperty("mcast-port", "1234");
             //            ds = DistributedSystem.connect(props);
             LogWriterUtils.getLogWriter().info("I am vm0");
-            ds = (new ClearDAckDUnitTest("temp")).getSystem(props);
+            ds = (new ClearDAckDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             
             AttributesFactory factory  = new AttributesFactory();
@@ -129,7 +139,7 @@ public class ClearDAckDUnitTest extends DistributedTestCase {
             //   props.setProperty("mcast-port", "1234");
             //   ds = DistributedSystem.connect(props);
             LogWriterUtils.getLogWriter().info("I am vm1");
-            ds = (new ClearDAckDUnitTest("temp")).getSystem(props);
+            ds = (new ClearDAckDUnitTest()).getSystem(props);
             //DistributedSystem.setThreadsSocketPolicy(false);
             CacheObserverImpl observer = new CacheObserverImpl();
             origObserver = CacheObserverHolder.setInstance(observer);
@@ -158,7 +168,7 @@ public class ClearDAckDUnitTest extends DistributedTestCase {
           //   props.setProperty("mcast-port", "1234");
           //   ds = DistributedSystem.connect(props);
           LogWriterUtils.getLogWriter().info("I am vm2");
-          ds = (new ClearDAckDUnitTest("temp")).getSystem(props);
+          ds = (new ClearDAckDUnitTest()).getSystem(props);
           //DistributedSystem.setThreadsSocketPolicy(false);
           CacheObserverImpl observer = new CacheObserverImpl();
           origObserver = CacheObserverHolder.setInstance(observer);
@@ -196,7 +206,8 @@ public class ClearDAckDUnitTest extends DistributedTestCase {
     //test methods
     
     
-    public void testClearMultiVM(){
+  @Test
+  public void testClearMultiVM(){
         
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);

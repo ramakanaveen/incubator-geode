@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -52,7 +61,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * error because the region has been destroyed on the server and hence falsely
  * marks the server dead.
  */
-public class Bug36457DUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class Bug36457DUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
 
@@ -69,8 +79,8 @@ public class Bug36457DUnitTest extends DistributedTestCase
   private static final String regionName = "Bug36457DUnitTest_Region";
 
   /** constructor */
-  public Bug36457DUnitTest(String name) {
-    super(name);
+  public Bug36457DUnitTest() {
+    super();
   }
 
   @Override
@@ -98,7 +108,7 @@ public class Bug36457DUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new Bug36457DUnitTest("temp").createCache(props);
+    new Bug36457DUnitTest().createCache(props);
     Pool p = PoolManager.createFactory()
       .addServer(host, port1.intValue())
       .addServer(host, port2.intValue())
@@ -123,7 +133,7 @@ public class Bug36457DUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new Bug36457DUnitTest("temp").createCache(new Properties());
+    new Bug36457DUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -155,6 +165,7 @@ public class Bug36457DUnitTest extends DistributedTestCase
     }
   }
 
+  @Test
   public void testBug36457()
   {
     Integer port1 = ((Integer)server1.invoke(() -> Bug36457DUnitTest.createServerCache()));

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -50,17 +59,19 @@ import com.gemstone.gemfire.test.dunit.Wait;
 /**
  *
  */
-public class Bug39356DUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class Bug39356DUnitTest extends JUnit4CacheTestCase {
   protected static final String REGION_NAME = "myregion";
   
-  public Bug39356DUnitTest(String name) {
-    super(name);
+  public Bug39356DUnitTest() {
+    super();
   }
   
   /**
    * This tests the case where the VM forcing other
    * VMs to create a bucket crashes while creating the bucket.
    */
+  @Test
   public void testCrashWhileCreatingABucket() {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
@@ -174,6 +185,7 @@ public class Bug39356DUnitTest extends CacheTestCase {
    * A test to make sure that we cannot move a bucket to a member which already
    * hosts the bucket, thereby reducing our redundancy.
    */
+  @Test
   public void testMoveBucketToHostThatHasTheBucketAlready() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

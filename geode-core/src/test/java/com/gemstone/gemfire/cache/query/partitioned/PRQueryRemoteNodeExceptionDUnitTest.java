@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.cache.query.partitioned;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import static com.gemstone.gemfire.cache.query.Utils.createPortfolioData;
 
 import java.util.LinkedList;
@@ -56,6 +65,7 @@ import com.gemstone.gemfire.test.dunit.VM;
  * well as local querying.
  *
  */
+@Category(DistributedTest.class)
 public class PRQueryRemoteNodeExceptionDUnitTest extends PartitionedRegionDUnitTestCase {
 
   /**
@@ -64,8 +74,8 @@ public class PRQueryRemoteNodeExceptionDUnitTest extends PartitionedRegionDUnitT
    * @param name
    */
 
-  public PRQueryRemoteNodeExceptionDUnitTest(String name) {
-    super(name);
+  public PRQueryRemoteNodeExceptionDUnitTest() {
+    super();
   }
 
   public void setCacheInVMs(VM... vms) {
@@ -103,6 +113,7 @@ public class PRQueryRemoteNodeExceptionDUnitTest extends PartitionedRegionDUnitT
    * 6. then re-executes the query on one of the data-store node. <br>
    * 7. Verifies the exception thrown is from local node not from remote node <br>
    */
+  @Test
   public void testPRWithLocalAndRemoteException()
       throws Exception {
 
@@ -234,6 +245,7 @@ public class PRQueryRemoteNodeExceptionDUnitTest extends PartitionedRegionDUnitT
             "PRQueryRemoteNodeExceptionDUnitTest#testPRWithLocalAndRemoteException: Querying with PR Local/Remote Exception Test ENDED");
   }
   
+  @Test
   public void testRemoteException() throws Exception {
 
     LogWriterUtils.getLogWriter()
@@ -365,6 +377,7 @@ public class PRQueryRemoteNodeExceptionDUnitTest extends PartitionedRegionDUnitT
             "PRQueryRemoteNodeExceptionDUnitTest#testPRWithLocalAndRemoteException: Querying with PR Local/Remote Exception Test ENDED");
   }
   
+  @Test
   public void testCacheCloseExceptionFromLocalAndRemote() throws Exception {
 
     LogWriterUtils.getLogWriter()
@@ -498,6 +511,7 @@ public class PRQueryRemoteNodeExceptionDUnitTest extends PartitionedRegionDUnitT
             "PRQueryRemoteNodeExceptionDUnitTest#testPRWithLocalAndRemoteException: Querying with PR Local/Remote Exception Test ENDED");
   }
   
+  @Test
   public void testCacheCloseExceptionFromLocalAndRemote2() throws Exception {
 
     LogWriterUtils.getLogWriter()
@@ -641,6 +655,7 @@ public class PRQueryRemoteNodeExceptionDUnitTest extends PartitionedRegionDUnitT
             "PRQueryRemoteNodeExceptionDUnitTest#testPRWithLocalAndRemoteException: Querying with PR Local/Remote Exception Test ENDED");
   }
   
+  @Test
   public void testForceReattemptExceptionFromLocal() throws Exception {
 
     LogWriterUtils.getLogWriter()

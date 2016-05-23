@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -54,7 +63,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * also not try to recover from the disk
  *
  */
-public class Bug39079DUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class Bug39079DUnitTest extends JUnit4CacheTestCase {
 
   protected static String regionName = "IGNORE_EXCEPTION_Bug39079";
 
@@ -80,8 +90,8 @@ public class Bug39079DUnitTest extends CacheTestCase {
    * 
    * @param name
    */
-  public Bug39079DUnitTest(String name) {
-    super(name);
+  public Bug39079DUnitTest() {
+    super();
     File file1 = new File(name + "1");
     file1.mkdir();
     file1.deleteOnExit();
@@ -115,7 +125,7 @@ public class Bug39079DUnitTest extends CacheTestCase {
       public void run2() {
         try {
 
-          (new Bug39079DUnitTest("vm0_diskReg"))
+          (new Bug39079DUnitTest())
               .getSystem();         
           
           assertTrue(getCache() != null);
@@ -149,7 +159,7 @@ public class Bug39079DUnitTest extends CacheTestCase {
         "createCache") {
       public void run2() {
         try {
-          (new Bug39079DUnitTest("vm1_diskReg"))
+          (new Bug39079DUnitTest())
               .getSystem();
           
           
@@ -195,6 +205,7 @@ public class Bug39079DUnitTest extends CacheTestCase {
    * 
    */
 
+  @Test
   public void testGIIDiskAccessException() {
 
     vm0.invoke(createCacheForVM0());
@@ -298,6 +309,7 @@ public class Bug39079DUnitTest extends CacheTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testBridgeServerStoppingInSynchPersistOnlyForIOExceptionCase()
       throws Exception {    
    // create server cache 
@@ -316,7 +328,7 @@ public class Bug39079DUnitTest extends CacheTestCase {
   
   public static Integer createServerCache() throws Exception
   {
-    new Bug39079DUnitTest("temp").createCache(new Properties());
+    new Bug39079DUnitTest().createCache(new Properties());
     DiskRegionProperties props = new DiskRegionProperties();
     props.setRegionName(REGION_NAME);
     props.setOverflow(true);
@@ -385,11 +397,11 @@ public class Bug39079DUnitTest extends CacheTestCase {
   
   public static void createClientCache(String host, Integer port1)
       throws Exception {
-    new Bug39079DUnitTest("temp");
+    new Bug39079DUnitTest();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new Bug39079DUnitTest("temp").createCache(props);
+    new Bug39079DUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory().addServer(host,
         port1.intValue())
         .setSubscriptionEnabled(true).setSubscriptionRedundancy(0)

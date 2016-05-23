@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -56,7 +65,8 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  */
 @Category(DistributedTest.class)
 @Ignore("Test was disabled by renaming to DisabledTest")
-public class StatsBugDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class StatsBugDUnitTest extends JUnit4DistributedTestCase
 {
   /** primary cache server */
   VM primary = null;
@@ -100,8 +110,8 @@ public class StatsBugDUnitTest extends DistributedTestCase
    * @param name -
    *          name for this test instance
    */
-  public StatsBugDUnitTest(String name) {
-    super(name);
+  public StatsBugDUnitTest() {
+    super();
   }
 
   /**
@@ -172,6 +182,7 @@ public class StatsBugDUnitTest extends DistributedTestCase
    * @throws Exception -
    *           thrown if any problem occurs in test execution
    */
+  @Test
   public void testBug36109() throws Exception
   {
     LogWriterUtils.getLogWriter().info("testBug36109 : BEGIN");
@@ -209,7 +220,7 @@ public class StatsBugDUnitTest extends DistributedTestCase
    */
   public static Integer createServerCache() throws Exception
   {
-    StatsBugDUnitTest test = new StatsBugDUnitTest("temp");
+    StatsBugDUnitTest test = new StatsBugDUnitTest();
     Properties props = new Properties();
     cache = test.createCache(props);
     AttributesFactory factory = new AttributesFactory();
@@ -242,7 +253,7 @@ public class StatsBugDUnitTest extends DistributedTestCase
   public static void createClientCache(String host, Integer port1, Integer port2)
       throws Exception
   {
-    StatsBugDUnitTest test = new StatsBugDUnitTest("temp");
+    StatsBugDUnitTest test = new StatsBugDUnitTest();
     cache = test.createCache(createProperties1());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -266,7 +277,7 @@ public class StatsBugDUnitTest extends DistributedTestCase
   public static void createClientCacheForInvalidates(String host, Integer port1, Integer port2)
       throws Exception
   {
-    StatsBugDUnitTest test = new StatsBugDUnitTest("temp");
+    StatsBugDUnitTest test = new StatsBugDUnitTest();
     cache = test.createCache(createProperties1());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);

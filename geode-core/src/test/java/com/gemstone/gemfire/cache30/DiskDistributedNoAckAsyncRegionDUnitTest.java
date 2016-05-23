@@ -16,15 +16,25 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.*;
 import java.io.*;
 import com.gemstone.gemfire.internal.OSProcess;
 
+@Category(DistributedTest.class)
 public class DiskDistributedNoAckAsyncRegionDUnitTest extends DiskDistributedNoAckRegionTestCase {
   
   /** Creates a new instance of DiskDistributedNoAckSyncOverflowRegionTest */
-  public DiskDistributedNoAckAsyncRegionDUnitTest(String name) {
-    super(name);
+  public DiskDistributedNoAckAsyncRegionDUnitTest() {
+    super();
   }
   
   protected RegionAttributes getRegionAttributes() {

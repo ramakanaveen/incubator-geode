@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -43,13 +52,15 @@ import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class PdxDeleteFieldDUnitTest  extends CacheTestCase{
+@Category(DistributedTest.class)
+public class PdxDeleteFieldDUnitTest  extends JUnit4CacheTestCase{
   final List<String> filesToBeDeleted = new CopyOnWriteArrayList<String>();
   
-  public PdxDeleteFieldDUnitTest(String name) {
-    super(name);
+  public PdxDeleteFieldDUnitTest() {
+    super();
   }
   
+  @Test
   public void testPdxDeleteFieldVersioning() throws Exception {
     final String DS_NAME = "PdxDeleteFieldDUnitTestDiskStore";
     final String DS_NAME2 = "PdxDeleteFieldDUnitTestDiskStore2";

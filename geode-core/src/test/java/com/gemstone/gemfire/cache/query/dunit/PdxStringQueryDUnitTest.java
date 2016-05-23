@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,11 +81,12 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class PdxStringQueryDUnitTest extends CacheTestCase{
+@Category(DistributedTest.class)
+public class PdxStringQueryDUnitTest extends JUnit4CacheTestCase{
   private static int bridgeServerPort;
 
-  public PdxStringQueryDUnitTest(String name) {
-    super(name);
+  public PdxStringQueryDUnitTest() {
+    super();
    }
 
   private final String rootRegionName = "root";
@@ -117,6 +127,7 @@ public class PdxStringQueryDUnitTest extends CacheTestCase{
       "SELECT distinct pos.secIdIndexed FROM " + regName + " p, p.positions.values pos WHERE p.ID > 1 order by pos.secIdIndexed limit 5",//12
  };
 
+  @Test
   public void testReplicatedRegionNoIndex() throws CacheException {
     final Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -375,6 +386,7 @@ public class PdxStringQueryDUnitTest extends CacheTestCase{
     this.closeClient(server0);
   }
 
+  @Test
   public void testRepliacatedRegionCompactRangeIndex() throws CacheException {
     final Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -589,6 +601,7 @@ public class PdxStringQueryDUnitTest extends CacheTestCase{
     this.closeClient(server0);
   }
   
+  @Test
   public void testReplicatedRegionRangeIndex() throws CacheException {
     final Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -793,6 +806,7 @@ public class PdxStringQueryDUnitTest extends CacheTestCase{
     this.closeClient(server0);
   }
   
+  @Test
   public void testPartitionRegionNoIndex() throws CacheException {
     final Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -1058,6 +1072,7 @@ public class PdxStringQueryDUnitTest extends CacheTestCase{
     this.closeClient(server0);
   }
   
+  @Test
   public void testPartitionRegionCompactRangeIndex() throws CacheException {
     final Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -1285,6 +1300,7 @@ public class PdxStringQueryDUnitTest extends CacheTestCase{
     this.closeClient(server0);
   }
   
+  @Test
   public void testPartitionRegionRangeIndex() throws CacheException {
     final Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -1512,6 +1528,7 @@ public class PdxStringQueryDUnitTest extends CacheTestCase{
     this.closeClient(server0);
   }
 
+  @Test
   public void testNullPdxString() throws CacheException {
     final Host host = Host.getHost(0);
     VM server0 = host.getVM(0);
@@ -1794,6 +1811,7 @@ public class PdxStringQueryDUnitTest extends CacheTestCase{
    * 
    * @throws CacheException
    */
+  @Test
   public void testPRQueryForDuplicates() throws CacheException {
     final String regionName = "exampleRegion";
     final Host host = Host.getHost(0);

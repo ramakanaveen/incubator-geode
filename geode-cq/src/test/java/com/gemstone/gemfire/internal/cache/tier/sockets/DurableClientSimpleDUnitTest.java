@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 
 import org.junit.Ignore;
@@ -54,14 +63,16 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
+@Category(DistributedTest.class)
 public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
-  public DurableClientSimpleDUnitTest(String name) {
-    super(name);
+  public DurableClientSimpleDUnitTest() {
+    super();
   }
   /**
    * Test that a durable client correctly receives updates.
    */
+  @Test
   public void testSimpleDurableClientUpdate() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -139,6 +150,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Test that a durable client VM with multiple BridgeClients correctly
    * registers on the server.
    */
+  @Test
   public void testMultipleBridgeClientsInSingleDurableVM() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -314,6 +326,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   /**
    * Test that the server correctly processes starting two durable clients.
    */
+  @Test
   public void testSimpleTwoDurableClients() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -556,6 +569,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   /**
    * Test that updates to two durable clients are processed correctly.
    */
+  @Test
   public void testTwoDurableClientsStartStopUpdate() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -829,6 +843,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   /**
    * Tests whether a durable client reconnects properly to two servers.
    */
+  @Test
   public void testDurableClientReconnectTwoServers() {
     // Start server 1
     Integer[] ports = ((Integer[]) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServerReturnPorts(regionName, new Boolean(true))));
@@ -1022,6 +1037,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     this.server2VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
   
+  @Test
   public void testReadyForEventsNotCalledImplicitly() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -1081,6 +1097,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   //This test method is disabled because it is failing
   //periodically and causing cruise control failures
   //See bug #47060
+  @Test
   public void testReadyForEventsNotCalledImplicitlyWithCacheXML() {
     try {
       setPeriodicACKObserver(durableClientVM);
@@ -1347,6 +1364,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     vm.invoke(cacheSerializableRunnable);
   }
   
+  @Test
   public void testReadyForEventsNotCalledImplicitlyForRegisterInterestWithCacheXML() {
     final String cqName = "cqTest";
     regionName = "testReadyForEventsNotCalledImplicitlyWithCacheXML_region";
@@ -1535,6 +1553,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Events are queued up and the stats are checked
    * Durable client is then reconnected, events are dispatched and stats are rechecked
    */
+  @Test
   public void testHAQueueSizeStat() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -1611,6 +1630,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Stats should now be 0
    * Durable client is then reconnected, no events should exist and stats are rechecked
    */
+  @Test
   public void testHAQueueSizeStatExpired() throws Exception {
     int timeoutInSeconds = 20;
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
@@ -1697,6 +1717,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Stats are checked
    * Durable client then reregisters cqs and sends ready for events
    */
+  @Test
   public void testHAQueueSizeStatForGII() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -1787,6 +1808,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   /**
    * Tests the ha queued cq stat
    */
+  @Test
   public void testHAQueuedCqStat() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -1862,6 +1884,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   /**
    * @throws Exception
    */
+  @Test
   public void testHAQueuedCqStatOnSecondary() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -1961,6 +1984,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testHAQueuedCqStatForGII() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2061,6 +2085,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Durable Client sends ready or events and receives events
    * Recheck stats
    */
+  @Test
   public void testHAQueuedCqStatForGII2() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2158,6 +2183,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testHAQueuedCqStatForGIINoFailover() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2255,6 +2281,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * server 2 behaves accordingly
    * @throws Exception
    */
+  @Test
   public void testHAQueuedCqStatForFailover() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2343,6 +2370,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   /**
    * Tests the ha queued cq stat
    */
+  @Test
   public void testHAQueuedCqStatWithTimeOut() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2427,6 +2455,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Test functionality to close the cq and drain all events from the ha queue from the server
    * @throws Exception
    */
+  @Test
   public void testCloseCqAndDrainEvents() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2510,6 +2539,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * This draining should not affect events that still have register interest
    * @throws Exception
    */
+  @Test
   public void testCloseAllCqsAndDrainEvents() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2596,6 +2626,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Continues to publish afterwards to verify that stats are correct
    * @throws Exception
    */
+  @Test
   public void testCloseAllCqsAndDrainEventsNoInterestRegistered() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2706,6 +2737,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Two durable clients, one will have a cq be closed, the other should be unaffected
    * @throws Exception
    */
+  @Test
   public void testCloseCqAndDrainEvents2Client() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -2824,6 +2856,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * The client should be rejected until no cqs are currently being drained
    * @throws Exception
    */
+  @Test
   public void testRejectClientWhenDrainingCq() throws Exception {
     try {
       IgnoredException.addIgnoredException(LocalizedStrings.CacheClientNotifier_COULD_NOT_CONNECT_DUE_TO_CQ_BEING_DRAINED.toLocalizedString());
@@ -2948,6 +2981,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * @throws Exception
    */
   @Category(FlakyTest.class) // GEODE-1060: random ports, async actions, time sensitive, eats exceptions (fixed 1)
+  @Test
   public void testCqCloseExceptionDueToActivatingClient() throws Exception {
     try {
       String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
@@ -3048,6 +3082,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Tests situation where a client is trying to reconnect while a cq is being drained
    * @throws Exception
    */
+  @Test
   public void testCqCloseExceptionDueToActiveConnection() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -3123,6 +3158,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * and drain all events from the ha queue from the server
    * @throws Exception
    */
+  @Test
   public void testCloseCacheProxy() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
     String allQuery = "select * from /" + regionName + " p where p.ID > -1";
@@ -3215,6 +3251,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Test that starting a durable client on multiple servers is processed
    * correctly.
    */
+  @Test
   public void testSimpleDurableClientMultipleServers() {
     // Start server 1
     Integer[] ports = ((Integer[]) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServerReturnPorts(regionName, new Boolean(true))));

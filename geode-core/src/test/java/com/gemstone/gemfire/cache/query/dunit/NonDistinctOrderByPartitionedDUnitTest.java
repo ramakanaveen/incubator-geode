@@ -17,6 +17,15 @@
 package com.gemstone.gemfire.cache.query.dunit;
 
 import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.PartitionAttributesFactory;
@@ -40,11 +49,12 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  *
  */
 @Category(DistributedTest.class)
+@Category(DistributedTest.class)
 public class NonDistinctOrderByPartitionedDUnitTest extends
     NonDistinctOrderByDUnitImpl {
 
-  public NonDistinctOrderByPartitionedDUnitTest(String name) {
-    super(name);
+  public NonDistinctOrderByPartitionedDUnitTest() {
+    super();
   }
 
   @Override

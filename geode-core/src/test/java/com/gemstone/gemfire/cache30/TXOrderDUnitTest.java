@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -61,14 +70,15 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  * @since 5.0
  */
-public class TXOrderDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class TXOrderDUnitTest extends JUnit4CacheTestCase {
 
   private transient Region r;
   private transient DistributedMember otherId;
   protected transient int invokeCount;
   
-  public TXOrderDUnitTest(String name) {
-    super(name);
+  public TXOrderDUnitTest() {
+    super();
   }
 
   private VM getOtherVm() {
@@ -124,6 +134,7 @@ public class TXOrderDUnitTest extends CacheTestCase {
   /**
    * make sure listeners get invoked in correct order on far side of tx
    */
+  @Test
   public void testFarSideOrder() throws CacheException {
     initOtherId();
     AttributesFactory af = new AttributesFactory();
@@ -226,6 +237,7 @@ public class TXOrderDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testInternalRegionNotExposed() {
     Host host = Host.getHost(0);
     VM vm1 = host.getVM(0);
@@ -316,14 +328,17 @@ public class TXOrderDUnitTest extends CacheTestCase {
    * verify that queries on indexes work with transaction
    * @throws Exception
    */
+  @Test
   public void testFarSideIndexOnPut() throws Exception {
     doTest(TEST_PUT);
   }
 
+  @Test
   public void testFarSideIndexOnInvalidate() throws Exception {
     doTest(TEST_INVALIDATE);
   }
 
+  @Test
   public void testFarSideIndexOnDestroy() throws Exception {
     doTest(TEST_DESTROY);
   }
@@ -392,6 +407,7 @@ public class TXOrderDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testBug43353() {
     Host host = Host.getHost(0);
     VM vm1 = host.getVM(0);

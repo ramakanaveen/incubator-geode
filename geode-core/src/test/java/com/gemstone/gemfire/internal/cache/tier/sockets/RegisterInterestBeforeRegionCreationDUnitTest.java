@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -61,7 +70,8 @@ import com.gemstone.gemfire.cache.client.*;
  * 
  */
 
-public class RegisterInterestBeforeRegionCreationDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class RegisterInterestBeforeRegionCreationDUnitTest extends JUnit4DistributedTestCase
 {
 
  /** Server1 VM **/
@@ -81,8 +91,8 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends DistributedTe
   /** Server2 VM **/
   protected static Cache cache = null;
 
-  public RegisterInterestBeforeRegionCreationDUnitTest(String name) {
-    super(name);
+  public RegisterInterestBeforeRegionCreationDUnitTest() {
+    super();
   }
 
   @Override
@@ -127,6 +137,7 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends DistributedTe
     server2.invoke(verifyIfAllPutsGot());
     client2.invoke(verifyIfAllPutsGot());
   }
+  @Test
   public void testDummyAsThereIsNoOtherTestInThisClass(){
     //DO NOTHING
   }
@@ -205,7 +216,7 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends DistributedTe
 
   public static Integer createServer(Boolean createRegion) throws Exception
   {
-    new RegisterInterestBeforeRegionCreationDUnitTest("temp").createCache(new Properties());
+    new RegisterInterestBeforeRegionCreationDUnitTest().createCache(new Properties());
     boolean isCreateRegion = createRegion.booleanValue();
     if (isCreateRegion) {
       AttributesFactory factory = new AttributesFactory();
@@ -239,7 +250,7 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends DistributedTe
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new RegisterInterestBeforeRegionCreationDUnitTest("temp").createCache(props);
+    new RegisterInterestBeforeRegionCreationDUnitTest().createCache(props);
     Pool p = PoolManager.createFactory()
       .addServer(host, PORT1)
       .setSubscriptionEnabled(true)

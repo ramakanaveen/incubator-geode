@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.serial;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -46,14 +55,16 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 
 
+@Category(DistributedTest.class)
 public class SerialGatewaySenderQueueDUnitTest extends WANTestBase{
 
   private static final long serialVersionUID = 1L;
 
-  public SerialGatewaySenderQueueDUnitTest(String name) {
-    super(name);
+  public SerialGatewaySenderQueueDUnitTest() {
+    super();
   }
 
+  @Test
   public void testPrimarySecondaryQueueDrainInOrder_RR() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -143,6 +154,7 @@ public class SerialGatewaySenderQueueDUnitTest extends WANTestBase{
     vm5.invoke(() -> WANTestBase.checkQueueOnSecondary( primarySenderUpdates ));
   }
   
+  @Test
   public void testPrimarySecondaryQueueDrainInOrder_PR() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -207,6 +219,7 @@ public class SerialGatewaySenderQueueDUnitTest extends WANTestBase{
    * Test to validate that serial gateway sender queue diskSynchronous attribute
    * when persistence of sender is enabled. 
    */
+  @Test
   public void test_ValidateSerialGatewaySenderQueueAttributes_1() {
     Integer localLocPort = (Integer) vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -271,6 +284,7 @@ public class SerialGatewaySenderQueueDUnitTest extends WANTestBase{
    * Test to validate that serial gateway sender queue diskSynchronous attribute
    * when persistence of sender is not enabled. 
    */
+  @Test
   public void test_ValidateSerialGatewaySenderQueueAttributes_2() {
     Integer localLocPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     

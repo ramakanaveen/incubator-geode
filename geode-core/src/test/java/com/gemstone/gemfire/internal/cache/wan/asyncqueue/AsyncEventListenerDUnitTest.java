@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.asyncqueue;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,18 +51,20 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnableIF;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
+@Category(DistributedTest.class)
 public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
 
   private static final long serialVersionUID = 1L;
 
-  public AsyncEventListenerDUnitTest(String name) {
-    super(name);
+  public AsyncEventListenerDUnitTest() {
+    super();
   }
 
   /**
    * Test to verify that AsyncEventQueue can not be created when null listener
    * is passed.
    */
+  @Test
   public void testCreateAsyncEventQueueWithNullListener() {
     AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
     Properties props = new Properties();
@@ -73,6 +84,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
 
   }
 
+  @Test
   public void testSerialAsyncEventQueueAttributes() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -84,6 +96,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     vm1.invoke(() -> AsyncEventQueueTestBase.validateAsyncEventQueueAttributes( "ln", 100, 150, AsyncEventQueueFactoryImpl.DEFAULT_BATCH_TIME_INTERVAL, true, "testDS", true, true ));
   }
   
+  @Test
   public void testSerialAsyncEventQueueSize() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -142,6 +155,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Added to reproduce defect #50366: 
    * NullPointerException with AsyncEventQueue#size() when number of dispatchers is more than 1
    */
+  @Test
   public void testConcurrentSerialAsyncEventQueueSize() {
 	Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -183,6 +197,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * channel persistence enabled: false
    */
 
+  @Test
   public void testReplicatedSerialAsyncEventQueue() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -214,6 +229,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Verify that the events loaded by CacheLoader reach the AsyncEventListener
    * with correct operation detail (added for defect #50237).
    */
+  @Test
   public void testReplicatedSerialAsyncEventQueueWithCacheLoader() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -257,6 +273,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Added to test the fix done for defect #45152.
    */
 
+  @Test
   public void testReplicatedSerialAsyncEventQueue_ExceptionScenario() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -309,6 +326,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Region: Replicated WAN: Serial Region persistence enabled: false Async
    * channel persistence enabled: false AsyncEventQueue conflation enabled: true
    */
+  @Test
   public void testReplicatedSerialAsyncEventQueueWithConflationEnabled() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -431,6 +449,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * No VM is restarted.
    */
 
+  @Test
   public void testReplicatedSerialAsyncEventQueueWithPeristenceEnabled() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -554,6 +573,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Dispatcher threads: more than 1
    * Order policy: key based ordering
    */
+  @Test
   public void testConcurrentSerialAsyncEventQueueWithReplicatedRegion() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -592,6 +612,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Region persistence enabled: false 
    * Async queue persistence enabled: false
    */
+  @Test
   public void testConcurrentSerialAsyncEventQueueWithReplicatedRegion_2() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -632,6 +653,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Dispatcher threads set to more than 1 but no order policy set.
    * Added for defect #50514.
    */
+  @Test
   public void testConcurrentSerialAsyncEventQueueWithoutOrderPolicy() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -668,6 +690,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Region: Partitioned WAN: Serial Region persistence enabled: false Async
    * channel persistence enabled: false
    */
+  @Test
   public void testPartitionedSerialAsyncEventQueue() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -702,6 +725,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Region: Partitioned WAN: Serial Region persistence enabled: false Async
    * channel persistence enabled: false AsyncEventQueue conflation enabled: true
    */
+  @Test
   public void testPartitionedSerialAsyncEventQueueWithConflationEnabled() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -786,6 +810,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * 
    * No VM is restarted.
    */
+  @Test
   public void testPartitionedSerialAsyncEventQueueWithPeristenceEnabled() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -826,6 +851,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * 
    * There is only one vm in the site and that vm is restarted
    */
+  @Test
   public void testPartitionedSerialAsyncEventQueueWithPeristenceEnabled_Restart() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -858,6 +884,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     vm1.invoke(() -> AsyncEventQueueTestBase.validateAsyncEventListener( "ln", 1000 ));// primary sender
   }
 
+  @Test
   public void testParallelAsyncEventQueueWithReplicatedRegion() {
     try {
       Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
@@ -887,6 +914,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     }
   }
 
+  @Test
   public void testParallelAsyncEventQueue() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -925,6 +953,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     assertEquals(vm1size + vm2size + vm3size + vm4size, 256);
   }
 
+  @Test
   public void testParallelAsyncEventQueueWithSubstitutionFilter() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -944,6 +973,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     vm1.invoke(() -> verifySubstitutionFilterInvocations( "ln" ,numPuts ));
   }
 
+  @Test
   public void testParallelAsyncEventQueueWithSubstitutionFilterNoSubstituteValueToDataInvocations() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -967,6 +997,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Verify that the events reaching the AsyncEventListener have correct operation detail.
    * (added for defect #50237).
    */
+  @Test
   public void testParallelAsyncEventQueueWithCacheLoader() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -997,6 +1028,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     vm4.invoke(() -> AsyncEventQueueTestBase.validateAsyncEventForOperationDetail( "ln", 250, false, true ));
   }
   
+  @Test
   public void testParallelAsyncEventQueueSize() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -1043,6 +1075,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Added to reproduce defect #50366: 
    * NullPointerException with AsyncEventQueue#size() when number of dispatchers is more than 1
    */
+  @Test
   public void testConcurrentParallelAsyncEventQueueSize() {
 	Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -1085,6 +1118,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
 	assertEquals("Size of AsyncEventQueue is incorrect", 1000, vm2size);
   }
   
+  @Test
   public void testParallelAsyncEventQueueWithConflationEnabled() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -1169,6 +1203,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
   /**
    * Added to reproduce defect #47213
    */
+  @Test
   public void testParallelAsyncEventQueueWithConflationEnabled_bug47213() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -1246,6 +1281,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     
   }
 
+  @Test
   public void testParallelAsyncEventQueueWithOneAccessor() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -1286,6 +1322,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
 
   }
 
+  @Test
   public void testParallelAsyncEventQueueWithPersistence() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -1382,6 +1419,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * between vm1 & vm3.
    */
   @Category(FlakyTest.class) // GEODE-688 & GEODE-713: random ports, thread sleeps, async actions
+  @Test
   public void testParallelAsyncEventQueueHA_Scenario2() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -1448,6 +1486,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * vm1, vm2 & vm3.
    */
   @Ignore("Depends on hydra code. See bug ")
+  @Test
   public void testParallelAsyncEventQueueHA_Scenario3() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -1506,6 +1545,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
   /**
    * Added for defect #50364 Can't colocate region that has AEQ with a region that does not have that same AEQ
    */
+  @Test
   public void testParallelAsyncEventQueueAttachedToChildRegionButNotToParentRegion() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 

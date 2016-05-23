@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -45,13 +54,14 @@ import com.gemstone.gemfire.test.dunit.IgnoredException;
  * @since 6.0
  */
 
+@Category(DistributedTest.class)
 public class CacheXml60DUnitTest extends CacheXml58DUnitTest
 {
 
   // ////// Constructors
 
-  public CacheXml60DUnitTest(String name) {
-    super(name);
+  public CacheXml60DUnitTest() {
+    super();
   }
 
   // ////// Helper methods
@@ -67,6 +77,7 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
    * for recovery-delay has the correct attributes.
    * 
    */
+  @Test
   public void testRecoveryDelayAttributes() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -113,6 +124,7 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
    * for recovery-delay has the correct attributes.
    * 
    */
+  @Test
   public void testDefaultRecoveryDelayAttributes() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -156,6 +168,7 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
    * eviction-heap-percentage attributes
    * @throws Exception
    */
+  @Test
   public void testResourceManagerThresholds() throws Exception {
     CacheCreation cache = new CacheCreation();
     final float low = 90.0f;
@@ -286,6 +299,7 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
     {return false;}      
   }
     
+  @Test
   public void testSerializationRegistration()
   {
     CacheCreation cc = new CacheCreation();

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.Region;
@@ -26,11 +35,12 @@ import com.gemstone.gemfire.internal.cache.lru.HeapEvictor;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 
+@Category(DistributedTest.class)
 public class PartitionedRegionOffHeapEvictionDUnitTest extends
     PartitionedRegionEvictionDUnitTest {
   
-  public PartitionedRegionOffHeapEvictionDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionOffHeapEvictionDUnitTest() {
+    super();
   }  
   
   @Override

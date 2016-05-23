@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.management;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,6 +74,7 @@ import static org.hamcrest.Matchers.*;
  * 
  * 
  */
+@Category(DistributedTest.class)
 public class CacheManagementDUnitTest extends ManagementTestBase {
 
   private static final long serialVersionUID = 1L;
@@ -91,10 +101,11 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
 
 
 
-  public CacheManagementDUnitTest(String name) {
-    super(name);
+  public CacheManagementDUnitTest() {
+    super();
   }
 
+  @Test
   public void testGemFireConfigData() throws Exception {
      initManagement(false);
    
@@ -117,6 +128,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testMemberMBeanOperations() throws Exception {
     
     initManagement(false);
@@ -157,6 +169,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
    * Invoke remote operations on MemberMBean
    * @throws Exception
    */
+  @Test
   public void testMemberMBeanOpsRemote() throws Exception {
     initManagement(false);
     getManagingNode().invoke(() -> CacheManagementDUnitTest.invokeRemoteOps());
@@ -168,6 +181,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testManager() throws Exception {
     List<VM> managedNodeList = getManagedNodeList();
     VM node1 = managedNodeList.get(0);
@@ -200,6 +214,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testManagerShutdown() throws Exception {
     List<VM> managedNodeList = getManagedNodeList();
     VM node1 = managedNodeList.get(0);
@@ -222,6 +237,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
     checkNonManagerView(managingNode);
   }
   
+  @Test
   public void testServiceCloseManagedNode() throws Exception{
     List<VM> managedNodeList = getManagedNodeList();
     VM node1 = managedNodeList.get(0);
@@ -244,6 +260,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
 
   }
   
+  @Test
   public void testGetMBean() throws Exception{
     List<VM> managedNodeList = getManagedNodeList();
     VM node1 = managedNodeList.get(0);
@@ -263,6 +280,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
 
   }
   
+  @Test
   public void testQueryMBeans() throws Exception{
     List<VM> managedNodeList = getManagedNodeList();
     VM node1 = managedNodeList.get(0);
@@ -721,6 +739,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
   }
   
   
+  @Test
   public void testNotification() throws Exception {
 
     List<VM> managedNodeList = getManagedNodeList();
@@ -745,6 +764,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
 
   }
 
+  @Test
   public void testNotificationManagingNodeFirst() throws Exception {
 
     List<VM> managedNodeList = getManagedNodeList();
@@ -769,6 +789,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
 
   }
   
+  @Test
   public void testRedundancyZone() throws Exception {
 
     List<VM> managedNodeList = getManagedNodeList();

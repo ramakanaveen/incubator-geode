@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.distributed;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,10 +42,11 @@ import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 
-public class SystemAdminDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class SystemAdminDUnitTest extends JUnit4DistributedTestCase {
 
-  public SystemAdminDUnitTest(String name) {
-    super(name);
+  public SystemAdminDUnitTest() {
+    super();
   }
 
   @Override
@@ -59,6 +69,7 @@ public class SystemAdminDUnitTest extends DistributedTestCase {
     }
   }
 
+  @Test
   public void testPrintStacks() throws Exception {
 
     // create a gemfire.properties that lets SystemAdmin find the dunit locator

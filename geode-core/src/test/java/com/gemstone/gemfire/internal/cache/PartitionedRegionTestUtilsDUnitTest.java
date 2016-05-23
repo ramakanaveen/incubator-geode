@@ -17,6 +17,15 @@
 
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import hydra.GsRandom;
 
 import java.io.DataInput;
@@ -46,12 +55,13 @@ import com.gemstone.gemfire.test.dunit.VM;
  * @since 5.0 
  *
  */
+@Category(DistributedTest.class)
 public class PartitionedRegionTestUtilsDUnitTest extends
     PartitionedRegionDUnitTestCase
 {
   final int totalNumBuckets = 5;
-  public PartitionedRegionTestUtilsDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionTestUtilsDUnitTest() {
+    super();
   }
 
   /**
@@ -59,6 +69,7 @@ public class PartitionedRegionTestUtilsDUnitTest extends
    * returns keys when there are keys and {@link java.util.Collections#EMPTY_SET} when there are none.
    * @throws Exception
    */
+  @Test
   public void testGetKeys() throws Exception {
     final String r = getUniqueName();
     Host host = Host.getHost(0);
@@ -151,6 +162,7 @@ public class PartitionedRegionTestUtilsDUnitTest extends
     public void toData(DataOutput out) throws IOException  {out.writeInt(this.hc); }
     public void fromData(DataInput in) throws IOException, ClassNotFoundException { this.hc = in.readInt(); } 
   }
+  @Test
   public void testGetNodes() throws Exception {
     final String r = getUniqueName();
     Host host = Host.getHost(0);
@@ -234,6 +246,7 @@ public class PartitionedRegionTestUtilsDUnitTest extends
    * Test the test utiltities that allow investigation of a PartitionedRegion's local cache. 
    * @throws Exception
    */
+  @Test
   public void testLocalCacheOps() throws Exception {
     final String r = getUniqueName();
     Host host = Host.getHost(0);
@@ -348,6 +361,7 @@ public class PartitionedRegionTestUtilsDUnitTest extends
    * 
    * @throws Exception
    */
+  @Test
   public void testGetBucketKeys() throws Exception {
     final String r = getUniqueName();
     Host host = Host.getHost(0);
@@ -442,6 +456,7 @@ public class PartitionedRegionTestUtilsDUnitTest extends
    * Verify that the information it discovers is the same as the local advisor.
    * @throws Exception
    */
+  @Test
   public void testGetBucketOwners() throws Exception {
     final String rName0 = getUniqueName() + "-r0";
     final String rName1 = getUniqueName() + "-r1";

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.net.InetAddress;
 import java.util.Properties;
 
@@ -60,7 +69,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * This class tests the functionality of the {@link
  * DistributionManager} class.
  */
-public class DistributionManagerDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
   private static final Logger logger = LogService.getLogger();
   
   /**
@@ -71,8 +81,8 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
     dm.clearExceptionInThreads();
   }
 
-  public DistributionManagerDUnitTest(String name) {
-    super(name);
+  public DistributionManagerDUnitTest() {
+    super();
   }
   
   @Override
@@ -97,6 +107,7 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
   
   public static DistributedSystem ds;
   
+  @Test
   public void testGetDistributionVMType() {
     DM dm = getSystem().getDistributionManager();
     InternalDistributedMember ipaddr = dm.getId();
@@ -106,6 +117,7 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
   /**
    * Send the distribution manager a message it can't deserialize
    */
+  @Test
   public void testExceptionInThreads() throws InterruptedException {
     DM dm = getSystem().getDistributionManager();
     String p1 = "ItsOkayForMyClassNotToBeFound";
@@ -139,6 +151,7 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
    * Demonstrate that a new UDP port is used when an attempt is made to
    * reconnect using a shunned port
    */
+  @Test
   public void testConnectAfterBeingShunned() {
     InternalDistributedSystem sys = getSystem();
     MembershipManager mgr = MembershipManagerHelper.getMembershipManager(sys);
@@ -168,6 +181,7 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
    * until the member should be gone and force more view processing to have
    * it scrubbed from the set.
    **/ 
+  @Test
   public void testSurpriseMemberHandling() {
     VM vm0 = Host.getHost(0).getVM(0);
 
@@ -256,6 +270,7 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
    * region that sleeps when notified, forcing the operation to take longer
    * than ack-wait-threshold + ack-severe-alert-threshold
    */
+  @Test
   public void testAckSevereAlertThreshold() throws Exception {
     disconnectAllFromDS();
     Host host = Host.getHost(0);
@@ -397,6 +412,7 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
   /**
    * Tests that a sick member is kicked out
    */
+  @Test
   public void testKickOutSickMember() throws Exception {
     disconnectAllFromDS();
     IgnoredException.addIgnoredException("10 seconds have elapsed while waiting");
@@ -511,6 +527,7 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
    * test use of a bad bind-address for bug #32565
    * @throws Exception
    */
+  @Test
   public void testBadBindAddress() throws Exception {
     disconnectAllFromDS();
 
@@ -540,6 +557,7 @@ public class DistributionManagerDUnitTest extends DistributedTestCase {
   /**
    * install a new view and show that waitForViewInstallation works as expected
    */
+  @Test
   public void testWaitForViewInstallation() {
     getSystem(new Properties());
     

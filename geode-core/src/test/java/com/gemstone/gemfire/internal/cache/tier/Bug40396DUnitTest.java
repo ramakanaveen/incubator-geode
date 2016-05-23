@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -39,7 +48,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * Test delta propagation for faulty delta implementation
  * @since 6.1
  */
-public class Bug40396DUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class Bug40396DUnitTest extends JUnit4DistributedTestCase {
   
   private static Cache cache;
   private static final String REGION_NAME="Bug40396DUnitTest_region";
@@ -54,8 +64,8 @@ public class Bug40396DUnitTest extends DistributedTestCase {
 
   private static final int PUT_COUNT = 10;
   
-  public Bug40396DUnitTest(String name) {
-    super(name);
+  public Bug40396DUnitTest() {
+    super();
   }
 
   @Override
@@ -71,7 +81,7 @@ public class Bug40396DUnitTest extends DistributedTestCase {
    */
   public static Integer createServerCache() throws Exception
   {
-    new Bug40396DUnitTest("temp").createCache(new Properties());
+    new Bug40396DUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -160,6 +170,7 @@ public class Bug40396DUnitTest extends DistributedTestCase {
    * This test does the following 1)send faulty implementation (Reading more in
    * fromDelta then what sent by toDelta) of delta raises EOF exception<br>
    */
+  @Test
   public void testForFaultyDeltaImplementationForEOFEX() {
     boolean matched = false;
     ((Integer)server.invoke(() -> Bug40396DUnitTest.createServerCache())).intValue();
@@ -187,6 +198,7 @@ public class Bug40396DUnitTest extends DistributedTestCase {
    * incorrect order from toDelta, raises delta raises array index out of bound
    * exception<br>
    */
+  @Test
   public void testForFaultyDeltaImplementationForAIOBEX() {
     boolean matched = false;
     ((Integer)server.invoke(() -> Bug40396DUnitTest.createServerCache())).intValue();

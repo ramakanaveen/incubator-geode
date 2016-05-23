@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.distributed;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
@@ -33,12 +42,13 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
  * Tests the setting of Roles in a DistributedSystem
  *
  */
-public class RoleDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class RoleDUnitTest extends JUnit4DistributedTestCase {
   
   static Properties distributionProperties = new Properties();
 
-  public RoleDUnitTest(String name) {
-    super(name);
+  public RoleDUnitTest() {
+    super();
   }
   
   
@@ -51,6 +61,7 @@ public class RoleDUnitTest extends DistributedTestCase {
   /**
    * Tests usage of Roles in a Loner vm.
    */
+  @Test
   public void testRolesInLonerVM() {
     final String rolesProp = "A,B,C,D,E,F,G";
     final String[] rolesArray = new String[] {"A","B","C","D","E","F","G"};
@@ -89,6 +100,7 @@ public class RoleDUnitTest extends DistributedTestCase {
   /**
    * Tests usage of Roles in four distributed vms.
    */
+  @Test
   public void testRolesInDistributedVMs() {  
     // connect all four vms...
     final String[] vmRoles = new String[] 
@@ -149,6 +161,7 @@ public class RoleDUnitTest extends DistributedTestCase {
   /** 
    * Tests that specifying duplicate role names results in just one Role.
    */
+  @Test
   public void testDuplicateRoleNames() {
     final String rolesProp = "A,A";
     

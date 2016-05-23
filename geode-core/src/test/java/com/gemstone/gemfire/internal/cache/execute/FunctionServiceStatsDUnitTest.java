@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +76,7 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  */
 
+@Category(DistributedTest.class)
 public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
   
   static Boolean isByName = null;
@@ -114,8 +124,8 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
 //  static Object[] VM3tats;
   
   
-  public FunctionServiceStatsDUnitTest(String name) {
-    super(name);
+  public FunctionServiceStatsDUnitTest() {
+    super();
   }
 
   @Override
@@ -195,6 +205,7 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
    * On server side, function execution calls should be equal to the no of
    * function executions completed.
    */
+  @Test
   public void testClientServerPartitonedRegionFunctionExecutionStats() {
     createScenario();
     Function function = new TestFunction(true, TestFunction.TEST_FUNCTION2);
@@ -367,6 +378,7 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
    * On server side, function execution calls should be equal to the no of
    * function executions completed.
    */
+  @Test
   public void testClientServerDistributedRegionFunctionExecutionStats() {
      
     final String regionName = "FunctionServiceStatsDUnitTest";
@@ -571,6 +583,7 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
    * On client side, the no of result received should equal to the no of function execution calls.
    * On server side, function execution calls should be equal to the no of function executions completed. 
    */
+  @Test
   public void testClientServerwithoutRegion() {
     createClientServerScenarionWithoutRegion();
     Function function = new TestFunction(true, TestFunction.TEST_FUNCTION1);
@@ -733,6 +746,7 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
     server3.invoke(checkStatsOnServer);
   }
   
+  @Test
   public void testP2PDummyExecutionStats()
   throws Exception {
     Host host = Host.getHost(0);
@@ -764,6 +778,7 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
    * On datastore, no of function execution calls should be equal to the no of function execution calls from the accessor.
    * @throws Exception
    */
+  @Test
   public void testP2PPartitionedRegionsFunctionExecutionStats()
       throws Exception {
     final String rName = getUniqueName();
@@ -955,6 +970,7 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
    * DataStore0 is with Empty datapolicy 
    */
   
+  @Test
   public void testP2PDistributedRegionFunctionExecutionStats() {
     final String rName = getUniqueName();
     Host host = Host.getHost(0);
@@ -1073,6 +1089,7 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
    * @throws Exception
    */
   
+  @Test
   public void testP2PMembersFunctionExecutionStats()
       throws Exception {
     Host host = Host.getHost(0);
@@ -1229,6 +1246,7 @@ public class FunctionServiceStatsDUnitTest extends PRClientServerTestBase{
    *  
    * @throws Exception
    */
+  @Test
   public void testFunctionExecutionExceptionStatsOnAllNodesPRegion()
       throws Exception {
     final String rName = getUniqueName();

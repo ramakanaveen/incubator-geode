@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.compression;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -37,7 +46,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * Tests configured and badly configured cache.xml files with regards to compression.
  * 
  */
-public class CompressionCacheConfigDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class CompressionCacheConfigDUnitTest extends JUnit4CacheTestCase {
   /**
    * The name of our test region.
    */
@@ -57,8 +67,8 @@ public class CompressionCacheConfigDUnitTest extends CacheTestCase {
    * Create a new CompressionCacheConfigDUnitTest.
    * @param name test name.
    */
-  public CompressionCacheConfigDUnitTest(String name) {
-    super(name);
+  public CompressionCacheConfigDUnitTest() {
+    super();
   }
 
   /**
@@ -66,6 +76,7 @@ public class CompressionCacheConfigDUnitTest extends CacheTestCase {
    * a compressor is included in the region attributes.
    * @throws Exception
    */
+  @Test
   public void testCreateCacheWithGoodCompressor() throws Exception {
     try {
       SnappyCompressor.getDefaultInstance();
@@ -85,6 +96,7 @@ public class CompressionCacheConfigDUnitTest extends CacheTestCase {
    * cache.xml.
    * @throws Exception
    */
+  @Test
   public void testCreateCacheWithBadCompressor() throws Exception {
     IgnoredException.addIgnoredException("Unable to load class BAD_COMPRESSOR");
     File cacheXml = createCacheXml(BAD_COMPRESSOR);

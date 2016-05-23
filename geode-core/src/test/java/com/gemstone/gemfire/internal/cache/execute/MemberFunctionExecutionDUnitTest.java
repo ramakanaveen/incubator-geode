@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +64,8 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class MemberFunctionExecutionDUnitTest extends JUnit4CacheTestCase {
   private static final String TEST_FUNCTION6 = TestFunction.TEST_FUNCTION6;
   private static final String TEST_FUNCTION5 = TestFunction.TEST_FUNCTION5;
 
@@ -68,8 +78,8 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
   
   static InternalDistributedSystem ds = null;
 
-  public MemberFunctionExecutionDUnitTest(String name) {
-    super(name);
+  public MemberFunctionExecutionDUnitTest() {
+    super();
   }
   
   @Override
@@ -86,32 +96,38 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
    * haveResults = true 
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecution()
       throws Exception {
     createDistributedSystemAndRegisterFunction();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.excuteOnMembers(new Integer(5)));
   }
   
+  @Test
   public void testRemoteMultiKeyExecution_SendException1() throws Exception {
     createDistributedSystemAndRegisterFunction();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.excuteOnMembers_SendException( new Integer(1) ));
   }
   
+  @Test
   public void testRemoteMultiKeyExecution_SendException2() throws Exception {
     createDistributedSystemAndRegisterFunction();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.excuteOnMembers_SendException( new Integer(4) ));
   }
   
+  @Test
   public void testRemoteMultiKeyExecution_SendException3() throws Exception {
     createDistributedSystemAndRegisterFunction();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.excuteOnMembers_SendException( new Integer(5) ));
   }
   
+  @Test
   public void testRemoteMultiKeyExecution_NoLastResult() throws Exception {
     createDistributedSystemAndRegisterFunction();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.excuteOnMembers_NoLastResult( new Integer(5) ));
   }
   
+  @Test
   public void testLocalMultiKeyExecution_NoLastResult() throws Exception {
     createDistributedSystemAndRegisterFunction();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.excuteOnMembers_NoLastResult( new Integer(1) ));
@@ -122,12 +138,14 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
    * haveResults = true 
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecution_InlineFunction()
       throws Exception {
     createDistributedSystemAndRegisterFunction();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.excuteOnMembers_InlineFunction(new Integer(5)));
   }
 
+  @Test
   public void testBug45328() throws Exception {
     createDistributedSystemAndRegisterFunction();
     ClassBuilder classBuilder = new ClassBuilder();
@@ -167,6 +185,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
     }
   }
 
+  @Test
   public void testBug40714() throws Exception {
     createDistributedSystemAndRegisterFunction();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.registerFunction());
@@ -177,6 +196,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
   }
 
   
+  @Test
   public void testBug46129() throws Exception {
     Properties props = new Properties();
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.connectToDistributedSystem( props ));
@@ -242,6 +262,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
    * haveResults = false 
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecutionNoResult()
       throws Exception {
     createDistributedSystemAndRegisterFunction();
@@ -252,6 +273,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
    * haveResults = true 
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecutiononLocalMember()
       throws Exception {
     createDistributedSystemAndRegisterFunction();
@@ -263,6 +285,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
    * haveResults = true 
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecutiononLocalMember_InlineFunction()
       throws Exception {
     createDistributedSystemAndRegisterFunction();
@@ -274,6 +297,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
    * haveResults = true 
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecutiononOtherMembers()
       throws Exception {
     createDistributedSystemAndRegisterFunction();
@@ -285,6 +309,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
    * haveResults = true 
    * @throws Exception
    */
+  @Test
   public void testRemoteMultiKeyExecutiononOtherMembers_InlineFunction()
       throws Exception {
     createDistributedSystemAndRegisterFunction();
@@ -295,11 +320,13 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
    * This tests make sure that, in case of LonerDistributedSystem we dont get ClassCast Exception.
    * Just making sure that the function executed on lonerDistribuedSystem
    */
+  @Test
   public void testBug41118()
       throws Exception {
     member1.invoke(() -> MemberFunctionExecutionDUnitTest.bug41118());
   }
   
+  @Test
   public void testOnMembersWithoutCache()
       throws Exception {
     DistributedMember member1Id = (DistributedMember) member1.invoke(new SerializableCallable() {
@@ -344,7 +371,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
   }
   
   public static void bug41118(){
-    ds = new MemberFunctionExecutionDUnitTest("temp").getSystem();
+    ds = new MemberFunctionExecutionDUnitTest().getSystem();
     assertNotNull(ds);
     ds.disconnect();
     Properties props = new Properties();
@@ -638,7 +665,7 @@ public class MemberFunctionExecutionDUnitTest extends CacheTestCase {
   }
   
   public static void connectToDistributedSystem(Properties props) {
-    new MemberFunctionExecutionDUnitTest("temp").createSystem(props);
+    new MemberFunctionExecutionDUnitTest().createSystem(props);
   }
   
   private InternalDistributedSystem createSystem(Properties props){

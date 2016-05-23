@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
@@ -33,13 +42,14 @@ import com.gemstone.gemfire.test.dunit.VM;
  * @since 5.0
  */
 
+@Category(DistributedTest.class)
 public class CacheXml51DUnitTest extends CacheXml45DUnitTest
 {
 
   // ////// Constructors
 
-  public CacheXml51DUnitTest(String name) {
-    super(name);
+  public CacheXml51DUnitTest() {
+    super();
   }
 
   // ////// Helper methods
@@ -53,6 +63,7 @@ public class CacheXml51DUnitTest extends CacheXml45DUnitTest
    * Tests that a region created with a named attributes has the correct
    * attributes.
    */
+  @Test
   public void testPartitionedRegionXML() throws CacheException
   {
     setXmlFile(findFile("partitionedRegion51.xml"));
@@ -133,7 +144,8 @@ public class CacheXml51DUnitTest extends CacheXml45DUnitTest
  *
  * @throws CacheException
  */
-public void testMessageSyncInterval() throws CacheException {
+  @Test
+  public void testMessageSyncInterval() throws CacheException {
   CacheCreation cache = new CacheCreation();
   cache.setMessageSyncInterval(123);
   RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -152,7 +164,8 @@ public void testMessageSyncInterval() throws CacheException {
  * 
  * @throws CacheException
  */
-public void testBridgeAttributesRelatedToClientQueuesHA() throws CacheException {
+  @Test
+  public void testBridgeAttributesRelatedToClientQueuesHA() throws CacheException {
   CacheCreation cache = new CacheCreation();
   cache.setMessageSyncInterval(3445);
   CacheServer bs = cache.addCacheServer();
@@ -182,6 +195,7 @@ public void testBridgeAttributesRelatedToClientQueuesHA() throws CacheException 
    * the functionality for future comparisons (by hand of course). -- Mitch
    * Thomas 01/18/2006
    */
+  @Test
   public void testPartitionedRegionInstantiation() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -201,6 +215,7 @@ public void testBridgeAttributesRelatedToClientQueuesHA() throws CacheException 
    * 
    * @throws CacheException
    */
+  @Test
   public void testBridgeMaxThreads()
       throws CacheException
   {
@@ -219,6 +234,7 @@ public void testBridgeAttributesRelatedToClientQueuesHA() throws CacheException 
   /**
    * Tests that loading cache XML with multi-cast set will set the multi-cast
    */
+  @Test
   public void testRegionMulticastSetViaCacheXml() throws CacheException
   {
     final String rNameBase = getUniqueName();
@@ -284,6 +300,7 @@ public void testBridgeAttributesRelatedToClientQueuesHA() throws CacheException 
     }
   }
 
+  @Test
   public void testRollOplogs() throws CacheException {
     CacheCreation cache = new CacheCreation();
 //  Set properties for Asynch writes
@@ -316,6 +333,7 @@ public void testBridgeAttributesRelatedToClientQueuesHA() throws CacheException 
     testXml(cache);
   }
   
+  @Test
   public void testMaxOplogSize() throws CacheException {
     CacheCreation cache = new CacheCreation();
 //  Set properties for Asynch writes

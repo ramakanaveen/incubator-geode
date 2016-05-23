@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
@@ -23,13 +32,14 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
+@Category(DistributedTest.class)
 public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
 {
   
   
   /** constructor */
-  public RedundancyLevelPart2DUnitTest(String name) {
-    super(name);
+  public RedundancyLevelPart2DUnitTest() {
+    super();
   }
   
   public static void caseSetUp() throws Exception {
@@ -59,6 +69,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * registartion.
    * Failure Detection by LSM
    */
+  @Test
   public void testRedundancySpecifiedPrimaryEPFails()
   {
     try {
@@ -99,6 +110,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * registartion.
    * Failure Detection by CCU
    */
+  @Test
   public void testRedundancySpecifiedPrimaryEPFailsDetectionByCCU()
   {
     try {
@@ -140,6 +152,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * registartion.
    * Failure Detection by Register Interest
    */
+  @Test
   public void testRedundancySpecifiedPrimaryEPFailsDetectionByRegisterInterest()
   {
     try {
@@ -181,6 +194,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * registartion.
    * Failure Detection by Unregister Interest
    */  
+  @Test
   public void testRedundancySpecifiedPrimaryEPFailsDetectionByUnregisterInterest()
   {
     try {
@@ -221,6 +235,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * registartion.
    * Failure Detection by put operation
    */
+  @Test
   public void testRedundancySpecifiedPrimaryEPFailsDetectionByPut()
   {
     try {
@@ -257,6 +272,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * existing EP in the set should be the new primary and make sure that CCP is
    * created on both the server with relevant interest registartion.
    */
+  @Test
   public void testRedundancySpecifiedPrimarySecondaryEPFails()
   {
     try {
@@ -296,6 +312,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * sure that CCP is created on the server with relevant interest registartion.
    * Bringing the 4th EP alive should simply add it to Live server map.
    */
+  @Test
   public void testRedundancySpecifiedEPFails()
   {
     try {
@@ -350,6 +367,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * should be added in Live server map as well as failover set and make sure
    * that CCP is created on the server with relevant interest registartion.
    */
+  @Test
   public void testRedundancyLevelSpecifiedButNotSatisfied()
   {
     try {
@@ -408,6 +426,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * added only in Live server map and make sure that no CCP is created on the
    * server.
    */
+  @Test
   public void testRedundancyLevelSpecifiedAndSatisfied()
   {
     try {
@@ -448,6 +467,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * live server map as well as failover set and make sure that CCP is created
    * on the server with relevant interest registartion.
    */
+  @Test
   public void testRedundancyLevelNotSpecified()
   {
     try {
@@ -491,6 +511,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * robin. 4 Explicit calls to proxy.acquireConnection should given Connections to all
    * the 4 end points & not just the Eps satisfying redundancy. 
    
+  @Test
   public void testAcquireConnectionWithRedundancy()
   {
     try {
@@ -514,6 +535,7 @@ public class RedundancyLevelPart2DUnitTest extends RedundancyLevelTestBase
    * Redundancy level specified is more than the total EndPoints. In such situation there should
    * not be any exception & all the EPs should has CacheClientProxy created.
    */
+  @Test
   public void testRedundancySpecifiedMoreThanEPs()
   {
     try {

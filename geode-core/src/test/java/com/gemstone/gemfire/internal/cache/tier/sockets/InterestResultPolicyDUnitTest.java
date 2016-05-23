@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -47,7 +56,8 @@ import com.gemstone.gemfire.cache.client.*;
  *
  *
  */
-public class InterestResultPolicyDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class InterestResultPolicyDUnitTest extends JUnit4DistributedTestCase
 {
   /** test VM */
   VM vm0, vm1 = null;
@@ -70,8 +80,8 @@ public class InterestResultPolicyDUnitTest extends DistributedTestCase
    * @param name -
    *          name of test instance
    */
-  public InterestResultPolicyDUnitTest(String name) {
-    super(name);
+  public InterestResultPolicyDUnitTest() {
+    super();
   }
 
   /**
@@ -117,6 +127,7 @@ public class InterestResultPolicyDUnitTest extends DistributedTestCase
    * 3)At the end of registerInterest call, verify that no entries are created
    * in the client cache<br>
    */
+  @Test
   public void testPolicyNone()
   {
     LogWriter logger = getSystem().getLogWriter();
@@ -140,6 +151,7 @@ public class InterestResultPolicyDUnitTest extends DistributedTestCase
    * 3)At the end of registerInterest call, verify that entries are created in
    * the client cache with value null<br>
    */
+  @Test
   public void testPolicyKeys()
   {
     LogWriter logger = getSystem().getLogWriter();
@@ -163,6 +175,7 @@ public class InterestResultPolicyDUnitTest extends DistributedTestCase
    * 3)At the end of registerInterest call, verify that all entries are created
    * in the client cache with values<br>
    */
+  @Test
   public void testPolicyKeysValues()
   {
     LogWriter logger = getSystem().getLogWriter();
@@ -188,6 +201,7 @@ public class InterestResultPolicyDUnitTest extends DistributedTestCase
    * in the keylist which are not on the server should not be created on the
    * client as a result of registerInterest call)<br>
    */
+  @Test
   public void testBug35358()
   {
     Host host = Host.getHost(0);

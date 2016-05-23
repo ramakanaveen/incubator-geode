@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -64,7 +73,8 @@ import java.util.StringTokenizer;
 /**
  *
  */
-public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTestCase{
+@Category(DistributedTest.class)
+public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4CacheTestCase{
 
   private static final long serialVersionUID = 1L;
 
@@ -109,8 +119,8 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
 
   protected static Locator locator = null;
   
-  public PartitionedRegionSingleHopWithServerGroupDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionSingleHopWithServerGroupDUnitTest() {
+    super();
   }
   
   @Override
@@ -173,6 +183,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
 
+  @Test
   public void test_SingleHopWith2ServerGroup() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -203,6 +214,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
 
+  @Test
   public void test_SingleHopWith2ServerGroup2() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -233,6 +245,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
   
+  @Test
   public void test_SingleHopWith2ServerGroup2WithoutSystemProperty() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -258,6 +271,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
 
+  @Test
   public void test_SingleHopWithServerGroupAccessor() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -287,6 +301,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
   
+  @Test
   public void test_SingleHopWithServerGroupOneServerInTwoGroups() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -321,6 +336,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     
   }
   
+  @Test
   public void test_SingleHopWithServerGroupWithOneDefaultServer() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -350,6 +366,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
   
+  @Test
   public void test_SingleHopWithServerGroupClientServerGroupNull() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -378,6 +395,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
   
+  @Test
   public void test_SingleHopWithServerGroupTwoClientServerGroup() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -415,6 +433,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
   
+  @Test
   public void test_SingleHopWithServerGroupTwoClientServerGroup2() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -449,6 +468,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
   
+  @Test
   public void test_SingleHopWithServerGroupTwoClientOneWithOneWithoutServerGroup() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -480,6 +500,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
   
+  @Test
   public void test_SingleHopWithServerGroup2ClientInOneVMServerGroup() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());
@@ -514,6 +535,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends CacheTes
     }
   }
 
+  @Test
   public void test_SingleHopWithServerGroupColocatedRegionsInDifferentGroup() {
     int port3 = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     final String host0 = NetworkUtils.getServerHostName(member3.getHost());

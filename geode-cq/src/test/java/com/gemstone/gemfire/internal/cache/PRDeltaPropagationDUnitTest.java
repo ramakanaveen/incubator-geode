@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -70,7 +79,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * Tests the PR delta propagation functionality.
  * 
  */
-public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   
   private final static Compressor compressor = SnappyCompressor.getDefaultInstance();
 
@@ -122,8 +132,8 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
   private static boolean queryDestroyExecuted = false;
   private static boolean notADeltaInstanceObj = false;
 
-  public PRDeltaPropagationDUnitTest(String name) {
-    super(name);
+  public PRDeltaPropagationDUnitTest() {
+    super();
   }
 
   @Override
@@ -146,6 +156,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    *  3) From primary to secondary delta gets propagated as part RR distribution.
    * 
    */
+  @Test
   public void testDeltaPropagationForPR() throws Throwable {
     createCacheInAllPRVms();
     createDeltaPR(Boolean.FALSE);
@@ -159,6 +170,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    *  Monitor number of times constructor is called
    *  Without copy or cloning, we should have 1 instance
    */
+  @Test
   public void testConstructorCountWithoutCloning() throws Throwable {
 
     clearConstructorCounts();
@@ -180,6 +192,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    *  With cloning, we should have more than 1 instance
    *  on members receiving delta updates
    */
+  @Test
   public void testConstructorCountWithCloning() throws Throwable {
 
     clearConstructorCounts();
@@ -201,6 +214,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    *  Create partition with cloning disabled, then
    *  enable cloning and verify proper operation 
    */
+  @Test
   public void testConstructorCountWithMutator() throws Throwable {
 
     clearConstructorCounts();
@@ -276,6 +290,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * Check delta propagation works properly with PR failover.    
    */
 
+  @Test
   public void testDeltaPropagationForPRFailover() throws Throwable {
     Object args[] = new Object[] { REGION_NAME, new Integer(1), new Integer(50),
         new Integer(8), Boolean.FALSE, null };
@@ -310,6 +325,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
     client1.invoke(() -> PRDeltaPropagationDUnitTest.checkDeltaInvoked(new Integer(deltaSent)));    
   }
 
+  @Test
   public void testDeltaPropagationForPRFailoverWithCompression() throws Throwable {
     Object args[] = new Object[] { REGION_NAME, new Integer(1), new Integer(50),
         new Integer(8), Boolean.FALSE, compressor };
@@ -353,6 +369,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * Check full object gets resend if delta can not be applied    
    */
 
+  @Test
   public void testDeltaPropagationForPRWithExpiry() throws Throwable {
     createCacheInAllPRVms();
     createDeltaPR(Boolean.TRUE);
@@ -367,6 +384,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    *  3) From data store to client delta should get propagated.
    * 
    */
+  @Test
   public void testDeltaPropagationPRAccessorAsBridgeServer() throws Throwable {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0), new Integer(0),
         new Integer(8), Boolean.FALSE, null };
@@ -394,6 +412,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * 4) Client sends full object in response.
    * 
    */
+  @Test
   public void testDeltaPropagationPRAccessorAsBridgeServerWithDeltaException() throws Throwable {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0), new Integer(0),
         new Integer(8), Boolean.FALSE, null };
@@ -438,6 +457,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * 4) Client sends full object in response.
    * 
    */
+  @Test
   public void testDeltaPropagationClientEmptyPRAccessorAsBridgeServerWithDeltaException()
       throws Throwable {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0),
@@ -484,6 +504,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * 4) Client sends full object in response.
    * 
    */
+  @Test
   public void testDeltaPropagationReplicatedRegionPeerWithDeltaException() throws Throwable {
     Object args1[] = new Object[] {Boolean.FALSE, Boolean.TRUE};
     Object args2[] = new Object[] {Boolean.TRUE, Boolean.FALSE};
@@ -525,6 +546,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * 2) Second client attached to datastore. Register CQ.
    * 3) Varifies that no data loss, event revcieved on second client 
    */
+  @Test
   public void testCqClientConnectAccessorAndDataStore()
       throws Throwable {
     Object args1[] = new Object[] { REGION_NAME, new Integer(1),
@@ -581,6 +603,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * Accesor gets adjunctMessage about put
    * Verify on client1 that queryUpdate and queryDestroy are executed properly
    */
+  @Test
   public void testClientOnAccessorReceivesCqEvents()
       throws Throwable {
     Object args1[] = new Object[] { REGION_NAME, new Integer(1),
@@ -627,6 +650,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * client puts delta objects on accessor
    * Verify on client1 that queryUpdate and queryDestroy are executed properly
    */  
+  @Test
   public void testCQClientOnRedundantBucketReceivesCQEvents()
       throws Throwable {
     // args for accessor
@@ -685,6 +709,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    * Verify that client1 receives 2 deltas for 2 updates (due to RI)
    * Verify on client1 that queryUpdate and queryDestroy are executed properly
    */  
+  @Test
   public void testCQRIClientOnRedundantBucketReceivesDeltaAndCQEvents()
       throws Throwable {
     // args for accessor
@@ -738,6 +763,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    *  4) From accessor to client delta should get propagated.
    * 
    */
+  @Test
   public void testDeltaPropagationWithAdjunctMessaging() throws Throwable {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0), new Integer(0),
         new Integer(8), Boolean.FALSE, null };
@@ -762,6 +788,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    *  4) From accessor to client with data policy empty full value should get propagated.
    * 
    */
+  @Test
   public void testDeltaPropagationWithAdjunctMessagingForEmptyClient() throws Throwable {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0), new Integer(0),
         new Integer(8), Boolean.FALSE, null };
@@ -793,6 +820,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
    *  5) Another delta put is performed on datastore.
    *  6) Verify that the second delta put fails and value on datastore is same as the one put by first delta update. 
    */
+  @Test
   public void testDeltaPropagationWithAdjunctMessagingAndBadDelta() throws Throwable {
     Object accessor[] = new Object[] { REGION_NAME, 0, 0, 8, Boolean.FALSE, null };
     Object dataStore[] = new Object[] { REGION_NAME, 0, 50, 8, Boolean.FALSE, null };
@@ -860,7 +888,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
   }
   
   public static void createCacheInVm() {
-    new PRDeltaPropagationDUnitTest("temp").createCache(new Properties());
+    new PRDeltaPropagationDUnitTest().createCache(new Properties());
   }
 
   public void createCache(Properties props) {
@@ -953,7 +981,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
       Boolean isEmpty) throws Exception {
 
     Properties props = new Properties();
-    new PRDeltaPropagationDUnitTest("temp").createCache(props);
+    new PRDeltaPropagationDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setConcurrencyChecksEnabled(true);
@@ -997,7 +1025,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
   
   public static void createClientCache(Integer port1,
       Boolean subscriptionEnable, Boolean isEmpty, Boolean isCq) throws Exception {
-    PRDeltaPropagationDUnitTest test = new PRDeltaPropagationDUnitTest("temp");
+    PRDeltaPropagationDUnitTest test = new PRDeltaPropagationDUnitTest();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
@@ -1085,7 +1113,7 @@ public class PRDeltaPropagationDUnitTest extends DistributedTestCase {
   }
 
   public static void createClientCache(Integer port1, Integer port2) throws Exception {
-    PRDeltaPropagationDUnitTest test = new PRDeltaPropagationDUnitTest("temp");
+    PRDeltaPropagationDUnitTest test = new PRDeltaPropagationDUnitTest();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");

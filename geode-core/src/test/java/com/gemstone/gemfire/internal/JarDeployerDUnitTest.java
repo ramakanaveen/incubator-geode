@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,13 +64,14 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  * @since 7.0
  */
-public class JarDeployerDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
   private static final long serialVersionUID = 1L;
   static FileLock savedFileLock = null;
   private final ClassBuilder classBuilder = new ClassBuilder();
 
-  public JarDeployerDUnitTest(String name) {
-    super(name);
+  public JarDeployerDUnitTest() {
+    super();
   }
 
   @Override
@@ -81,6 +91,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
     deleteSavedJarFiles();
   }
   
+  @Test
   @Test
   public void testDeployFileAndChange() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
@@ -133,6 +144,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
   }
 
   @Test
+  @Test
   public void testDeployNoUpdateWhenNoChange() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
     final File currentDir = new File(".").getAbsoluteFile();
@@ -161,6 +173,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
 
   @Test
   @SuppressWarnings("serial")
+  @Test
   public void testDeployExclusiveLock() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
     final File currentDir = new File(".").getAbsoluteFile();
@@ -218,6 +231,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
 
   @Test
   @SuppressWarnings("serial")
+  @Test
   public void testDeploySharedLock() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
     final File currentDir = new File(".").getAbsoluteFile();
@@ -283,6 +297,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
 
   @Test
   @SuppressWarnings("serial")
+  @Test
   public void testUndeploySharedLock() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
     final File currentDir = new File(".").getAbsoluteFile();
@@ -335,6 +350,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
 
   @Test
   @SuppressWarnings("serial")
+  @Test
   public void testDeployUpdateByAnotherVM() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
     final File currentDir = new File(".").getAbsoluteFile();
@@ -394,6 +410,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
     }
   }
 
+  @Test
   @Test
   public void testLoadPreviouslyDeployedJars() throws IOException {
     final File parentJarFile = new File(JarDeployer.JAR_PREFIX + "JarDeployerDUnitAParent.jar#1");
@@ -458,6 +475,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
   }
 
   @Test
+  @Test
   public void testDeployToAlternateDirectory() throws IOException, ClassNotFoundException {
     final File alternateDir = new File("JarDeployerDUnit");
     alternateDir.mkdir();
@@ -488,6 +506,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   @Test
   public void testDeployToInvalidDirectory() throws IOException, ClassNotFoundException {
     final File alternateDir = new File("JarDeployerDUnit");
@@ -544,6 +563,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
 
   boolean okayToResume;
   @Test
+  @Test
   public void testSuspendAndResume() throws IOException, ClassNotFoundException {    
     final JarDeployer jarDeployer = new JarDeployer();
     byte[] jarBytes = this.classBuilder.createJarFromName("JarDeployerDUnitSAR");
@@ -579,6 +599,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
   
 
   @Test
+  @Test
   public void testZeroLengthFile() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
 
@@ -598,6 +619,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
     }
   }
 
+  @Test
   @Test
   public void testInvalidJarFile() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();

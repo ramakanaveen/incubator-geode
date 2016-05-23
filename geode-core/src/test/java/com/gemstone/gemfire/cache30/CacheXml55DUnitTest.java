@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.internal.cache.xmlcache.CacheXml;
 
@@ -26,13 +35,14 @@ import com.gemstone.gemfire.internal.cache.xmlcache.CacheXml;
  * @since 5.0
  */
 
+@Category(DistributedTest.class)
 public class CacheXml55DUnitTest extends CacheXml51DUnitTest
 {
 
   // ////// Constructors
 
-  public CacheXml55DUnitTest(String name) {
-    super(name);
+  public CacheXml55DUnitTest() {
+    super();
   }
 
   // ////// Helper methods
@@ -46,6 +56,7 @@ public class CacheXml55DUnitTest extends CacheXml51DUnitTest
    * Tests that a region created with a named attributes has the correct
    * attributes.
    */
+  @Test
   public void testEmpty() throws CacheException
   {}
 

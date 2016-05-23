@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -54,7 +63,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * And region registration should not fail due to non existent region.
  * 
  */
-public class Bug36805DUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class Bug36805DUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
 
@@ -73,8 +83,8 @@ public class Bug36805DUnitTest extends DistributedTestCase
   private static final String regionName = "Bug36805DUnitTest_Region";
 
   /** constructor */
-  public Bug36805DUnitTest(String name) {
-    super(name);
+  public Bug36805DUnitTest() {
+    super();
   }
 
   @Override
@@ -102,7 +112,7 @@ public class Bug36805DUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new Bug36805DUnitTest("temp").createCache(props);
+    new Bug36805DUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(host, port1.intValue())
       .addServer(host, port2.intValue())
@@ -121,7 +131,7 @@ public class Bug36805DUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new Bug36805DUnitTest("temp").createCache(new Properties());
+    new Bug36805DUnitTest().createCache(new Properties());
    // no region is created on server 
     int port = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     CacheServer server1 = cache.addCacheServer();
@@ -149,6 +159,7 @@ public class Bug36805DUnitTest extends DistributedTestCase
     }
   }
 
+  @Test
   public void testBug36805()
   {
     Integer port1 = ((Integer)server1.invoke(() -> Bug36805DUnitTest.createServerCache()));

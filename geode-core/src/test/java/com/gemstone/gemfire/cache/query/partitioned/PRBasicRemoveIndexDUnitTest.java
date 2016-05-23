@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.partitioned;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import static com.gemstone.gemfire.cache.query.Utils.createPortfolioData;
 
 import com.gemstone.gemfire.cache.query.data.PortfolioData;
@@ -28,6 +37,7 @@ import com.gemstone.gemfire.test.dunit.VM;
  * Basic funtional test for removing index from a partitioned region system.
  * 
  */
+@Category(DistributedTest.class)
 public class PRBasicRemoveIndexDUnitTest extends PartitionedRegionDUnitTestCase
 {
   /**
@@ -35,7 +45,7 @@ public class PRBasicRemoveIndexDUnitTest extends PartitionedRegionDUnitTestCase
    * @param name
    */  
   public PRBasicRemoveIndexDUnitTest (String name) {
-    super(name);
+    super();
   }
 
   public void setCacheInVMs(VM... vms) {
@@ -68,6 +78,7 @@ public class PRBasicRemoveIndexDUnitTest extends PartitionedRegionDUnitTestCase
    * @throws Exception
    *           if the test fails
    */
+  @Test
   public void testPRBasicIndexRemove() throws Exception
   {
     Host host = Host.getHost(0);
@@ -112,6 +123,7 @@ public class PRBasicRemoveIndexDUnitTest extends PartitionedRegionDUnitTestCase
   /**
    * Test removing single index on a pr.
    */
+  @Test
   public void testPRBasicRemoveParticularIndex() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

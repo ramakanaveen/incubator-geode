@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.File;
@@ -87,7 +96,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class AsyncEventQueueTestBase extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class AsyncEventQueueTestBase extends JUnit4DistributedTestCase {
 
   protected static Cache cache;
 
@@ -116,8 +126,8 @@ public class AsyncEventQueueTestBase extends DistributedTestCase {
   // list
   protected static int numDispatcherThreadsForTheRun = 1;
 
-  public AsyncEventQueueTestBase(String name) {
-    super(name);
+  public AsyncEventQueueTestBase() {
+    super();
   }
 
   @Override

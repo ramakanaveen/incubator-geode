@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Map;
 import java.util.Properties;
 
@@ -52,13 +61,14 @@ import com.gemstone.gemfire.internal.cache.xmlcache.ResourceManagerCreation;
  * @since 5.8
  */
 
+@Category(DistributedTest.class)
 public class CacheXml58DUnitTest extends CacheXml57DUnitTest
 {
 
   // ////// Constructors
 
-  public CacheXml58DUnitTest(String name) {
-    super(name);
+  public CacheXml58DUnitTest() {
+    super();
   }
 
   // ////// Helper methods
@@ -74,6 +84,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
    * for partition-resolver has the correct attributes.
    * 
    */
+  @Test
   public void testPartitionedRegionAttributesForCustomPartitioning() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -124,6 +135,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
    * has correct registered Function
    * 
    */
+  @Test
   public void testCacheCreationWithFuntionService() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -152,6 +164,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
    * for ExpirationAttributes
    * 
    */
+  @Test
   public void testPartitionedRegionAttributesForExpiration() throws CacheException
   {
     CacheCreation cache = new CacheCreation();
@@ -218,6 +231,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
    * for ExpirationAttributes
    * 
    */
+  @Test
   public void testPartitionedRegionAttributesForEviction() throws CacheException
   {
     final int redundantCopies = 1;
@@ -311,6 +325,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
     assertEquals(ea.getAction(), EvictionAction.OVERFLOW_TO_DISK);    
   }
 
+  @Test
   public void testPartitionedRegionAttributesForCoLocation(){
     closeCache();
     CacheCreation cache = new CacheCreation();
@@ -345,6 +360,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
     
   }
   
+  @Test
   public void testPartitionedRegionAttributesForCoLocation2(){
     closeCache();
     setXmlFile(findFile("coLocation.xml"));    
@@ -360,6 +376,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
     
   }
   
+  @Test
   public void testPartitionedRegionAttributesForMemLruWithoutMaxMem() throws CacheException
   {
     final int redundantCopies = 1;
@@ -401,6 +418,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
     assertEquals(ea.getMaximum(), pa.getLocalMaxMemory());
   }
   
+  @Test
   public void testPartitionedRegionAttributesForMemLruWithMaxMem() throws CacheException
   {
     final int redundantCopies = 1;
@@ -444,6 +462,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
     assertEquals(ea.getMaximum(), pa.getLocalMaxMemory());
   }
   
+  @Test
   public void testReplicatedRegionAttributesForMemLruWithoutMaxMem() throws CacheException
   {
     final int redundantCopies = 1;
@@ -472,6 +491,7 @@ public class CacheXml58DUnitTest extends CacheXml57DUnitTest
     assertEquals(ea.getMaximum(), MemLRUCapacityController.DEFAULT_MAXIMUM_MEGABYTES);
   }
   
+  @Test
   public void testReplicatedRegionAttributesForMemLruWithMaxMem() throws CacheException
   {
     final int redundantCopies = 1;

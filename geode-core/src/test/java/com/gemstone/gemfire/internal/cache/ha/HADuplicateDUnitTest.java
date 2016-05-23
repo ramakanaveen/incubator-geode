@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 
 
 import java.util.HashMap;
@@ -55,7 +64,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  */
 
-public class HADuplicateDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class HADuplicateDUnitTest extends JUnit4DistributedTestCase
 {
 
   VM server1 = null;
@@ -84,8 +94,8 @@ public class HADuplicateDUnitTest extends DistributedTestCase
 
   static Map storeEvents = new HashMap();
 
-  public HADuplicateDUnitTest(String name) {
-    super(name);
+  public HADuplicateDUnitTest() {
+    super();
   }
 
   @Override
@@ -151,6 +161,7 @@ public class HADuplicateDUnitTest extends DistributedTestCase
   }
 
 
+  @Test
   public void testSample() throws Exception
   {
 
@@ -234,7 +245,7 @@ public class HADuplicateDUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new HADuplicateDUnitTest("temp").createCache(new Properties());
+    new HADuplicateDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -267,7 +278,7 @@ public class HADuplicateDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new HADuplicateDUnitTest("temp").createCache(props);
+    new HADuplicateDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     ClientServerTestCase.configureConnectionPool(factory, hostName, new int[] {PORT1,PORT2}, true, -1, 2, null);
     

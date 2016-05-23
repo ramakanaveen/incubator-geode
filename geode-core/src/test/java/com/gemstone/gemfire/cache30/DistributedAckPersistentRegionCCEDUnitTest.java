@@ -20,6 +20,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheException;
@@ -47,10 +56,11 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+@Category(DistributedTest.class)
 public class DistributedAckPersistentRegionCCEDUnitTest extends DistributedAckRegionCCEDUnitTest {
 
-  public DistributedAckPersistentRegionCCEDUnitTest(String name) {
-    super(name);
+  public DistributedAckPersistentRegionCCEDUnitTest() {
+    super();
   }
   
   /**
@@ -76,10 +86,13 @@ public class DistributedAckPersistentRegionCCEDUnitTest extends DistributedAckRe
 //    }
 //  }
   
+  @Test
   public void testClearOnNonReplicateWithConcurrentEvents() {}
   
+  @Test
   public void testConcurrentEventsOnNonReplicatedRegion() {}
   
+  @Test
   public void testGetAllWithVersions() {}
 
   private VersionTag getVersionTag(VM vm, final String key) {

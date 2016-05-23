@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -46,7 +55,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  */
 
-public class EventIDVerificationInP2PDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class EventIDVerificationInP2PDUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
 
@@ -66,8 +76,8 @@ public class EventIDVerificationInP2PDUnitTest extends DistributedTestCase
 
   /* Constructor */
 
-  public EventIDVerificationInP2PDUnitTest(String name) {
-    super(name);
+  public EventIDVerificationInP2PDUnitTest() {
+    super();
   }
 
   @Override
@@ -77,6 +87,7 @@ public class EventIDVerificationInP2PDUnitTest extends DistributedTestCase
     receiver = false;
   }
 
+  @Test
   public void testEventIDsDACK() throws Exception
   {
     createServerCache(new Integer(DISTRIBUTED_ACK));
@@ -84,6 +95,7 @@ public class EventIDVerificationInP2PDUnitTest extends DistributedTestCase
     verifyOperations();
   }
 
+  @Test
   public void testEventIDsGLOBAL() throws Exception
   {
     createServerCache(new Integer(GLOBAL));
@@ -122,7 +134,7 @@ public class EventIDVerificationInP2PDUnitTest extends DistributedTestCase
 
   public static void createServerCache(Integer type) throws Exception
   {
-    new EventIDVerificationInP2PDUnitTest("temp").createCache(new Properties());
+    new EventIDVerificationInP2PDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     if (type.intValue() == DISTRIBUTED_ACK)
       factory.setScope(Scope.DISTRIBUTED_ACK);

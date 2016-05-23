@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
@@ -42,7 +51,8 @@ import com.gemstone.gemfire.internal.cache.DistributedPutAllOperation.EntryVersi
  * 
  * 
  */
-public class BackwardCompatibilitySerializationDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class BackwardCompatibilitySerializationDUnitTest extends JUnit4CacheTestCase {
 
   private transient ByteArrayOutputStream baos;
   private transient ByteArrayInputStream bais;
@@ -56,8 +66,8 @@ public class BackwardCompatibilitySerializationDUnitTest extends CacheTestCase {
 
   public TestMessage msg = new TestMessage();
 
-  public BackwardCompatibilitySerializationDUnitTest(String name) {
-    super(name);
+  public BackwardCompatibilitySerializationDUnitTest() {
+    super();
   }
 
   @Override
@@ -85,6 +95,7 @@ public class BackwardCompatibilitySerializationDUnitTest extends CacheTestCase {
    * @throws Exception
    */
   @Test
+  @Test
   public void testToDataFromHigherVersionToLower() throws Exception {
     DataOutputStream dos = new VersionedDataOutputStream(new DataOutputStream(
         baos), Version.GFE_56);
@@ -100,6 +111,7 @@ public class BackwardCompatibilitySerializationDUnitTest extends CacheTestCase {
    * @throws Exception
    */
   @Test
+  @Test
   public void testToDataFromLowerVersionToHigher() throws Exception {
     DataOutputStream dos = new VersionedDataOutputStream(new DataOutputStream(
         baos), Version.GFE_701);
@@ -113,6 +125,7 @@ public class BackwardCompatibilitySerializationDUnitTest extends CacheTestCase {
    * 
    * @throws Exception
    */
+  @Test
   @Test
   public void testFromDataFromHigherVersionToLower() throws Exception {
     InternalDataSerializer.writeDSFID(msg, new DataOutputStream(baos));
@@ -132,6 +145,7 @@ public class BackwardCompatibilitySerializationDUnitTest extends CacheTestCase {
    * @throws Exception
    */
   @Test
+  @Test
   public void testFromDataFromLowerVersionToHigher() throws Exception {
     InternalDataSerializer.writeDSFID(msg, new DataOutputStream(baos));
     this.bais = new ByteArrayInputStream(baos.toByteArray());
@@ -149,6 +163,7 @@ public class BackwardCompatibilitySerializationDUnitTest extends CacheTestCase {
    * 
    * @throws Exception
    */
+  @Test
   @Test
   public void testAllMessages() throws Exception {
     // list of msgs not created using reflection

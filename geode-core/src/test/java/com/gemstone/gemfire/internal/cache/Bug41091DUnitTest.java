@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -47,13 +56,14 @@ import com.gemstone.gemfire.test.dunit.VM;
  * a failure of the GII target during GII.
  *
  */
-public class Bug41091DUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class Bug41091DUnitTest extends JUnit4CacheTestCase {
 
   /**
    * @param name
    */
-  public Bug41091DUnitTest(String name) {
-    super(name);
+  public Bug41091DUnitTest() {
+    super();
   }
   
   @Override
@@ -61,6 +71,7 @@ public class Bug41091DUnitTest extends CacheTestCase {
     disconnectAllFromDS();
   }
   
+  @Test
   public void test() {
     final Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

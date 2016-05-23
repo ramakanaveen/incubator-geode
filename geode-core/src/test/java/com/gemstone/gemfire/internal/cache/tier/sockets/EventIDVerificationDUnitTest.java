@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -56,7 +65,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  */
 
-public class EventIDVerificationDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class EventIDVerificationDUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
 
@@ -78,8 +88,8 @@ public class EventIDVerificationDUnitTest extends DistributedTestCase
 
   /* Constructor */
 
-  public EventIDVerificationDUnitTest(String name) {
-    super(name);
+  public EventIDVerificationDUnitTest() {
+    super();
   }
 
   @Override
@@ -98,6 +108,7 @@ public class EventIDVerificationDUnitTest extends DistributedTestCase
     CacheObserverHolder.setInstance(new CacheObserverAdapter());
   }
 
+  @Test
   public void testEventIDOnServer()
   {
     createEntry();
@@ -123,6 +134,7 @@ public class EventIDVerificationDUnitTest extends DistributedTestCase
    * also checks that peer nodes also get the same EventID.
    *
    */
+  @Test
   public void testEventIDPrapogationOnServerDuringRegionDestroy()
   {
     destroyRegion();
@@ -137,6 +149,7 @@ public class EventIDVerificationDUnitTest extends DistributedTestCase
    * also checks that peer nodes also get the same EventID.
 
    */
+  @Test
   public void testEventIDPrapogationOnServerDuringRegionClear()
   {
     clearRegion();
@@ -165,7 +178,7 @@ public class EventIDVerificationDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new EventIDVerificationDUnitTest("temp").createCache(props);
+    new EventIDVerificationDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setMirrorType(MirrorType.NONE);
@@ -280,7 +293,7 @@ public class EventIDVerificationDUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new EventIDVerificationDUnitTest("temp").createCache(new Properties());
+    new EventIDVerificationDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);

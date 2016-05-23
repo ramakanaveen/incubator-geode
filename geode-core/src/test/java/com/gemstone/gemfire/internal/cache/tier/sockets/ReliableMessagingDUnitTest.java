@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -57,7 +66,8 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  * Tests the reliable messaging functionality - Client sends a periodic
  * ack to the primary server for the messages received.
  */
-public class ReliableMessagingDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class ReliableMessagingDUnitTest extends JUnit4DistributedTestCase {
 
   static VM server1 = null;
 
@@ -87,14 +97,15 @@ public class ReliableMessagingDUnitTest extends DistributedTestCase {
   /**
    * Constructor
    */
-  public ReliableMessagingDUnitTest(String name) {
-    super(name);
+  public ReliableMessagingDUnitTest() {
+    super();
   }
   
   /*
    * Test verifies that client is sending periodic ack to the primary 
    * server for messages received.
    */  
+  @Test
   public void testPeriodicAckSendByClient() throws Exception
   {
     createEntries();
@@ -111,6 +122,7 @@ public class ReliableMessagingDUnitTest extends DistributedTestCase {
    * QRM to other redundant servers.    
    */
   @Category(FlakyTest.class) // GEODE-694: async queuing
+  @Test
   public void testPeriodicAckSendByClientPrimaryFailover() throws Exception {    
     IgnoredException.addIgnoredException("java.net.ConnectException");
     createEntries();
@@ -354,7 +366,7 @@ public class ReliableMessagingDUnitTest extends DistributedTestCase {
 
   public static Integer createServerCache() throws Exception
   {
-    ReliableMessagingDUnitTest test = new ReliableMessagingDUnitTest("temp");
+    ReliableMessagingDUnitTest test = new ReliableMessagingDUnitTest();
     Properties props = new Properties();
     cache = test.createCache(props);
     AttributesFactory factory = new AttributesFactory();
@@ -378,7 +390,7 @@ public class ReliableMessagingDUnitTest extends DistributedTestCase {
 
   public static void createClientCache(int port1, int port2) throws Exception
   {
-    ReliableMessagingDUnitTest test = new ReliableMessagingDUnitTest("temp");
+    ReliableMessagingDUnitTest test = new ReliableMessagingDUnitTest();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,7 +62,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class EvictionTestBase extends CacheTestCase {
+@Category(DistributedTest.class)
+public class EvictionTestBase extends JUnit4CacheTestCase {
 
   protected static Cache cache = null;
 
@@ -73,8 +83,8 @@ public class EvictionTestBase extends CacheTestCase {
 
   static int totalNoOfBuckets = 4;
 
-  public EvictionTestBase(String name) {
-    super(name);
+  public EvictionTestBase() {
+    super();
   }
 
   @Override
@@ -264,7 +274,7 @@ public class EvictionTestBase extends CacheTestCase {
   }
 
   public static void createCacheInVm() {
-    new EvictionTestBase("temp").createCache();
+    new EvictionTestBase().createCache();
   }
 
   public void createCache() {

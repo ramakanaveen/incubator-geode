@@ -22,6 +22,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -47,11 +56,12 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class PutAllMultiVmDUnitTest extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class PutAllMultiVmDUnitTest extends JUnit4DistributedTestCase{
     
     /** Creates a new instance of PutAllMultiVmDUnitTest */
-    public PutAllMultiVmDUnitTest(String name) {
-        super(name);
+    public PutAllMultiVmDUnitTest() {
+        super();
     }
     
     static Cache cache;
@@ -84,7 +94,7 @@ public class PutAllMultiVmDUnitTest extends DistributedTestCase{
     
     public static void createCache(){
         try{
-            ds = (new PutAllMultiVmDUnitTest("temp")).getSystem(props);
+            ds = (new PutAllMultiVmDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
             factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -122,7 +132,8 @@ public class PutAllMultiVmDUnitTest extends DistributedTestCase{
     
     //tests methods
     
-    public void testSimplePutAll(){
+  @Test
+  public void testSimplePutAll(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -226,7 +237,8 @@ public class PutAllMultiVmDUnitTest extends DistributedTestCase{
         
     }//end of testSimplePutAll
     
-    public void testPutAllExceptions(){
+  @Test
+  public void testPutAllExceptions(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -326,7 +338,8 @@ public class PutAllMultiVmDUnitTest extends DistributedTestCase{
         
     }//end of testPutAllExceptions
     
-    public void testPutAllExceptionHandling(){
+  @Test
+  public void testPutAllExceptionHandling(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
 //        VM vm1 = host.getVM(1);

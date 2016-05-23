@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -62,7 +71,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * tests for the concurrentMapOperations. there are more tests in ClientServerMiscDUnitTest
  *
  */
-public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
 
   protected static final String REP_REG_NAME = "repRegion";
   protected static final String PR_REG_NAME = "prRegion";
@@ -211,11 +221,12 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
   /**
    * @param name
    */
-  public ConcurrentMapOpsDUnitTest(String name) {
-    super(name);
+  public ConcurrentMapOpsDUnitTest() {
+    super();
   }
 
   // test for bug #42164
+  @Test
   public void testListenerNotInvokedForRejectedOperation() {
     Host host = Host.getHost(0);
     VM vm1 = host.getVM(0);
@@ -335,10 +346,12 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testBug42162() {
     dotestConcOps(false);
   }
   
+  @Test
   public void testBug42162EmptyClient() {
     dotestConcOps(true);
   }
@@ -474,6 +487,7 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testNullValueFromNonEmptyClients() {
     Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -507,10 +521,12 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testPutIfAbsent() {
     doPutIfAbsentWork(false);
   }
   
+  @Test
   public void testPutIfAbsentCS() {
     doPutIfAbsentWork(true);
   }
@@ -558,10 +574,12 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testRemove() {
     doRemoveWork(false);
   }
   
+  @Test
   public void testRemoveCS() {
     doRemoveWork(true);
   }
@@ -620,10 +638,12 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testReplaceCS() {
     doReplaceWork(true);
   }
   
+  @Test
   public void testReplace() {
     doReplaceWork(false);
   }
@@ -685,15 +705,19 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testBug42167() {
     do42167Work(false, REP_REG_NAME);
   }
+  @Test
   public void testBug42167PR() {
     do42167Work(false, PR_REG_NAME);
   }
+  @Test
   public void testBug42167Empty() {
     do42167Work(true, REP_REG_NAME);
   }
+  @Test
   public void testBug42167EmptyPR() {
     do42167Work(true, PR_REG_NAME);
   }
@@ -770,9 +794,11 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testBug42189() {
     doBug42189Work(REP_REG_NAME);
   }
+  @Test
   public void testBug42189PR() {
     doBug42189Work(PR_REG_NAME);
   }
@@ -847,9 +873,11 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testReplacePutsKeyInLocalClientCache() {
     doReplacePutsKeyInLocalClientCacheWork(REP_REG_NAME);
   }
+  @Test
   public void testReplacePutsKeyInLocalClientCachePR() {
     doReplacePutsKeyInLocalClientCacheWork(PR_REG_NAME);
   }
@@ -972,15 +1000,19 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
       }
     });
   }
+  @Test
   public void testWithDelta() {
     doTestWithDeltaWork(false, REP_REG_NAME);
   }
+  @Test
   public void testWithDeltaPR() {
     doTestWithDeltaWork(false, PR_REG_NAME);
   }  
+  @Test
   public void testWithDeltaCS() {
     doTestWithDeltaWork(true, REP_REG_NAME);
   }
+  @Test
   public void testWithDeltaPRCS() {
     doTestWithDeltaWork(true, PR_REG_NAME);
   }
@@ -1016,26 +1048,32 @@ public class ConcurrentMapOpsDUnitTest extends CacheTestCase {
   }
   
   /** test putIfAbsent with failover & retry.  This is bugs 42559 and 43640 */
+  @Test
   public void testRetriedPutIfAbsent() throws Exception {
     doRetriedOperation(Operation.PUT_IF_ABSENT, false);
   }
   
+  @Test
   public void testRetriedReplace() throws Exception {
     doRetriedOperation(Operation.REPLACE, false);
   }
 
+  @Test
   public void testRetriedRemove() throws Exception {
     doRetriedOperation(Operation.REMOVE, false);
   }
 
+  @Test
   public void testRetriedPutIfAbsentPR() throws Exception {
     doRetriedOperation(Operation.PUT_IF_ABSENT, false);
   }
   
+  @Test
   public void testRetriedReplacePR() throws Exception {
     doRetriedOperation(Operation.REPLACE, false);
   }
 
+  @Test
   public void testRetriedRemovePR() throws Exception {
     doRetriedOperation(Operation.REMOVE, false);
   }

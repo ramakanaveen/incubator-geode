@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,10 +46,11 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  *
  * @since 6.5
  */
-public class CacheLogRollDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class CacheLogRollDUnitTest extends JUnit4CacheTestCase {
 
-  public CacheLogRollDUnitTest(String name) {
-    super(name);
+  public CacheLogRollDUnitTest() {
+    super();
   }
 
   //////////////////////  Test Methods  //////////////////////
@@ -219,6 +229,7 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
     }
   }
 
+  @Test
   public void testDiskSpace() throws Exception {
     Properties props = new Properties();
     String baseLogName = "diskarito";
@@ -238,6 +249,7 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-674: possible disk pollution, file size sensitive
+  @Test
   public void testSimpleStartRestartWithRolling() throws Exception {
     Properties props = new Properties();
     String baseLogName = "restarto";
@@ -298,6 +310,7 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-677: possible disk pollution, file size sensitive
+  @Test
   public void testStartWithRollingThenRestartWithRolling() throws Exception {
     Properties props = new Properties();
     String baseLogName = "biscuits";
@@ -374,6 +387,7 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-676: possible disk pollution, file size sensitive
+  @Test
   public void testLogFileLayoutAndRolling() throws Exception {
     String baseLogName = "tacos";
       Properties props = new Properties();
@@ -408,6 +422,7 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
   }
 
   @Category(FlakyTest.class) // GEODE-675: possible disk pollution, file size sensitive
+  @Test
   public void testSecurityLogFileLayoutAndRolling() throws Exception {
     String baseLogName = "securitytacos";
       Properties props = new Properties();

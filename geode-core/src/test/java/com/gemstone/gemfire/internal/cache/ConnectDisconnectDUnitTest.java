@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -47,7 +56,8 @@ import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 
 /** A test of 46438 - missing response to an update attributes message */
-public class ConnectDisconnectDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ConnectDisconnectDUnitTest extends JUnit4CacheTestCase {
   
   static {
 //    System.setProperty("DistributionManager.VERBOSE", "true");
@@ -56,12 +66,13 @@ public class ConnectDisconnectDUnitTest extends CacheTestCase {
 
   private IgnoredException ex;
 
-  public ConnectDisconnectDUnitTest(String name) {
-    super(name);
+  public ConnectDisconnectDUnitTest() {
+    super();
   }
   
   
   // see bugs #50785 and #46438 
+  @Test
   public void testManyConnectsAndDisconnects() throws Throwable {
 //    invokeInEveryVM(new SerializableRunnable() {
 //

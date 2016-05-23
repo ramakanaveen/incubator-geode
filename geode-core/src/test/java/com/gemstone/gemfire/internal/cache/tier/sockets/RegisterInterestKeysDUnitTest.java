@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.*;
 
 import com.gemstone.gemfire.cache.*;
@@ -39,7 +48,8 @@ import com.gemstone.gemfire.cache.client.*;
  *
  */
 
-public class RegisterInterestKeysDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class RegisterInterestKeysDUnitTest extends JUnit4DistributedTestCase
 {
 
   VM server1 = null;
@@ -61,8 +71,8 @@ public class RegisterInterestKeysDUnitTest extends DistributedTestCase
   static RegisterInterestKeysDUnitTest impl;
 
   /** constructor */
-  public RegisterInterestKeysDUnitTest(String name) {
-    super(name);
+  public RegisterInterestKeysDUnitTest() {
+    super();
   }
 
   @Override
@@ -101,7 +111,7 @@ public class RegisterInterestKeysDUnitTest extends DistributedTestCase
 
   /** subclass support */
   public static void createImpl() {
-    impl = new RegisterInterestKeysDUnitTest("temp");
+    impl = new RegisterInterestKeysDUnitTest();
   }
 
   private void createCache(Properties props) throws Exception
@@ -117,6 +127,7 @@ public class RegisterInterestKeysDUnitTest extends DistributedTestCase
    * situation of Interest List fail over
    *
    */
+  @Test
   public void testRegisterCreatesInvalidEntry()
   {
     //  First create entries on both servers via the two client
@@ -149,7 +160,7 @@ public class RegisterInterestKeysDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new RegisterInterestKeysDUnitTest("temp").createCache(props);
+    new RegisterInterestKeysDUnitTest().createCache(props);
     CacheServerTestUtil.disableShufflingOfEndpoints();
     Pool p;
     try {
@@ -177,7 +188,7 @@ public class RegisterInterestKeysDUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new RegisterInterestKeysDUnitTest("temp").createCache(new Properties());
+    new RegisterInterestKeysDUnitTest().createCache(new Properties());
    
     RegionAttributes attrs = impl.createServerCacheAttributes();
     cache.createRegion(REGION_NAME, attrs);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,7 +69,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
-public class PRClientServerTestBase extends CacheTestCase {
+@Category(DistributedTest.class)
+public class PRClientServerTestBase extends JUnit4CacheTestCase {
 
   protected VM server1 = null;
 
@@ -101,13 +111,13 @@ public class PRClientServerTestBase extends CacheTestCase {
   private boolean isSelector = false;
   
   public PRClientServerTestBase(String name, boolean isSingleHop, boolean isSelector) {
-    super(name);
+    super();
     this.isSingleHop = isSingleHop;
     this.isSelector = isSelector;
   }
 
-  public PRClientServerTestBase(String name) {
-    super(name);
+  public PRClientServerTestBase() {
+    super();
   }
 
   @Override
@@ -597,7 +607,7 @@ public class PRClientServerTestBase extends CacheTestCase {
   }
   
   public static void createCacheInVm(Properties props) {
-    new PRClientServerTestBase("temp").createCache(props);
+    new PRClientServerTestBase().createCache(props);
   }
 
   private void createCache(Properties props) {

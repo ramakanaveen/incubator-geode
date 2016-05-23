@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,7 +68,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  *
  */
-public class ClientServerCCEDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ClientServerCCEDUnitTest extends JUnit4CacheTestCase {
   public static LocalRegion TestRegion;
   
   public void setup() {
@@ -73,18 +83,21 @@ public class ClientServerCCEDUnitTest extends CacheTestCase {
     HARegionQueue.setMessageSyncInterval(HARegionQueue.DEFAULT_MESSAGE_SYNC_INTERVAL);
   }
 
-  public ClientServerCCEDUnitTest(String name) {
-    super(name);
+  public ClientServerCCEDUnitTest() {
+    super();
   }
 
+  @Test
   public void testClientServerRRTombstoneGC() {
     clientServerTombstoneGCTest(getUniqueName(), true);
   }
   
+  @Test
   public void testClientServerPRTombstoneGC() {
     clientServerTombstoneGCTest(getUniqueName(), false);
   }
   
+  @Test
   public void testPutAllInNonCCEClient() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -131,10 +144,12 @@ public class ClientServerCCEDUnitTest extends CacheTestCase {
    * registerInterest() to protect the client cache from stray putAll
    * events sitting in backup queues on the server 
    */
+  @Test
   public void testClientRIGetsTombstonesRR() throws Exception {
     clientRIGetsTombstoneTest(getUniqueName(),true);
   }
   
+  @Test
   public void testClientRIGetsTombstonesPR() throws Exception {
     clientRIGetsTombstoneTest(getUniqueName(),false);
   }
@@ -187,10 +202,12 @@ public class ClientServerCCEDUnitTest extends CacheTestCase {
     ensureAllTombstonesPresent(vm2);
   }
   
+  @Test
   public void testClientRIGetsInvalidEntriesRR() throws Exception {
     clientRIGetsInvalidEntriesTest(getUniqueName(),true);
   }
   
+  @Test
   public void testClientRIGetsInvalidEntriesPR() throws Exception {
     clientRIGetsInvalidEntriesTest(getUniqueName(),false);
   }
@@ -356,10 +373,12 @@ public class ClientServerCCEDUnitTest extends CacheTestCase {
 
   //  private void closeCache(VM vm) {
 
+  @Test
   public void testClientServerRRQueueCleanup() {  // see bug #50879 if this fails
     clientServerTombstoneMessageTest(true);
   }
   
+  @Test
   public void testClientServerPRQueueCleanup() {  // see bug #50879 if this fails
     clientServerTombstoneMessageTest(false);
   }

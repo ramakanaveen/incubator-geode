@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -46,7 +55,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  * 
  */
-public class Bug51400DUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class Bug51400DUnitTest extends JUnit4DistributedTestCase {
 
   private static VM server0 = null;
   private static VM server1 = null;
@@ -60,8 +70,8 @@ public class Bug51400DUnitTest extends DistributedTestCase {
   /**
    * @param name
    */
-  public Bug51400DUnitTest(String name) {
-    super(name);
+  public Bug51400DUnitTest() {
+    super();
   }
 
   @Override
@@ -100,7 +110,7 @@ public class Bug51400DUnitTest extends DistributedTestCase {
 //        + ".gfs");
 //    props.setProperty("statistic-sampling-enabled", "true");
 
-    Bug51400DUnitTest test = new Bug51400DUnitTest("Bug51400DUnitTest");
+    Bug51400DUnitTest test = new Bug51400DUnitTest();
     DistributedSystem ds = test.getSystem(props);
     ds.disconnect();
     cache = (GemFireCacheImpl)CacheFactory.create(test.getSystem());
@@ -132,7 +142,7 @@ public class Bug51400DUnitTest extends DistributedTestCase {
 //        + ".gfs");
 //    props.setProperty("statistic-sampling-enabled", "true");
 
-    DistributedSystem ds = new Bug51400DUnitTest("Bug51400DUnitTest").getSystem(props);
+    DistributedSystem ds = new Bug51400DUnitTest().getSystem(props);
     ds.disconnect();
     ClientCacheFactory ccf = new ClientCacheFactory(props);
     ccf.setPoolSubscriptionEnabled(true);
@@ -164,6 +174,7 @@ public class Bug51400DUnitTest extends DistributedTestCase {
         + (isPrimary ? "primary." : "secondary."), numOfEvents.intValue(), qSize);
   }
 
+  @Test
   public void testNothing() {
     // remove when ticket #51932 is fixed
   }

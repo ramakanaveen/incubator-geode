@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,14 +49,16 @@ import com.gemstone.gemfire.internal.cache.wan.InternalGatewaySenderFactory;
 import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
 import com.gemstone.gemfire.test.dunit.VM;
 
+@Category(DistributedTest.class)
 public class SenderWithTransportFilterDUnitTest extends WANTestBase {
 
   private static final long serialVersionUID = 1L;
 
-  public SenderWithTransportFilterDUnitTest(String name) {
-    super(name);
+  public SenderWithTransportFilterDUnitTest() {
+    super();
   }
 
+  @Test
   public void testSerialSenderWithTansportFilter() {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -73,6 +84,7 @@ public class SenderWithTransportFilterDUnitTest extends WANTestBase {
         getTestMethodName() + "_RR", 100 ));
   }
 
+  @Test
   public void testParallelSenderWithTansportFilter() {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
 

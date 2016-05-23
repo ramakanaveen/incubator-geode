@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -48,11 +57,12 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  * Tests behaviour of transactions in client server model
  */
-public class CacheServerTransactionsDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase
 {
   /** constructor */
-  public CacheServerTransactionsDUnitTest(String name) {
-    super(name);
+  public CacheServerTransactionsDUnitTest() {
+    super();
   }
 
   private static Cache cache = null;
@@ -111,6 +121,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * clients connected to the server.
    * 
    */
+  @Test
   public void testOneServerToClientTransactionsPropagation()
   {
     Integer port1 = initServerCache(server1);
@@ -143,6 +154,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * clients connected to both the servers.
    * 
    */
+  @Test
   public void testServerToClientTransactionsPropagation()
   {
     Integer port1 = initServerCache(server1);
@@ -177,6 +189,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * clients connected to separate server.
    * 
    */
+  @Test
   public void testServerToClientTransactionsPropagationWithOneClientConnectedToOneServer()
   {
     Integer port1 = initServerCache(server1);
@@ -210,6 +223,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * Test for invalidate propagation to the clients when there is one server and two
    * clients connected to the server.
    */
+  @Test
   public void testInvalidatesOneServerToClientTransactionsPropagation()
   {
     Integer port1 = initServerCache(server1);
@@ -234,6 +248,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * Test for invalidate propagation to the clients when there are  2 servers and two
    * clients connected to both servers.
    */
+  @Test
   public void testInvalidatesServerToClientTransactionsPropagation()
   {
     Integer port1 = initServerCache(server1);
@@ -262,6 +277,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * clients connected to separate servers.
    * 
    */
+  @Test
   public void testInvalidatesServerToClientTransactionsPropagationWithOneConnection()
   {
     Integer port1 = initServerCache(server1);
@@ -291,6 +307,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * clients connected to the server.
    * 
    */
+  @Test
   public void testDestroysOneServerToClientTransactionsPropagation()
   {
     Integer port1 = initServerCache(server1);
@@ -315,6 +332,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * Test for destroy propagation to the clients when there are  2 servers and two
    * clients connected to both servers.
    */
+  @Test
   public void testDestroysServerToClientTransactionsPropagation()
   {
     Integer port1 = initServerCache(server1);
@@ -343,6 +361,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
    * Test for destroy propagation to the clients when there are  2 servers and two
    * clients connected to sepatate servers.
    */
+  @Test
   public void testDestroysServerToClientTransactionsPropagationWithOneConnection()
   {
     Integer port1 = initServerCache(server1);
@@ -647,7 +666,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new CacheServerTransactionsDUnitTest("temp").createCache(props);
+    new CacheServerTransactionsDUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(host, port.intValue())
       .setSubscriptionEnabled(true)
@@ -682,7 +701,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new CacheServerTransactionsDUnitTest("temp").createCache(props);
+    new CacheServerTransactionsDUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(host, port1.intValue())
       .addServer(host, port2.intValue())
@@ -726,7 +745,7 @@ public class CacheServerTransactionsDUnitTest extends DistributedTestCase
 
   public static Integer createServerCache(Integer maxThreads) throws Exception
   {
-    new CacheServerTransactionsDUnitTest("temp").createCache(new Properties());
+    new CacheServerTransactionsDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);

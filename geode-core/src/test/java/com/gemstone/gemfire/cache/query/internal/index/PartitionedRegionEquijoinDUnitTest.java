@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -36,6 +45,7 @@ import com.gemstone.gemfire.cache.query.SelectResults;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 @Category(IntegrationTest.class)
+@Category(DistributedTest.class)
 public class PartitionedRegionEquijoinDUnitTest extends EquijoinDUnitTest {
  
   @Override
@@ -51,6 +61,7 @@ public class PartitionedRegionEquijoinDUnitTest extends EquijoinDUnitTest {
     region4 = createColocatedPartitionRegion("region4", "region1");
   }
  
+  @Test
   @Test
   public void testSingleFilterWithSingleEquijoinNestedQuery() throws Exception {
     createRegions();

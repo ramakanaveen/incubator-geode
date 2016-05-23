@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.snapshot;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -45,14 +54,16 @@ import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 
-public class ClientSnapshotDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ClientSnapshotDUnitTest extends JUnit4CacheTestCase {
 
   private transient Region<Integer, MyObject> region;
   
-  public ClientSnapshotDUnitTest(String name) {
-    super(name);
+  public ClientSnapshotDUnitTest() {
+    super();
   }
 
+  @Test
   public void testExport() throws Exception {
     int count = 10000;
     for (int i = 0; i < count; i++) {
@@ -85,6 +96,7 @@ public class ClientSnapshotDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testImport() throws Exception {
     int count = 1000;
     for (int i = 0; i < count; i++) {
@@ -156,6 +168,7 @@ public class ClientSnapshotDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testClientCallbacks() throws Exception {
     int count = 1000;
     for (int i = 0; i < count; i++) {
@@ -209,6 +222,7 @@ public class ClientSnapshotDUnitTest extends CacheTestCase {
     region.getSnapshotService().load(f, SnapshotFormat.GEMFIRE);
   }
   
+  @Test
   public void testInvalidate() throws Exception {
     SerializableCallable invalid = new SerializableCallable() {
       @Override

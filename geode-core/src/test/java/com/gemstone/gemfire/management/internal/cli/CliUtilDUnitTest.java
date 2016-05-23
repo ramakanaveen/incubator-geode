@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.management.internal.cli;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 import java.util.Set;
 
@@ -50,10 +59,11 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  *
  */
-public class CliUtilDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class CliUtilDUnitTest extends JUnit4CacheTestCase {
 
-  public CliUtilDUnitTest(String name) {
-    super(name);    
+  public CliUtilDUnitTest() {
+    super();    
   }
 
   public static final String COMMON_REGION="region1";
@@ -230,6 +240,7 @@ public class CliUtilDUnitTest extends CacheTestCase {
     assertNotNull(service.getMemberMXBean());
   }
   
+  @Test
   public void testFileToBytes(){
     
     //CliUtil.filesToBytes(fileNames)
@@ -237,6 +248,7 @@ public class CliUtilDUnitTest extends CacheTestCase {
   }
   
   @SuppressWarnings("serial")
+  @Test
   public void testCliUtilMethods() {
     setupMembersWithIdsAndGroups();
     

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.pdx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,12 +78,13 @@ import com.gemstone.gemfire.test.dunit.Wait;
 /**
  *
  */
-public class ClientsWithVersioningRetryDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ClientsWithVersioningRetryDUnitTest extends JUnit4CacheTestCase {
   // list of expected exceptions to remove in tearDown2()
   static List<IgnoredException> expectedExceptions = new LinkedList<IgnoredException>();
 
-  public ClientsWithVersioningRetryDUnitTest(String name) {
-    super(name);
+  public ClientsWithVersioningRetryDUnitTest() {
+    super();
   }
   
   @Override
@@ -108,6 +118,7 @@ public class ClientsWithVersioningRetryDUnitTest extends CacheTestCase {
    * the version information.
    * second failure in bug 44951
    */
+  @Test
   public void testRetryPut() {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
@@ -185,6 +196,7 @@ public class ClientsWithVersioningRetryDUnitTest extends CacheTestCase {
    * the version information.
    * bug #45059
    */
+  @Test
   public void testRetryPutAll() {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
@@ -273,6 +285,7 @@ public class ClientsWithVersioningRetryDUnitTest extends CacheTestCase {
    * and get the version information.
    * bug #48205
    */
+  @Test
   public void testRetryPutAllInAccessor() {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);

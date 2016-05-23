@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -48,7 +57,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  */
 @SuppressWarnings("serial")
-public class Bug43684DUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class Bug43684DUnitTest extends JUnit4DistributedTestCase {
 
   private static final String REGION_NAME = "Bug43684DUnitTest";
 
@@ -66,8 +76,8 @@ public class Bug43684DUnitTest extends DistributedTestCase {
 
   private static int numBuckets = 11;
 
-  public Bug43684DUnitTest(String name) {
-    super(name);
+  public Bug43684DUnitTest() {
+    super();
   }
 
   @Override
@@ -96,14 +106,17 @@ public class Bug43684DUnitTest extends DistributedTestCase {
     DistributedTestCase.disconnectFromDS();
   }
 
+  @Test
   public void testRIWithSingleKeyOnRR()  throws Exception {
     doRegisterInterest("KEY_1", null, numBuckets, true, false);
   }
 
+  @Test
   public void testRIWithAllKeysOnRR()  throws Exception {
     doRegisterInterest(null, null, numBuckets, true, false);
   }
 
+  @Test
   public void testRIWithKeyListOnRR()  throws Exception {
     ArrayList<String> riKeys = new ArrayList<String>();
     riKeys.add("KEY_0");
@@ -117,18 +130,22 @@ public class Bug43684DUnitTest extends DistributedTestCase {
     doRegisterInterest(riKeys, null, numBuckets, true, false);
   }
 
+  @Test
   public void testRIWithRegularExpressionOnRR()  throws Exception{
     doRegisterInterest(null, "^[X][_].*", numBuckets, true, false);
   }
 
+  @Test
   public void testRIWithSingleKeyOnPR()  throws Exception {
     doRegisterInterest("KEY_1", null);
   }
 
+  @Test
   public void testRIWithAllKeysOnPR()  throws Exception {
     doRegisterInterest(null, null);
   }
 
+  @Test
   public void testRIWithKeyListOnPR()  throws Exception {
     ArrayList<String> riKeys = new ArrayList<String>();
     riKeys.add("KEY_0");
@@ -142,22 +159,27 @@ public class Bug43684DUnitTest extends DistributedTestCase {
     doRegisterInterest(riKeys, null);
   }
 
+  @Test
   public void testRIWithRegularExpressionOnPR()  throws Exception{
     doRegisterInterest(null, "^[X][_].*");
   }
 
+  @Test
   public void testRIWithMoreEntriesOnPR()  throws Exception{
     doRegisterInterest(null, null, 5147, false, false);
   }
 
+  @Test
   public void testRIWithSingleKeyOnEmptyPrimaryOnPR()  throws Exception {
     doRegisterInterest("KEY_1", null, numBuckets, false, true);
   }
 
+  @Test
   public void testRIWithAllKeysOnEmptyPrimaryOnPR()  throws Exception {
     doRegisterInterest(null, null, numBuckets, false, true);
   }
 
+  @Test
   public void testRIWithKeyListOnEmptyPrimaryOnPR()  throws Exception {
     ArrayList<String> riKeys = new ArrayList<String>();
     riKeys.add("KEY_0");
@@ -171,10 +193,12 @@ public class Bug43684DUnitTest extends DistributedTestCase {
     doRegisterInterest(riKeys, null, numBuckets, false, true);
   }
 
+  @Test
   public void testRIWithRegularExpressionOnEmptyPrimaryOnPR()  throws Exception{
     doRegisterInterest(null, "^[X][_].*", numBuckets, false, true);
   }
 
+  @Test
   public void testNativeClientIssueOnPR()  throws Exception{
     ArrayList<String> riKeys = new ArrayList<String>();
     riKeys.add("OPKEY_0");

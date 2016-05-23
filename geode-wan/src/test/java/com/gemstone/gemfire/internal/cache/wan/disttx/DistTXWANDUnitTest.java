@@ -16,17 +16,27 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.disttx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 
+@Category(DistributedTest.class)
 public class DistTXWANDUnitTest extends WANTestBase {
 
   private static final long serialVersionUID = 1L;
 
-  public DistTXWANDUnitTest(String name) {
-    super(name);
+  public DistTXWANDUnitTest() {
+    super();
   }
 
   @Override
@@ -84,6 +94,7 @@ public class DistTXWANDUnitTest extends WANTestBase {
         getTestMethodName() + "_PR", 50 ));
   }
 
+  @Test
   public void testPartitionedSerialPropagation_SenderNotSameAsCoordinator() throws Exception {
 
     
@@ -124,6 +135,7 @@ public class DistTXWANDUnitTest extends WANTestBase {
   }
 
   
+  @Test
   public void testPartitionedRegionParallelPropagation() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -178,6 +190,7 @@ public class DistTXWANDUnitTest extends WANTestBase {
         getTestMethodName() + "_PR", 5 ));
   }
 
+  @Test
   public void testDummy() {
   }
   

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -34,10 +43,11 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
  *
  * @since 5.0
  */
-public class RolePerformanceDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class RolePerformanceDUnitTest extends JUnit4CacheTestCase {
 
-  public RolePerformanceDUnitTest(String name) {
-    super(name);
+  public RolePerformanceDUnitTest() {
+    super();
   }
 
   /**
@@ -46,6 +56,7 @@ public class RolePerformanceDUnitTest extends CacheTestCase {
    * <p>
    * Up to 10 attempts will be made before failing.
    */
+  @Test
   public void testRolePerformance() {
     int maxAttempts = 10;
     for (int i = 1; i <= maxAttempts; i++) {

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -42,7 +51,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  * 
  */
-public class HARegionDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class HARegionDUnitTest extends JUnit4DistributedTestCase
 {
   VM vm0 = null;
 
@@ -52,8 +62,8 @@ public class HARegionDUnitTest extends DistributedTestCase
   private static final String REGION_NAME = "HARegionDUnitTest_region" ;
 
   /** constructor */
-  public HARegionDUnitTest(String name) {
-    super(name);
+  public HARegionDUnitTest() {
+    super();
   }
 
   /**
@@ -102,6 +112,7 @@ public class HARegionDUnitTest extends DistributedTestCase
    * assert put in VM2 was successful by doing a get
    * 
    */
+  @Test
   public void testLocalPut()
   {
     vm0.invoke(() -> HARegionDUnitTest.createRegion());
@@ -123,6 +134,7 @@ public class HARegionDUnitTest extends DistributedTestCase
    * key has not been destroyed in VM2
    * 
    */
+  @Test
   public void testLocalDestroy()
   {
     vm0.invoke(() -> HARegionDUnitTest.createRegion());
@@ -144,6 +156,7 @@ public class HARegionDUnitTest extends DistributedTestCase
    * through GII 6) do a put in VM2 7) assert put in VM2 was successful
    * 
    */
+  @Test
   public void testGII()
   {
     vm0.invoke(() -> HARegionDUnitTest.createRegion());
@@ -163,6 +176,7 @@ public class HARegionDUnitTest extends DistributedTestCase
    * through GII 6) do a put in VM2 7) assert put in VM2 was successful
    * 
    */
+  @Test
   public void testLocalDestroyRegion()
   {
     vm0.invoke(() -> HARegionDUnitTest.createRegion());
@@ -197,6 +211,7 @@ public class HARegionDUnitTest extends DistributedTestCase
    * through GII 6) do a put in VM2 7) assert put in VM2 was successful
    * 
    */
+  @Test
   public void testQRM()
   {
     vm0.invoke(() -> HARegionDUnitTest.createRegionQueue());

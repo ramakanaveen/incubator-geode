@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.*;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -54,7 +63,8 @@ import com.gemstone.gemfire.cache.client.internal.Connection;
  *
  */
 
-public class ClearPropagationDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class ClearPropagationDUnitTest extends JUnit4DistributedTestCase
 {
 
   VM server1 = null;
@@ -78,8 +88,8 @@ public class ClearPropagationDUnitTest extends DistributedTestCase
   protected static boolean gotDestroyed = false;
 
   /** constructor */
-  public ClearPropagationDUnitTest(String name) {
-    super(name);
+  public ClearPropagationDUnitTest() {
+    super();
   }
 
   @Override
@@ -128,6 +138,7 @@ public class ClearPropagationDUnitTest extends DistributedTestCase
    * the update
    *
    */
+  @Test
   public void testVerifyClearNotReceivedBySenderReceivedByOthers()
   {
 	  CacheSerializableRunnable resetFlags = new CacheSerializableRunnable(
@@ -179,6 +190,7 @@ public class ClearPropagationDUnitTest extends DistributedTestCase
    * the update
    *
    */
+  @Test
   public void testEventIdGeneratedInDestroyRegionOperation() throws Exception
   {
 	CacheSerializableRunnable resetFlags = new CacheSerializableRunnable(
@@ -353,7 +365,7 @@ public class ClearPropagationDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new ClearPropagationDUnitTest("temp").createCache(props);
+    new ClearPropagationDUnitTest().createCache(props);
     CacheServerTestUtil.disableShufflingOfEndpoints();
     Pool p;
     try {
@@ -397,7 +409,7 @@ public class ClearPropagationDUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new ClearPropagationDUnitTest("temp").createCache(new Properties());
+    new ClearPropagationDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);

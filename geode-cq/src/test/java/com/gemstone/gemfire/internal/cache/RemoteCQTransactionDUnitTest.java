@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,7 +80,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  *
  */
-public class RemoteCQTransactionDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class RemoteCQTransactionDUnitTest extends JUnit4CacheTestCase {
   final protected String CUSTOMER = "custRegion";
   final protected String ORDER = "orderRegion";
   final protected String D_REFERENCE = "distrReference";
@@ -104,8 +114,8 @@ public class RemoteCQTransactionDUnitTest extends CacheTestCase {
   /**
    * @param name
    */
-  public RemoteCQTransactionDUnitTest(String name) {
-    super(name);
+  public RemoteCQTransactionDUnitTest() {
+    super();
   }
 
   protected enum OP {
@@ -855,6 +865,7 @@ protected static class ClientListener extends CacheListenerAdapter {
   
   private static final String EMPTY_REGION = "emptyRegionName";
   
+  @Test
   public void testTXWithCQCommitInDatastoreCQ() throws Exception {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -897,6 +908,7 @@ protected static class ClientListener extends CacheListenerAdapter {
   }
   
   
+  @Test
   public void testTXWithCQCommitInDatastoreConnectedToAccessorCQ() throws Exception {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -938,6 +950,7 @@ protected static class ClientListener extends CacheListenerAdapter {
   }
   
   
+  @Test
   public void testTXWithCQCommitInDatastoreConnectedToDatastoreCQ() throws Exception {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -978,6 +991,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     });
   }
   
+  @Test
   public void testTXWithCQCommitInAccessorConnectedToDatastoreCQ() throws Exception {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -1018,6 +1032,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     });
   }
   
+  @Test
   public void testTXWithCQCommitInAccessorConnectedToAccessorCQ() throws Exception {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -1059,6 +1074,7 @@ protected static class ClientListener extends CacheListenerAdapter {
   }
   
   
+  @Test
   public void testCQCommitInDatastoreConnectedToAccessorCQ() throws Exception {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);

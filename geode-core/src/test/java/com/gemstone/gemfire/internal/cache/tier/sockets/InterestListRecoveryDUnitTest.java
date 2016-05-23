@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.EOFException;
 import java.net.SocketException;
 import java.util.HashSet;
@@ -65,7 +74,8 @@ import com.gemstone.gemfire.cache.client.internal.RegisterInterestTracker;
  * see only k4 and k5 are registerd on s1
  *
  */
-public class InterestListRecoveryDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class InterestListRecoveryDUnitTest extends JUnit4DistributedTestCase
 {
   private static Cache cache = null;
 
@@ -82,8 +92,8 @@ public class InterestListRecoveryDUnitTest extends DistributedTestCase
   private static final String REGION_NAME = "InterestListRecoveryDUnitTest_region";
 
   /** constructor */
-  public InterestListRecoveryDUnitTest(String name) {
-    super(name);
+  public InterestListRecoveryDUnitTest() {
+    super();
   }
 
   @Override
@@ -122,6 +132,7 @@ public class InterestListRecoveryDUnitTest extends DistributedTestCase
 
   }
 
+  @Test
   public void testKeyInterestRecoveryWhileProcessException() throws Exception {
     VM serverFirstRegistered = null;
     VM serverSecondRegistered = null;

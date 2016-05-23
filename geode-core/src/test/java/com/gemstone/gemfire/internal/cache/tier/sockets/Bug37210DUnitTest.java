@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -48,7 +57,8 @@ import com.gemstone.gemfire.cache.client.*;
  * 
  * 
  */
-public class Bug37210DUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class Bug37210DUnitTest extends JUnit4DistributedTestCase
 {
   /** the cache server */
   VM server = null;
@@ -71,8 +81,8 @@ public class Bug37210DUnitTest extends DistributedTestCase
    * @param name -
    *                name for this test instance
    */
-  public Bug37210DUnitTest(String name) {
-    super(name);
+  public Bug37210DUnitTest() {
+    super();
   }
 
   /**
@@ -141,6 +151,7 @@ public class Bug37210DUnitTest extends DistributedTestCase
    * @throws Exception -
    *                 thrown if any problem occurs in test execution
    */
+  @Test
   public void testHAStatsCleanup() throws Exception
   {
     Host host = Host.getHost(0);
@@ -167,7 +178,7 @@ public class Bug37210DUnitTest extends DistributedTestCase
    */
   public static Integer createServerCache() throws Exception
   {
-    Bug37210DUnitTest test = new Bug37210DUnitTest("temp");
+    Bug37210DUnitTest test = new Bug37210DUnitTest();
     Properties props = new Properties();
     cache = test.createCache(props);
     AttributesFactory factory = new AttributesFactory();
@@ -199,7 +210,7 @@ public class Bug37210DUnitTest extends DistributedTestCase
    */
   public static void createClientCache(String host, Integer port) throws Exception
   {
-    Bug37210DUnitTest test = new Bug37210DUnitTest("temp");
+    Bug37210DUnitTest test = new Bug37210DUnitTest();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");

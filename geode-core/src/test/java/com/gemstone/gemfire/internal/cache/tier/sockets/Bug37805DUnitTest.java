@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
@@ -41,7 +50,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  */
 
-public class Bug37805DUnitTest extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class Bug37805DUnitTest extends JUnit4DistributedTestCase{
 
   private VM server1VM;
 
@@ -51,8 +61,8 @@ public class Bug37805DUnitTest extends DistributedTestCase{
 
   private int PORT1;
 
-  public Bug37805DUnitTest(String name) {
-    super(name);
+  public Bug37805DUnitTest() {
+    super();
   }
 
   @Override
@@ -71,6 +81,7 @@ public class Bug37805DUnitTest extends DistributedTestCase{
     CacheServerTestUtil.resetDisableShufflingOfEndpointsFlag();
   }
   
+  @Test
   public void testFunctionality() {
  // Step 1: Starting the servers
 

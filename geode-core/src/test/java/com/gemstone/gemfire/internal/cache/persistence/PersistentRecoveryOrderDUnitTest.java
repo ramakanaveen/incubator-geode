@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.persistence;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import static com.gemstone.gemfire.internal.lang.ThrowableUtils.*;
 
 import java.io.ByteArrayInputStream;
@@ -91,9 +100,10 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  *
  */
+@Category(DistributedTest.class)
 public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBase {
-  public PersistentRecoveryOrderDUnitTest(String name) {
-    super(name);
+  public PersistentRecoveryOrderDUnitTest() {
+    super();
   }
 
   public static void resetAckWaitThreshold() {
@@ -107,6 +117,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * for any members that were online when is crashed before starting up.
    * @throws Throwable
    */
+  @Test
   public void testWaitForLatestMember() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -159,6 +170,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * that we revoke.
    * @throws Throwable
    */
+  @Test
   public void testRevokeAMember() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -294,6 +306,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * before initialization, and that member will stay revoked
    * @throws Throwable
    */
+  @Test
   public void testRevokeAHostBeforeInitialization() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -386,6 +399,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * Test which members show up in the list of members we're waiting on.
    * @throws Throwable
    */
+  @Test
   public void testWaitingMemberList() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -527,6 +541,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * B starts up. It should not wait for A.
    * @throws Throwable
    */
+  @Test
   public void testDontWaitForOldMember() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -558,6 +573,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * on disk and which member should copy data from that member.
    * @throws Throwable
    */
+  @Test
   public void testSimultaneousCrash() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -615,6 +631,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * AC are started, they should figure out who
    * has the latest data, without needing B. 
    */
+  @Test
   public void testTransmitCrashedMembers() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -658,6 +675,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * Tests that a persistent region cannot recover from 
    * a non persistent region.
    */
+  @Test
   public void testRecoverFromNonPeristentRegion() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -689,6 +707,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
     checkForEntry(vm1);
   }
 
+  @Test
   public void testFinishIncompleteInitializationNoSend() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -820,10 +839,12 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
     return vm.invokeAsync(createRegion);
   }
 
+  @Test
   public void testPersistConflictOperations() throws Throwable {
     doTestPersistConflictOperations(true);
   }
   
+  @Test
   public void testPersistConflictOperationsAsync() throws Throwable {
     doTestPersistConflictOperations(false);
   }
@@ -987,6 +1008,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * of crashed members to other persistent regions, So that the persistent
    * regions can negotiate who has the latest data during recovery.
    */
+  @Test
   public void testTransmitCrashedMembersWithNonPeristentRegion() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1029,6 +1051,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
     checkForEntry(vm2);
   }
   
+  @Test
   public void testSplitBrain() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1073,6 +1096,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * while a GII is in progress, we wait
    * for the member to come back for starting.
    */
+  @Test
   public void testCrashDuringGII() throws Throwable { 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1175,6 +1199,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * Test to make sure we don't leak any persistent ids if a member does GII
    * while a distributed destroy is in progress
    */
+  @Test
   public void testGIIDuringDestroy() throws Throwable { 
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
@@ -1272,6 +1297,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
     });
   }
   
+  @Test
   public void testCrashDuringPreparePersistentId() throws Throwable { 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1333,6 +1359,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
     checkForEntry(vm1);
   }
   
+  @Test
   public void testSplitBrainWithNonPersistentRegion() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1368,6 +1395,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
     checkForRecoveryStat(vm1, true);
   }
 
+  @Test
   public void testMissingEntryOnDisk() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1429,6 +1457,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * that we revoke.
    * @throws Throwable
    */
+  @Test
   public void testCompactFromAdmin() throws Throwable {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
@@ -1506,6 +1535,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
     vm1.invoke(compactVM);
   }
   
+  @Test
   public void testCloseDuringRegionOperation() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1669,6 +1699,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * 
    * This is bug XX.
    */
+  @Test
   public void testRecoverAfterConflict() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

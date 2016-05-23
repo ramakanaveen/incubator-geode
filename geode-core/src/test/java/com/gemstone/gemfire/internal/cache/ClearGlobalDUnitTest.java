@@ -22,6 +22,15 @@
 
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -46,12 +55,13 @@ import java.util.Properties;
  * operation is completely done
  *
  */
-public class ClearGlobalDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class ClearGlobalDUnitTest extends JUnit4DistributedTestCase
 {
 
   /** Creates a new instance of ClearGlobalDUnitTest */
-  public ClearGlobalDUnitTest(String name) {
-    super(name);
+  public ClearGlobalDUnitTest() {
+    super();
   }
   static VM server1 = null;
   
@@ -106,6 +116,7 @@ public class ClearGlobalDUnitTest extends DistributedTestCase
      }  
    }
 
+  @Test
   public void testClearGlobalMultiVM() throws Exception
   {
     Object[] objArr = new Object[1];
@@ -120,7 +131,7 @@ public class ClearGlobalDUnitTest extends DistributedTestCase
 
    public static void createCacheServer1() throws Exception
    {      
-      ds = (new ClearGlobalDUnitTest("temp")).getSystem(props);
+      ds = (new ClearGlobalDUnitTest()).getSystem(props);
       cache = CacheFactory.create(ds);
       AttributesFactory factory  = new AttributesFactory();
       factory.setScope(Scope.GLOBAL);
@@ -131,7 +142,7 @@ public class ClearGlobalDUnitTest extends DistributedTestCase
 
   public static void createCacheServer2() throws Exception
   { 
-    ds = (new ClearGlobalDUnitTest("temp")).getSystem(props);
+    ds = (new ClearGlobalDUnitTest()).getSystem(props);
     CacheObserverImpl observer = new CacheObserverImpl();
     origObserver = CacheObserverHolder.setInstance(observer);
     LocalRegion.ISSUE_CALLBACKS_TO_CACHE_OBSERVER=true;

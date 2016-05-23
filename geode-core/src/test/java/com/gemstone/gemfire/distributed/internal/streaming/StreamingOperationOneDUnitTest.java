@@ -20,6 +20,15 @@
 //
 package com.gemstone.gemfire.distributed.internal.streaming;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,12 +50,14 @@ import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class StreamingOperationOneDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class StreamingOperationOneDUnitTest extends JUnit4DistributedTestCase {
 
-  public StreamingOperationOneDUnitTest(String name) {
-    super(name);
+  public StreamingOperationOneDUnitTest() {
+    super();
   }
 
+  @Test
   public void testStreamingOneProviderNoExceptions() throws Exception {
 //    final String name = this.getUniqueName();
 

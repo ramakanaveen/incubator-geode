@@ -22,6 +22,15 @@
 */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -50,11 +59,12 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  *
  */
-public class PutAllCallBkRemoteVMDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class PutAllCallBkRemoteVMDUnitTest extends JUnit4DistributedTestCase {
     
     /** Creates a new instance of PutAllCallBkRemoteVMDUnitTest */
-    public PutAllCallBkRemoteVMDUnitTest(String name) {
-        super(name);
+    public PutAllCallBkRemoteVMDUnitTest() {
+        super();
     }
     
     static volatile Cache cache;
@@ -96,7 +106,7 @@ public class PutAllCallBkRemoteVMDUnitTest extends DistributedTestCase {
     
     public static synchronized void createCacheForVM0(){
         try{
-            ds = (new PutAllCallBkRemoteVMDUnitTest("temp")).getSystem(props);
+            ds = (new PutAllCallBkRemoteVMDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
             factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -116,7 +126,7 @@ public class PutAllCallBkRemoteVMDUnitTest extends DistributedTestCase {
             CacheListener aListener = new AfterCreateCallback();
             CacheWriter aWriter = new BeforeCreateCallback();
             
-            ds = (new PutAllCallBkRemoteVMDUnitTest("temp")).getSystem(props);
+            ds = (new PutAllCallBkRemoteVMDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
             factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -148,7 +158,8 @@ public class PutAllCallBkRemoteVMDUnitTest extends DistributedTestCase {
     
     //test methods
     
-    public void testputAllRemoteVM(){
+  @Test
+  public void testputAllRemoteVM(){
         
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
@@ -214,7 +225,8 @@ public class PutAllCallBkRemoteVMDUnitTest extends DistributedTestCase {
         
     }
     
-    public void testPutAllAfterUpdateCallbacks(){
+  @Test
+  public void testPutAllAfterUpdateCallbacks(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);

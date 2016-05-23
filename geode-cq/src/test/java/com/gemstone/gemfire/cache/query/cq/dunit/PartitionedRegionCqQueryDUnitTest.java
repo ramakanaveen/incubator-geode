@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import hydra.Log;
 
 import java.io.IOException;
@@ -58,11 +67,12 @@ import com.gemstone.gemfire.test.dunit.Wait;
  * 
  * @since 5.5
  */
-public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
 
   
-  public PartitionedRegionCqQueryDUnitTest(String name) {
-    super(name);
+  public PartitionedRegionCqQueryDUnitTest() {
+    super();
   }
   
   static public final String[] regions = new String[] {
@@ -114,6 +124,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
   
   private static int bridgeServerPort;
   
+  @Test
   public void testCQLeakWithPartitionedRegion() throws Exception {
     // creating servers.
     final Host host = Host.getHost(0);
@@ -176,6 +187,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
     //cqHelper.closeServer(server1);
   }
   
+  @Test
   public void testCQAndPartitionedRegion() throws Exception {
     // creating servers.
     final Host host = Host.getHost(0);
@@ -288,6 +300,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
   /**
    * test for registering cqs on a bridge server with local max memory zero.
    */
+  @Test
   public void testPartitionedCqOnAccessorBridgeServer() throws Exception {
  // creating servers.
     final Host host = Host.getHost(0);
@@ -385,6 +398,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
    * will generate all the events locally and should always have the old value 
    * and should not sent the profile update on wire.
    */
+  @Test
   public void testPartitionedCqOnSingleBridgeServer() throws Exception { 
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -476,6 +490,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
    * will generate all the events locally but the puts, updates and destroys originate
    * at an accessor vm.
    */
+  @Test
   public void testPRCqOnSingleBridgeServerUpdatesOriginatingAtAccessor() throws Exception { 
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -572,6 +587,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
   /**
    * test to check invalidates on bridge server hosting datastores as well.
    */
+  @Test
   public void testPRCqWithInvalidatesOnBridgeServer()  {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -667,6 +683,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
    * test cqs with invalidates on bridge server not hosting datastores.
    * 
    */
+  @Test
   public void testPRCqWithInvalidatesOnAccessorBridgeServer() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -762,6 +779,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
    * test cqs with create updates and destroys from client on bridge server
    * hosting datastores.
    */
+  @Test
   public void testPRCqWithUpdatesFromClients() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -862,6 +880,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
    * test cqs on multiple partitioned region hosted by bridge servers.
    * 
    */
+  @Test
   public void testPRCqWithMultipleRegionsOnServer() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -1005,6 +1024,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
    * for not requiring old values.
    * 
    */
+  @Test
   public void testPRWithCQsAndProfileUpdates() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -1227,6 +1247,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
    * thus making the query data and region data inconsistent.
    * @throws Exception
    */
+  @Test
   public void testEventsDuringQueryExecution() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -1362,6 +1383,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
 
   
   
+  @Test
   public void testDestroyRegionEventOnClientsWithCQRegistered() throws Exception{
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -38,13 +47,14 @@ import com.gemstone.gemfire.test.dunit.VM;
  * a connection pool and a bridge loader.
  *
  */
-public class ConnectionPoolAndLoaderDUnitTest  extends CacheTestCase {
+@Category(DistributedTest.class)
+public class ConnectionPoolAndLoaderDUnitTest  extends JUnit4CacheTestCase {
   
   private static int bridgeServerPort;
   protected boolean useLocator;
 
-  public ConnectionPoolAndLoaderDUnitTest(String name) {
-    super(name);
+  public ConnectionPoolAndLoaderDUnitTest() {
+    super();
   }
   
   @Override
@@ -66,6 +76,7 @@ public class ConnectionPoolAndLoaderDUnitTest  extends CacheTestCase {
    * Anything that is loaded on the client is put on the server..
    * 
    */
+  @Test
   public void testPoolAndLoader() {
     final String regionName = this.getName();
     final Host host = Host.getHost(0);
@@ -145,6 +156,7 @@ public class ConnectionPoolAndLoaderDUnitTest  extends CacheTestCase {
    * local writer
    * put on server
    */
+  @Test
   public void testPoolAndWriter() {
     final String regionName = this.getName();
     final Host host = Host.getHost(0);
@@ -246,6 +258,7 @@ public class ConnectionPoolAndLoaderDUnitTest  extends CacheTestCase {
    * 3 server
    * 4 loader
    */
+  @Test
   public void testPoolLoadAndPeer() {
     final String regionName = this.getName();
     final Host host = Host.getHost(0);

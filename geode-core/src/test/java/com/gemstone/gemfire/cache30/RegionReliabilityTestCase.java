@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -82,8 +91,8 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  */
 public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
-  public RegionReliabilityTestCase(String name) {
-    super(name);
+  public RegionReliabilityTestCase() {
+    super();
   }
 
   @Override
@@ -454,6 +463,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   /**
    * Tests affect of NO_ACCESS on region operations.
    */
+  @Test
   public void testNoAccess() throws Exception {
     final String name = this.getUniqueName();
     
@@ -540,6 +550,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   /**
    * Tests affect of NO_ACCESS on local entry expiration actions.
    */
+  @Test
   public void testNoAccessWithLocalEntryExpiration() throws Exception {
     final String name = this.getUniqueName();
     
@@ -621,6 +632,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   /**
    * Tests affect of NO_ACCESS on local region expiration actions.
    */
+  @Test
   public void testNoAccessWithLocalRegionExpiration() throws Exception {
     final String name = this.getUniqueName();
     
@@ -679,6 +691,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   /**
    * Tests affect of LIMITED_ACCESS on region operations.
    */
+  @Test
   public void testLimitedAccess() throws Exception {
     final String name = this.getUniqueName();
     
@@ -762,6 +775,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   /**
    * Tests affect of LIMITED_ACCESS on local entry expiration actions.
    */
+  @Test
   public void testLimitedAccessWithLocalEntryExpiration() throws Exception {
     final String name = this.getUniqueName();
     
@@ -850,6 +864,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   /**
    * Tests affect of LIMITED_ACCESS on local region expiration actions.
    */
+  @Test
   public void testLimitedAccessWithLocalRegionExpiration() throws Exception {
     final String name = this.getUniqueName();
     
@@ -893,6 +908,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   /**
    * Tests affect of FULL_ACCESS on region operations.
    */
+  @Test
   public void testFullAccess() throws Exception {
     final String name = this.getUniqueName();
     
@@ -957,6 +973,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
    * Tests affect of FULL_ACCESS on local entry expiration actions.
    */
   @Category(FlakyTest.class) // GEODE-447: time sensitive, expiration, waitForMemberTimeout is unimplemented
+  @Test
   public void testFullAccessWithLocalEntryExpiration() throws Exception {
     final String name = this.getUniqueName();
     
@@ -1030,6 +1047,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   /**
    * Tests affect of FULL_ACCESS on local region expiration actions.
    */
+  @Test
   public void testFullAccessWithLocalRegionExpiration() throws Exception {
     final String name = this.getUniqueName();
     
@@ -1071,6 +1089,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   
   protected static Boolean[] detectedDeparture_testCommitDistributionException = 
     { Boolean.FALSE };
+  @Test
   public void testCommitDistributionException() throws Exception {
     if (getRegionScope().isGlobal()) return; // skip test under Global
     if (getRegionScope().isDistributedNoAck()) return; // skip test under DistributedNoAck
@@ -1194,6 +1213,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
   
   protected static Boolean[] detectedDeparture_testRegionDistributionException = 
     { Boolean.FALSE };
+  @Test
   public void testRegionDistributionException() throws Exception {
     if (getRegionScope().isDistributedNoAck()) return; // skip test under DistributedNoAck
     
@@ -1361,6 +1381,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
     }
   }
 
+  @Test
   public void testReinitialization() throws Exception {
     final String name = this.getUniqueName();
     final String roleA = name+"-A";

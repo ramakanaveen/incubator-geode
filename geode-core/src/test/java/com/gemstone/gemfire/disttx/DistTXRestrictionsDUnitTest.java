@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.disttx;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import org.junit.experimental.categories.Category;
@@ -29,10 +38,11 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTransactionsTest;
  * Same tests as that of {@link TXRestrictionsDUnitTest} after setting
  * "distributed-transactions" property to true
  */
+@Category(DistributedTest.class)
 public class DistTXRestrictionsDUnitTest extends TXRestrictionsDUnitTest {
 
-  public DistTXRestrictionsDUnitTest(String name) {
-    super(name);
+  public DistTXRestrictionsDUnitTest() {
+    super();
   }
   
   @Override

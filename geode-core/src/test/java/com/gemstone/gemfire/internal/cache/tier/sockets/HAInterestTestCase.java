@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -61,7 +70,8 @@ import org.junit.experimental.categories.Category;
  * Tests Interest Registration Functionality
  */
 @SuppressWarnings({"deprecation", "rawtypes", "serial", "unchecked"})
-public class HAInterestTestCase extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class HAInterestTestCase extends JUnit4DistributedTestCase {
   
   protected static final int TIMEOUT_MILLIS = 60 * 1000;
   protected static final int INTERVAL_MILLIS = 10;
@@ -95,8 +105,8 @@ public class HAInterestTestCase extends DistributedTestCase {
   
   protected volatile static boolean exceptionOccured = false;
 
-  public HAInterestTestCase(String name) {
-    super(name);
+  public HAInterestTestCase() {
+    super();
   }
 
   @Override
@@ -892,7 +902,7 @@ public class HAInterestTestCase extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new HAInterestTestCase("temp").createCache(props);
+    new HAInterestTestCase().createCache(props);
     CacheServerTestUtil.disableShufflingOfEndpoints();
     PoolImpl p;
     try {
@@ -926,7 +936,7 @@ public class HAInterestTestCase extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new HAInterestTestCase("temp").createCache(props);
+    new HAInterestTestCase().createCache(props);
     CacheServerTestUtil.disableShufflingOfEndpoints();
     PoolImpl p;
     try {
@@ -961,7 +971,7 @@ public class HAInterestTestCase extends DistributedTestCase {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new HAInterestTestCase("temp").createCache(props);
+    new HAInterestTestCase().createCache(props);
     PoolImpl p = (PoolImpl) PoolManager.createFactory()
         .addServer(hostName, PORT1)
         .setSubscriptionEnabled(true)
@@ -982,7 +992,7 @@ public class HAInterestTestCase extends DistributedTestCase {
   }
 
   public static Integer createServerCache() throws Exception {
-    new HAInterestTestCase("temp").createCache(new Properties());
+    new HAInterestTestCase().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setEnableBridgeConflation(true);
@@ -1001,7 +1011,7 @@ public class HAInterestTestCase extends DistributedTestCase {
   }
 
   public static Integer createServerCacheWithLocalRegion() throws Exception {
-    new HAInterestTestCase("temp").createCache(new Properties());
+    new HAInterestTestCase().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.LOCAL);
     factory.setConcurrencyChecksEnabled(true);

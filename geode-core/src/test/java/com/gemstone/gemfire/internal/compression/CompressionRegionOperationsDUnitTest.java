@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.compression;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +46,8 @@ import com.gemstone.gemfire.test.dunit.VM;
  * Tests basic region operations with compression enabled.
  * 
  */
-public class CompressionRegionOperationsDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class CompressionRegionOperationsDUnitTest extends JUnit4CacheTestCase {
   /**
    * The name of our test region.
    */
@@ -123,8 +133,8 @@ public class CompressionRegionOperationsDUnitTest extends CacheTestCase {
    * Creates a new CompressionRegionOperationsDUnitTest.
    * @param name a test name.
    */
-  public CompressionRegionOperationsDUnitTest(String name) {
-    super(name);
+  public CompressionRegionOperationsDUnitTest() {
+    super();
   }
 
   @Override
@@ -177,6 +187,7 @@ public class CompressionRegionOperationsDUnitTest extends CacheTestCase {
   /**
    * Invokes basic get/put operations tests on the test vm.
    */
+  @Test
   public void testGetPutOperations() {
     testGetPutOperationsOnVM(getVM(TEST_VM));
   }
@@ -244,6 +255,7 @@ public class CompressionRegionOperationsDUnitTest extends CacheTestCase {
   /**
    * Invokes key, value operations using the test VM.
    */
+  @Test
   public void testKeysAndValuesOperations() {
     testKeysAndValuesOperationsOnVM(getVM(TEST_VM));
   }
@@ -334,6 +346,7 @@ public class CompressionRegionOperationsDUnitTest extends CacheTestCase {
    * Tests compressed put/get region operations using CachedDeserializable values.
    * @see CompressionRegionOperationsDUnitTest#testGetPutOperations()
    */
+  @Test
   public void testGetPutOperationsWithCachedDeserializable() {
     testGetPutOperationsWithCachedDeserializableOnVM(getVM(TEST_VM));
   }
@@ -403,6 +416,7 @@ public class CompressionRegionOperationsDUnitTest extends CacheTestCase {
    * Tests compressed put/get region operations using byte[] values.
    * @see CompressionRegionOperationsDUnitTest#testGetPutOperations()
    */
+  @Test
   public void testGetPutOperationsWithByteArrays() {
     testGetPutOperationsWithByteArraysOnVM(getVM(TEST_VM));
   }

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
@@ -46,6 +55,7 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  *
  * @since 5.0
  */
+@Category(DistributedTest.class)
 public class RequiredRolesDUnitTest extends ReliabilityTestCase {
 
   protected transient volatile boolean startTestWaitForRequiredRoles = false;
@@ -53,13 +63,14 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
   protected transient volatile boolean failTestWaitForRequiredRoles = false;
   protected transient Set rolesTestWaitForRequiredRoles = new HashSet();
   
-  public RequiredRolesDUnitTest(String name) {
-    super(name);
+  public RequiredRolesDUnitTest() {
+    super();
   }
   
   /**
    * Tests that RequiredRoles detects missing roles.
    */
+  @Test
   public void testRequiredRolesInLoss() throws Exception {
     String name = this.getUniqueName();
     
@@ -119,6 +130,7 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
   /**
    * Tests RequiredRoles.waitForRequiredRoles().
    */
+  @Test
   public void testWaitForRequiredRoles() throws Exception {
     final String name = this.getUniqueName();
     final int vm0 = 0;
@@ -297,6 +309,7 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
   /**
    * Tests RequiredRoles.isRoleInRegionMembership().
    */
+  @Test
   public void testIsRoleInRegionMembership() throws Exception {
     final String name = this.getUniqueName();
     final int vm0 = 0;

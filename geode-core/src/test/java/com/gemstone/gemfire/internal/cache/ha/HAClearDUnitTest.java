@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -51,7 +60,8 @@ import com.gemstone.gemfire.cache.Region;
  *
  */
 
-public class HAClearDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class HAClearDUnitTest extends JUnit4DistributedTestCase
 {
 
   static VM server1 = null;
@@ -80,8 +90,8 @@ public class HAClearDUnitTest extends DistributedTestCase
 
   static boolean gotDestroyRegionCallback = false;
 
-  public HAClearDUnitTest(String name) {
-    super(name);
+  public HAClearDUnitTest() {
+    super();
   }
 
   @Override
@@ -116,6 +126,7 @@ public class HAClearDUnitTest extends DistributedTestCase
    * 3. Perform clear operation from client1
    * 4. verify the result of operation for other clients and other servers.
    */
+  @Test
   public void testClearWithOperationFromClient() throws Exception
   {
     createClientServerConfigurationForClearTest();
@@ -187,6 +198,7 @@ public class HAClearDUnitTest extends DistributedTestCase
    * 3. Perform clear operation from server1
    * 4. verify the result of operation for other clients and other servers.
    */
+  @Test
   public void testClearWithOperationFromServer() throws Exception
   {
     createClientServerConfigurationForClearTest();
@@ -276,6 +288,7 @@ public class HAClearDUnitTest extends DistributedTestCase
    * 3. Perform destroyRegion operation from client1
    * 4. verify the result of operation for other clients and other servers.
    */
+  @Test
   public void testDestroyRegionWithOperationFromClient() throws Exception
   {
     createClientServerConfigurationForClearTest();
@@ -350,6 +363,7 @@ public class HAClearDUnitTest extends DistributedTestCase
    * 3. Perform destroyRegion operation from server1
    * 4. verify the result of operation for other clients and other servers.
    */
+  @Test
   public void testDestroyRegionWithOperationFromServer() throws Exception
   {
     createClientServerConfigurationForClearTest();
@@ -566,7 +580,7 @@ public class HAClearDUnitTest extends DistributedTestCase
   public static Integer createServerCache()
       throws Exception
   {
-    new HAClearDUnitTest("temp").createCache(new Properties());
+    new HAClearDUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
@@ -600,7 +614,7 @@ public class HAClearDUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new HAClearDUnitTest("temp").createCache(props);
+    new HAClearDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     ClientServerTestCase.configureConnectionPool(factory, hostName, new int[] {PORT1,PORT2}, true, -1, 2, null);

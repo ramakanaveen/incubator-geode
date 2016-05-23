@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.CancelException;
 import com.gemstone.gemfire.SystemFailure;
 import com.gemstone.gemfire.cache.*;
@@ -49,7 +58,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
-public class ReconnectDUnitTest extends CacheTestCase
+@Category(DistributedTest.class)
+public class ReconnectDUnitTest extends JUnit4CacheTestCase
 {
   static int locatorPort;
   static Locator locator;
@@ -61,8 +71,8 @@ public class ReconnectDUnitTest extends CacheTestCase
   static Properties dsProperties;
   static String fileSeparator = File.separator;
 
-  public ReconnectDUnitTest(String name) {
-    super(name);
+  public ReconnectDUnitTest() {
+    super();
   }
   
   @Override
@@ -168,6 +178,7 @@ public class ReconnectDUnitTest extends CacheTestCase
   }
 
 
+  @Test
   public void testReconnectWithQuorum() throws Exception {
     // quorum check fails, then succeeds
     IgnoredException.addIgnoredException("killing member's ds");
@@ -229,6 +240,7 @@ public class ReconnectDUnitTest extends CacheTestCase
 
   }
   
+  @Test
   public void testReconnectOnForcedDisconnect() throws Exception  {
     doTestReconnectOnForcedDisconnect(false);
   }
@@ -236,6 +248,7 @@ public class ReconnectDUnitTest extends CacheTestCase
   /** bug #51335 - customer is also trying to recreate the cache */
   // this test is disabled due to a high failure rate during CI test runs.
   // see bug #52160
+  @Test
   public void testReconnectCollidesWithApplication() throws Exception  {
     doTestReconnectOnForcedDisconnect(true);
   }
@@ -456,6 +469,7 @@ public class ReconnectDUnitTest extends CacheTestCase
   
 
   @Category(FlakyTest.class) // GEODE-1407
+  @Test
   public void testReconnectALocator() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -610,6 +624,7 @@ public class ReconnectDUnitTest extends CacheTestCase
    * see if the reconnect is triggered for the configured number of times
    */
   
+  @Test
   public void testReconnectWithRoleLoss() throws TimeoutException,
       RegionExistsException  {
 
@@ -1026,6 +1041,7 @@ public class ReconnectDUnitTest extends CacheTestCase
    * listener to crash the reconnecting distributed system during cache
    * creation and asserts that it then reconnects and rebuilds the cache.
    */
+  @Test
   public void testReconnectFailsInCacheCreation() throws Exception {
 
     Host host = Host.getHost(0);

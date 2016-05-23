@@ -15,6 +15,15 @@
  * limitations under the License.
  */
 package com.gemstone.gemfire.distributed.internal;
+
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 	
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -41,10 +50,11 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 	
-public class Bug40751DUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class Bug40751DUnitTest extends JUnit4CacheTestCase {
 	 
-  public Bug40751DUnitTest(String name) {
-    super(name);
+  public Bug40751DUnitTest() {
+    super();
   }
   
   @Override
@@ -52,6 +62,7 @@ public class Bug40751DUnitTest extends CacheTestCase {
     disconnectAllFromDS();
   }
 	 
+  @Test
   public void testRR() {
     System.setProperty("p2p.nodirectBuffers", "true");
     try {

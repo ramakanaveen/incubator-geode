@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -51,7 +60,8 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.util.test.TestUtil;
 
-public class LoginTimeOutDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class LoginTimeOutDUnitTest extends JUnit4DistributedTestCase {
   private static final Logger logger = LogService.getLogger();
 
   protected static volatile boolean runTest1Ready = false;
@@ -60,8 +70,8 @@ public class LoginTimeOutDUnitTest extends DistributedTestCase {
   private static Cache cache;
   private static String tblName;
 
-  public LoginTimeOutDUnitTest(String name) {
-    super(name);
+  public LoginTimeOutDUnitTest() {
+    super();
   }
 
   private static String readFile(String filename) throws IOException {
@@ -241,6 +251,7 @@ public class LoginTimeOutDUnitTest extends DistributedTestCase {
     }
   }
   
+  @Test
   public void testBug52206() {
     // reenable setUp and testLoginTimeout to work on bug 52206
   }

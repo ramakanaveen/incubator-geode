@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Set;
 
 import com.gemstone.gemfire.admin.AdminDistributedSystemFactory;
@@ -36,13 +45,14 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
+@Category(DistributedTest.class)
 public class ShutdownAllPersistentGatewaySenderDUnitTest extends WANTestBase {
   private static final long MAX_WAIT = 70000;
 
   private static final int NUM_KEYS = 1000;
 
-  public ShutdownAllPersistentGatewaySenderDUnitTest(String name) {
-    super(name);
+  public ShutdownAllPersistentGatewaySenderDUnitTest() {
+    super();
   }
   
   @Override
@@ -52,6 +62,7 @@ public class ShutdownAllPersistentGatewaySenderDUnitTest extends WANTestBase {
 
   private static final long serialVersionUID = 1L;
 
+  @Test
   public void testGatewaySender() throws Exception {
     IgnoredException.addIgnoredException("Cache is shutting down");
 

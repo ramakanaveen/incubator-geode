@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +64,8 @@ import com.gemstone.gemfire.internal.cache.CacheServerImpl;
  * 
  * 
  */
-public class RedundancyLevelTestBase extends DistributedTestCase
+@Category(DistributedTest.class)
+public class RedundancyLevelTestBase extends JUnit4DistributedTestCase
 {
   static Cache cache = null;
 
@@ -93,8 +103,8 @@ public class RedundancyLevelTestBase extends DistributedTestCase
   static boolean FailOverDetectionByCCU = false;
   
   /** constructor */
-  public RedundancyLevelTestBase(String name) {
-    super(name);
+  public RedundancyLevelTestBase() {
+    super();
   }
 
   public static void caseSetUp() throws Exception {
@@ -549,7 +559,7 @@ public class RedundancyLevelTestBase extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    new RedundancyLevelTestBase("temp").createCache(props);
+    new RedundancyLevelTestBase().createCache(props);
 
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(host, PORT1)
@@ -577,7 +587,7 @@ public class RedundancyLevelTestBase extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new RedundancyLevelTestBase("temp").createCache(new Properties());
+    new RedundancyLevelTestBase().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setEnableConflation(true);

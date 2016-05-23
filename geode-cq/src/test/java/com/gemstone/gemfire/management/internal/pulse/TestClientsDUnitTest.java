@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.management.internal.pulse;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.query.cq.dunit.CqQueryDUnitTest;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.management.DistributedSystemMXBean;
@@ -34,12 +43,13 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  */
 
+@Category(DistributedTest.class)
 public class TestClientsDUnitTest extends ManagementTestBase {
 
   private static final long serialVersionUID = 1L;
 
-  public TestClientsDUnitTest(String name) {
-    super(name);
+  public TestClientsDUnitTest() {
+    super();
   }
 
   public static Integer getNumOfClients() {
@@ -73,6 +83,7 @@ public class TestClientsDUnitTest extends ManagementTestBase {
   protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest(
       "CqDataDUnitTest");
 
+  @Test
   public void testNumOfClients() throws Exception {
     initManagement(false);
     VM server = managedNodeList.get(1);

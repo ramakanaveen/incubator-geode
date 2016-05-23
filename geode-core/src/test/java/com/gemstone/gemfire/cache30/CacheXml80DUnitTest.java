@@ -20,6 +20,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,11 +61,12 @@ import com.gemstone.gemfire.test.dunit.Assert;
 /**
  *
  */
+@Category(DistributedTest.class)
 public class CacheXml80DUnitTest extends CacheXml70DUnitTest {
   private static final long serialVersionUID = 225193925777688541L;
 
-  public CacheXml80DUnitTest(String name) {
-    super(name);
+  public CacheXml80DUnitTest() {
+    super();
   }
 
   protected String getGemFireVersion()
@@ -65,6 +75,7 @@ public class CacheXml80DUnitTest extends CacheXml70DUnitTest {
   }
 
   @SuppressWarnings("rawtypes")
+  @Test
   public void testCompressor() {
     final String regionName = "testCompressor";
     
@@ -91,6 +102,7 @@ public class CacheXml80DUnitTest extends CacheXml70DUnitTest {
    * Restarts the cache with the new xml
    * Makes sure the new cache has the 4 indexes
    */
+  @Test
   public void testIndexXmlCreation() throws Exception {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -176,6 +188,7 @@ public class CacheXml80DUnitTest extends CacheXml70DUnitTest {
     observer.reset();
   }
   
+  @Test
   public void testCacheServerDisableTcpNoDelay()
       throws CacheException
   {
@@ -191,6 +204,7 @@ public class CacheXml80DUnitTest extends CacheXml70DUnitTest {
   }
 
   
+  @Test
   public void testCacheServerEnableTcpNoDelay()
       throws CacheException
   {
@@ -205,6 +219,7 @@ public class CacheXml80DUnitTest extends CacheXml70DUnitTest {
     testXml(cache);
   }
 
+  @Test
   public void testDiskUsage() {
     CacheCreation cache = new CacheCreation();
     

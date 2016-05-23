@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.control;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
@@ -95,7 +104,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  *
  */
 @SuppressWarnings("synthetic-access")
-public class RebalanceOperationDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class RebalanceOperationDUnitTest extends JUnit4CacheTestCase {
 
   private static final long MAX_WAIT = 60;
   
@@ -114,14 +124,16 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
   /**
    * @param name
    */
-  public RebalanceOperationDUnitTest(String name) {
-    super(name);
+  public RebalanceOperationDUnitTest() {
+    super();
   }
   
+  @Test
   public void testRecoverRedundancySimulation() {
     recoverRedundancy(true);
   }
    
+  @Test
   public void testRecoverRedundancy() {
     recoverRedundancy(false);
   }
@@ -327,10 +339,12 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     }
   }
 
+  @Test
   public void testEnforceIP() {
     enforceIp(false);
   }
   
+  @Test
   public void testEnforceIPSimulation() {
     enforceIp(true);
   }
@@ -442,10 +456,12 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testEnforceZone() {
     enforceZone(false);
   }
   
+  @Test
   public void testEnforceZoneSimulation() {
     enforceZone(true);
   }
@@ -646,6 +662,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testEnforceZoneWithMultipleRegions() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -848,10 +865,12 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     return results;
   }
   
+  @Test
   public void testRecoverRedundancyBalancingSimulation() {
     recoverRedundancyBalancing(true);
   }
   
+  @Test
   public void testRecoverRedundancyBalancing() {
     recoverRedundancyBalancing(false);
   }
@@ -979,6 +998,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     return (DistributedMember) vm.invoke(createPrRegion);
   }
   
+  @Test
   public void testRecoverRedundancyBalancingIfCreateBucketFails() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1116,10 +1136,12 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     vm2.invoke(checkRedundancyFixed);
   }
   
+  @Test
   public void testRecoverRedundancyColocatedRegionsSimulation() {
     recoverRedundancyColocatedRegions(true);
   }
   
+  @Test
   public void testRecoverRedundancyColocatedRegions() {
     recoverRedundancyColocatedRegions(false);
   }
@@ -1242,6 +1264,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testRecoverRedundancyParallelAsyncEventQueueSimulation() throws NoSuchFieldException, SecurityException {
     Invoke.invokeInEveryVM(new SerializableRunnable() {
 
@@ -1257,6 +1280,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testRecoverRedundancyParallelAsyncEventQueue() {
     recoverRedundancyParallelAsyncEventQueue(false);
   }
@@ -1425,6 +1449,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     return member1;
   }
   
+  @Test
   public void testCancelOperation() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1538,6 +1563,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
    * Test that the rebalancing operation picks up on 
    * a concurrent membership change
    */
+  @Test
   public void testMembershipChange() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1636,10 +1662,12 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
   }
   
   
+  @Test
   public void testMoveBucketsNoRedundancySimulation() {
     moveBucketsNoRedundancy(true);
   }
   
+  @Test
   public void testMoveBucketsNoRedundancy() {
     moveBucketsNoRedundancy(false);
   }
@@ -1764,10 +1792,12 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testFilterRegionsSimulation() {
     filterRegions(true);
   }
   
+  @Test
   public void testFilterRegions() {
     filterRegions(false);
   }
@@ -1908,10 +1938,12 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testMoveBucketsWithRedundancySimulation() {
     moveBucketsWithRedundancy(true);
   }
 
+  @Test
   public void testMoveBucketsWithRedundancy() {
     moveBucketsWithRedundancy(false);
   }
@@ -2032,6 +2064,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
   /** A test that the stats when overflowing entries to disk
    * are correct and we still rebalance correctly
    */
+  @Test
   public void testMoveBucketsOverflowToDisk() throws Throwable {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -2242,6 +2275,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
   /**
    * Test to make sure we balance buckets between three hosts with redundancy
    */
+  @Test
   public void testMoveBucketsNestedPR() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -2354,10 +2388,12 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     vm2.invoke(checkBalance);
   }
   
+  @Test
   public void testMoveBucketsColocatedRegionsSimulation() {
     moveBucketsColocatedRegions(true);
   }
   
+  @Test
   public void testMoveBucketsColocatedRegions() {
     moveBucketsColocatedRegions(false);
   }
@@ -2487,6 +2523,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
    * Test to make sure that moving primaries waits for a put
    * @throws Exception
    */
+  @Test
   public void testWaitForPut() throws Exception {
     runTestWaitForOperation(new Operation() {
       public void execute(Region region, Integer key) {
@@ -2499,6 +2536,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
    * Test to make sure that moving primaries waits for a put
    * @throws Exception
    */
+  @Test
   public void testWaitForInvalidate() throws Exception {
     runTestWaitForOperation(new Operation() {
       public void execute(Region region, Integer key) {
@@ -2511,6 +2549,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
    * Test to make sure that moving primaries waits for a put
    * @throws Exception
    */
+  @Test
   public void testWaitForDestroy() throws Exception {
     runTestWaitForOperation(new Operation() {
       public void execute(Region region, Integer key) {
@@ -2523,6 +2562,7 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
    * Test to make sure that moving primaries waits for a put
    * @throws Exception
    */
+  @Test
   public void testWaitForCacheLoader() throws Exception {
     runTestWaitForOperation(new Operation() {
       public void execute(Region region, Integer key) {
@@ -2683,18 +2723,22 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     }
   }
   
+  @Test
   public void testRecoverRedundancyWithOfflinePersistenceSimulation() throws Throwable {
     recoverRedundancyWithOfflinePersistence(true, false);
   }
    
+  @Test
   public void testRecoverRedundancyWithOfflinePersistence() throws Throwable {
     recoverRedundancyWithOfflinePersistence(false, false);
   }
   
+  @Test
   public void testRecoverRedundancyWithOfflinePersistenceAccessorSimulation() throws Throwable {
     recoverRedundancyWithOfflinePersistence(true, true);
   }
    
+  @Test
   public void testRecoverRedundancyWithOfflinePersistenceAccessor() throws Throwable {
     recoverRedundancyWithOfflinePersistence(false, true);
   }
@@ -2952,14 +2996,17 @@ public class RebalanceOperationDUnitTest extends CacheTestCase {
     assertEquals(vm2Buckets, getBucketList("region1", vm2));
   }
   
+  @Test
   public void testMoveBucketsWithUnrecoveredValues() {
     moveBucketsWithUnrecoveredValuesRedundancy(false);
   }
   
+  @Test
   public void testBalanceBucketsByCountSimulation() {
     balanceBucketsByCount(true);
   }
   
+  @Test
   public void testBalanceBucketsByCount() {
     balanceBucketsByCount(false);
   }

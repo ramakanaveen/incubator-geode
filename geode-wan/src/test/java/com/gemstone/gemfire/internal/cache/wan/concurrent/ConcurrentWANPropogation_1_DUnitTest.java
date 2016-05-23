@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.concurrent;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.EntryExistsException;
 import com.gemstone.gemfire.cache.client.ServerOperationException;
@@ -32,13 +41,14 @@ import com.gemstone.gemfire.test.dunit.LogWriterUtils;
  * the we create concurrent serial GatewaySender with concurrency of 4
  *
  */
+@Category(DistributedTest.class)
 public class ConcurrentWANPropogation_1_DUnitTest extends WANTestBase {
 
   /**
    * @param name
    */
-  public ConcurrentWANPropogation_1_DUnitTest(String name) {
-    super(name);
+  public ConcurrentWANPropogation_1_DUnitTest() {
+    super();
   }
 
   private static final long serialVersionUID = 1L;
@@ -47,6 +57,7 @@ public class ConcurrentWANPropogation_1_DUnitTest extends WANTestBase {
    * All the test cases are similar to SerialWANPropogationDUnitTest
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagation_withoutRemoteSite() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
 
@@ -95,6 +106,7 @@ public class ConcurrentWANPropogation_1_DUnitTest extends WANTestBase {
         getTestMethodName() + "_RR", 1000 ));
   }
   
+  @Test
   public void testReplicatedSerialPropagation() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -135,6 +147,7 @@ public class ConcurrentWANPropogation_1_DUnitTest extends WANTestBase {
   }
   
   
+  @Test
   public void testReplicatedSerialPropagationWithLocalSiteClosedAndRebuilt() throws Exception {
     IgnoredException.addIgnoredException("Broken pipe");
     IgnoredException.addIgnoredException("Connection reset");
@@ -224,6 +237,7 @@ public class ConcurrentWANPropogation_1_DUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagationWithLocalRegionDestroy() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -304,6 +318,7 @@ public class ConcurrentWANPropogation_1_DUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagationWithRemoteRegionDestroy() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -373,6 +388,7 @@ public class ConcurrentWANPropogation_1_DUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
+  @Test
   public void testReplicatedSerialPropagationWithRemoteRegionDestroy2() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
@@ -450,6 +466,7 @@ public class ConcurrentWANPropogation_1_DUnitTest extends WANTestBase {
 
   }
 
+  @Test
   public void testReplicatedSerialPropagationWithRemoteRegionDestroy3()
       throws Exception {
     final String senderId = "ln";

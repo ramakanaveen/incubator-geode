@@ -22,6 +22,15 @@
 
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -47,11 +56,12 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class RemoveGlobalDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class RemoveGlobalDUnitTest extends JUnit4DistributedTestCase {
     
     /** Creates a new instance of RemoveGlobalDUintTest */
-    public RemoveGlobalDUnitTest(String name) {
-        super(name);
+    public RemoveGlobalDUnitTest() {
+        super();
     }
     static Cache cache;
     static Properties props = new Properties();
@@ -86,7 +96,7 @@ public class RemoveGlobalDUnitTest extends DistributedTestCase {
     
     public static void createCache(){
         try{
-            ds = (new RemoveGlobalDUnitTest("temp")).getSystem(props);
+            ds = (new RemoveGlobalDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
         } catch (Exception ex){
             ex.printStackTrace();
@@ -105,7 +115,8 @@ public class RemoveGlobalDUnitTest extends DistributedTestCase {
     
     //test methods
     
-    public void testRemoveGlobalSingleVM() throws Throwable{
+  @Test
+  public void testRemoveGlobalSingleVM() throws Throwable{
         
         SerializableRunnable createRegionWithWriter = new CacheSerializableRunnable("create region with cache writer"){
             
@@ -157,7 +168,8 @@ public class RemoveGlobalDUnitTest extends DistributedTestCase {
     }//end of testRemoveGlobalSingleVM
     
     
-    public void testRemoveGlobalMultiVM() throws Throwable{
+  @Test
+  public void testRemoveGlobalMultiVM() throws Throwable{
         //Commented the Test.As it is failing @ line no 145 : AssertionFailedError
        
         SerializableRunnable createSimpleRegion = new CacheSerializableRunnable("create region with cache writer"){

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,7 +91,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  *
  */
 @SuppressWarnings("serial")
-public class CqQueryDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class CqQueryDUnitTest extends JUnit4CacheTestCase {
   
   /** The port on which the bridge server was started in this VM */
   private static int bridgeServerPort;
@@ -167,8 +177,8 @@ public class CqQueryDUnitTest extends CacheTestCase {
   // 11 - Test for "short" number type
   "SELECT ALL * FROM /root/" + regions[0] + " p where p.shortID IN SET(1,2,3,4,5)" };
 
-  public CqQueryDUnitTest(String name) {
-    super(name);
+  public CqQueryDUnitTest() {
+    super();
   }
 
   @Override
@@ -1609,6 +1619,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /**
    * bug #47494 - CQs were destroyed when a server did a tombstone GC 
    */
+  @Test
   public void testCQRemainsWhenServerGCs() throws Exception {
 
     final Host host = Host.getHost(0);
@@ -1655,6 +1666,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for InterestList and CQ registered from same clients.
    * @throws Exception
    */
+  @Test
   public void testInterestListAndCQs() throws Exception {
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -1824,6 +1836,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for CQ register and UnRegister.
    * @throws Exception
    */
+  @Test
   public void testCQStopExecute() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -1908,6 +1921,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for CQ Attributes Mutator functions
    * @throws Exception
    */
+  @Test
   public void testCQAttributesMutator() throws Exception {
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -2003,6 +2017,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for CQ register and UnRegister.
    * @throws Exception
    */
+  @Test
   public void testCQCreateClose() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -2190,6 +2205,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * The CQs on the destroy region needs to be closed.
    *
    */
+  @Test
   public void testRegionDestroy() throws Exception {
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -2271,6 +2287,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /**
    * Test for CQ with multiple clients.
    */
+  @Test
   public void testCQWithMultipleClients() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -2423,6 +2440,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /**
    * Test for CQ ResultSet.
    */
+  @Test
   public void testCQResultSet() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -2494,6 +2512,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for CQ Listener events.
    *
    */
+  @Test
   public void testCQEvents() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -2591,6 +2610,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
     closeServer(server);
   }
   
+  @Test
   public void testCQMapValues() throws Exception {
 
     final Host host = Host.getHost(0);
@@ -2681,6 +2701,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for stopping and restarting CQs.
    * @throws Exception
    */
+  @Test
   public void testEnableDisableCQ() throws Exception {
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -2823,6 +2844,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for Complex queries.
    * @throws Exception
    */
+  @Test
   public void testQuery() throws Exception {
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -2864,6 +2886,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for CQ Fail over.
    * @throws Exception
    */
+  @Test
   public void testCQFailOver() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -2950,6 +2973,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * Test for CQ Fail over/HA with redundancy level set.
    * @throws Exception
    */
+  @Test
   public void testCQHA() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -3049,6 +3073,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * no CQService intiated.
    * @throws Exception
    */
+  @Test
   public void testWithoutCQs() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -3111,6 +3136,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /**
    * Test getCQs for a regions
    */
+  @Test
   public void testGetCQsForARegionName() throws Exception {
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -3178,6 +3204,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /**
    * Test exception message thrown when replicate region with local destroy is used
    */
+  @Test
   public void testCqExceptionForReplicateRegionWithEvictionLocalDestroy() throws Exception {
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -3213,6 +3240,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testQueryWithNULLInWhereClause() throws Exception
   {
     final Host host = Host.getHost(0);
@@ -3262,6 +3290,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testForSupportedRegionAttributes() throws Exception
   {
     final Host host = Host.getHost(0);
@@ -3364,6 +3393,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /**
    * 
    */
+  @Test
   public void testCQWhereCondOnShort() throws Exception {
        
        final Host host = Host.getHost(0);
@@ -3396,6 +3426,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /**
    * 
    */
+  @Test
   public void testCQEquals() throws Exception {
        
        final Host host = Host.getHost(0);
@@ -3448,6 +3479,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /**
    * 
    */
+  @Test
   public void testCQEqualsWithIndex() throws Exception {
        
        final Host host = Host.getHost(0);
@@ -3499,6 +3531,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
 
   
   //Tests that cqs get an onCqDisconnect and onCqConnect
+  @Test
   public void testCQAllServersCrash() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -3546,6 +3579,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   }
 
   //Tests that we receive both an onCqConnected and a onCqDisconnected message
+  @Test
   public void testCQAllServersLeave() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -3591,6 +3625,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   //Test cqstatus listeners, onCqDisconnect should trigger when All servers leave
   //and onCqConnect should trigger when a cq is first connected and when the pool
   //goes from no primary queue to having a primary
+  @Test
   public void testCQAllServersLeaveAndRejoin() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -3651,6 +3686,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   /*
    * Tests that the cqs do not get notified if primary leaves and a new primary is elected
    */
+  @Test
   public void testCQPrimaryLeaves() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -3697,6 +3733,7 @@ public class CqQueryDUnitTest extends CacheTestCase {
   // Each cq uses a different pool and the servers are shutdown.
   // The listeners for each cq should receive a connect and disconnect
   // when their respective servers are shutdown
+  @Test
   public void testCQAllServersLeaveMultiplePool() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -3749,7 +3786,8 @@ public class CqQueryDUnitTest extends CacheTestCase {
   }  
 
   
-public void testCqCloseAndExecuteWithInitialResults() throws Exception {
+  @Test
+  public void testCqCloseAndExecuteWithInitialResults() throws Exception {
     
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -3778,7 +3816,8 @@ public void testCqCloseAndExecuteWithInitialResults() throws Exception {
    closeServer(server);    
  }
 
-public void testCQEventsWithNotEqualsUndefined() throws Exception {
+  @Test
+  public void testCQEventsWithNotEqualsUndefined() throws Exception {
  
   final Host host = Host.getHost(0);
   VM server = host.getVM(0);

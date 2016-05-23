@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
@@ -73,7 +82,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * and the Unregistered Keys' Values should be null
  * 
  */
-public class DurableRegistrationDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DurableRegistrationDUnitTest extends JUnit4DistributedTestCase {
 
   private VM server1VM;
 
@@ -95,8 +105,8 @@ public class DurableRegistrationDUnitTest extends DistributedTestCase {
 
   private static final String K4 = "KEY_STONE4";
 
-  public DurableRegistrationDUnitTest(String name) {
-    super(name);
+  public DurableRegistrationDUnitTest() {
+    super();
   }
 
   @Override
@@ -109,6 +119,7 @@ public class DurableRegistrationDUnitTest extends DistributedTestCase {
     CacheServerTestUtil.disableShufflingOfEndpoints();
   }
 
+  @Test
   public void testSimpleDurableClient() {
 
     // Step 1: Starting the servers
@@ -227,6 +238,7 @@ public class DurableRegistrationDUnitTest extends DistributedTestCase {
 
   }
 
+  @Test
   public void testSimpleDurableClientWithRegistration() {
     // Step 1: Starting the servers
     PORT1 = ((Integer)this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer( regionName, new Boolean(true)
@@ -378,6 +390,7 @@ public class DurableRegistrationDUnitTest extends DistributedTestCase {
 
   }
 
+  @Test
   public void testDurableClientWithRegistrationHA() {
     
     // Step 1: Start server1
@@ -471,6 +484,7 @@ public class DurableRegistrationDUnitTest extends DistributedTestCase {
 
   }
 
+  @Test
   public void testDurableClientDisConnectWithRegistrationHA() {
     
     // Step 1: Start server1

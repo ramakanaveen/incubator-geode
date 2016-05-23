@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,6 +64,7 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 
+@Category(DistributedTest.class)
 public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     PRClientServerTestBase {
 
@@ -62,8 +72,8 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
   
   private static Region region = null;
   
-  public PRClientServerRegionFunctionExecutionFailoverDUnitTest(String name) {
-    super(name);
+  public PRClientServerRegionFunctionExecutionFailoverDUnitTest() {
+    super();
   }
 
   @Override
@@ -74,6 +84,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     IgnoredException.addIgnoredException("Socket Closed");
   }
   
+  @Test
   public void testserverMultiKeyExecution_SocektTimeOut() {
     createScenario();
     Function function = new TestFunction(true,
@@ -86,6 +97,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
    * Ensure that the while executing the function if the servers is down then
    * the execution is failover to other available server
    */
+  @Test
   public void testServerFailoverWithTwoServerAliveHA()
       throws InterruptedException {
     IgnoredException.addIgnoredException("FunctionInvocationTargetException");
@@ -117,6 +129,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
    * Ensure that the while executing the function if the servers is down then
    * the execution is failover to other available server
    */
+  @Test
   public void testServerCacheClosedFailoverWithTwoServerAliveHA()
       throws InterruptedException {
     IgnoredException.addIgnoredException("FunctionInvocationTargetException");
@@ -144,6 +157,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     assertEquals(2, l.size());
   }
 
+  @Test
   public void testBug40714() {
     createScenario();
     server1.invoke(() -> PRClientServerRegionFunctionExecutionDUnitTest.registerFunction());
@@ -153,6 +167,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     client.invoke(() -> PRClientServerRegionFunctionExecutionDUnitTest.FunctionExecution_Inline_Bug40714());
   }
   
+  @Test
   public void testOnRegionFailoverWithTwoServerDownHA()
       throws InterruptedException {
     IgnoredException.addIgnoredException("FunctionInvocationTargetException");
@@ -177,6 +192,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
   }
 
   // retry attempts is 2
+  @Test
   public void testOnRegionFailoverWithOneServerDownHA()
       throws InterruptedException {
     IgnoredException.addIgnoredException("FunctionInvocationTargetException");
@@ -204,6 +220,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
    * Ensure that the while executing the function if the servers are down then
    * the execution shouldn't failover to other available server
    */
+  @Test
   public void testOnRegionFailoverNonHA() throws InterruptedException { // See #47489 before enabling it
     createScenario();
     IgnoredException.addIgnoredException("FunctionInvocationTargetException");
@@ -228,6 +245,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
    * Ensure that the while executing the function if the servers are down then
    * the execution shouldn't failover to other available server
    */
+  @Test
   public void testOnRegionFailoverNonHASingleHop() throws InterruptedException { // See #47489 before enabling it
     ArrayList commonAttributes = createCommonServerAttributes(
         "TestPartitionedRegion", null, 0, 13, null);
@@ -284,6 +302,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     client.invoke(() -> PRClientServerRegionFunctionExecutionDUnitTest.verifyMetaData( new Integer(1), new Integer(0) ));
   }
 
+  @Test
   public void testServerBucketMovedException() throws InterruptedException {
 
     IgnoredException.addIgnoredException("BucketMovedException");
@@ -329,6 +348,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     }
   }
 
+  @Test
   public void testServerBucketMovedException_LocalServer()
       throws InterruptedException {
     IgnoredException.addIgnoredException("BucketMovedException");

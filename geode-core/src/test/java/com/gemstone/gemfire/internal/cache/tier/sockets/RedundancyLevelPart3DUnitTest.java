@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import com.gemstone.gemfire.internal.cache.ClientServerObserverAdapter;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverHolder;
 import com.gemstone.gemfire.test.dunit.Assert;
@@ -29,11 +38,12 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
  * 
  * 
  */
+@Category(DistributedTest.class)
 public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase
 {
     /** constructor */
-  public RedundancyLevelPart3DUnitTest(String name) {
-    super(name);
+  public RedundancyLevelPart3DUnitTest() {
+    super();
   }
   
   public static void caseSetUp() throws Exception {
@@ -47,6 +57,7 @@ public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase
    * whichever occurs first
    *
    */
+  @Test
   public void testRegisterInterestAndMakePrimaryWithFullRedundancy()
   {
     try {
@@ -151,6 +162,7 @@ public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase
    *
    */
   
+  @Test
   public void testRegisterInterestAndMakePrimaryWithZeroRedundancy()
   {
     try {
@@ -202,6 +214,7 @@ public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase
    * whichever occurs first
    *
    */
+  @Test
   public void testRegisterInterestAndMakePrimaryWithRedundancyOne()
   {
     try {

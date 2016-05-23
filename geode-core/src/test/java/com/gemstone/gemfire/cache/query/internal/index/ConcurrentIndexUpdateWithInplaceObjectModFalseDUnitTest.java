@@ -19,6 +19,15 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Collection;
 
 import org.junit.experimental.categories.Category;
@@ -64,7 +73,8 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  * During validation all region operations are paused for a while. Validation
  * happens multiple time during one test run on a fixed time interval.
  */
-public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends JUnit4DistributedTestCase {
   
   PRQueryDUnitHelper helper = new PRQueryDUnitHelper();
   private static String regionName = "Portfolios";
@@ -112,8 +122,8 @@ public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends Dis
   /**
    * @param name
    */
-  public ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest(String name) {
-    super(name);
+  public ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest() {
+    super();
   }
 
   @Override
@@ -155,6 +165,7 @@ public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends Dis
   }
 
   // Tests on Local/Replicated Region
+  @Test
   public void testCompactRangeIndex() {
     // Create a Local Region.
     Host host = Host.getHost(0);
@@ -201,6 +212,7 @@ public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends Dis
   }
 
   @Category(FlakyTest.class) // GEODE-431: time sensitive, uses PRQueryDUnitHelper whcih eats exceptions, async actions, uses Random
+  @Test
   public void testRangeIndex() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -229,6 +241,7 @@ public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends Dis
   }
 
   // Tests on Partition Region
+  @Test
   public void testCompactRangeIndexOnPR() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -292,6 +305,7 @@ public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends Dis
   }
   
 
+  @Test
   public void testRangeIndexOnPR() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

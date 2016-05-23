@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -49,7 +58,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * region destruction message.
  */
 
-public class Bug36269DUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class Bug36269DUnitTest extends JUnit4DistributedTestCase
 {
 
   VM server1 = null;
@@ -67,8 +77,8 @@ public class Bug36269DUnitTest extends DistributedTestCase
   private static PoolImpl pool = null;
 
   /** constructor */
-  public Bug36269DUnitTest(String name) {
-    super(name);
+  public Bug36269DUnitTest() {
+    super();
   }
 
   @Override
@@ -101,6 +111,7 @@ public class Bug36269DUnitTest extends DistributedTestCase
    * This tests whether the region destroy are not received by the sender
    * 
    */
+  @Test
   public void testRegionDestroyNotReceivedBySender() throws Exception
   {
     try {
@@ -135,7 +146,7 @@ public class Bug36269DUnitTest extends DistributedTestCase
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new Bug36269DUnitTest("temp").createCache(props);
+    new Bug36269DUnitTest().createCache(props);
     CacheServerTestUtil.disableShufflingOfEndpoints();
     PoolImpl p;
     String host = NetworkUtils.getServerHostName(Host.getHost(0));
@@ -164,7 +175,7 @@ public class Bug36269DUnitTest extends DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    new Bug36269DUnitTest("temp").createCache(new Properties());
+    new Bug36269DUnitTest().createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setMirrorType(MirrorType.KEYS_VALUES);

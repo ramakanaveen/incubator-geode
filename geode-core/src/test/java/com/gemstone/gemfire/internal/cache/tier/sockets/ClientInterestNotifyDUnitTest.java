@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +66,8 @@ import com.jayway.awaitility.Awaitility;
  *
  * @since 6.0.3
  */
-public class ClientInterestNotifyDUnitTest extends DistributedTestCase
+@Category(DistributedTest.class)
+public class ClientInterestNotifyDUnitTest extends JUnit4DistributedTestCase
 {
   class EventListener extends CacheListenerAdapter
   {
@@ -146,8 +156,8 @@ public class ClientInterestNotifyDUnitTest extends DistributedTestCase
   private static final String REGION_NAME3 = "ClientInterestNotifyDUnitTest_region3" ;
 
   /** constructor */
-  public ClientInterestNotifyDUnitTest(String name) {
-    super(name);
+  public ClientInterestNotifyDUnitTest() {
+    super();
   }
 
   @Override
@@ -177,6 +187,7 @@ public class ClientInterestNotifyDUnitTest extends DistributedTestCase
     return cache;
   }
 
+  @Test
   public void testInterestNotify() {
     try {
       performSteps();
@@ -360,7 +371,7 @@ public class ClientInterestNotifyDUnitTest extends DistributedTestCase
   public static void createClientCache(String host, Integer port, /*String nbs,*/
       String name) throws Exception
   {
-    ClientInterestNotifyDUnitTest test = new ClientInterestNotifyDUnitTest("temp");
+    ClientInterestNotifyDUnitTest test = new ClientInterestNotifyDUnitTest();
     Cache cacheClient = test.createCache(createProperties1(/*nbs*/));
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.LOCAL);
@@ -389,7 +400,7 @@ public class ClientInterestNotifyDUnitTest extends DistributedTestCase
   
   public static void createClientCacheFeeder(String host, Integer port) throws Exception
   {
-    ClientInterestNotifyDUnitTest test = new ClientInterestNotifyDUnitTest("temp");
+    ClientInterestNotifyDUnitTest test = new ClientInterestNotifyDUnitTest();
     Cache cacheFeeder = test.createCache(createProperties1(
         /*DistributionConfig.NOTIFY_BY_SUBSCRIPTION_OVERRIDE_PROP_VALUE_DEFAULT*/));
     AttributesFactory factory = new AttributesFactory();
@@ -470,7 +481,7 @@ public class ClientInterestNotifyDUnitTest extends DistributedTestCase
    */
   public static Integer createServerCache() throws Exception
   {
-    ClientInterestNotifyDUnitTest test = new ClientInterestNotifyDUnitTest("temp");
+    ClientInterestNotifyDUnitTest test = new ClientInterestNotifyDUnitTest();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME, "false");
     cacheServer = test.createCache(props);

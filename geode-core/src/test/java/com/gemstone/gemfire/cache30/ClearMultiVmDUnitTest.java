@@ -22,6 +22,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Properties;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -48,11 +57,12 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  *
  */
-public class ClearMultiVmDUnitTest extends DistributedTestCase{
+@Category(DistributedTest.class)
+public class ClearMultiVmDUnitTest extends JUnit4DistributedTestCase{
     
     /** Creates a new instance of ClearMultiVmDUnitTest */
-    public ClearMultiVmDUnitTest(String name) {
-        super(name);
+    public ClearMultiVmDUnitTest() {
+        super();
     }
     
     static Cache cache;
@@ -86,7 +96,7 @@ public class ClearMultiVmDUnitTest extends DistributedTestCase{
     
     public static void createCache(){
         try{            
-            ds = (new ClearMultiVmDUnitTest("temp")).getSystem(props);
+            ds = (new ClearMultiVmDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
             AttributesFactory factory  = new AttributesFactory();
             factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -116,7 +126,8 @@ public class ClearMultiVmDUnitTest extends DistributedTestCase{
     
     //test methods
     
-    public void testClearSimpleScenarios(){
+  @Test
+  public void testClearSimpleScenarios(){
         
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
@@ -195,7 +206,8 @@ public class ClearMultiVmDUnitTest extends DistributedTestCase{
         
     }//end of test case
     
-    public void testClearMultiVM() throws Throwable{
+  @Test
+  public void testClearMultiVM() throws Throwable{
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -240,7 +252,8 @@ public class ClearMultiVmDUnitTest extends DistributedTestCase{
         
     }//end of testClearMultiVM
     
-    public void testClearExceptions(){
+  @Test
+  public void testClearExceptions(){
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
@@ -271,7 +284,8 @@ public class ClearMultiVmDUnitTest extends DistributedTestCase{
         
     }//end of testClearExceptions
 
-    public void testGiiandClear() throws Throwable{
+  @Test
+  public void testGiiandClear() throws Throwable{
       if (false) {
         getSystem().getLogWriter().severe("testGiiandClear skipped because of bug 34963");
       } else {
