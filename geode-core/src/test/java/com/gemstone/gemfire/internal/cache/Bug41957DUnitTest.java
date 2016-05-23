@@ -16,7 +16,12 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheException;
@@ -39,6 +44,7 @@ import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Test for bug 41957.
@@ -48,17 +54,15 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  * @since 6.5
  */
- public class Bug41957DUnitTest extends ClientServerTestCase {
-
-  public Bug41957DUnitTest(String name) {
-    super(name);
-  }
+@Category(DistributedTest.class)
+public class Bug41957DUnitTest extends ClientServerTestCase {
 
   @Override
   public final void postTearDownCacheTestCase() throws Exception {
     disconnectAllFromDS();
   }
 
+  @Test
   public void testBug41957() {
     final Host host = Host.getHost(0);
     final VM server = host.getVM(0);

@@ -16,6 +16,27 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import com.jayway.awaitility.Awaitility;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.InternalGemFireException;
 import com.gemstone.gemfire.Statistics;
 import com.gemstone.gemfire.StatisticsType;
@@ -37,23 +58,24 @@ import com.gemstone.gemfire.internal.cache.tier.sockets.ServerConnection;
 import com.gemstone.gemfire.management.membership.ClientMembership;
 import com.gemstone.gemfire.management.membership.ClientMembershipEvent;
 import com.gemstone.gemfire.management.membership.ClientMembershipListener;
-import com.gemstone.gemfire.test.dunit.*;
+import com.gemstone.gemfire.test.dunit.Assert;
+import com.gemstone.gemfire.test.dunit.Host;
+import com.gemstone.gemfire.test.dunit.IgnoredException;
+import com.gemstone.gemfire.test.dunit.Invoke;
+import com.gemstone.gemfire.test.dunit.NetworkUtils;
+import com.gemstone.gemfire.test.dunit.SerializableCallable;
+import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.Wait;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
-import com.jayway.awaitility.Awaitility;
-import org.junit.experimental.categories.Category;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Tests the ClientMembership API including ClientMembershipListener.
  *
  * @since 4.2.1
  */
+@Category(DistributedTest.class)
 public class ClientMembershipDUnitTest extends ClientServerTestCase {
 
   protected static final boolean CLIENT = true;
@@ -64,10 +86,6 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
   protected static final int CRASHED = 2;
 
   private static Properties properties;
-
-  public ClientMembershipDUnitTest(String name) {
-    super(name);
-  }
 
   @Override
   public final void postTearDownCacheTestCase() throws Exception {
@@ -103,6 +121,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
    * test that a server times out waiting for a handshake that
    * never arrives.
    */
+  @Test
   public void testConnectionTimeout() throws Exception {
     IgnoredException.addIgnoredException("failed accepting client connection");
     final Host host = Host.getHost(0);
@@ -205,6 +224,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
     }
   }
 
+  @Test
   public void testSynchronousEvents() throws Exception {
     getSystem();
     InternalClientMembership.setForceSynchronous(true);
@@ -218,6 +238,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
   /**
    * Tests event notification methods on ClientMembership.
    */
+  @Test
   public void testBasicEvents() throws Exception {
     getSystem();
     doTestBasicEvents();
@@ -395,6 +416,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
    * Tests unregisterClientMembershipListener to ensure that no further events
    * are delivered to unregistered listeners.
    */
+  @Test
   public void testUnregisterClientMembershipListener() throws Exception {
     final boolean[] fired = new boolean[1];
     final DistributedMember[] member = new DistributedMember[1];
@@ -451,6 +473,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
     assertFalse(isClient[0]);
   }
 
+  @Test
   public void testMultipleListeners() throws Exception {
     final int NUM_LISTENERS = 4;
     final boolean[] fired = new boolean[NUM_LISTENERS];
@@ -719,6 +742,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
    * crashes or departs gracefully, the client will detect this as a crash.
    */
   @Category(FlakyTest.class) // GEODE-1240: eats exceptions, random ports, time sensitive waits
+  @Test
   public void testClientMembershipEventsInClient() throws Exception {
     getSystem();
     IgnoredException.addIgnoredException("IOException");
@@ -925,6 +949,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
    * Tests notification of events in server process. Bridge servers detect
    * client joins when the client connects to the server.
    */
+  @Test
   public void testClientMembershipEventsInServer() throws Exception {
     final boolean[] fired = new boolean[3];
     final DistributedMember[] member = new DistributedMember[3];
@@ -1180,6 +1205,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
    * Tests registration and event notification in conjunction with
    * disconnecting and reconnecting to DistributedSystem.
    */
+  @Test
   public void testLifecycle() throws Exception {
     final boolean[] fired = new boolean[3];
     final DistributedMember[] member = new DistributedMember[3];
@@ -1263,6 +1289,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
    * Starts up server in controller vm and 4 clients, then calls and tests
    * ClientMembership.getConnectedClients().
    */
+  @Test
   public void testGetConnectedClients() throws Exception {
     final String name = this.getUniqueName();
     final int[] ports = new int[1];
@@ -1348,6 +1375,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
    * Starts up 4 server and the controller vm as a client, then calls and tests
    * ClientMembership.getConnectedServers().
    */
+  @Test
   public void testGetConnectedServers() throws Exception {
     final Host host = Host.getHost(0);
     final String name = this.getUniqueName();
@@ -1452,6 +1480,7 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
    * Tests getConnectedClients(boolean onlyClientsNotifiedByThisServer) where
    * onlyClientsNotifiedByThisServer is true.
    */
+  @Test
   public void testGetNotifiedClients() throws Exception {
     final Host host = Host.getHost(0);
     final String name = this.getUniqueName();

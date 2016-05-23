@@ -25,8 +25,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import util.TestException;
-
 import com.gemstone.gemfire.DataSerializer;
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -402,7 +400,7 @@ public class PersistentRVVRecoveryDUnitTest extends PersistentReplicatedTestBase
     try {
       async.join(3000);
     } catch (InterruptedException e) {
-      new TestException("VM1 entry destroy did not finish in 3000 ms");
+      new AssertionError("VM1 entry destroy did not finish in 3000 ms");
     }
 
     vm1.invoke(new CacheSerializableRunnable("Verifying entry version in new node VM1") {

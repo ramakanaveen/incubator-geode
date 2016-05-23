@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.cache.management;
 
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +28,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -46,13 +49,12 @@ import com.gemstone.gemfire.cache.client.ServerOperationException;
 import com.gemstone.gemfire.cache.control.ResourceManager;
 import com.gemstone.gemfire.cache.management.MemoryThresholdsDUnitTest.Range;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
+import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
-import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.DistributedRegion;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
@@ -84,6 +86,7 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
@@ -91,6 +94,7 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  * 
  * @since 9.0
  */
+@Category(DistributedTest.class)
 public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
   private static final long serialVersionUID = -684231183212051910L;
 
@@ -103,10 +107,6 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
   final String addExpectedBelow = "<ExpectedException action=add>" + this.expectedBelow + "</ExpectedException>";
   final String removeExpectedBelow = "<ExpectedException action=remove>" + this.expectedBelow + "</ExpectedException>";
 
-  public MemoryThresholdsOffHeapDUnitTest(String name) {
-    super(name);
-  }
-  
   @Override
   public final void postSetUpClientServerTestCase() throws Exception {
     IgnoredException.addIgnoredException(expectedEx);
@@ -1256,7 +1256,8 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
     }
     return ret;
   }
-  
+
+  @Test
   public void testCleanAdvisorClose() throws Exception {
     final Host host = Host.getHost(0);
     final VM server1 = host.getVM(0);

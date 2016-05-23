@@ -16,12 +16,17 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -47,23 +52,22 @@ import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Class <code>ClientServerGetAllDUnitTest</code> test client/server getAll.
  *
  * @since 5.7
  */
- public class ClientServerGetAllDUnitTest extends ClientServerTestCase {
-
-  public ClientServerGetAllDUnitTest(String name) {
-    super(name);
-  }
+@Category(DistributedTest.class)
+public class ClientServerGetAllDUnitTest extends ClientServerTestCase {
 
   @Override
   public final void postTearDownCacheTestCase() throws Exception {
     disconnectAllFromDS();
   }
 
+  @Test
   public void testGetAllFromServer() throws Exception {
     final Host host = Host.getHost(0);
     final VM server = host.getVM(0);
@@ -116,6 +120,7 @@ import com.gemstone.gemfire.test.dunit.VM;
     stopBridgeServer(server);
   }
 
+  @Test
   public void testOffHeapGetAllFromServer() throws Exception {
     final Host host = Host.getHost(0);
     final VM server = host.getVM(0);
@@ -168,6 +173,7 @@ import com.gemstone.gemfire.test.dunit.VM;
     stopBridgeServer(server);
   }
 
+  @Test
   public void testLargeOffHeapGetAllFromServer() throws Throwable {
     final Host host = Host.getHost(0);
     final VM server = host.getVM(0);
@@ -278,7 +284,8 @@ import com.gemstone.gemfire.test.dunit.VM;
 
     stopBridgeServer(server);
   }
-  
+
+  @Test
   public void testLargeGetAllFromServer() throws Throwable {
     final Host host = Host.getHost(0);
     final VM server = host.getVM(0);
@@ -391,6 +398,7 @@ import com.gemstone.gemfire.test.dunit.VM;
     stopBridgeServer(server);
   }
 
+  @Test
   public void testGetAllWithCallbackFromServer() throws Exception {
     final Host host = Host.getHost(0);
     final VM server = host.getVM(0);
@@ -442,14 +450,17 @@ import com.gemstone.gemfire.test.dunit.VM;
     stopBridgeServer(server);
   }
 
+  @Test
   public void testGetSomeFromServer() throws Exception {
     testGetFromServer(2);
   }
 
+  @Test
   public void testGetAllFromClient() throws Exception {
     testGetFromServer(5);
   }
 
+  @Test
   public void testGetAllFromServerWithPR() throws Exception {
     final Host host = Host.getHost(0);
     final VM server1 = host.getVM(0);
@@ -580,7 +591,8 @@ import com.gemstone.gemfire.test.dunit.VM;
     IgnoredException.addIgnoredException("Server unreachable", client);
     stopBridgeServer(server);
   }
-  
+
+  @Test
   public void testGetAllWithExtraKeyFromServer() throws Exception {
     final Host host = Host.getHost(0);
     final VM server = host.getVM(0);

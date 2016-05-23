@@ -20,8 +20,6 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
 
-import util.TestException;
-
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.logging.LogService;
 
@@ -50,7 +48,7 @@ public class LDM {
       Thread.sleep(5 * 1000);
 
     } catch (InterruptedException ex) {
-      throw new TestException("interrupted");
+      throw new AssertionError("interrupted");
     }
 
     system.disconnect();

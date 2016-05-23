@@ -33,8 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import util.TestException;
-
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.LowMemoryException;
@@ -362,7 +360,7 @@ public class MemoryMonitorJUnitTest {
       caughtException = true;
     }
     if(expectLowMemEx && !caughtException){
-      throw new TestException("An expected exception was not thrown");
+      throw new AssertionError("An expected exception was not thrown");
     }
     //make region healthy
     heapMonitor.updateStateAndSendEvent(91);
@@ -370,7 +368,7 @@ public class MemoryMonitorJUnitTest {
     try{
       region.put("key-1", "value-2");      
     } catch(LowMemoryException low){      
-      throw new TestException("Unexpected exception:",low);
+      throw new AssertionError("Unexpected exception:",low);
     }
     if (useTransaction) {
       cache.getCacheTransactionManager().commit();

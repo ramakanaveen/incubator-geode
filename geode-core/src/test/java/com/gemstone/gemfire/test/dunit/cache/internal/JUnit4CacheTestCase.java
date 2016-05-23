@@ -47,7 +47,7 @@ import java.util.Properties;
  *
  * TODO: make this class abstract when JUnit3CacheTestCase is deleted
  */
-public class JUnit4CacheTestCase extends JUnit4DistributedTestCase implements CacheTestFixture {
+public abstract class JUnit4CacheTestCase extends JUnit4DistributedTestCase implements CacheTestFixture {
 
   private static final Logger logger = LogService.getLogger();
 

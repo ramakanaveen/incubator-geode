@@ -41,13 +41,9 @@ import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
-import com.gemstone.gemfire.internal.cache.ha.HAContainerMap;
-import com.gemstone.gemfire.internal.cache.ha.HAContainerRegion;
-import com.gemstone.gemfire.internal.cache.ha.HARegionQueue;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheServerTestUtil;
 import com.gemstone.gemfire.internal.cache.tier.sockets.ClientUpdateMessage;
 import com.gemstone.gemfire.internal.cache.tier.sockets.ConflationDUnitTest;
@@ -59,8 +55,6 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
-
-import util.TestException;
 
 /**
  * This DUnit contains various tests to ensure new implementation of ha region
@@ -1191,7 +1185,7 @@ public class HARQueueNewImplDUnitTest extends DistributedTestCase {
       while (iter.hasNext()) {
         rName = ((Region)iter.next()).getName();
         if (cmrName.equals(rName)) {
-          throw new TestException(
+          throw new AssertionError(
               "Cache.rootRegions() method should not return the client_messages_region.");
         }
         logger.fine("Region name returned from cache.rootRegions(): " + rName);

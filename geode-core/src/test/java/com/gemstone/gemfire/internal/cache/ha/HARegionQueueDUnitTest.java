@@ -23,7 +23,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.junit.experimental.categories.Category;
-import util.TestException;
 
 import junit.framework.Assert;
 
@@ -945,7 +944,7 @@ public class HARegionQueueDUnitTest extends DistributedTestCase {
     
     CacheSerializableRunnable waitForCreateQueuesThread = new CacheSerializableRunnable(
         "joinCreateCache") {
-      public void run2() throws TestException {
+      public void run2() {
         WaitCriterion ev = new WaitCriterion() {
           public boolean done() {
             return createQueuesThread != null;

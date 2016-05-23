@@ -16,24 +16,29 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import junit.framework.Assert;
+
 import com.gemstone.gemfire.CancelException;
 import com.gemstone.gemfire.LogWriter;
 import com.gemstone.gemfire.SystemFailure;
-import com.gemstone.gemfire.cache.*;
-import com.gemstone.gemfire.cache.util.*;
+import com.gemstone.gemfire.cache.AttributesFactory;
+import com.gemstone.gemfire.cache.CacheException;
+import com.gemstone.gemfire.cache.EntryEvent;
+import com.gemstone.gemfire.cache.ExpirationAction;
+import com.gemstone.gemfire.cache.ExpirationAttributes;
+import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.cache.RegionEvent;
+import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.distributed.internal.DistributionManager;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.RMIException;
 import com.gemstone.gemfire.test.dunit.VM;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-
-import util.TestException;
-
-import junit.framework.Assert;
 
 /**
  * This class tests the response of GemFire to various
@@ -358,7 +363,7 @@ public class SystemFailureDUnitTest extends DistributedCacheTestCase {
 //  protected static void doReset() {
 //    // TODO instead of trying to patch up this VM, Lise should create
 //    // me a brand spanking new one
-//    throw new TestException("Sorry, ask Lise to fix this");
+//    throw new AssertionError("Sorry, ask Lise to fix this");
 //    
 //    // You'll have to un-comment some methods in order to make
 //    // the following hack work ONCE on a VM...
@@ -556,7 +561,7 @@ public class SystemFailureDUnitTest extends DistributedCacheTestCase {
       private void forceOutOfMemory() {
         peskyMemory = new ArrayList();
         // Allocate this _before_ exhausting memory :-)
-        final TestException whoops = new TestException("Timeout!");
+        final AssertionError whoops = new AssertionError("Timeout!");
         try {
           for (;;) {
             peskyMemory.add(new long[100000]);
@@ -618,7 +623,7 @@ public class SystemFailureDUnitTest extends DistributedCacheTestCase {
       
       peskyMemory = new ArrayList();
       // Allocate this _before_ exhausting memory :-)
-      final TestException whoops = new TestException("Timeout!");
+      final AssertionError whoops = new AssertionError("Timeout!");
       
       // Fill up a lot of memory
       for (;;) {
@@ -748,7 +753,7 @@ public class SystemFailureDUnitTest extends DistributedCacheTestCase {
       listener = listener_error;
     }
     else {
-      throw new TestException("don't know which listener: " + which);
+      throw new AssertionError("don't know which listener: " + which);
     }
     return listener;
   }

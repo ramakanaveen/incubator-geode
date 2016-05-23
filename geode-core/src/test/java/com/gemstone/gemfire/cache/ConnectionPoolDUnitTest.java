@@ -16,6 +16,14 @@
  */
 package com.gemstone.gemfire.cache;
 
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+import static com.gemstone.gemfire.test.dunit.AsyncInvocation.*;
+import static com.gemstone.gemfire.test.dunit.DistributedTestUtils.*;
+import static com.gemstone.gemfire.test.dunit.Invoke.*;
+import static com.gemstone.gemfire.test.dunit.NetworkUtils.*;
+import static com.gemstone.gemfire.test.dunit.ThreadUtils.*;
+import static com.gemstone.gemfire.test.dunit.Wait.*;
+
 import static org.junit.runners.MethodSorters.NAME_ASCENDING;
 
 import java.io.IOException;
@@ -28,9 +36,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.CancelException;
@@ -71,6 +79,8 @@ import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
@@ -82,10 +92,10 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  * data to the client.
  * Test uses Groboutils TestRunnable objects to achieve multi threading behavior
  * in the test.
- *
  */
+@Category(DistributedTest.class)
 @FixMethodOrder(NAME_ASCENDING)
-public class ConnectionPoolDUnitTest extends CacheTestCase {
+public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
 
   private static final long serialVersionUID = 1L;
 
@@ -103,10 +113,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
   protected final static int TYPE_UPDATE = 1;
   protected final static int TYPE_INVALIDATE = 2;
   protected final static int TYPE_DESTROY = 3;
-
-  public ConnectionPoolDUnitTest(String name) {
-    super(name);
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -149,9 +155,11 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     }
     return result;
   }
+
   protected static TestCacheWriter getTestWriter(Region r) {
     return (TestCacheWriter)r.getAttributes().getCacheWriter();
   }
+
   /**
    * Create a bridge server on the given port without starting it.
    *
@@ -242,8 +250,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     return ds;
   }
 
-  
-  
   /**
    * Returns region attributes for a <code>LOCAL</code> region
    */
@@ -337,9 +343,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     }
   }
 
-  
-
-
   /**
    * Create a fake EntryEvent that returns the provided region for {@link CacheEvent#getRegion()}
    * and returns {@link com.gemstone.gemfire.cache.Operation#LOCAL_LOAD_CREATE} for {@link CacheEvent#getOperation()}
@@ -402,6 +405,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
                  + " but endpoints=" + outOfBalanceReport(pool),
                  true, balanced(pool, expectedConsPerServer));
   }
+
   protected boolean balanced(PoolImpl pool, int expectedConsPerServer) {
     Iterator it = pool.getEndpointMap().values().iterator();
     while (it.hasNext()) {
@@ -465,6 +469,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
   /**
    * Tests that the callback argument is sent to the server
    */
+  @Test
   public void test001CallbackArg() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -564,6 +569,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    * Tests that consecutive puts have the callback assigned
    * appropriately.
    */
+  @Test
   public void test002CallbackArg2() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -657,13 +663,13 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     });
   }
 
-  
   /**
    * Tests for bug 36684 by having two bridge servers with cacheloaders that should always return
    * a value and one client connected to each server reading values. If the bug exists, the
    * clients will get null sometimes. 
    * @throws InterruptedException 
    */
+  @Test
   public void test003Bug36684() throws CacheException, InterruptedException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -756,11 +762,11 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
       com.gemstone.gemfire.test.dunit.Assert.fail("Error occured in vm3", inv3.getException());
     }
   }
-  
 
   /**
    * Test for client connection loss with CacheLoader Exception on the server.
    */
+  @Test
   public void test004ForCacheLoaderException() throws CacheException, InterruptedException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -854,7 +860,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     
   }
 
-
   protected void validateDS() {
     List l = InternalDistributedSystem.getExistingSystems();
     if (l.size() > 1) {
@@ -868,12 +873,12 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     assertEquals(1, l.size());
   }
   
-
   /**
    * Tests the basic operations of the {@link Pool}
    *
    * @since 3.5
    */
+  @Test
   public void test006Pool() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -981,13 +986,11 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
         }
     });
   }
-  
-  
-    
-  
+
   /**
    * Tests the BridgeServer failover (bug 31832).
    */
+  @Test
   public void test007BridgeServerFailoverCnx1() throws CacheException {
     disconnectAllFromDS();
     basicTestBridgeServerFailover(1);
@@ -995,6 +998,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
   /**
    * Test BridgeServer failover with connectionsPerServer set to 0
    */
+  @Test
   public void test008BridgeServerFailoverCnx0() throws CacheException {
     basicTestBridgeServerFailover(0);
   }
@@ -1078,7 +1082,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
           }
         }
       });
-
 
     SerializableRunnable verify1Server =
       new CacheSerializableRunnable("verify1Server") {
@@ -1165,7 +1168,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 
     com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("FIXME: this thread does not terminate"); // FIXME
 //    // Verify that no exception has occurred in the putter thread
-//    DistributedTestCase.join(putAI, 5 * 60 * 1000, getLogWriter());
+//    join(putAI, 5 * 60 * 1000, getLogWriter());
 //    //assertTrue("Exception occurred while invoking " + putAI, !putAI.exceptionOccurred());
 //    if (putAI.exceptionOccurred()) {
 //      fail("While putting entries: ", putAI.getException());
@@ -1182,13 +1185,13 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     // Stop the last cache server
     vm1.invoke(stopCacheServer);
   }
-  
 
   /**
    * Make sure cnx lifetime expiration working on thread local cnxs.
    * @author darrel
    */
   @Category(FlakyTest.class) // GEODE-1197: random ports, BindException, FixMethodOrder, expiration, time sensitive, waitForCriterion, async actions
+  @Test
   public void test009LifetimeExpireOnTL() throws CacheException {
     basicTestLifetimeExpire(true);
   }
@@ -1197,6 +1200,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    * Make sure cnx lifetime expiration working on thread local cnxs.
    * @author darrel
    */
+  @Test
   public void test010LifetimeExpireOnPoolCnx() throws CacheException {
     basicTestLifetimeExpire(false);
   }
@@ -1402,7 +1406,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
             };
             try {
               Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
-            } catch (AssertionFailedError e) {
+            } catch (AssertionError e) {
 //              dumpStack();
               throw e;
             }
@@ -1473,6 +1477,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    *
    * @since 3.5
    */
+  @Test
   public void test011PoolCreate() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -1555,6 +1560,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    *
    * @since 3.5
    */
+  @Test
   public void test012PoolPut() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -1669,11 +1675,13 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
         }
     });
   }
-    /**
+
+  /**
    * Tests the put operation of the {@link Pool}
    *
    * @since 3.5
    */
+  @Test
   public void test013PoolPutNoDeserialize() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -1794,6 +1802,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    *
    * @since 3.5
    */
+  @Test
   public void test014InvalidateAndDestroyPropagation() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -1892,7 +1901,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
         }
       });
 
-
     vm2.invoke(new CacheSerializableRunnable("Validate original and destroy") {
         public void run2() throws CacheException {
           Region region = getRootRegion().getSubregion(name);
@@ -1986,12 +1994,14 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
         }
     });
   }
+
   /**
    * Tests that invalidates and destroys are propagated to {@link Pool}s
    * correctly to DataPolicy.EMPTY + InterestPolicy.ALL
    *
    * @since 5.0
    */
+  @Test
   public void test015InvalidateAndDestroyToEmptyAllPropagation() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -2105,7 +2115,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 
         }
       });
-
 
     vm2.invoke(new CacheSerializableRunnable("Validate original and destroy") {
           public void run2() throws CacheException {
@@ -2222,6 +2231,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    *
    * @since 5.0
    */
+  @Test
   public void test016InvalidateAndDestroyToEmptyCCPropagation() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -2391,10 +2401,10 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     });
   }
 
-
   /**
    * Tests interest key registration.
    */
+  @Test
   public void test017ExpireDestroyHasEntryInCallback() throws CacheException {
     disconnectAllFromDS();
     final String name = this.getName();
@@ -2561,10 +2571,11 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     return ret;
   }
 
-   /**
+  /**
    * Tests that updates are not sent to VMs that did not ask for
    * them.
    */
+  @Test
   public void test018OnlyRequestedUpdates() throws Exception {
     final String name1 = this.getName() + "-1";
     final String name2 = this.getName() + "-2";
@@ -2706,6 +2717,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
   /**
    * Tests interest key registration.
    */
+  @Test
   public void test019InterestKeyRegistration() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -2949,6 +2961,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
   /**
    * Tests interest list registration.
    */
+  @Test
   public void test020InterestListRegistration() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -3072,9 +3085,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     });
   }
 
-
-  
-
   protected class ConnectionPoolDUnitTestSerializable2 implements java.io.Serializable
   {
     protected ConnectionPoolDUnitTestSerializable2(String key)
@@ -3160,10 +3170,10 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 //          fail("interrupted");
 //        }
 //        catch(ServerConnectivityException sce) {
-//            DistributedTestCase.fail("While getting value for ACK region", sce);
+//            fail("While getting value for ACK region", sce);
 //        }
 //        catch(TimeoutException te) {
-//          DistributedTestCase.fail("While getting value for ACK region", te);
+//          fail("While getting value for ACK region", te);
 //        }
 //      }
 //      assertTrue(pi.getConnectedServerCount() >= 1);
@@ -3193,10 +3203,10 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 //          fail("interrupted");
 //        }
 //        catch(ServerConnectivityException sce) {
-//            DistributedTestCase.fail("While getting value for ACK region", sce);
+//            fail("While getting value for ACK region", sce);
 //        }
 //        catch(TimeoutException te) {
-//          DistributedTestCase.fail("While getting value for ACK region", te);
+//          fail("While getting value for ACK region", te);
 //        }
 //      }
 //      assertTrue(pi.getConnectedServerCount() >= 1);
@@ -3219,6 +3229,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     Cache z = getCache();
     return z;
   }
+
   /**
    * A handy method to poll for arrival of non-null/non-invalid entries
    * @param r the Region to poll
@@ -3268,6 +3279,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 
     public void init(Properties props)  {}
   }
+
   /**
    * Create a server that has a value for every key queried and a unique
    * key/value in the specified Region that uniquely identifies each instance.
@@ -3305,7 +3317,8 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     });
   }
 
-//test for bug 35884
+  //test for bug 35884
+  @Test
   public void test021ClientGetOfInvalidServerEntry() throws CacheException {
     final String regionName1 = this.getName() + "-1";
 
@@ -3384,7 +3397,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 
   }
 
-  
+  @Test
   public void test022ClientRegisterUnregisterRequests() throws CacheException {
     final String regionName1 = this.getName() + "-1";
 
@@ -3509,6 +3522,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    *
    * @since 5.0.2
    */
+  @Test
   public void test023ContainsKeyOnServer() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -3598,7 +3612,6 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     });
   }
 
-  
   /**
    * Tests that invoking {@link Region#create} with a
    * <code>null</code> value does the right thing with the {@link
@@ -3606,6 +3619,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    *
    * @since 3.5
    */
+  @Test
   public void test024CreateNullValue() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -3711,13 +3725,12 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     });
   }
 
-  
-  
   /**
    * Tests that a {@link Region#localDestroy} is not propagated to the
    * server and that a {@link Region#destroy} is.  Also makes sure
    * that callback arguments are passed correctly.
    */
+  @Test
   public void test025Destroy() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -3879,7 +3892,9 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    * to the server and that a {@link Region#destroyRegion} is.  Also
    * makes sure that callback arguments are passed correctly.
    */
-  public void todo_testDestroyRegion() throws CacheException {
+  @Ignore("TODO")
+  @Test
+  public void testDestroyRegion() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -3993,11 +4008,11 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 
   }
 
-  
   /**
    * Tests interest list registration with callback arg with DataPolicy.EMPTY
    * and InterestPolicy.ALL
    */
+  @Test
   public void test026DPEmptyInterestListRegistrationWithCallbackArg() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -4167,10 +4182,12 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
         }
     });
   }
+
   /**
    * Tests interest list registration with callback arg with DataPolicy.EMPTY
    * and InterestPolicy.CACHE_CONTENT
    */
+  @Test
   public void test027DPEmptyCCInterestListRegistrationWithCallbackArg() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -4317,6 +4334,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    *
    * @throws Exception
    */
+  @Test
   public void test028DynamicRegionCreation() throws Exception {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -4332,9 +4350,9 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     final String k3 = name + "-key3";
     final String v3 = name + "-val3";
 
-    client1.invoke(() -> DistributedTestCase.disconnectFromDS());
-    srv1.invoke(() -> DistributedTestCase.disconnectFromDS());
-    srv2.invoke(() -> DistributedTestCase.disconnectFromDS());
+    client1.invoke(() -> disconnectFromDS());
+    srv1.invoke(() -> disconnectFromDS());
+    srv2.invoke(() -> disconnectFromDS());
     try {
       // setup servers
       CacheSerializableRunnable ccs = new CacheSerializableRunnable("Create Cache Server") {
@@ -4499,7 +4517,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
               assertNotNull(getCache().getRegion(name + Region.SEPARATOR + dynFromClientName));
               break;
             }
-            catch (AssertionFailedError e) {
+            catch (AssertionError e) {
               if (System.currentTimeMillis() > end) {
                 throw e;
               }
@@ -4579,7 +4597,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
               assertNotNull(getCache().getRegion(name + Region.SEPARATOR + dynFromServerName));
               break;
             }
-            catch (junit.framework.AssertionFailedError e) {
+            catch (AssertionError e) {
               if (System.currentTimeMillis() > end) {
                 throw e;
               } else {
@@ -4642,9 +4660,9 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
         }
       });
     } finally {
-      client1.invoke(() -> DistributedTestCase.disconnectFromDS()); // clean-up loner
-      srv1.invoke(() -> DistributedTestCase.disconnectFromDS());
-      srv2.invoke(() -> DistributedTestCase.disconnectFromDS());
+      client1.invoke(() -> disconnectFromDS()); // clean-up loner
+      srv1.invoke(() -> disconnectFromDS());
+      srv2.invoke(() -> disconnectFromDS());
     }
   }
   
@@ -4652,6 +4670,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
   /**
    * Test for bug 36279
    */
+  @Test
   public void test029EmptyByteArray() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -4744,10 +4763,10 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
       });
   }
 
-  
   /**
    * Tests interest list registration with callback arg
    */
+  @Test
   public void test030InterestListRegistrationWithCallbackArg() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -4899,12 +4918,12 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     });
   }
 
-  
   /**
    * Tests the keySetOnServer operation of the {@link Pool}
    *
    * @since 5.0.2
    */
+  @Test
   public void test031KeySetOnServer() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -5067,6 +5086,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    * Tests that creating, putting and getting a non-serializable key or value
    * throws the correct (NotSerializableException) exception.
    */
+  @Test
   public void test033NotSerializableException() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -5178,6 +5198,7 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
    * - non-originators of updates are sent invalidates
    * - multiple invalidates are not sent for the same update
    */
+  @Test
   public void test034NotifyAllUpdates() throws CacheException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -5498,10 +5519,10 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 //      HashSet destroyedRoots = new HashSet();
       try {
         client1.invoke(() -> CacheTestCase.remoteTearDown());
-        client1.invoke(() -> DistributedTestCase.disconnectFromDS());
+        client1.invoke(() -> disconnectFromDS());
       } finally {
         client2.invoke(() -> CacheTestCase.remoteTearDown());
-        client2.invoke(() -> DistributedTestCase.disconnectFromDS());
+        client2.invoke(() -> disconnectFromDS());
       }
     }
   }
@@ -5581,10 +5602,10 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
 //    } finally {
 //      try {
 //        client1.invoke(() -> CacheTestCase.remoteTearDown());
-//        client1.invoke(() -> DistributedTestCase.disconnectFromDS());
+//        client1.invoke(() -> disconnectFromDS());
 //      } finally {
 //        client2.invoke(() -> CacheTestCase.remoteTearDown());
-//        client2.invoke(() -> DistributedTestCase.disconnectFromDS());
+//        client2.invoke(() -> disconnectFromDS());
 //      }
 //    }
 //  }
@@ -5633,10 +5654,12 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
       delay();
     }
   }
+
   /**
    * Make sure a tx done in a server on an empty region gets sent
    * to clients who have registered interest.
    */
+  @Test
   public void test037Bug39526part1() throws CacheException, InterruptedException {
     final String name = this.getName();
     final Host host = Host.getHost(0);
@@ -5731,10 +5754,12 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     getSystem().getLogWriter().info("before confirmCommitOnClient");
     vm1.invoke(validateClient);
   }
+
   /**
    * Now confirm that a tx done in a peer of a server (the server having
    * an empty region and wanting all events) sends the tx to its clients
    */
+  @Test
   public void test038Bug39526part2() throws CacheException, InterruptedException {
     disconnectAllFromDS();
     final String name = this.getName();
@@ -5862,5 +5887,3 @@ public class ConnectionPoolDUnitTest extends CacheTestCase {
     }
   }
 }
-
-

@@ -16,11 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Ignore;
 
 import junit.framework.Assert;
-import util.TestException;
 
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.InterestResultPolicy;

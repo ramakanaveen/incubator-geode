@@ -1708,7 +1708,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
           }
           public void beforeCommit(TransactionEvent event)
               throws TransactionWriterException {
-            throw new TransactionWriterException("TestException");
+            throw new TransactionWriterException("AssertionError");
           }
         });
         return null;
@@ -1724,7 +1724,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
           getGemfireCache().getTxManager().commit();
           fail("Expected exception not thrown");
         } catch (Exception e) {
-          assertEquals("TestException", e.getCause().getMessage());
+          assertEquals("AssertionError", e.getCause().getMessage());
         }
         return null;
       }

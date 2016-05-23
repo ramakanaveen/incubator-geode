@@ -407,7 +407,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
 
   /**
    * Tests parsing an XML file that specifies a cache listener whose
-   * constructor throws an {@linkplain TestException exception}.
+   * constructor throws an {@linkplain AssertionError exception}.
    */
   public void testCallbackWithException() {
     setXmlFile(findFile("callbackWithException.xml"));
@@ -418,7 +418,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
       fail("Should have thrown a CacheXmlException");
 
     } catch (CacheXmlException ex) {
-      if (!(ex.getCause() instanceof TestException)) {
+      if (!(ex.getCause() instanceof AssertionError)) {
         throw ex;
       }
     } finally {
@@ -691,8 +691,8 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   }
 
 
-  public static class TestException extends RuntimeException {
-    public TestException() {
+  public static class AssertionError extends RuntimeException {
+    public AssertionError() {
       super("Test Exception");
     }
   }
@@ -706,7 +706,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
     extends TestCacheListener {
 
     public ExceptionalCacheListener() {
-      throw new TestException();
+      throw new AssertionError();
     }
   }
 

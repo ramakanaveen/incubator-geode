@@ -16,9 +16,7 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,8 +31,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import util.TestException;
 
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.query.Index;
@@ -297,19 +293,19 @@ public class CompactRangeIndexJUnitTest  {
       try {
         if (description.equals("ATTEMPT_REMOVE")) {
           if (!readyToStartRemoveLatch.await(21, TimeUnit.SECONDS)) {
-            throw new TestException("Time ran out waiting for other thread to initiate put");
+            throw new AssertionError("Time ran out waiting for other thread to initiate put");
           }
         }
         else if (description.equals("TRANSITIONED_FROM_REGION_ENTRY_TO_ELEMARRAY")) {
           readyToStartRemoveLatch.countDown();
           if (!waitForRemoveLatch.await(21, TimeUnit.SECONDS)) {
-            throw new TestException("Time ran out waiting for other thread to initiate remove");
+            throw new AssertionError("Time ran out waiting for other thread to initiate remove");
           }
         }
         else if (description.equals("BEGIN_REMOVE_FROM_ELEM_ARRAY")) {
           waitForRemoveLatch.countDown();
           if (waitForTransitioned.await(21, TimeUnit.SECONDS)) {
-            throw new TestException("Time ran out waiting for transition from region entry to elem array");
+            throw new AssertionError("Time ran out waiting for transition from region entry to elem array");
           }
         }
         else if (description.equals("TRANSITIONED_FROM_REGION_ENTRY_TO_ELEMARRAY")) {
@@ -319,7 +315,7 @@ public class CompactRangeIndexJUnitTest  {
         }
       }
       catch (InterruptedException e) {
-        throw new TestException("Interrupted while waiting for test to complete");
+        throw new AssertionError("Interrupted while waiting for test to complete");
       }
     }
   }
@@ -350,19 +346,19 @@ public class CompactRangeIndexJUnitTest  {
       try {
         if (description.equals("ATTEMPT_REMOVE")) {
           if (!readyToStartRemoveLatch.await(21, TimeUnit.SECONDS)) {
-            throw new TestException("Time ran out waiting for other thread to initiate put");
+            throw new AssertionError("Time ran out waiting for other thread to initiate put");
           }
         }
         else if (description.equals("BEGIN_TRANSITION_FROM_ELEMARRAY_TO_CONCURRENT_HASH_SET")) {
           readyToStartRemoveLatch.countDown();
           if (!waitForRemoveLatch.await(21, TimeUnit.SECONDS)) {
-            throw new TestException("Time ran out waiting for other thread to initiate remove");
+            throw new AssertionError("Time ran out waiting for other thread to initiate remove");
           }
         }
         else if (description.equals("BEGIN_REMOVE_FROM_ELEM_ARRAY")) {
           waitForRemoveLatch.countDown();
           if (!waitForTransitioned.await(21, TimeUnit.SECONDS)) {
-            throw new TestException("Time ran out waiting for transition from elem array to token");
+            throw new AssertionError("Time ran out waiting for transition from elem array to token");
           }
         }
         else if (description.equals("TRANSITIONED_FROM_ELEMARRAY_TO_TOKEN")) {
@@ -370,7 +366,7 @@ public class CompactRangeIndexJUnitTest  {
         }
       }
       catch (InterruptedException e) {
-        throw new TestException("Interrupted while waiting for test to complete");
+        throw new AssertionError("Interrupted while waiting for test to complete");
       }
     }
   }

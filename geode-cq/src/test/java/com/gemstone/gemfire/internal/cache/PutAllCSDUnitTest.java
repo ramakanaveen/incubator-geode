@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -29,6 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.DataSerializable;
 import com.gemstone.gemfire.DataSerializer;
@@ -86,12 +92,14 @@ import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests putAll for c/s. Also tests removeAll
  * 
  * @since 5.0.23
  */
+@Category(DistributedTest.class)
 @SuppressWarnings("serial")
 public class PutAllCSDUnitTest extends ClientServerTestCase {
 
@@ -114,19 +122,6 @@ public class PutAllCSDUnitTest extends ClientServerTestCase {
   final String expectedExceptions = PutAllPartialResultException.class.getName()+"||"
   + ServerConnectivityException.class.getName()+"||"+RegionDestroyedException.class.getName()+"||java.net.ConnectException";
 
-  // public static void caseTearDown() throws Exception {
-  // disconnectAllFromDS();
-  // }
-
-  /**
-   * Creates a new <code>GemFireMemberStatusDUnitTest</code>
-   */
-  public PutAllCSDUnitTest(String name) {
-    super(name);
-  }
-
-  // ////// Test Methods
-
   private static void checkRegionSize(final Region region, final int expectedSize) {
     WaitCriterion ev = new WaitCriterion() {
       public boolean done() {
@@ -145,7 +140,8 @@ public class PutAllCSDUnitTest extends ClientServerTestCase {
    * 
    * @throws InterruptedException
    */
-public void testOneServer() throws CacheException, InterruptedException {
+  @Test
+  public void testOneServer() throws CacheException, InterruptedException {
     final String title = "testOneServer:";
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -413,6 +409,7 @@ public void testOneServer() throws CacheException, InterruptedException {
    * 
    * @throws InterruptedException
    */
+  @Test
   public void testOldValueInEvent() throws CacheException, InterruptedException {
     final String title = "testOldValueInEvent:";
     final Host host = Host.getHost(0);
@@ -479,6 +476,7 @@ public void testOneServer() throws CacheException, InterruptedException {
    * client to a replicated region 2) putAll from a multi-threaded client to a
    * replicated region 3)
    */
+  @Test
   public void test2Server() throws CacheException, InterruptedException {
     final String title = "test2Server:";
 //    disconnectAllFromDS();
@@ -1106,14 +1104,16 @@ public void testOneServer() throws CacheException, InterruptedException {
     // Stop server
     stopBridgeServers(getCache());
   }
-  
+
+  @Test
   public void test2NormalServerCCE() throws CacheException, InterruptedException {
     doTest2NormalServerCCE(true);
     disconnectAllFromDS();
     doTest2NormalServerCCE(false);
     disconnectAllFromDS();
   }
-  
+
+  @Test
   public void testPRServerRVDuplicatedKeys() throws CacheException, InterruptedException {
     doRVDuplicatedKeys(true, 1);
     disconnectAllFromDS();
@@ -1249,12 +1249,14 @@ public void testOneServer() throws CacheException, InterruptedException {
     // Stop server
     stopBridgeServers(getCache());
   }
-  
+
+  @Test
   public void testBug51725() throws CacheException, InterruptedException {
     doBug51725(false);
     disconnectAllFromDS();
   }
 
+  @Test
   public void testBug51725_singlehup() throws CacheException, InterruptedException {
     doBug51725(true);
     disconnectAllFromDS();
@@ -1373,6 +1375,7 @@ public void testOneServer() throws CacheException, InterruptedException {
   /**
    * Tests putAll to 2 PR servers.
    */
+  @Test
   public void testPRServer() throws CacheException, InterruptedException {
     final String title = "testPRServer:";
 //    disconnectAllFromDS();
@@ -1749,6 +1752,7 @@ public void testOneServer() throws CacheException, InterruptedException {
   // Checks to see if a client does a destroy that throws an exception from CacheWriter beforeDestroy
   // that the size of the region is still correct.
   // See bug 51583.
+  @Test
   public void testClientDestroyOfUncreatedEntry() throws CacheException, InterruptedException {
     final String title = "testClientDestroyOfUncreatedEntry:";
 
@@ -1798,6 +1802,7 @@ public void testOneServer() throws CacheException, InterruptedException {
   /**
    * Tests partial key putAll and removeAll to 2 servers with local region
    */
+  @Test
   public void testPartialKeyInLocalRegion() throws CacheException, InterruptedException {
     final String title = "testPartialKeyInLocalRegion:";
 //    disconnectAllFromDS();
@@ -2083,6 +2088,7 @@ public void testOneServer() throws CacheException, InterruptedException {
    * side is different between PR and LR. PR does it in postPutAll.
    * It's not running in singleHop putAll
    */
+  @Test
   public void testPartialKeyInPR() throws CacheException, InterruptedException {
     final String title = "testPartialKeyInPR:";
 //    disconnectAllFromDS();
@@ -2255,6 +2261,7 @@ public void testOneServer() throws CacheException, InterruptedException {
    * side is different between PR and LR. PR does it in postPutAll.
    * This is a singlehop putAll test.
    */
+  @Test
   public void testPartialKeyInPRSingleHop() throws CacheException, InterruptedException {
     final String title = "testPartialKeyInPRSingleHop_";
     final int cacheWriterAllowedKeyNum = 16;
@@ -2437,6 +2444,7 @@ public void testOneServer() throws CacheException, InterruptedException {
    * Set redundency=1 to see if retry succeeded after PRE
    * This is a singlehop putAll test.
    */
+  @Test
   public void testPartialKeyInPRSingleHopWithRedundency() throws CacheException, InterruptedException {
     final String title = "testPartialKeyInPRSingleHopWithRedundency_";
     int client1Size;
@@ -2597,6 +2605,7 @@ public void testOneServer() throws CacheException, InterruptedException {
    * Tests bug 41403: let 2 sub maps both failed with partial key applied. 
    * This is a singlehop putAll test.
    */
+  @Test
   public void testEventIdMisorderInPRSingleHop() throws CacheException, InterruptedException {
     final String title = "testEventIdMisorderInPRSingleHop_";
 
@@ -2738,8 +2747,8 @@ public void testOneServer() throws CacheException, InterruptedException {
    * Tests while putAll to 2 distributed servers, one server failed over Add a
    * listener to slow down the processing of putAll
    */
-  public void test2FailOverDistributedServer() throws CacheException,
-      InterruptedException {
+  @Test
+  public void test2FailOverDistributedServer() throws CacheException, InterruptedException {
     IgnoredException.addIgnoredException("Broken pipe");
     IgnoredException.addIgnoredException("Connection reset");
     IgnoredException.addIgnoredException("Unexpected IOException");
@@ -2840,6 +2849,7 @@ public void testOneServer() throws CacheException, InterruptedException {
   /**
    * Tests while putAll timeout's exception
    */
+  @Test
   public void testClientTimeOut() throws CacheException, InterruptedException {
     final String title = "testClientTimeOut:";
     disconnectAllFromDS();
@@ -2898,6 +2908,7 @@ public void testOneServer() throws CacheException, InterruptedException {
   /**
    * Tests while putAll timeout at endpoint1 and switch to endpoint2
    */
+  @Test
   public void testEndPointSwitch() throws CacheException, InterruptedException {
     IgnoredException.addIgnoredException("Broken pipe");
     IgnoredException.addIgnoredException("Connection reset");
@@ -2970,6 +2981,7 @@ public void testOneServer() throws CacheException, InterruptedException {
    * Tests while putAll to 2 distributed servers, one server failed over Add a
    * listener to slow down the processing of putAll
    */
+  @Test
   public void testHADRFailOver() throws CacheException, InterruptedException {
     final String title = "testHADRFailOver:";
     disconnectAllFromDS();
@@ -3063,7 +3075,9 @@ public void testOneServer() throws CacheException, InterruptedException {
    * Test TX for putAll. There's no TX for c/s. We only test P2P
    * This is disabled because putAll in TX is disabled.
    */
-  public void no_testTX() throws CacheException, InterruptedException {
+  @Ignore("TODO")
+  @Test
+  public void testTX() throws CacheException, InterruptedException {
     final String title = "testTX:";
     disconnectAllFromDS();
     final Host host = Host.getHost(0);
@@ -3220,10 +3234,10 @@ public void testOneServer() throws CacheException, InterruptedException {
     stopBridgeServers(getCache());
   }
 
-
   List<VersionTag> client1Versions = null;
   List<VersionTag> client2Versions = null;
 
+  @Test
   public void testVersionsOnClientsWithNotificationsOnly() {
     
     final String title = "testVersionsInClients";
@@ -3322,6 +3336,7 @@ public void testOneServer() throws CacheException, InterruptedException {
   List<VersionTag> client2RAVersions = null;
 
   // basically same test as testVersionsOnClientsWithNotificationsOnly but also do a removeAll
+  @Test
   public void testRAVersionsOnClientsWithNotificationsOnly() {
     
     final String title = "testRAVersionsInClients";
@@ -3422,6 +3437,7 @@ public void testOneServer() throws CacheException, InterruptedException {
   List<String> expectedVersions = null;
   List<String> actualVersions = null;
 
+  @Test
   public void testVersionsOnServersWithNotificationsOnly() {
     
     final String title = "testVersionsOnServers";
@@ -3527,6 +3543,7 @@ public void testOneServer() throws CacheException, InterruptedException {
   List<String> actualRAVersions = null;
 
   // Same test as testVersionsOnServersWithNotificationsOnly but also does a removeAll
+  @Test
   public void testRAVersionsOnServersWithNotificationsOnly() {
     
     final String title = "testRAVersionsOnServers";
@@ -3632,7 +3649,7 @@ public void testOneServer() throws CacheException, InterruptedException {
     
   }
 
-
+  @Test
   public void testVersionsOnReplicasAfterPutAllAndRemoveAll() {
     
     final String title = "testVersionsOnReplicas";
