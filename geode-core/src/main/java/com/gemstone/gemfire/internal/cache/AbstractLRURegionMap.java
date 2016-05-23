@@ -302,6 +302,7 @@ public abstract class AbstractLRURegionMap extends AbstractRegionMap {
           return 0;
         }
         entry.setEvicted();
+        System.out.println(" >>>>> evictEntry:: " + entry.getKey());
         change = DiskEntry.Helper.overflowToDisk((DiskEntry)entry, region, _getCCHelper());
       }
       boolean result = change < 0;

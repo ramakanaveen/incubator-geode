@@ -22,6 +22,7 @@ import com.gemstone.gemfire.StatisticsFactory;
 import com.gemstone.gemfire.StatisticsType;
 import com.gemstone.gemfire.StatisticsTypeFactory;
 import com.gemstone.gemfire.internal.StatisticsTypeFactoryImpl;
+import com.gemstone.gemfire.internal.logging.LogService;
 
 /**
  * GemFire statistics about a {@link DiskRegion}.
@@ -235,6 +236,7 @@ public class DiskRegionStats {
    * overflowed to disk by a given amount.
    */
   public void incNumOverflowOnDisk(long delta) {
+    LogService.getLogger().info(">>>>>>>>>>> DiskRegionStats::incNumOverflowOnDisk:::" + getNumOverflowOnDisk() + ",delta=" + delta);
     this.stats.incLong(numOverflowOnDiskId, delta);
   }
 
@@ -243,6 +245,7 @@ public class DiskRegionStats {
    * overflowed to disk by a given amount.
    */
   public void incNumEntriesInVM(long delta) {
+    LogService.getLogger().info(">>>>>>>>>>> DiskRegionStats::incNumEntriesInVM:::" + getNumEntriesInVM() + ",delta=" + delta);
     this.stats.incLong(numEntriesInVMId, delta);
   }
   
@@ -251,6 +254,7 @@ public class DiskRegionStats {
    * overflowed to disk by a given amount.
    */
   public void incNumOverflowBytesOnDisk(long delta) {
+    LogService.getLogger().info(">>>>>>>>>>> DiskRegionStats::incNumOverflowBytesOnDisk:::" + getNumOverflowBytesOnDisk() + ",delta=" + delta);
     this.stats.incLong(numOverflowBytesOnDiskId, delta);
   }
 
