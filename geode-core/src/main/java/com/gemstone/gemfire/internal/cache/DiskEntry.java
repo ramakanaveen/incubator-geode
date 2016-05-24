@@ -1247,11 +1247,6 @@ public interface DiskEntry extends RegionEntry {
                 // Seems like we could end up adding it to the queue multiple times.
                 did.setPendingAsync(false);
               }
-              // since it was evicted fix the stats here
-              //dr.incNumEntriesInVM(1L);
-              //dr.incNumOverflowOnDisk(-1L);
-              // no need to dec overflowBytesOnDisk because it was not inced in this case.
-              //incrementBucketStats(region, 1/*InVM*/, -1/*OnDisk*/, 0);
             }
             lruEntryFaultIn((LRUEntry) entry, region);
             lruFaultedIn = true;
