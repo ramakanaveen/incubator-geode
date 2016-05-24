@@ -16,14 +16,9 @@
  */
 package com.gemstone.gemfire.management;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.jayway.awaitility.Awaitility.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,14 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-
 import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.FixedPartitionAttributes;
@@ -52,17 +48,15 @@ import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.management.internal.MBeanJMXAdapter;
 import com.gemstone.gemfire.management.internal.ManagementConstants;
-import com.gemstone.gemfire.management.internal.SystemManagementService;
 import com.gemstone.gemfire.management.internal.NotificationHub.NotificationHubListener;
+import com.gemstone.gemfire.management.internal.SystemManagementService;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
-
-import static com.jayway.awaitility.Awaitility.*;
-import static org.hamcrest.Matchers.*;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This class checks and verifies various data and operations exposed through
@@ -467,7 +461,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
         .getDistributedSystem()).getConfig();
     MemberMXBean bean = service.getMemberMXBean();
     GemFireProperties data = bean.listGemFireProperties();
-    assertEquals(config, data);
+    assertConfigEquals(config, data);
     Map<DistributedMember, DistributionConfig> configMap = new HashMap<DistributedMember, DistributionConfig>();
     configMap.put(cache.getMyId(), config);
     return configMap;
@@ -487,7 +481,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
       MemberMXBean bean = MBeanUtil.getMemberMbeanProxy(member);
       GemFireProperties data = bean.listGemFireProperties();
       DistributionConfig config = configMap.get(member);
-      assertEquals(config, data);
+      assertConfigEquals(config, data);
 
     }
 
@@ -497,7 +491,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
    * Asserts that distribution config and gemfireProperty composite types hold
    * the same values
    */
-  public static void assertEquals(DistributionConfig config,
+  public static void assertConfigEquals(DistributionConfig config,
       GemFireProperties data) {
 
     assertEquals(data.getMemberName(), config.getName());

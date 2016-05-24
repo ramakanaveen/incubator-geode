@@ -72,7 +72,7 @@ public class RedisDistDUnitTest extends JUnit4DistributedTestCase {
   }
 
   public RedisDistDUnitTest() throws Throwable {
-    super("RedisDistTest");  
+    super();
   }
 
   @Override

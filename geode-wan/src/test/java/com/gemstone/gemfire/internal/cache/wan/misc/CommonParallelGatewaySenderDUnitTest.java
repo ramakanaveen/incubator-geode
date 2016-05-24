@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -47,10 +48,6 @@ import java.util.Set;
 @Category(DistributedTest.class)
 public class CommonParallelGatewaySenderDUnitTest extends WANTestBase {
 
-  public CommonParallelGatewaySenderDUnitTest(String name ){
-    super();
-  }
-  
   @Test
   public void testSameSenderWithNonColocatedRegions() throws Exception {
     IgnoredException.addIgnoredException("cannot have the same parallel");
@@ -85,7 +82,9 @@ public class CommonParallelGatewaySenderDUnitTest extends WANTestBase {
     4> Version based rolling upgrade support should be provided. based on the version of the gemfire QSTRING should be used between 8.0 
      and version prior to 8.0
    */
-  public void DISABLED_testParallelPropagation() throws Exception {
+  @Test
+  @Ignore("TODO")
+  public void testParallelPropagation() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
 
@@ -165,7 +164,9 @@ public class CommonParallelGatewaySenderDUnitTest extends WANTestBase {
     4> Version based rolling upgrade support should be provided. based on the version of the gemfire QSTRING should be used between 8.0 
      and version prior to 8.0
    */
-  public void DISABLED_testParallelPropagationPersistenceEnabled() throws Exception {
+  @Test
+  @Ignore("TODO")
+  public void testParallelPropagationPersistenceEnabled() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
 
@@ -250,7 +251,9 @@ public class CommonParallelGatewaySenderDUnitTest extends WANTestBase {
     4> Version based rolling upgrade support should be provided. based on the version of the gemfire QSTRING should be used between 8.0 
      and version prior to 8.0
    */
-  public void DISABLED_testPRWithGatewaySenderPersistenceEnabled_Restart() {
+  @Test
+  @Ignore("TODO")
+  public void testPRWithGatewaySenderPersistenceEnabled_Restart() {
     //create locator on local site
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     //create locator on remote site

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -61,13 +62,13 @@ public class GlobalRegionOffHeapDUnitTest extends GlobalRegionDUnitTest {
     Invoke.invokeInEveryVM(checkOrphans);
     checkOrphans.run();
   }
-  
+
   @Override
-  public void DISABLED_testNBRegionInvalidationDuringGetInitialImage() throws Throwable {
+  @Ignore("DISABLED - bug 47951")
+  @Test
+  public void testNBRegionInvalidationDuringGetInitialImage() throws Throwable {
     //DISABLED - bug 47951
   }
-
-
 
   @Override
   public Properties getDistributedSystemProperties() {

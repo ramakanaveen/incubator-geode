@@ -253,7 +253,7 @@ public class CacheClientNotifierDUnitTest extends WANTestBase {
 
   public static void createClientWithLocator(int port0,String host,
       String regionName, String clientId, boolean isDurable) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");

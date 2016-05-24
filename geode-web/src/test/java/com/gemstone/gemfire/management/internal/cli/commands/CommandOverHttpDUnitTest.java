@@ -61,7 +61,6 @@ import org.junit.runners.Suite;
   ShowStackTraceDUnitTest.class,
   UserCommandsDUnitTest.class
 })
-@Category(DistributedTest.class)
 public class CommandOverHttpDUnitTest {
   @ClassRule
   public static ProvideSystemProperty provideSystemProperty = new ProvideSystemProperty(CliCommandTestBase.USE_HTTP_SYSTEM_PROPERTY, "true");

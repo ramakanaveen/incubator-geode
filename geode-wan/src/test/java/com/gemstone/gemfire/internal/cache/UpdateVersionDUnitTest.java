@@ -664,7 +664,7 @@ public class UpdateVersionDUnitTest extends JUnit4DistributedTestCase {
    */
 
   private static void createCache(Integer locPort) {
-    UpdateVersionDUnitTest test = new UpdateVersionDUnitTest(getTestMethodName());
+    UpdateVersionDUnitTest test = new UpdateVersionDUnitTest();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort + "]");
@@ -803,7 +803,7 @@ public class UpdateVersionDUnitTest extends JUnit4DistributedTestCase {
   }
 
   public static Integer createFirstRemoteLocator(int dsId, int remoteLocPort) {
-    UpdateVersionDUnitTest test = new UpdateVersionDUnitTest(getTestMethodName());
+    UpdateVersionDUnitTest test = new UpdateVersionDUnitTest();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -871,7 +871,7 @@ public class UpdateVersionDUnitTest extends JUnit4DistributedTestCase {
   }
 
   public static int createReceiver(int locPort) {
-    UpdateVersionDUnitTest test = new UpdateVersionDUnitTest(getTestMethodName());
+    UpdateVersionDUnitTest test = new UpdateVersionDUnitTest();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort
@@ -963,7 +963,7 @@ public class UpdateVersionDUnitTest extends JUnit4DistributedTestCase {
   }
 
   public static Integer createFirstLocatorWithDSId(int dsId) {
-    UpdateVersionDUnitTest test = new UpdateVersionDUnitTest(getTestMethodName());
+    UpdateVersionDUnitTest test = new UpdateVersionDUnitTest();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");

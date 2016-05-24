@@ -50,7 +50,6 @@ import org.junit.experimental.categories.Category;
  * @since  8.1
  */
 @Category({ DistributedTest.class, SecurityTest.class })
-@Category(DistributedTest.class)
 public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
 
   private static final ThreadLocal<Properties> sslInfoHolder = new ThreadLocal<>();
@@ -75,7 +74,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
   }
 
   @Test
-  @Test
   public void testMutualAuthentication() throws Exception {
     Properties serverProps = new Properties();
     serverProps.setProperty(HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -99,7 +97,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
   }
 
   @Test
-  @Test
   public void testSimpleSSL() throws Exception {
     Properties serverProps = new Properties();
     serverProps.setProperty(HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -116,7 +113,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
   }
 
   @Test
-  @Test
   public void testSSLWithoutKeyStoreType() throws Exception {
     Properties localProps = new Properties();
     localProps.setProperty(HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -131,7 +127,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
     setUpJmxManagerOnVm0ThenConnect(localProps);
   }
 
-  @Test
   @Test
   public void testSSLWithSSLProtocol() throws Exception {
     Properties localProps = new Properties();
@@ -149,7 +144,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
   }
 
   @Test
-  @Test
   public void testSSLWithTLSProtocol() throws Exception {
     Properties localProps = new Properties();
     localProps.setProperty(HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -165,7 +159,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
     setUpJmxManagerOnVm0ThenConnect(localProps);
   }
 
-  @Test
   @Test
   public void testSSLWithTLSv11Protocol() throws Exception {
     Properties localProps = new Properties();
@@ -183,7 +176,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
   }
 
   @Test
-  @Test
   public void testSSLWithTLSv12Protocol() throws Exception {
     Properties localProps = new Properties();
     localProps.setProperty(HTTP_SERVICE_SSL_ENABLED_NAME, "true");
@@ -199,7 +191,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
     setUpJmxManagerOnVm0ThenConnect(localProps);
   }
 
-  @Test
   @Test
   public void testWithMultipleProtocol() throws Exception {
     Properties localProps = new Properties();
@@ -217,7 +208,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
   }
 
   @Ignore("disabled for unknown reason")
-  @Test
   @Test
   public void testSSLWithCipherSuite() throws Exception {
     Properties localProps = new Properties();
@@ -248,7 +238,6 @@ public class ConnectCommandWithHttpAndSSLDUnitTest extends CliCommandTestBase {
   }
 
   @Ignore("disabled for unknown reason")
-  @Test
   @Test
   public void testSSLWithMultipleCipherSuite() throws Exception {
     System.setProperty("javax.net.debug", "ssl,handshake,failure");

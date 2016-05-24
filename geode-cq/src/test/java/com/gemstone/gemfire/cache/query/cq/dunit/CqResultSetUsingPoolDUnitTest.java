@@ -56,7 +56,7 @@ import com.gemstone.gemfire.test.dunit.Wait;
 @Category(DistributedTest.class)
 public class CqResultSetUsingPoolDUnitTest extends JUnit4CacheTestCase {
 
-  protected CqQueryUsingPoolDUnitTest cqDUnitTest = new CqQueryUsingPoolDUnitTest("CqResultSetUsingPoolDUnitTest");
+  protected CqQueryUsingPoolDUnitTest cqDUnitTest = new CqQueryUsingPoolDUnitTest();
   
   private final String selStr = "SELECT * FROM /root/regionA";
   

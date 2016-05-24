@@ -40,8 +40,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.util.*;
 
-@Category(DistributedTest.class)
-public class ManagementTestBase extends JUnit4DistributedTestCase {
+public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
 
   private static final int MAX_WAIT = 70 * 1000;
 
@@ -208,7 +207,7 @@ public class ManagementTestBase extends JUnit4DistributedTestCase {
   public Cache createCache(Properties props) {
     System.setProperty("dunitLogPerTest", "true");
     props.setProperty(DistributionConfig.LOG_FILE_NAME, getTestMethodName() + "-.log");
-    ds = (new ManagementTestBase()).getSystem(props);
+    ds = getSystem(props);
     cache = CacheFactory.create(ds);
     managementService = ManagementService.getManagementService(cache);
     logWriter = ds.getLogWriter();
@@ -232,7 +231,7 @@ public class ManagementTestBase extends JUnit4DistributedTestCase {
     props.setProperty(DistributionConfig.ENABLE_TIME_STATISTICS_NAME, "true");
     props.setProperty(DistributionConfig.STATISTIC_SAMPLING_ENABLED_NAME, "true");
     props.setProperty(DistributionConfig.LOG_FILE_NAME, getTestMethodName() + "-.log");
-    ds = (new ManagementTestBase()).getSystem(props);
+    ds = getSystem(props);
     cache = CacheFactory.create(ds);
     managementService = ManagementService.getManagementService(cache);
     logWriter = ds.getLogWriter();

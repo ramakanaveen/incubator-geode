@@ -178,6 +178,13 @@ public class WANTestBase extends JUnit4DistributedTestCase{
     super();
   }
 
+  /**
+   * @deprecated Use the no arg constructor, or better yet, don't construct this class
+   */
+  @Deprecated
+  public WANTestBase(final String ignored) {
+  }
+
   @Override
   public final void preSetUp() throws Exception {
     final Host host = Host.getHost(0);
@@ -222,7 +229,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void createLocator(int dsId, int port, Set<String> localLocatorsList, Set<String> remoteLocatorsList){
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
     props.setProperty(DistributionConfig.DISTRIBUTED_SYSTEM_ID_NAME, ""+dsId);
@@ -245,7 +252,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
 
   public static Integer createFirstLocatorWithDSId(int dsId) {
     stopOldLocator();
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -258,7 +265,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
 
   public static Integer createFirstPeerLocator(int dsId) {
     stopOldLocator();
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -271,7 +278,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
 
   public static Integer createSecondLocator(int dsId, int locatorPort) {
     stopOldLocator();
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -284,7 +291,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
 
   public static Integer createSecondPeerLocator(int dsId, int locatorPort) {
     stopOldLocator();
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -297,7 +304,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
 
   public static Integer createFirstRemoteLocator(int dsId, int remoteLocPort) {
     stopOldLocator();
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -310,7 +317,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void bringBackLocatorOnOldPort(int dsId, int remoteLocPort, int oldPort) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.put(DistributionConfig.LOG_LEVEL_NAME, "fine");
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -324,7 +331,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
 
   public static Integer createFirstRemotePeerLocator(int dsId, int remoteLocPort) {
     stopOldLocator();
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -339,7 +346,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   public static Integer createSecondRemoteLocator(int dsId, int localPort,
       int remoteLocPort) {
     stopOldLocator();
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -354,7 +361,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   public static Integer createSecondRemotePeerLocator(int dsId, int localPort,
       int remoteLocPort) {
     stopOldLocator();
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
@@ -913,7 +920,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void createCacheConserveSockets(Boolean conserveSockets,Integer locPort){
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort + "]");
@@ -923,7 +930,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   protected static void createCache(boolean management, Integer locPort) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     if (management) {
       props.setProperty(DistributionConfig.JMX_MANAGER_NAME, "true");
@@ -938,7 +945,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   protected static void createCacheWithSSL(Integer locPort) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
 
     boolean gatewaySslenabled = true;
     String  gatewaySslprotocols = "any";
@@ -970,7 +977,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void createCache_PDX(Integer locPort){
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort + "]");
@@ -987,7 +994,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void createCache(Integer locPort1, Integer locPort2){
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort1
@@ -997,7 +1004,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void createCacheWithoutLocator(Integer mCastPort){
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, ""+mCastPort);
     InternalDistributedSystem ds = test.getSystem(props);
@@ -1450,7 +1457,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void addListenerOnBucketRegion(String regionName, int numBuckets) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     test.addCacheListenerOnBucketRegion(regionName, numBuckets);
   }
 
@@ -1465,7 +1472,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void addListenerOnQueueBucketRegion(String senderId, int numBuckets) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     test.addCacheListenerOnQueueBucketRegion(senderId, numBuckets);
   }
 
@@ -1494,17 +1501,17 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void addQueueListener(String senderId, boolean isParallel){
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     test.addCacheQueueListener(senderId, isParallel);
   }
 
   public static void addSecondQueueListener(String senderId, boolean isParallel){
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     test.addSecondCacheQueueListener(senderId, isParallel);
   }
 
   public static void addListenerOnRegion(String regionName){
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     test.addCacheListenerOnRegion(regionName);
   }
   private void addCacheListenerOnRegion(String regionName){
@@ -2001,7 +2008,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void createReceiverWithBindAddress(int locPort) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel());
@@ -2032,7 +2039,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
     }
   }
   public static int createReceiverWithSSL(int locPort) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     boolean gatewaySslenabled = true;
     String  gatewaySslprotocols = "any";
     String  gatewaySslciphers = "any";
@@ -2079,7 +2086,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void createReceiverAndServer(int locPort) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort
@@ -2113,7 +2120,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static int createServer(int locPort) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort
@@ -2135,7 +2142,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
 
   public static void createClientWithLocator(int port0,String host,
       String regionName) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
@@ -2169,7 +2176,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static int createReceiver_PDX(int locPort) {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort + "]");
@@ -3722,7 +3729,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
       cache.getDistributedSystem().disconnect();
       cache = null;
     } else {
-      WANTestBase test = new WANTestBase(getTestMethodName());
+      WANTestBase test = new WANTestBase();
       if (test.isConnectedToDS()) {
         test.getSystem().disconnect();
       }
@@ -3735,7 +3742,7 @@ public class WANTestBase extends JUnit4DistributedTestCase{
   }
 
   public static void shutdownLocator() {
-    WANTestBase test = new WANTestBase(getTestMethodName());
+    WANTestBase test = new WANTestBase();
     test.getSystem().disconnect();
   }
 

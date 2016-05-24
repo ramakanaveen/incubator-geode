@@ -82,7 +82,7 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
 
   private static VM managingNode = null;
 
-  private static ManagementTestBase helper = new ManagementTestBase("ClientHealthStatsDUnitTest_Helper");
+  private static ManagementTestBase helper = new ManagementTestBase(){};
   
   private static int numOfCreates = 0;
   private static int numOfUpdates = 0;

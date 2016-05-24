@@ -80,7 +80,7 @@ public class TestSubscriptionsDUnitTest extends JUnit4DistributedTestCase {
 
   public TestSubscriptionsDUnitTest() {
     super();
-    this.helper = new ManagementTestBase();
+    this.helper = new ManagementTestBase(){};
   }
 
   @Override
