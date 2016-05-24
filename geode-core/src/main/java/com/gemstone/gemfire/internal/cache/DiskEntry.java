@@ -1083,10 +1083,10 @@ public interface DiskEntry extends RegionEntry {
               incrementBucketStats(region, 1/*InVM*/, -1/*OnDisk*/, -oldValueLength);
             } else if(oldValue != null && newValue == Token.TOMBSTONE) {
               dr.incNumEntriesInVM(-1L);
-              if(dr.isBackup()) {
-                dr.incNumOverflowBytesOnDisk(-oldValueLength);
-                incrementBucketStats(region, -1/*InVM*/, 0/*OnDisk*/, -oldValueLength);
-              }
+              //if(dr.isBackup()) {
+              //  dr.incNumOverflowBytesOnDisk(-oldValueLength);
+              //  incrementBucketStats(region, -1/*InVM*/, 0/*OnDisk*/, -oldValueLength);
+              //}
             } else if(oldValue == Token.TOMBSTONE && newValue != Token.TOMBSTONE) {
               dr.incNumEntriesInVM(1L);
               incrementBucketStats(region, 1/*InVM*/, 0/*OnDisk*/, 0/*overflowBytesOnDisk*/);
