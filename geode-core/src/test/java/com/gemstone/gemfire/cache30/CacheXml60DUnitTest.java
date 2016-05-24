@@ -182,8 +182,8 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
     testXml(cache);
     {
       c = getCache();
-      assertEquals(low, c.getResourceManager().getEvictionHeapPercentage());
-      assertEquals(high, c.getResourceManager().getCriticalHeapPercentage());
+      assertEquals(low, c.getResourceManager().getEvictionHeapPercentage(),0);
+      assertEquals(high, c.getResourceManager().getCriticalHeapPercentage(),0);
     }
     closeCache();
     
@@ -195,8 +195,8 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
     testXml(cache);
     {
       c = getCache();
-      assertEquals(low, c.getResourceManager().getEvictionHeapPercentage());
-      assertEquals(low + 1, c.getResourceManager().getCriticalHeapPercentage());
+      assertEquals(low, c.getResourceManager().getEvictionHeapPercentage(),0);
+      assertEquals(low + 1, c.getResourceManager().getCriticalHeapPercentage(),0);
     }
     closeCache();
 
@@ -222,8 +222,8 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
     testXml(cache);
     {
       c = getCache();
-      assertEquals(0f, c.getResourceManager().getEvictionHeapPercentage());
-      assertEquals(low, c.getResourceManager().getCriticalHeapPercentage());
+      assertEquals(0f, c.getResourceManager().getEvictionHeapPercentage(),0);
+      assertEquals(low, c.getResourceManager().getCriticalHeapPercentage(),0);
     }
     closeCache();
 
@@ -235,8 +235,8 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
     testXml(cache);
     {
       c = getCache();
-      assertEquals(low, c.getResourceManager().getEvictionHeapPercentage());
-      assertEquals(0f, c.getResourceManager().getCriticalHeapPercentage());
+      assertEquals(low, c.getResourceManager().getEvictionHeapPercentage(),0);
+      assertEquals(0f, c.getResourceManager().getCriticalHeapPercentage(),0);
     }
     closeCache();
 
@@ -247,8 +247,8 @@ public class CacheXml60DUnitTest extends CacheXml58DUnitTest
     cache.setResourceManagerCreation(rmc);
     testXml(cache);
     c = getCache();
-    assertEquals(0f, c.getResourceManager().getEvictionHeapPercentage());
-    assertEquals(0f, c.getResourceManager().getCriticalHeapPercentage());
+    assertEquals(0f, c.getResourceManager().getEvictionHeapPercentage(),0);
+    assertEquals(0f, c.getResourceManager().getCriticalHeapPercentage(),0);
   }
   
   // A bunch of classes for use in testing the serialization schtuff

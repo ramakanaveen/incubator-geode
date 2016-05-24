@@ -1364,7 +1364,7 @@ public class RegionManagementDUnitTest extends ManagementTestBase {
     int initialCapacity = regAttrs.getInitialCapacity();
     assertEquals(initialCapacity, data.getInitialCapacity());
     float loadFactor = regAttrs.getLoadFactor();
-    assertEquals(loadFactor, data.getLoadFactor());
+    assertEquals(loadFactor, data.getLoadFactor(),0);
 
     boolean lockGrantor = regAttrs.isLockGrantor();
     assertEquals(lockGrantor, data.isLockGrantor());

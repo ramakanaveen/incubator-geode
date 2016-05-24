@@ -401,20 +401,20 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
   public void testGettersAndSetters() {
     getSystem(getOffHeapProperties());
     ResourceManager rm = getCache().getResourceManager();
-    assertEquals(0.0f, rm.getCriticalOffHeapPercentage());
-    assertEquals(0.0f, rm.getEvictionOffHeapPercentage());
+    assertEquals(0.0f, rm.getCriticalOffHeapPercentage(),0);
+    assertEquals(0.0f, rm.getEvictionOffHeapPercentage(),0);
     
     rm.setEvictionOffHeapPercentage(50);
     rm.setCriticalOffHeapPercentage(90);
     
     // verify
-    assertEquals(50.0f, rm.getEvictionOffHeapPercentage());
-    assertEquals(90.0f, rm.getCriticalOffHeapPercentage());
+    assertEquals(50.0f, rm.getEvictionOffHeapPercentage(),0);
+    assertEquals(90.0f, rm.getCriticalOffHeapPercentage(),0);
     
     getCache().createRegionFactory(RegionShortcut.REPLICATE_HEAP_LRU).create(getName());
     
-    assertEquals(50.0f, rm.getEvictionOffHeapPercentage());
-    assertEquals(90.0f, rm.getCriticalOffHeapPercentage());
+    assertEquals(50.0f, rm.getEvictionOffHeapPercentage(),0);
+    assertEquals(90.0f, rm.getCriticalOffHeapPercentage(),0);
   }
   
   /**

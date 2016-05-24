@@ -524,7 +524,7 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
               double mean = sv.getSnapshotsAverage();
               double stdDev = sv.getSnapshotsStandardDeviation();
               
-              assertEquals(mostRecent, max);
+              assertEquals(mostRecent, max,0);
 
               double summation = 0;
               double[] rawSnapshots = sv.getRawSnapshots();
@@ -532,13 +532,13 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
                 //log.convertToLogWriter().info("DEBUG " + ri.getName() + " " + statName + " rawSnapshots[" + j + "] = " + rawSnapshots[j]);
                 summation += rawSnapshots[j];
               }
-              assertEquals(mean, summation / sv.getSnapshotsSize());
+              assertEquals(mean, summation / sv.getSnapshotsSize(),0);
               
               combinedUpdateEvents += mostRecent;
             }
           }
         }
-        assertEquals((double)totalUpdateEvents, combinedUpdateEvents);
+        assertEquals((double)totalUpdateEvents, combinedUpdateEvents,0);
       }
     });
     

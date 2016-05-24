@@ -472,7 +472,7 @@ public class ResourceManagerDUnitTest extends JUnit4CacheTestCase {
                 PRLoad load = mbrDetails.getPRLoad();
                 assertNotNull(load);
                 assertEquals((float)localMaxMemory[membersIdx], 
-                             load.getWeight());
+                             load.getWeight(),0);
                 
                 int totalBucketBytes = 0;
                 int primaryCount = 0;
@@ -482,7 +482,7 @@ public class ResourceManagerDUnitTest extends JUnit4CacheTestCase {
                   totalBucketBytes += bucketBytes;
                   
                   // validate against the PRLoad
-                  assertEquals((float)bucketBytes, load.getReadLoad(bid));
+                  assertEquals((float)bucketBytes, load.getReadLoad(bid),0);
                   if (load.getWriteLoad(bid) > 0) { // found a primary
                     primaryCount++;
                   }

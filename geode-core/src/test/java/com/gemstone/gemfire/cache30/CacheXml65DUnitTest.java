@@ -765,9 +765,9 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(0, ra.getPartitionAttributes().getRedundantCopies());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(55.0f,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
     assertEquals(80.0f,
-                 c.getResourceManager().getCriticalHeapPercentage());
+                 c.getResourceManager().getCriticalHeapPercentage(),0);
   }
   @Test
   public void testPARTITION_REDUNDANT_OVERFLOW() throws CacheException {
@@ -784,7 +784,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(1, ra.getPartitionAttributes().getRedundantCopies());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testPARTITION_PERSISTENT_OVERFLOW() throws CacheException {
@@ -804,9 +804,9 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(0, ra.getPartitionAttributes().getRedundantCopies());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(80.0f,
-                 c.getResourceManager().getCriticalHeapPercentage());
+                 c.getResourceManager().getCriticalHeapPercentage(),0);
     assertEquals(75.0f,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testPARTITION_REDUNDANT_PERSISTENT_OVERFLOW() throws CacheException {
@@ -826,7 +826,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(1, ra.getPartitionAttributes().getRedundantCopies());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(0.0f,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testPARTITION_HEAP_LRU() throws CacheException {
@@ -843,7 +843,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(0, ra.getPartitionAttributes().getRedundantCopies());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testPARTITION_REDUNDANT_HEAP_LRU() throws CacheException {
@@ -860,7 +860,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(1, ra.getPartitionAttributes().getRedundantCopies());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
 
   @Test
@@ -903,7 +903,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.DISTRIBUTED_ACK, ra.getScope());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testREPLICATE_PERSISTENT_OVERFLOW() throws CacheException {
@@ -919,7 +919,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.DISTRIBUTED_ACK, ra.getScope());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testREPLICATE_HEAP_LRU() throws CacheException, IOException
@@ -938,7 +938,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.DISTRIBUTED_ACK, ra.getScope());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testLOCAL() throws CacheException {
@@ -980,7 +980,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.LOCAL, ra.getScope());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testLOCAL_OVERFLOW() throws CacheException {
@@ -996,7 +996,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.LOCAL, ra.getScope());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testLOCAL_PERSISTENT_OVERFLOW() throws CacheException {
@@ -1012,7 +1012,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(Scope.LOCAL, ra.getScope());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
 
   @Test
@@ -1105,7 +1105,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals("DEFAULT", ra.getPoolName());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(), 0);
   }
   @Test
   public void testCACHING_PROXY_OVERFLOW() throws CacheException {
@@ -1123,7 +1123,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals("DEFAULT", ra.getPoolName());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testClientLOCAL() throws CacheException {
@@ -1156,7 +1156,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(null, ra.getPoolName());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testClientLOCAL_OVERFLOW() throws CacheException {
@@ -1174,7 +1174,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(null, ra.getPoolName());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
   @Test
   public void testClientLOCAL_PERSISTENT() throws CacheException {
@@ -1207,7 +1207,7 @@ public class CacheXml65DUnitTest extends CacheXml61DUnitTest {
     assertEquals(null, ra.getPoolName());
     assertEquals(EvictionAttributes.createLRUHeapAttributes(null, EvictionAction.OVERFLOW_TO_DISK), ra.getEvictionAttributes());
     assertEquals(LocalRegion.DEFAULT_HEAPLRU_EVICTION_HEAP_PERCENTAGE,
-                 c.getResourceManager().getEvictionHeapPercentage());
+                 c.getResourceManager().getEvictionHeapPercentage(),0);
   }
 
   // @todo add some tests to make sure the new smarter region-attribut defaults work from xml

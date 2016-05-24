@@ -291,20 +291,20 @@ public class MemoryThresholdsDUnitTest extends ClientServerTestCase {
   @Test
   public void testBug45513() {
     ResourceManager rm = getCache().getResourceManager();
-    assertEquals(0.0f, rm.getCriticalHeapPercentage());
-    assertEquals(0.0f, rm.getEvictionHeapPercentage());
+    assertEquals(0.0f, rm.getCriticalHeapPercentage(),0);
+    assertEquals(0.0f, rm.getEvictionHeapPercentage(),0);
     
     rm.setEvictionHeapPercentage(50);
     rm.setCriticalHeapPercentage(90);
     
     // verify
-    assertEquals(50.0f, rm.getEvictionHeapPercentage());
-    assertEquals(90.0f, rm.getCriticalHeapPercentage());
+    assertEquals(50.0f, rm.getEvictionHeapPercentage(),0);
+    assertEquals(90.0f, rm.getCriticalHeapPercentage(),0);
     
     getCache().createRegionFactory(RegionShortcut.REPLICATE_HEAP_LRU).create(getName());
     
-    assertEquals(50.0f, rm.getEvictionHeapPercentage());
-    assertEquals(90.0f, rm.getCriticalHeapPercentage());
+    assertEquals(50.0f, rm.getEvictionHeapPercentage(),0);
+    assertEquals(90.0f, rm.getCriticalHeapPercentage(),0);
   }
 
   /**

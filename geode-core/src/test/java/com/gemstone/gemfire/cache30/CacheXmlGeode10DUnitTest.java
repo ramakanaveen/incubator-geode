@@ -182,8 +182,8 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
       testXml(cache);
       {
         c = getCache();
-        assertEquals(low, c.getResourceManager().getEvictionOffHeapPercentage());
-        assertEquals(high, c.getResourceManager().getCriticalOffHeapPercentage());
+        assertEquals(low, c.getResourceManager().getEvictionOffHeapPercentage(),0);
+        assertEquals(high, c.getResourceManager().getCriticalOffHeapPercentage(),0);
       }
       closeCache();
       
@@ -195,8 +195,8 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
       testXml(cache);
       {
         c = getCache();
-        assertEquals(low, c.getResourceManager().getEvictionOffHeapPercentage());
-        assertEquals(low + 1, c.getResourceManager().getCriticalOffHeapPercentage());
+        assertEquals(low, c.getResourceManager().getEvictionOffHeapPercentage(),0);
+        assertEquals(low + 1, c.getResourceManager().getCriticalOffHeapPercentage(),0);
       }
       closeCache();
   
@@ -222,8 +222,8 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
       testXml(cache);
       {
         c = getCache();
-        assertEquals(0f, c.getResourceManager().getEvictionOffHeapPercentage());
-        assertEquals(low, c.getResourceManager().getCriticalOffHeapPercentage());
+        assertEquals(0f, c.getResourceManager().getEvictionOffHeapPercentage(),0);
+        assertEquals(low, c.getResourceManager().getCriticalOffHeapPercentage(),0);
       }
       closeCache();
   
@@ -235,8 +235,8 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
       testXml(cache);
       {
         c = getCache();
-        assertEquals(low, c.getResourceManager().getEvictionOffHeapPercentage());
-        assertEquals(0f, c.getResourceManager().getCriticalOffHeapPercentage());
+        assertEquals(low, c.getResourceManager().getEvictionOffHeapPercentage(),0);
+        assertEquals(0f, c.getResourceManager().getCriticalOffHeapPercentage(),0);
       }
       closeCache();
   
@@ -247,8 +247,8 @@ public class CacheXmlGeode10DUnitTest extends CacheXml81DUnitTest {
       cache.setResourceManagerCreation(rmc);
       testXml(cache);
       c = getCache();
-      assertEquals(0f, c.getResourceManager().getEvictionOffHeapPercentage());
-      assertEquals(0f, c.getResourceManager().getCriticalOffHeapPercentage());
+      assertEquals(0f, c.getResourceManager().getEvictionOffHeapPercentage(),0);
+      assertEquals(0f, c.getResourceManager().getCriticalOffHeapPercentage(),0);
     } finally {
       System.clearProperty("gemfire."+DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME);
     }

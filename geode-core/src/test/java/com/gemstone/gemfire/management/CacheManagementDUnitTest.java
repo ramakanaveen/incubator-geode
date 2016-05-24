@@ -542,7 +542,7 @@ public class CacheManagementDUnitTest extends ManagementTestBase {
     assertEquals(data.getMcastByteAllowance(), config.getMcastFlowControl()
         .getByteAllowance());
     assertEquals(data.getMcastRechargeThreshold(), config.getMcastFlowControl()
-        .getRechargeThreshold());
+        .getRechargeThreshold(), 0);
     assertEquals(data.getMcastRechargeBlockMs(), config.getMcastFlowControl()
         .getRechargeBlockMs());
     assertEquals(data.getUdpFragmentSize(), config.getUdpFragmentSize());
