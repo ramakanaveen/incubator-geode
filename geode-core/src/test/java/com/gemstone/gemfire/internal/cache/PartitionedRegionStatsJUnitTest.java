@@ -332,11 +332,11 @@ public class PartitionedRegionStatsJUnitTest
 
     
     int numEntries = 0;
-    System.out.println(">>>>> put(0)");
+    
     pr.put(0, 0);
     numEntries++;
     pr.getDiskStore().flush();
-    System.out.println(">>>>>> Flush");
+    
     long singleEntryMemSize = stats.getLong("dataStoreBytesInUse");
     assertEquals(1 , stats.getInt("dataStoreEntryCount"));
     assertEquals(0 , diskStats.getNumOverflowBytesOnDisk());
@@ -358,17 +358,6 @@ public class PartitionedRegionStatsJUnitTest
     assertEquals(diskStats.getNumOverflowBytesOnDisk(), getDiskBytes(pr));
     
     assertTrue(entryOverflowSize > 0);
-    System.out.println("Total entries in VM:::::::");
-    countEntriesInMem(pr);
-    System.out.println(">>>>>>>>>>> GET(0)");
-    pr.get(1);
-    assertEquals(singleEntryMemSize, stats.getLong("dataStoreBytesInUse"));
-    assertEquals(2 , stats.getInt("dataStoreEntryCount"));
-    assertEquals(1 , diskStats.getNumEntriesInVM());
-    assertEquals(1 , diskStats.getNumOverflowOnDisk());
-    assertEquals(stats.getLong("dataStoreBytesInUse"), getMemBytes(pr));
-    assertEquals(diskStats.getNumOverflowBytesOnDisk(), getDiskBytes(pr));
-    
     
     for(; numEntries < pr.getTotalNumberOfBuckets() * 5; numEntries++) {
       pr.put(numEntries, numEntries);
@@ -397,14 +386,13 @@ public class PartitionedRegionStatsJUnitTest
     assertEquals((numEntries -1) , diskStats.getNumOverflowOnDisk());
     assertEquals(stats.getLong("dataStoreBytesInUse"), getMemBytes(pr));
     assertEquals(diskStats.getNumOverflowBytesOnDisk(), getDiskBytes(pr));
-
+    
     //Get some entries to trigger evictions
     for(int i = 0; i < numEntries / 2; i++) {
-      countEntriesInMem(pr);
-      System.out.println(">>>>>>>>>> Get(" + i + ") <<<<<<<<<<<<<<<<<<<<<<<<");
       pr.get(i);
     }
     pr.getDiskStore().flush();
+    
     assertEquals(singleEntryMemSize, stats.getLong("dataStoreBytesInUse"));
     assertEquals(numEntries , stats.getInt("dataStoreEntryCount"));
     assertEquals((numEntries -1) * entryOverflowSize, diskStats.getNumOverflowBytesOnDisk());
@@ -440,34 +428,16 @@ public class PartitionedRegionStatsJUnitTest
     assertEquals((numEntries -1) , diskStats.getNumOverflowOnDisk());
     assertEquals(stats.getLong("dataStoreBytesInUse"), getMemBytes(pr));
     assertEquals(diskStats.getNumOverflowBytesOnDisk(), getDiskBytes(pr));
-    int entriesInMem = 1;
-
+    
    //Put get put - seems to leave entry in memory?
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());
-    System.out.println(">>>>>>>>>>> PUT(update): 10");
     pr.put(10, 11);
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());    
-    System.out.println(">>>>>>>>>>> DELETE: 10");
-    pr.remove(10);
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());
-    System.out.println(">>>>>>>>>>> PUT(update): 10");
+    pr.get(10);
     pr.put(10, 12);
     
     pr.getDiskStore().flush();
     
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());
+    int entriesInMem = 1;
+    
     assertEquals(singleEntryMemSize * entriesInMem, stats.getLong("dataStoreBytesInUse"));
     assertEquals(numEntries , stats.getInt("dataStoreEntryCount"));
     assertEquals((numEntries - entriesInMem) * entryOverflowSize, diskStats.getNumOverflowBytesOnDisk());
@@ -476,58 +446,21 @@ public class PartitionedRegionStatsJUnitTest
     assertEquals(stats.getLong("dataStoreBytesInUse"), getMemBytes(pr));
     assertEquals(diskStats.getNumOverflowBytesOnDisk(), getDiskBytes(pr));
     
-    
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());    
-    System.out.println(">>>>>>>>>>> DELETE: 10");
-    pr.remove(10);
-    numEntries--;
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());
-    
-    pr.getDiskStore().flush();
-    
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());
-    assertEquals(singleEntryMemSize * entriesInMem, stats.getLong("dataStoreBytesInUse"));
-    assertEquals(numEntries , stats.getInt("dataStoreEntryCount"));
-    assertEquals((numEntries - entriesInMem) * entryOverflowSize, diskStats.getNumOverflowBytesOnDisk());
-    assertEquals(entriesInMem , diskStats.getNumEntriesInVM());
-    assertEquals((numEntries - entriesInMem) , diskStats.getNumOverflowOnDisk());
-    assertEquals(stats.getLong("dataStoreBytesInUse"), getMemBytes(pr));
-    assertEquals(diskStats.getNumOverflowBytesOnDisk(), getDiskBytes(pr));
     //Do some random operations
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());
+
     System.out.println("----Doing random operations");
     Random rand = new Random(12345L);
     for(int i =0; i < 1000; i++) {
-      System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-          ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-          ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-          ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk() +
-          ", getDiskBytesFromBucketStats - " + getDiskBytes(pr));
       int key = rand.nextInt(numEntries);
       int op = rand.nextInt(3);
       switch(op) {
         case 0:
-          System.out.println(">>>>>>>>>>> PUT(update): " + key);
           pr.put(key, rand.nextInt());
           break;
         case 1:
-          System.out.println(">>>>>>>>>>> GET: " + key);
           pr.get(key);
           break;
         case 2:
-          System.out.println(">>>>>>>>>>> REMOVE: " + key);
           pr.remove(key);
           break;
       }
@@ -536,11 +469,7 @@ public class PartitionedRegionStatsJUnitTest
     pr.getDiskStore().flush();
     
     System.out.println("----Done with random operations");
-    System.out.println(">>>>>>> Total Entries: pr.entryCount() - " + pr.entryCount() + ", dataStoreEntryCount - " + stats.getInt("dataStoreEntryCount") +
-        ", getNumEntriesInVM - " + diskStats.getNumEntriesInVM() + 
-        ", getNumOverflowOnDisk:" + diskStats.getNumOverflowOnDisk() + 
-        ", getNumOverflowBytesOnDisk - " + diskStats.getNumOverflowBytesOnDisk());
-    
+
     numEntries = pr.entryCount();
         
     assertEquals(singleEntryMemSize * entriesInMem, stats.getLong("dataStoreBytesInUse"));
@@ -552,23 +481,8 @@ public class PartitionedRegionStatsJUnitTest
     assertEquals(diskStats.getNumOverflowBytesOnDisk(), getDiskBytes(pr));
   }
 
-  private int countEntriesInMem(PartitionedRegion pr) {
-    int entriesInMem = 0;
-    for(BucketRegion br : pr.getDataStore().getAllLocalBucketRegions()) {
-      for(RegionEntry entry : br.entries.regionEntries()) {
-        if(entry._getValue() != null && !Token.isRemoved(entry._getValue())) {
-          System.out.println("Still in memory " + entry.getKey());
-          entriesInMem++;
-        }
-      }
-    }
-    
-    System.out.println("EntriesInMem = " + entriesInMem);
-    return entriesInMem;
-  }
-
   private Object getDiskBytes(PartitionedRegion pr) {
-Set<BucketRegion> brs = pr.getDataStore().getAllLocalBucketRegions();
+    Set<BucketRegion> brs = pr.getDataStore().getAllLocalBucketRegions();
     
     long bytes = 0;
     for(Iterator<BucketRegion> itr = brs.iterator(); itr.hasNext(); ) {
