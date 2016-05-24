@@ -22,9 +22,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.gemstone.gemfire.CancelException;
 import com.gemstone.gemfire.LogWriter;
 import com.gemstone.gemfire.SystemFailure;
@@ -42,6 +39,11 @@ import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.RMIException;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * This class tests the response of GemFire to various
@@ -49,6 +51,7 @@ import com.gemstone.gemfire.test.dunit.VM;
  * 
  * @since 5.1
  */
+@Category(DistributedTest.class)
 public class SystemFailureDUnitTest extends DistributedCacheTestCase {
   
   static final String REGION_NAME = "SystemFailureDUnitTest";
