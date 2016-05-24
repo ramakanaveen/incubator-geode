@@ -48,8 +48,7 @@ public class TestCQDUnitTest extends ManagementTestBase {
   private static final String queryName = "testClientWithFeederAndCQ_0";
   private static final String queryName2 = "testClientWithFeederAndCQ_3";
 
-  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest(
-      "CqDataDUnitTest");
+  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest();
 
   public TestCQDUnitTest() {
     super();

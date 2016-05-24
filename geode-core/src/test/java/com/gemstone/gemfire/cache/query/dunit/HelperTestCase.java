@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -51,10 +60,11 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public class HelperTestCase extends CacheTestCase {
+@Category(DistributedTest.class)
+public class HelperTestCase extends JUnit4CacheTestCase {
 
-  public HelperTestCase(String name) {
-    super(name);
+  public HelperTestCase() {
+    super();
   }
   
   protected void createPartitionRegion(VM vm, final String regionName, final Class valueConstraint) {

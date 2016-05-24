@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -72,7 +81,8 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 
  * @since 5.2
  */ 
-public class DurableClientTestCase extends DistributedTestCase {
+@Category(DistributedTest.class)
+public class DurableClientTestCase extends JUnit4DistributedTestCase {
 
   protected VM server1VM;
   protected VM server2VM;
@@ -82,8 +92,8 @@ public class DurableClientTestCase extends DistributedTestCase {
   
   protected static volatile boolean isPrimaryRecovered = false;
 
-  public DurableClientTestCase(String name) {
-    super(name);
+  public DurableClientTestCase() {
+    super();
   }
 
   @Override
@@ -119,6 +129,7 @@ public class DurableClientTestCase extends DistributedTestCase {
   /**
    * Test that starting a durable client is correctly processed by the server.
    */
+  @Test
   public void testSimpleDurableClient() {    
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -170,6 +181,7 @@ public class DurableClientTestCase extends DistributedTestCase {
    * In this test we will set gemfire.SPECIAL_DURABLE property to true and will
    * see durableID appended by poolname or not
    */
+  @Test
   public void testSimpleDurableClient2() {
     final Properties jp = new Properties();
     jp.setProperty("gemfire.SPECIAL_DURABLE", "true");
@@ -303,6 +315,7 @@ public class DurableClientTestCase extends DistributedTestCase {
    * Test that starting, stopping then restarting a durable client is correctly
    * processed by the server.
    */
+  @Test
   public void testStartStopStartDurableClient() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -384,6 +397,7 @@ public class DurableClientTestCase extends DistributedTestCase {
    * processed by the server.
    * This is a test of bug 39630
    */
+  @Test
   public void test39630() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -471,6 +485,7 @@ public class DurableClientTestCase extends DistributedTestCase {
    * Test that disconnecting a durable client for longer than the timeout
    * period is correctly processed by the server.
    */
+  @Test
   public void testStartStopTimeoutDurableClient() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -552,6 +567,7 @@ public class DurableClientTestCase extends DistributedTestCase {
   /**
    * Test that a durable client correctly receives updates after it reconnects.
    */
+  @Test
   public void testDurableClientPrimaryUpdate() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -720,6 +736,7 @@ public class DurableClientTestCase extends DistributedTestCase {
   /**
    * Test that a durable client correctly receives updates after it reconnects.
    */
+  @Test
   public void testStartStopStartDurableClientUpdate() {
     // Start a server
     int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
@@ -933,6 +950,7 @@ public class DurableClientTestCase extends DistributedTestCase {
    * Test whether a durable client reconnects properly to a server that is
    * stopped and restarted.
    */
+  @Test
   public void testDurableClientConnectServerStopStart() {
     // Start a server
     // Start server 1
@@ -1473,7 +1491,7 @@ public class DurableClientTestCase extends DistributedTestCase {
         try {
           if (spot.equals("CLIENT_PRE_RECONNECT")) {
             if (!reconnectLatch.await(60, TimeUnit.SECONDS)) {
-              throw new TestException("reonnect latch was never released.");
+              fail("reonnect latch was never released.");
             }
           }
           else if (spot.equals("DRAIN_IN_PROGRESS_BEFORE_DRAIN_LOCK_CHECK")) {
@@ -1481,7 +1499,7 @@ public class DurableClientTestCase extends DistributedTestCase {
             reconnectLatch.countDown();
             //we wait until the client is rejected
             if (!continueDrain.await(120, TimeUnit.SECONDS)) {
-              throw new TestException("Latch was never released.");
+              fail("Latch was never released.");
             }
           }
           else if (spot.equals("CLIENT_REJECTED_DUE_TO_CQ_BEING_DRAINED")) {
@@ -1522,7 +1540,7 @@ public class DurableClientTestCase extends DistributedTestCase {
             unblockClient.countDown();
             //Wait until client is reconnecting
             if (!unblockDrain.await(120, TimeUnit.SECONDS)) {
-              throw new TestException("client never got far enough reconnected to unlatch lock.");
+              fail("client never got far enough reconnected to unlatch lock.");
             }
           }
           catch (InterruptedException e) {
@@ -1537,7 +1555,7 @@ public class DurableClientTestCase extends DistributedTestCase {
           //wait until the server has finished attempting to close the cq
           try {
             if (!finish.await(30, TimeUnit.SECONDS) ) {
-              throw new TestException("Test did not complete, server never finished attempting to close cq");
+              fail("Test did not complete, server never finished attempting to close cq");
             }
           }
           catch (InterruptedException e) {

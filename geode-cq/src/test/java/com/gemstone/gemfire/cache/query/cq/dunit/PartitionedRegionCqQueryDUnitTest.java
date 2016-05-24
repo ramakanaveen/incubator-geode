@@ -82,7 +82,7 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
   
   static public final String KEY = "key-";
   
-  protected final CqQueryDUnitTest cqHelper = new CqQueryDUnitTest("HelperPartitonedRegionCqTest");
+  protected final CqQueryDUnitTest cqHelper = new CqQueryDUnitTest();
   
   public final String[] cqs = new String [] {
       //0 - Test for ">" 

@@ -1021,7 +1021,7 @@ public class QueryMonitorDUnitTest extends JUnit4CacheTestCase {
   }
   
   
-  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest("CqDataDUnitTest");
+  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest();
 
   /**
    * The following CQ test is added to make sure TEST_MAX_QUERY_EXECUTION_TIME is reset

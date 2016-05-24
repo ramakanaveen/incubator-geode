@@ -76,8 +76,7 @@ public class TestServerDUnitTest extends ManagementTestBase {
    
   }
 
-  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest(
-      "CqDataDUnitTest");
+  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest();
 
   @Test
   public void testNumOfServersDUnitTest() throws Exception {

@@ -68,12 +68,11 @@ public class CacheServerManagementDUnitTest extends LocatorTestBase {
 
   private static MBeanServer mbeanServer = MBeanJMXAdapter.mbeanServer;
 
-  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest(
-      "CqDataDUnitTest");
+  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest();
 
   public CacheServerManagementDUnitTest() {
     super();
-    this.helper = new ManagementTestBase(name);
+    this.helper = new ManagementTestBase() {{}};
 
   }
 

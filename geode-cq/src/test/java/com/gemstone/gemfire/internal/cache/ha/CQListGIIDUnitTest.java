@@ -72,9 +72,6 @@ import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 /**
  *
  *

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -56,7 +65,7 @@ import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-public abstract class PdxQueryCQTestBase extends CacheTestCase {
+public abstract class PdxQueryCQTestBase extends JUnit4CacheTestCase {
 
   /** The port on which the bridge server was started in this VM */
   private static int bridgeServerPort;
@@ -489,8 +498,8 @@ public abstract class PdxQueryCQTestBase extends CacheTestCase {
         bridgeServerPort = bridge.getPort();
       }
 
-  public PdxQueryCQTestBase(String name) {
-    super(name);
+  public PdxQueryCQTestBase() {
+    super();
   }
 
 }

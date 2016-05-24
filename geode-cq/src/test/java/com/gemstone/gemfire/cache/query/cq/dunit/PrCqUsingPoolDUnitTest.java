@@ -81,9 +81,9 @@ public class PrCqUsingPoolDUnitTest extends JUnit4CacheTestCase {
   
   static public final String KEY = "key-";
   
-  private final CqQueryUsingPoolDUnitTest cqHelper = new CqQueryUsingPoolDUnitTest("HelperPartitonedRegionCqTest");
+  private final CqQueryUsingPoolDUnitTest cqHelper = new CqQueryUsingPoolDUnitTest();
   
-  private final CqStatsDUnitTest cqStatsHelper = new CqStatsDUnitTest("HelperPrCqUsingPool");
+  private final CqStatsDUnitTest cqStatsHelper = new CqStatsDUnitTest();
 
   public final String[] cqs = new String [] {
       //0 - Test for ">" 

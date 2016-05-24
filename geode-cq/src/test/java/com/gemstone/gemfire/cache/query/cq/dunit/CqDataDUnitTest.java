@@ -67,7 +67,7 @@ import com.gemstone.gemfire.test.dunit.Wait;
 @Category(DistributedTest.class)
 public class CqDataDUnitTest extends JUnit4CacheTestCase {
 
-  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest("CqDataDUnitTest");
+  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest();
   
   public CqDataDUnitTest() {
     super();

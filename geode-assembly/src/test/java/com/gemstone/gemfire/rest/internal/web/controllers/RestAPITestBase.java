@@ -113,7 +113,7 @@ public class RestAPITestBase extends JUnit4DistributedTestCase {
   }
 
   public String createCacheWithGroups(final String hostName, final String groups) {
-    RestAPITestBase test = new RestAPITestBase(getTestMethodName());
+    RestAPITestBase test = new RestAPITestBase();
 
     final int servicePort = AvailablePortHelper.getRandomAvailableTCPPort();
 

@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -72,12 +81,13 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * This includes the test with different data activities.
  *
  */
-public class CqDataUsingPoolDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class CqDataUsingPoolDUnitTest extends JUnit4CacheTestCase {
 
-  protected CqQueryUsingPoolDUnitTest cqDUnitTest = new CqQueryUsingPoolDUnitTest("CqDataUsingPoolDUnitTest");
+  protected CqQueryUsingPoolDUnitTest cqDUnitTest = new CqQueryUsingPoolDUnitTest();
   
-  public CqDataUsingPoolDUnitTest(String name) {
-    super(name);
+  public CqDataUsingPoolDUnitTest() {
+    super();
   }
 
   @Override
@@ -104,6 +114,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testClientWithFeederAndCQ() throws Exception
   {
     final Host host = Host.getHost(0);
@@ -149,6 +160,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * Test for CQ Fail over/HA with redundancy level set.
    * @throws Exception
    */
+  @Test
   public void testCQHAWithState() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -270,6 +282,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testCQWithDestroysAndInvalidates() throws Exception
   {
     final Host host = Host.getHost(0);
@@ -345,6 +358,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * bug 37295.
    * 
    */
+  @Test
   public void testCQWithMultipleClients() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -421,6 +435,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * Test for CQ when region is populated with net load.
    * @throws Exception
    */
+  @Test
   public void testCQWithLoad() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -475,6 +490,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * Test for CQ when entries are evicted from region.
    * @throws Exception
    */
+  @Test
   public void testCQWithEviction() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -587,6 +603,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * Test for CQ with establishCallBackConnection.
    * @throws Exception
    */
+  @Test
   public void testCQWithEstablishCallBackConnection() throws Exception {
     final Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -637,6 +654,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * Region invalidate triggers cqEvent with query op region invalidate.
    * @throws Exception
    */
+  @Test
   public void testRegionEvents() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -720,6 +738,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
    * thus making the query data and region data inconsistent.
    * @throws Exception
    */
+  @Test
   public void testEventsDuringQueryExecution() throws Exception {
     
     final Host host = Host.getHost(0);
@@ -854,6 +873,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
 
   }
 
+  @Test
   public void testCqStatInitializationTimingIssue() {
     disconnectAllFromDS();
 
@@ -929,6 +949,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
     server.invoke(() -> CacheServerTestUtil.closeCache());
   }
   
+  @Test
   public void testGetDurableCQsFromPoolOnly() throws Exception {
     final String regionName = "regionA";
     final Host host = Host.getHost(0);
@@ -1070,6 +1091,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
     cqDUnitTest.closeServer(server);
   }
   
+  @Test
   public void testGetDurableCQsFromServerWithEmptyList() throws Exception {
     final Host host = Host.getHost(0);
     VM server = host.getVM(0);
@@ -1111,6 +1133,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
     cqDUnitTest.closeServer(server);
   }
   
+  @Test
   public void testGetDurableCqsFromServer() {
     disconnectAllFromDS();
 
@@ -1173,6 +1196,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
     server.invoke(() -> CacheServerTestUtil.closeCache());
   }
   
+  @Test
   public void testGetDurableCqsFromServerCycleClients() {
     disconnectAllFromDS();
 
@@ -1237,6 +1261,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
     server.invoke(() -> CacheServerTestUtil.closeCache());
   }
   
+  @Test
   public void testGetDurableCqsFromServerCycleClientsAndMoreCqs() {
     final String regionName = "testGetAllDurableCqsFromServerCycleClients";
     final Host host = Host.getHost(0);
@@ -1531,7 +1556,7 @@ public class CqDataUsingPoolDUnitTest extends CacheTestCase {
             try {
               cache.getLogger().fine("CqQueryTestHook: Going to wait on latch until ready is called.");
               if (!latch.await(10, TimeUnit.SECONDS)) {
-                throw new TestException("query was never unlatched");
+                fail("query was never unlatched");
               }
             } catch (Exception e) {
               e.printStackTrace();

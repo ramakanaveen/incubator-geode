@@ -63,7 +63,7 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 @Category(DistributedTest.class)
 public class CqPerfDUnitTest extends JUnit4CacheTestCase {
 
-  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest("CqPerfDUnitTest");
+  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest();
   
   public CqPerfDUnitTest() {
     super();

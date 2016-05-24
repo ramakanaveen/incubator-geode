@@ -80,8 +80,7 @@ public class TestClientsDUnitTest extends ManagementTestBase {
     return Integer.valueOf(bean.getNumClients());
   }
 
-  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest(
-      "CqDataDUnitTest");
+  protected CqQueryDUnitTest cqDUnitTest = new CqQueryDUnitTest();
 
   @Test
   public void testNumOfClients() throws Exception {

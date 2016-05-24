@@ -158,7 +158,7 @@ public class RestAPIsAndInterOpsDUnitTest extends LocatorTestBase {
 
   public RestAPIsAndInterOpsDUnitTest() {
     super();
-    this.helper = new ManagementTestBase(name);
+    this.helper = new ManagementTestBase() {{}};
 
   }
 
