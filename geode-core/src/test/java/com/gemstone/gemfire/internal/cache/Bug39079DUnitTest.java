@@ -70,7 +70,6 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
 
   static Properties props = new Properties();
   
-
   private VM vm0 = null;
 
   private static VM vm1 = null;
@@ -85,17 +84,12 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
 
   private static final int maxEntries = 10000;
 
-  /**
-   * Constructor
-   * 
-   * @param name
-   */
   public Bug39079DUnitTest() {
     super();
-    File file1 = new File(name + "1");
+    File file1 = new File(getTestMethodName() + "1");
     file1.mkdir();
     file1.deleteOnExit();
-    File file2 = new File(name + "2");
+    File file2 = new File(getTestMethodName() + "2");
     file2.mkdir();
     file2.deleteOnExit();
     dirs = new File[2];

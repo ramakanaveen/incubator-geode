@@ -66,7 +66,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    */
   @Test
   public void testCreateAsyncEventQueueWithNullListener() {
-    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
+    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     InternalDistributedSystem ds = test.getSystem(props);

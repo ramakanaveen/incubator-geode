@@ -25,18 +25,11 @@ import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
 import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- * 
- */
 @Category(DistributedTest.class)
 public class RemoteTransactionCCEDUnitTest extends RemoteTransactionDUnitTest {
 
   private static final long serialVersionUID = 5960292521068781262L;
 
-  public RemoteTransactionCCEDUnitTest() {
-    super();
-  }
-  
   @Override
   protected boolean getConcurrencyChecksEnabled() {
     return true;

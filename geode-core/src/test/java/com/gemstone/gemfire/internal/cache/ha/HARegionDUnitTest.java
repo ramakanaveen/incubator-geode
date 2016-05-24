@@ -234,7 +234,7 @@ public class HARegionDUnitTest extends JUnit4DistributedTestCase
 
   public static void createRegion() throws Exception
   {
-    HARegionDUnitTest test = new HARegionDUnitTest(REGION_NAME);
+    HARegionDUnitTest test = new HARegionDUnitTest();
     cache = test.createCache();
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -254,7 +254,7 @@ public class HARegionDUnitTest extends JUnit4DistributedTestCase
 
   public static void createRegionQueue() throws Exception
   {
-    HARegionDUnitTest test = new HARegionDUnitTest(REGION_NAME);
+    HARegionDUnitTest test = new HARegionDUnitTest();
     cache = test.createCache();
     /*AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);

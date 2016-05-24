@@ -71,7 +71,6 @@ public class DistributedAckOverflowRegionCCEDUnitTest extends
   }
 
   @Override
-  @Test
   @Ignore
   @Test
   public void testClearWithConcurrentEvents() throws Exception {
@@ -81,7 +80,6 @@ public class DistributedAckOverflowRegionCCEDUnitTest extends
   }
 
   @Override
-  @Test
   @Ignore
   @Test
   public void testClearWithConcurrentEventsAsync() throws Exception {

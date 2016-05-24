@@ -74,20 +74,11 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
-/**
- *
- */
 @Category(DistributedTest.class)
 public class BackupDUnitTest extends PersistentPartitionedRegionTestBase {
 
   private static final long  MAX_WAIT = 30 * 1000;
 
-
-
-  public BackupDUnitTest() {
-    super();
-  }
-  
   @Override
   public final void preTearDownCacheTestCase() throws Exception {
     StringBuilder failures = new StringBuilder();

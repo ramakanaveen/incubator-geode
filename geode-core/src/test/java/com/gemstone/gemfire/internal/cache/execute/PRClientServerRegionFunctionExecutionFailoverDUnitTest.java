@@ -325,18 +325,18 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     startLocatorInVM(portLocator);
     try {
 
-    Integer port1 = (Integer)server1.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.createServerWithLocator( locator, false,
+    Integer port1 = (Integer)server1.invoke(() -> createServerWithLocator( locator, false,
             commonAttributes ));
 
-    Integer port2 = (Integer)server2.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.createServerWithLocator( locator, false,
+    Integer port2 = (Integer)server2.invoke(() -> createServerWithLocator( locator, false,
             commonAttributes ));
 
-    server4.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.createClientWithLocator( hostLocator, portLocator ));
+    server4.invoke(() -> createClientWithLocator( hostLocator, portLocator ));
     server4.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.putIntoRegion());
 
     server4.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.fetchMetaData());
     
-    Integer port3 = (Integer)server3.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.createServerWithLocator( locator, false,
+    Integer port3 = (Integer)server3.invoke(() -> createServerWithLocator( locator, false,
             commonAttributes ));
 
     Object result = server4.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.executeFunction());
@@ -370,15 +370,15 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     startLocatorInVM(portLocator);
     try {
 
-    Integer port1 = (Integer)server1.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.createServerWithLocator( locator, false,
+    Integer port1 = (Integer)server1.invoke(() -> createServerWithLocator( locator, false,
             commonAttributes ));
 
-    server4.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.createClientWithLocator( hostLocator, portLocator ));
+    server4.invoke(() -> createClientWithLocator( hostLocator, portLocator ));
     server4.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.putIntoRegion());
 
     server4.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.fetchMetaData());
     
-    Integer port2 = (Integer)server2.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.createServerWithLocator( locator, false,
+    Integer port2 = (Integer)server2.invoke(() -> createServerWithLocator( locator, false,
             commonAttributes ));
 
     Object result = server4.invoke(() -> PRClientServerRegionFunctionExecutionFailoverDUnitTest.executeFunction());
@@ -414,13 +414,11 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     locator.stop();
   }
   
-  public static int createServerWithLocator(String locator, boolean isAccessor, ArrayList commonAttrs) {
-    CacheTestCase test = new PRClientServerRegionFunctionExecutionFailoverDUnitTest(
-    "PRClientServerRegionFunctionExecutionFailoverDUnitTest");
+  public int createServerWithLocator(String locator, boolean isAccessor, ArrayList commonAttrs) {
     Properties props = new Properties();
     props = new Properties();
     props.setProperty("locators", locator);
-    DistributedSystem ds = test.getSystem(props);
+    DistributedSystem ds = getSystem(props);
     cache = new CacheFactory(props).create(ds);
     
     CacheServer server = cache.addCacheServer();
@@ -450,14 +448,12 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     return port;
   }
   
-  public static void createClientWithLocator(String host, int port0) {
+  public void createClientWithLocator(String host, int port0) {
     Properties props = new Properties();
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PRClientServerRegionFunctionExecutionFailoverDUnitTest(
-        "PRClientServerRegionFunctionExecutionFailoverDUnitTest");
-    DistributedSystem ds = test.getSystem(props);
+    DistributedSystem ds = getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
     CacheServerTestUtil.disableShufflingOfEndpoints();

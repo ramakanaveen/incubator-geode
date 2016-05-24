@@ -53,10 +53,6 @@ public class PersistPRKRFDUnitTest extends PersistentPartitionedRegionTestBase {
   private static final int MAX_WAIT = 30 * 1000;
   static Object lockObject = new Object();
   
-  public PersistPRKRFDUnitTest() {
-    super();
-  }
-  
   /**
    * do a put/modify/destroy while closing disk store
    * 

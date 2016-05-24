@@ -95,7 +95,6 @@ public class BackwardCompatibilitySerializationDUnitTest extends JUnit4CacheTest
    * @throws Exception
    */
   @Test
-  @Test
   public void testToDataFromHigherVersionToLower() throws Exception {
     DataOutputStream dos = new VersionedDataOutputStream(new DataOutputStream(
         baos), Version.GFE_56);
@@ -111,7 +110,6 @@ public class BackwardCompatibilitySerializationDUnitTest extends JUnit4CacheTest
    * @throws Exception
    */
   @Test
-  @Test
   public void testToDataFromLowerVersionToHigher() throws Exception {
     DataOutputStream dos = new VersionedDataOutputStream(new DataOutputStream(
         baos), Version.GFE_701);
@@ -125,7 +123,6 @@ public class BackwardCompatibilitySerializationDUnitTest extends JUnit4CacheTest
    * 
    * @throws Exception
    */
-  @Test
   @Test
   public void testFromDataFromHigherVersionToLower() throws Exception {
     InternalDataSerializer.writeDSFID(msg, new DataOutputStream(baos));
@@ -145,7 +142,6 @@ public class BackwardCompatibilitySerializationDUnitTest extends JUnit4CacheTest
    * @throws Exception
    */
   @Test
-  @Test
   public void testFromDataFromLowerVersionToHigher() throws Exception {
     InternalDataSerializer.writeDSFID(msg, new DataOutputStream(baos));
     this.bais = new ByteArrayInputStream(baos.toByteArray());
@@ -163,7 +159,6 @@ public class BackwardCompatibilitySerializationDUnitTest extends JUnit4CacheTest
    * 
    * @throws Exception
    */
-  @Test
   @Test
   public void testAllMessages() throws Exception {
     // list of msgs not created using reflection

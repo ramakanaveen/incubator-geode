@@ -39,10 +39,6 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 public class PartitionedRegionOffHeapEvictionDUnitTest extends
     PartitionedRegionEvictionDUnitTest {
   
-  public PartitionedRegionOffHeapEvictionDUnitTest() {
-    super();
-  }  
-  
   @Override
   public final void preTearDownAssertions() throws Exception {
     SerializableRunnable checkOrphans = new SerializableRunnable() {

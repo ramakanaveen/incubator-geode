@@ -16,6 +16,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.experimental.categories.Category;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -79,15 +88,13 @@ import com.gemstone.gemfire.util.test.TestUtil;
  *
  * @since 3.0
  */
+@Category(DistributedTest.class)
 public class CacheXml30DUnitTest extends CacheXmlTestCase {
-
-  public CacheXml30DUnitTest(String name) {
-    super(name);
-  }
 
   /**
    * Tests creating a cache with a non-existent XML file
    */
+  @Test
   public void testNonExistentFile() throws IOException {
 //    System.out.println("testNonExistentFile - start: " + System.currentTimeMillis());
     File nonExistent = new File(this.getName() + ".xml");
@@ -113,6 +120,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests creating a cache with a XML file that is a directory
    */
+  @Test
   public void testXmlFileIsDirectory() {
     File dir = new File(this.getName() + "dir");
     dir.mkdirs();
@@ -136,6 +144,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests creating a cache with the default lock-timeout, lock-lease,
    * and search-timeout.
    */
+  @Test
   public void testDefaultCache() {
     CacheCreation cache = new CacheCreation();
 
@@ -146,6 +155,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests creating a cache with non-default lock-timeout, lock-lease,
    * and search-timeout.
    */
+  @Test
   public void testNonDefaultCache() {
     CacheCreation cache = new CacheCreation();
     cache.setLockTimeout(42);
@@ -162,6 +172,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests creating a cache with entries defined in the root region
    */
+  @Test
   public void testEntriesInRootRegion() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionCreation root = (RegionCreation)
@@ -176,6 +187,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests creating a cache whose keys are constrained
    */
+  @Test
   public void testConstrainedKeys() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -189,6 +201,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests creating a cache with a various {@link
    * ExpirationAttributes}.
    */
+  @Test
   public void testExpirationAttriubutes() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -226,6 +239,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests a cache loader an interesting combination of declarables
    */
+  @Test
   public void testCacheLoaderWithDeclarables() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -242,6 +256,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests a cache writer with no parameters
    */
+  @Test
   public void testCacheWriter() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -257,6 +272,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests a cache listener with no parameters
    */
+  @Test
   public void testCacheListener() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -272,6 +288,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests a region with non-default region attributes
    */
+  @Test
   public void testNonDefaultRegionAttributes() throws CacheException {
     CacheCreation cache = new CacheCreation();
     RegionAttributesCreation attrs = new RegionAttributesCreation(cache);
@@ -290,6 +307,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests parsing a malformed XML file
    */
+  @Test
   public void testMalformed() {
     setXmlFile(findFile("malformed.xml"));
 
@@ -308,6 +326,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests parsing an XML file with a bad integer
    */
+  @Test
   public void testBadInt() {
     setXmlFile(findFile("badInt.xml"));
 
@@ -330,6 +349,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests parsing an XML file with a bad float
    */
+  @Test
   public void testBadFloat() {
     setXmlFile(findFile("badFloat.xml"));
 
@@ -349,6 +369,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests parsing an XML file with a bad scope.  This error should be
    * caught by the XML parser.
    */
+  @Test
   public void testBadScope() {
     setXmlFile(findFile("badScope.xml"));
 
@@ -368,6 +389,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests parsing an XML file with a non-existent key constraint
    * class.
    */
+  @Test
   public void testBadKeyConstraintClass() {
     setXmlFile(findFile("badKeyConstraintClass.xml"));
 
@@ -387,6 +409,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests parsing an XML file that specifies a cache listener that is
    * not {@link Declarable}.
    */
+  @Test
   public void testCallbackNotDeclarable() {
     setXmlFile(findFile("callbackNotDeclarable.xml"));
 
@@ -409,6 +432,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests parsing an XML file that specifies a cache listener whose
    * constructor throws an {@linkplain AssertionError exception}.
    */
+  @Test
   public void testCallbackWithException() {
     setXmlFile(findFile("callbackWithException.xml"));
 
@@ -431,6 +455,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests parsing an XML file that specifies a cache listener that is
    * not a <code>CacheLoader</code>.
    */
+  @Test
   public void testLoaderNotLoader() {
     setXmlFile(findFile("loaderNotLoader.xml"));
 
@@ -450,6 +475,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests nested regions
    */
+  @Test
   public void testNestedRegions() throws CacheException {
     CacheCreation cache = new CacheCreation();
 
@@ -494,6 +520,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests whether or not XML attributes can appear in any order.  See
    * bug 30050.
    */
+  @Test
   public void testAttributesUnordered() {
     setXmlFile(findFile("attributesUnordered.xml"));
     getCache();
@@ -502,6 +529,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests disk directories
    */
+  @Test
   public void testDiskDirs() throws CacheException {
     CacheCreation cache = new CacheCreation();
 
@@ -526,6 +554,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests the <code>overflowThreshold</code> and
    * <code>persistBackup</code> related attributes
    */
+  @Test
   public void testOverflowAndBackup() throws CacheException {
     CacheCreation cache = new CacheCreation();
 
@@ -541,6 +570,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
   /**
    * Tests <code>DiskWriteAttributes</code>
    */
+  @Test
   public void testDiskWriteAttributes() throws CacheException {
     CacheCreation cache = new CacheCreation();
 //  Set properties for Asynch writes
@@ -577,6 +607,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    *
    * @since 3.2.1
    */
+  @Test
   public void testExampleCacheXmlFile() throws Exception {
     // Check for old example files
     String dirName = "examples_" + this.getGemFireVersion();
@@ -617,6 +648,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
     }
   }
   
+  @Test
   public void testEvictionLRUEntryAttributes() throws Exception {
     final String rName = getUniqueName();
     CacheCreation cache = new CacheCreation();
@@ -658,6 +690,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
       return true;
     }
   }
+  @Test
   public void testEvictionLRUMemoryAttributes() throws Exception {
     final String rName = getUniqueName();
     CacheCreation cache = new CacheCreation();
@@ -667,6 +700,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
     testXml(cache);
   }
 
+  @Test
   public void testEvictionLRUHeapAttributes() throws Exception {
     final String rName = getUniqueName();
     CacheCreation cache = new CacheCreation();

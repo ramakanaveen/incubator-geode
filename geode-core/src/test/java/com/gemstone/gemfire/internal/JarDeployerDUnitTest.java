@@ -92,7 +92,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
   }
   
   @Test
-  @Test
   public void testDeployFileAndChange() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
     final File currentDir = new File(".").getAbsoluteFile();
@@ -144,7 +143,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
   }
 
   @Test
-  @Test
   public void testDeployNoUpdateWhenNoChange() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
     final File currentDir = new File(".").getAbsoluteFile();
@@ -171,7 +169,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     }
   }
 
-  @Test
   @SuppressWarnings("serial")
   @Test
   public void testDeployExclusiveLock() throws IOException, ClassNotFoundException {
@@ -229,7 +226,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     });
   }
 
-  @Test
   @SuppressWarnings("serial")
   @Test
   public void testDeploySharedLock() throws IOException, ClassNotFoundException {
@@ -295,7 +291,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     });
   }
 
-  @Test
   @SuppressWarnings("serial")
   @Test
   public void testUndeploySharedLock() throws IOException, ClassNotFoundException {
@@ -348,7 +343,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     });
   }
 
-  @Test
   @SuppressWarnings("serial")
   @Test
   public void testDeployUpdateByAnotherVM() throws IOException, ClassNotFoundException {
@@ -410,7 +404,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     }
   }
 
-  @Test
   @Test
   public void testLoadPreviouslyDeployedJars() throws IOException {
     final File parentJarFile = new File(JarDeployer.JAR_PREFIX + "JarDeployerDUnitAParent.jar#1");
@@ -475,7 +468,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
   }
 
   @Test
-  @Test
   public void testDeployToAlternateDirectory() throws IOException, ClassNotFoundException {
     final File alternateDir = new File("JarDeployerDUnit");
     alternateDir.mkdir();
@@ -506,7 +498,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     }
   }
   
-  @Test
   @Test
   public void testDeployToInvalidDirectory() throws IOException, ClassNotFoundException {
     final File alternateDir = new File("JarDeployerDUnit");
@@ -563,7 +554,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
 
   boolean okayToResume;
   @Test
-  @Test
   public void testSuspendAndResume() throws IOException, ClassNotFoundException {    
     final JarDeployer jarDeployer = new JarDeployer();
     byte[] jarBytes = this.classBuilder.createJarFromName("JarDeployerDUnitSAR");
@@ -599,7 +589,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
   
 
   @Test
-  @Test
   public void testZeroLengthFile() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
 
@@ -619,7 +608,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     }
   }
 
-  @Test
   @Test
   public void testInvalidJarFile() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();

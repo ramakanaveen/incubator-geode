@@ -77,17 +77,12 @@ public class Bug37377DUnitTest extends JUnit4CacheTestCase
 
   private static final int maxEntries = 10000;
 
-  /**
-   * Constructor
-   * 
-   * @param name
-   */
   public Bug37377DUnitTest() {
     super();
-    File file1 = new File(name + "1");
+    File file1 = new File(getTestMethodName() + "1");
     file1.mkdir();
     file1.deleteOnExit();
-    File file2 = new File(name + "2");
+    File file2 = new File(getTestMethodName() + "2");
     file2.mkdir();
     file2.deleteOnExit();
     dirs = new File[2];

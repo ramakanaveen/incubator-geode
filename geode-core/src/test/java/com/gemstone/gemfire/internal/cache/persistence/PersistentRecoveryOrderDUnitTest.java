@@ -102,9 +102,6 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  */
 @Category(DistributedTest.class)
 public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBase {
-  public PersistentRecoveryOrderDUnitTest() {
-    super();
-  }
 
   public static void resetAckWaitThreshold() {
     if (SAVED_ACK_WAIT_THRESHOLD != null) {

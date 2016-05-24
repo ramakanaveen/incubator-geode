@@ -46,8 +46,7 @@ import com.gemstone.gemfire.test.dunit.VM;
  *
  */
 @Category(DistributedTest.class)
-public class PartitionedRegionInvalidateDUnitTest extends
-    CacheTestCase {
+public class PartitionedRegionInvalidateDUnitTest extends JUnit4CacheTestCase {
 
   public PartitionedRegionInvalidateDUnitTest() {
     super();

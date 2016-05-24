@@ -75,16 +75,6 @@ public class InterestResultPolicyDUnitTest extends JUnit4DistributedTestCase
   private IgnoredException expectedEx;
 
   /**
-   * Creates a test instance with the given name
-   *
-   * @param name -
-   *          name of test instance
-   */
-  public InterestResultPolicyDUnitTest() {
-    super();
-  }
-
-  /**
    * Creates the server cache and populates it with some entries
    */
   @Override
@@ -262,8 +252,7 @@ public class InterestResultPolicyDUnitTest extends JUnit4DistributedTestCase
    */
   public static Integer createServerCache() throws Exception
   {
-    InterestResultPolicyDUnitTest test = new InterestResultPolicyDUnitTest(
-        "temp");
+    InterestResultPolicyDUnitTest test = new InterestResultPolicyDUnitTest();
     cache = test.createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -302,8 +291,7 @@ public class InterestResultPolicyDUnitTest extends JUnit4DistributedTestCase
   public static void createClientCache(String host, Integer port) throws Exception
   {
     int PORT = port.intValue() ;
-    InterestResultPolicyDUnitTest test = new InterestResultPolicyDUnitTest(
-        "temp");
+    InterestResultPolicyDUnitTest test = new InterestResultPolicyDUnitTest();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");

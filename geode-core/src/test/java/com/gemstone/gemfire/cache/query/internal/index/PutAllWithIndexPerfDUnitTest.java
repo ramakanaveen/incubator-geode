@@ -55,11 +55,6 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- *
- */
-@Category(DistributedTest.class)
-@Ignore("Test was disabled by renaming to DisabledTest")
 @Category(DistributedTest.class)
 public class PutAllWithIndexPerfDUnitTest extends JUnit4CacheTestCase {
 
@@ -82,6 +77,7 @@ public class PutAllWithIndexPerfDUnitTest extends JUnit4CacheTestCase {
     disconnectAllFromDS();
   }
 
+  @Ignore("TODO")
   @Test
   public void testPutAllWithIndexes() {
     final String name = "testRegion";

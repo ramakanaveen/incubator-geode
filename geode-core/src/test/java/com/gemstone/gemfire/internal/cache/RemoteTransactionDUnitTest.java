@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,12 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.TXExpiryJUnitTest;
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -78,14 +83,11 @@ import com.gemstone.gemfire.cache.execute.FunctionContext;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.cache.execute.RegionFunctionContext;
 import com.gemstone.gemfire.cache.partition.PartitionRegionHelper;
-import com.gemstone.gemfire.cache.query.CqAttributes;
-import com.gemstone.gemfire.cache.query.CqAttributesFactory;
 import com.gemstone.gemfire.cache.query.CqEvent;
 import com.gemstone.gemfire.cache.query.CqListener;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.cache.util.CacheWriterAdapter;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.AvailablePort;
@@ -101,15 +103,15 @@ import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- *
- */
-public class RemoteTransactionDUnitTest extends CacheTestCase {
+@Category(DistributedTest.class)
+public class RemoteTransactionDUnitTest extends JUnit4CacheTestCase {
+
   final protected String CUSTOMER = "custRegion";
   final protected String ORDER = "orderRegion";
   final protected String D_REFERENCE = "distrReference";
@@ -139,12 +141,6 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
       return null;
     }
   };
-  /**
-   * @param name
-   */
-  public RemoteTransactionDUnitTest(String name) {
-    super(name);
-  }
 
   protected enum OP {
     PUT, GET, DESTROY, INVALIDATE, KEYS, VALUES, ENTRIES, PUTALL, GETALL, REMOVEALL
@@ -521,10 +517,12 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
   
   
 
+  @Test
   public void testTXCreationAndCleanupAtCommit() throws Exception {
     doBasicChecks(true);
   }
 
+  @Test
   public void testTXCreationAndCleanupAtRollback() throws Exception {
     doBasicChecks(false);
   }
@@ -584,6 +582,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     }
   }
 
+  @Test
   public void testPRTXGet() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -624,6 +623,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testPRTXGetOnRemoteWithLoader() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -670,6 +670,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
   /**
    * Make sure that getEntry returns null properly and values when it should
    */
+  @Test
   public void testPRTXGetEntryOnRemoteSide() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -722,6 +723,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
   
   
   
+  @Test
   public void testPRTXGetOnLocalWithLoader() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -763,6 +765,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
   
   
 
+  @Test
   public void testTXPut() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -806,6 +809,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testTXInvalidate() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -847,6 +851,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
   }
 
   
+  @Test
   public void testTXDestroy() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -887,6 +892,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testTxPutIfAbsent() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -983,6 +989,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     return accessor;
   }
   
+  @Test
   public void testTxRemove() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -1056,6 +1063,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testTxRemoveAll() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -1149,6 +1157,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testTxRemoveAllNotColocated() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -1194,6 +1203,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testTxRemoveAllWithRedundancy() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -1241,6 +1251,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     datastore2.invoke(checkArtifacts);
   }
 
+  @Test
   public void testTxReplace() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -1320,6 +1331,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
    * When we have narrowed down on a target node for a transaction, test that
    * we throw an exception if that node does not host primary for subsequent entries
    */
+  @Test
   public void testNonColocatedTX() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -1371,18 +1383,22 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testListenersForPut() {
     doTestListeners(OP.PUT);
   }
 
+  @Test
   public void testListenersForDestroy() {
     doTestListeners(OP.DESTROY);
   }
 
+  @Test
   public void testListenersForInvalidate() {
     doTestListeners(OP.INVALIDATE);
   }
   
+  @Test
   public void testListenersForRemoveAll() {
     doTestListeners(OP.REMOVEALL);
   }
@@ -1694,6 +1710,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     }
   }
 
+  @Test
   public void testRemoteExceptionThrown() {
     Host host = Host.getHost(0);
     VM acc = host.getVM(0);
@@ -1731,10 +1748,12 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testSizeForTXHostedOnRemoteNode() {
     doSizeTest(false);
   }
 
+  @Test
   public void testSizeOnAccessor() {
     doSizeTest(true);
   }
@@ -1812,50 +1831,62 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     assertEquals(0, txOnDatastore2_2.intValue());
   }
 
+  @Test
   public void testKeysIterator() {
     doTestIterator(OP.KEYS, 0, OP.PUT);
   }
 
+  @Test
   public void testValuesIterator() {
     doTestIterator(OP.VALUES, 0, OP.PUT);
   }
 
+  @Test
   public void testEntriesIterator() {
     doTestIterator(OP.ENTRIES, 0, OP.PUT);
   }
   
+  @Test
   public void testKeysIterator1() {
     doTestIterator(OP.KEYS, 1, OP.PUT);
   }
 
+  @Test
   public void testValuesIterator1() {
     doTestIterator(OP.VALUES, 1, OP.PUT);
   }
 
+  @Test
   public void testEntriesIterator1() {
     doTestIterator(OP.ENTRIES, 1, OP.PUT);
   }
 
+  @Test
   public void testKeysIteratorOnDestroy() {
     doTestIterator(OP.KEYS, 0, OP.DESTROY);
   }
 
+  @Test
   public void testValuesIteratorOnDestroy() {
     doTestIterator(OP.VALUES, 0, OP.DESTROY);
   }
 
+  @Test
   public void testEntriesIteratorOnDestroy() {
     doTestIterator(OP.ENTRIES, 0, OP.DESTROY);
   }
   
+  @Test
   public void testKeysIterator1OnDestroy() {
     doTestIterator(OP.KEYS, 1, OP.DESTROY);
   }
 
+  @Test
   public void testValuesIterator1OnDestroy() {
     doTestIterator(OP.VALUES, 1, OP.DESTROY);
   }
 
+  @Test
   public void testEntriesIterator1OnDestroy() {
     doTestIterator(OP.ENTRIES, 1, OP.DESTROY);
   }
@@ -2099,6 +2130,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testKeyIterationOnRR() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -2148,6 +2180,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testValuesIterationOnRR() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -2197,6 +2230,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testEntriesIterationOnRR() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -2246,6 +2280,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testIllegalIteration() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -2380,10 +2415,12 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     OnMember
   }
   
+  @Test
   public void testTxFunctionOnRegion() {
     doTestTxFunction(Executions.OnRegion);
   }
 
+  @Test
   public void testTxFunctionOnMember() {
     doTestTxFunction(Executions.OnMember);
   }
@@ -2499,6 +2536,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testNestedTxFunction() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -2571,6 +2609,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testDRFunctionExecution() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -2660,6 +2699,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testTxFunctionWithOtherOps() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -2873,10 +2913,12 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     return expectedSet;
   }
 
+  @Test
   public void testRemoteJTACommit() {
     doRemoteJTA(true);
   }
 
+  @Test
   public void testRemoteJTARollback() {
     doRemoteJTA(false);
   }
@@ -2942,6 +2984,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
   }
   
   
+  @Test
   public void testOriginRemoteIsTrueForRemoteReplicatedRegions() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -3046,6 +3089,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
   
   
   
+  @Test
   public void testRemoteCreateInReplicatedRegion() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -3084,6 +3128,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testRemoteTxCleanupOnCrash() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -3115,16 +3160,19 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
   
+  @Test
   public void testNonColocatedPutAll() {
     doNonColocatedbulkOp(OP.PUTALL);
   }
 
   /**
-   * disabled because rather than throwing an exception, 
+   * disabled because rather than throwing an exception,
    * getAll catches all exceptions and logs a warning
    * message
    */
-  public void _SWAP_testNonColocatedGetAll() {
+  @Ignore("disabled because rather than throwing an exception, getAll catches all exceptions and logs a warning message")
+  @Test
+  public void testNonColocatedGetAll() {
     doNonColocatedbulkOp(OP.GETALL);
   }
   
@@ -3167,10 +3215,12 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testBasicPutAll() {
     doTestBasicBulkOP(OP.PUTALL);
   }
 
+  @Test
   public void testBasicRemoveAll() {
     doTestBasicBulkOP(OP.REMOVEALL);
   }
@@ -3312,6 +3362,7 @@ public class RemoteTransactionDUnitTest extends CacheTestCase {
     });
   }
 
+  @Test
   public void testDestroyCreateConflation() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -3604,6 +3655,7 @@ protected static class ClientListener extends CacheListenerAdapter {
   }
   
   
+  @Test
   public void testTXWithRI() throws Exception {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -3652,6 +3704,7 @@ protected static class ClientListener extends CacheListenerAdapter {
   
   private static final String EMPTY_REGION = "emptyRegionName";
   
+  @Test
   public void testBug43176() {
     Host host = Host.getHost(0);
     VM datastore = host.getVM(0);
@@ -3725,6 +3778,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     });
   }
   
+  @Test
   public void testTXWithRICommitInDatastore() throws Exception {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -3772,6 +3826,7 @@ protected static class ClientListener extends CacheListenerAdapter {
   }
   
 
+  @Test
   public void testListenersNotInvokedOnSecondary() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -3822,6 +3877,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     }
   }
 
+  @Test
   public void testBug33073() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -3860,6 +3916,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     });
   }
   
+  @Test
   public void testBug43081() throws Exception {
     createRegion(false, 0, null);
     Context ctx = getCache().getJNDIContext();
@@ -3944,6 +4001,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     }
   }
   
+  @Test
   public void testBug45556() {
     Host host = Host.getHost(0);
     VM accessor = host.getVM(0);
@@ -4038,6 +4096,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     });
   }
   
+  @Test
   public void testExpirySuspend_bug45984() {
     Host host = Host.getHost(0);
     VM vm1 = host.getVM(0);
@@ -4114,6 +4173,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     
   }
   
+  @Test
   public void testRemoteFetchVersionMessage() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -4150,6 +4210,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     });
   }
 
+  @Test
   public void testTransactionWithRemoteVersionFetch() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -4201,6 +4262,7 @@ protected static class ClientListener extends CacheListenerAdapter {
     });
   }
 
+  @Test
   public void testBug49398() {
     disconnectAllFromDS();
     Host host = Host.getHost(0);
@@ -4255,6 +4317,7 @@ protected static class ClientListener extends CacheListenerAdapter {
    * Install Listeners and verify that they are invoked after all tx events have been applied to the cache
    * see GEODE-278
    */
+  @Test
   public void testNonInlineRemoteEvents() {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

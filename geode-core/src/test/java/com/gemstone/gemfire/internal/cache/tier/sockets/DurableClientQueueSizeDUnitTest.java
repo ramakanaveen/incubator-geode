@@ -77,13 +77,6 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
 
   public static final String DEFAULT_POOL_NAME = "DEFAULT";
 
-  /**
-   * @param name
-   */
-  public DurableClientQueueSizeDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     vm0 = Host.getHost(0).getVM(0);
@@ -278,8 +271,7 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
 //        + ".gfs");
 //    props.setProperty("statistic-sampling-enabled", "true");
 
-    DurableClientQueueSizeDUnitTest test = new DurableClientQueueSizeDUnitTest(
-        "DurableClientQueueSizeDUnitTest");
+    DurableClientQueueSizeDUnitTest test = new DurableClientQueueSizeDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     ds.disconnect();
     cache = (GemFireCacheImpl)CacheFactory.create(test.getSystem());
@@ -335,8 +327,7 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
 //        + ".gfs");
 //    props.setProperty("statistic-sampling-enabled", "true");
 
-    DistributedSystem ds = new DurableClientQueueSizeDUnitTest(
-        "DurableClientQueueSizeDUnitTest").getSystem(props);
+    DistributedSystem ds = new DurableClientQueueSizeDUnitTest().getSystem(props);
     ds.disconnect();
     ClientCacheFactory ccf = new ClientCacheFactory(props);
     ccf.setPoolSubscriptionEnabled(true);

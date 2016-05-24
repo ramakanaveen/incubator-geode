@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.persistence;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -42,18 +44,15 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
 
-public abstract class PersistentReplicatedTestBase extends CacheTestCase {
+public abstract class PersistentReplicatedTestBase extends JUnit4CacheTestCase {
 
   protected static final int MAX_WAIT = 30 * 1000;
   protected static String REGION_NAME = "region";
   protected File diskDir;
   protected static String SAVED_ACK_WAIT_THRESHOLD;
 
-  public PersistentReplicatedTestBase(String name) {
-    super(name);
-  }
-  
   @Override
   public final void postSetUp() throws Exception {
     Invoke.invokeInEveryVM(PersistentReplicatedTestBase.class,"setRegionName", new Object[]{getUniqueName()});

@@ -65,9 +65,6 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 
 @Category(DistributedTest.class)
 public class PartitionedRegionEvictionDUnitTest extends JUnit4CacheTestCase {
-  public PartitionedRegionEvictionDUnitTest(final String name) {
-    super();
-  }
 
   @Test
   public void testHeapLRUWithOverflowToDisk() {

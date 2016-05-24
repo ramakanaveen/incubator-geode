@@ -63,27 +63,26 @@ public class DiskRegByteArrayDUnitTest extends JUnit4CacheTestCase {
   static CacheTransactionManager cacheTxnMgr;
   protected static File[] dirs = null;
   final static byte[] value = new byte[1024];
-  
-   
+
     public DiskRegByteArrayDUnitTest() {
-        super();
-        File file1 = new File( name + "1");
-        file1.mkdir();
-        file1.deleteOnExit();
-        File file2 = new File( name + "2");
-        file2.mkdir();
-        file2.deleteOnExit();
-        File file3 = new File( name + "3");
-        file3.mkdir();
-        file3.deleteOnExit();
-        File file4 = new File( name + "4");
-        file4.mkdir();
-        file4.deleteOnExit();
-        dirs = new File[4];
-        dirs[0] = file1;
-        dirs[1] = file2;
-        dirs[2] = file3;
-        dirs[3] = file4;
+      super();
+      File file1 = new File( getTestMethodName() + "1");
+      file1.mkdir();
+      file1.deleteOnExit();
+      File file2 = new File( getTestMethodName() + "2");
+      file2.mkdir();
+      file2.deleteOnExit();
+      File file3 = new File( getTestMethodName() + "3");
+      file3.mkdir();
+      file3.deleteOnExit();
+      File file4 = new File( getTestMethodName() + "4");
+      file4.mkdir();
+      file4.deleteOnExit();
+      dirs = new File[4];
+      dirs[0] = file1;
+      dirs[1] = file2;
+      dirs[2] = file3;
+      dirs[3] = file4;
     }
 
     @Override

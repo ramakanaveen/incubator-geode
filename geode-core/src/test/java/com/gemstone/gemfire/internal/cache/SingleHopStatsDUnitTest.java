@@ -69,11 +69,6 @@ public class SingleHopStatsDUnitTest extends JUnit4CacheTestCase {
   private static long metaDataRefreshCount_Shipment;
   private static long nonSingleHopsCount_Shipment;
 
-
-  public SingleHopStatsDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     Host host = Host.getHost(0);
@@ -150,12 +145,9 @@ public class SingleHopStatsDUnitTest extends JUnit4CacheTestCase {
 
   private void createClient(int port0, int port1, int port2, String colocation) {
     Properties props = new Properties();
-    props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new SingleHopStatsDUnitTest(
-        "SingleHopStatsDUnitTest");
-    DistributedSystem distributedSystem = test.getSystem(props);
+    DistributedSystem distributedSystem = getSystem(props);
     Cache cache = CacheFactory.create(distributedSystem);
     assertNotNull(cache);
     CacheServerTestUtil.disableShufflingOfEndpoints();
@@ -175,9 +167,7 @@ public class SingleHopStatsDUnitTest extends JUnit4CacheTestCase {
   }
 
   private int createServerForStats(int redundantCopies, int totalNoofBuckets, String colocation) {
-    CacheTestCase test = new SingleHopStatsDUnitTest(
-        "SingleHopStatsDUnitTest");
-    Cache cache = test.getCache();
+    Cache cache = getCache();
     CacheServer server = cache.addCacheServer();
     server.setPort(0);
     server.setHostnameForClients("localhost");

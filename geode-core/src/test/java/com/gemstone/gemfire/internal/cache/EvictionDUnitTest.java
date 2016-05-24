@@ -38,7 +38,6 @@ import com.gemstone.gemfire.internal.cache.lru.MemLRUCapacityController;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-@Category(DistributedTest.class)
 @Ignore("Test was disabled by renaming to DisabledTest")
 @Category(DistributedTest.class)
 public class EvictionDUnitTest extends EvictionTestBase {

@@ -185,10 +185,8 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
       int redundantCopies, int totalNoofBuckets) {
 
     Properties props = new Properties();
-    props = new Properties();
     props.setProperty("locators", locString);
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
 
@@ -1131,8 +1129,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -1153,8 +1150,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
   }
 
   public static int createAccessorServer() {
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     cache = test.getCache();
     CacheServer server = cache.addCacheServer();
     int port = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
@@ -1223,8 +1219,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
   }
 
   public static int createServer(int redundantCopies, int totalNoofBuckets) {
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     cache = test.getCache();
     CacheServer server = cache.addCacheServer();
     int port = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
@@ -1297,8 +1292,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
   }
 
   public static int createPersistentPrsAndServer(int redundantCopies, int totalNoofBuckets) {
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     cache = test.getCache();
     DiskStore disk = cache.findDiskStore("disk");
     if(disk == null) {
@@ -1381,8 +1375,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
     return port;
   }
   public static int createPersistentPrsAndServerOnPort(int redundantCopies, int totalNoofBuckets, int port) {
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     cache = test.getCache();
     DiskStore disk = cache.findDiskStore("disk");
     if(disk == null) {
@@ -1464,8 +1457,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
     return port;
   }
   public static void createServerOnPort(int redundantCopies, int totalNoofBuckets, int port) {
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     cache = test.getCache();
     CacheServer server = cache.addCacheServer();
     server.setPort(port);
@@ -1536,8 +1528,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
   }
 
   public static void startServerOnPort(int port) {
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     cache = test.getCache();
     CacheServer server = cache.addCacheServer();
     server.setPort(port);
@@ -1552,8 +1543,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
 
 
   public static void createPeer() {
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     cache = test.getCache();
 
     PartitionAttributesFactory paf = new PartitionAttributesFactory();
@@ -1613,8 +1603,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -1639,8 +1628,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -1665,8 +1653,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -1690,8 +1677,7 @@ public class PartitionedRegionSingleHopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
-        "PartitionedRegionSingleHopDUnitTest");
+    PartitionedRegionSingleHopDUnitTest test = new PartitionedRegionSingleHopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);

@@ -160,7 +160,7 @@ public class AsyncEventQueueTestBase extends JUnit4DistributedTestCase {
     if (Locator.hasLocator()) {
       Locator.getLocator().stop();
     }
-    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
+    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
@@ -174,7 +174,7 @@ public class AsyncEventQueueTestBase extends JUnit4DistributedTestCase {
   }
 
   public static Integer createFirstRemoteLocator(int dsId, int remoteLocPort) {
-    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
+    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
     int port = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
@@ -694,7 +694,7 @@ public class AsyncEventQueueTestBase extends JUnit4DistributedTestCase {
   }
 
   protected static void createCache(Integer locPort) {
-    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
+    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort
@@ -704,7 +704,7 @@ public class AsyncEventQueueTestBase extends JUnit4DistributedTestCase {
   }
 
   public static void createCacheWithoutLocator(Integer mCastPort) {
-    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
+    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "" + mCastPort);
     InternalDistributedSystem ds = test.getSystem(props);
@@ -915,7 +915,7 @@ public class AsyncEventQueueTestBase extends JUnit4DistributedTestCase {
   }
 
   public static int createReceiver(int locPort) {
-    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
+    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
     Properties props = test.getDistributedSystemProperties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort
@@ -1563,7 +1563,7 @@ public class AsyncEventQueueTestBase extends JUnit4DistributedTestCase {
       cache = null;
     }
     else {
-      AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
+      AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
       if (test.isConnectedToDS()) {
         test.getSystem().disconnect();
       }
@@ -1571,7 +1571,7 @@ public class AsyncEventQueueTestBase extends JUnit4DistributedTestCase {
   }
 
   public static void shutdownLocator() {
-    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase(getTestMethodName());
+    AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
     test.getSystem().disconnect();
   }
 

@@ -62,7 +62,6 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  *
  * @since 4.2.1
  */
-@Category(DistributedTest.class)
 @Ignore("Test was disabled by renaming to DisabledTest")
 @Category(DistributedTest.class)
 public class SlowRecDUnitTest extends JUnit4CacheTestCase {
@@ -463,7 +462,8 @@ public class SlowRecDUnitTest extends JUnit4CacheTestCase {
    * Test disabled because it intermittently fails due to race conditions
    * in test. This has been fixed in congo's tests. See bug 35357.
    */
-  public void _disabled_testConflationSequence() throws CacheException {
+  @Test
+  public void testConflationSequence() throws CacheException {
     final AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_NO_ACK);
     factory.setEnableAsyncConflation(true);
@@ -725,7 +725,7 @@ public class SlowRecDUnitTest extends JUnit4CacheTestCase {
    * June 2006 due to hangs.  Some of the tests, like this one, still need
    * work because the periodically (some quite often) fail.
    */
-  public void donottestTimeoutDisconnect() throws CacheException {
+  public void testTimeoutDisconnect() throws CacheException {
     final String expected = 
       "com.gemstone.gemfire.internal.tcp.ConnectionException: Forced disconnect sent to" +
       "||java.io.IOException: Broken pipe";
@@ -921,7 +921,7 @@ public class SlowRecDUnitTest extends JUnit4CacheTestCase {
    * June 2006 r13222 in the trunk.  This test is failing because conflation
    * isn't kicking in for some reason.
    */
-  public void donottestMultipleRegionConflation() throws Throwable {
+  public void testMultipleRegionConflation() throws Throwable {
     try {
       doTestMultipleRegionConflation();
     }
@@ -1298,7 +1298,7 @@ public class SlowRecDUnitTest extends JUnit4CacheTestCase {
    * June 2006 due to hangs.  Some of the tests, like this one, still need
    * work because the periodically (some quite often) fail.
  */
-  public void donottestPartialMessage() throws Throwable {
+  public void testPartialMessage() throws Throwable {
     try {
       doTestPartialMessage();
     }

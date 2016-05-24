@@ -56,12 +56,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  *
  */
 @Category(DistributedTest.class)
-@Category(DistributedTest.class)
 public class GroupByQueryDUnitTest extends JUnit4CacheTestCase {
-
-  public GroupByQueryDUnitTest() {
-    super();
-  }
 
   @Test
   public void testConvertibleGroupByNoIndex() throws Exception {

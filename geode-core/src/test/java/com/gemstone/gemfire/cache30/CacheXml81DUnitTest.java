@@ -144,7 +144,6 @@ public class CacheXml81DUnitTest extends CacheXml80DUnitTest {
    * @since 8.2
    */
   @Test
-  @Test
   public void testLocatorInException() {
     final String regionName = "testRegionExtension";
     final CacheCreation cache = new CacheCreation();

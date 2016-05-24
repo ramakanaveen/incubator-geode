@@ -67,18 +67,11 @@ import com.gemstone.gemfire.test.dunit.Wait;
  */
 @Category(DistributedTest.class)
 public class ConcurrentIndexOperationsOnOverflowRegionDUnitTest extends
-    CacheTestCase {
+    JUnit4CacheTestCase {
 
   String name;
 
   public static volatile boolean hooked = false;
-
-  /**
-   * @param name
-   */
-  public ConcurrentIndexOperationsOnOverflowRegionDUnitTest() {
-    super();
-  }
 
   /**
    *

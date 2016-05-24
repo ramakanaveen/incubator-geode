@@ -71,7 +71,6 @@ import org.junit.experimental.categories.Category;
  * This class tests distributed ownership via the DistributedLockService api.
  */
 @Category(DistributedTest.class)
-@Category(DistributedTest.class)
 public class DistributedLockServiceDUnitTest extends JUnit4DistributedTestCase {
   
 	protected static DistributedSystem dlstSystem;

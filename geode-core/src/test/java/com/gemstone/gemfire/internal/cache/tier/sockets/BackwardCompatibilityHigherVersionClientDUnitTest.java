@@ -54,8 +54,7 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
  */
 
 @Category(DistributedTest.class)
-public class BackwardCompatibilityHigherVersionClientDUnitTest extends
-    DistributedTestCase {
+public class BackwardCompatibilityHigherVersionClientDUnitTest extends JUnit4DistributedTestCase {
   /** the cache */
   private static Cache cache = null;
 
@@ -77,11 +76,6 @@ public class BackwardCompatibilityHigherVersionClientDUnitTest extends
   private static final String client_k2 = "client-k2";
 
   private static short currentClientVersion = ConnectionProxy.VERSION.ordinal();
-
-  /** constructor */
-  public BackwardCompatibilityHigherVersionClientDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {

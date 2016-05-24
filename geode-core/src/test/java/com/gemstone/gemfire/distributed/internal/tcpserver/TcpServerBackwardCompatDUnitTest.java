@@ -60,17 +60,10 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * This tests the rolling upgrade for locators with
  * different GOSSIPVERSION.
- *
- *
  */
-@Category(DistributedTest.class)
-//@Ignore("Test was disabled by renaming to DisabledTest")
 @Category(DistributedTest.class)
 public class TcpServerBackwardCompatDUnitTest extends JUnit4DistributedTestCase {
 
-  /**
-   * @param name
-   */
   public TcpServerBackwardCompatDUnitTest() {
     super();
   }

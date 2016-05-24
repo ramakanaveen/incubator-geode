@@ -210,8 +210,7 @@ public class InterestListRecoveryDUnitTest extends JUnit4DistributedTestCase
 
   public static void createClientCache(String host, Integer port1, Integer port2 ) throws Exception
   {
-    InterestListRecoveryDUnitTest test = new InterestListRecoveryDUnitTest(
-        "temp");
+    InterestListRecoveryDUnitTest test = new InterestListRecoveryDUnitTest();
     Properties props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
@@ -240,8 +239,7 @@ public class InterestListRecoveryDUnitTest extends JUnit4DistributedTestCase
 
   public static Integer createServerCache() throws Exception
   {
-    InterestListRecoveryDUnitTest test = new InterestListRecoveryDUnitTest(
-        "temp");
+    InterestListRecoveryDUnitTest test = new InterestListRecoveryDUnitTest();
     cache = test.createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);

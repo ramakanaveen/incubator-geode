@@ -72,7 +72,7 @@ import com.gemstone.gemfire.test.dunit.ThreadUtils;
  */
 @Category(DistributedTest.class)
 public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
-    DistributedTestCase {
+    JUnit4DistributedTestCase {
   
   PRQueryDUnitHelper helper = new PRQueryDUnitHelper();
   private static String regionName = "Portfolios";
@@ -91,13 +91,6 @@ public class ConcurrentIndexUpdateWithoutWLDUnitTest extends
 
   int stepSize = 10;
   private int totalDataSize = 50;
-
-  /**
-   * @param name
-   */
-  public ConcurrentIndexUpdateWithoutWLDUnitTest() {
-    super();
-  }
 
   public void setCacheInVMs(VM... vms) {
     for (VM vm : vms) {

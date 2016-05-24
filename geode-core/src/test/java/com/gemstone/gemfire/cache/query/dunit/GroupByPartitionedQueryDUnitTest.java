@@ -48,12 +48,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  *
  */
 @Category(DistributedTest.class)
-@Category(DistributedTest.class)
 public class GroupByPartitionedQueryDUnitTest extends GroupByDUnitImpl {
-
-  public GroupByPartitionedQueryDUnitTest() {
-    super();
-  }
 
   @Override
   protected GroupByTestImpl createTestInstance() {

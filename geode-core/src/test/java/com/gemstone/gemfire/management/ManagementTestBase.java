@@ -43,11 +43,6 @@ import java.util.*;
 @Category(DistributedTest.class)
 public class ManagementTestBase extends JUnit4DistributedTestCase {
 
-  public ManagementTestBase() {
-    super();
-
-  }
-
   private static final int MAX_WAIT = 70 * 1000;
 
   private static final long serialVersionUID = 1L;

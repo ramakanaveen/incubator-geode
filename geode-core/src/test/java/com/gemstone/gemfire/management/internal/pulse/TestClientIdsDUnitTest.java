@@ -87,7 +87,7 @@ public class TestClientIdsDUnitTest extends JUnit4DistributedTestCase {
 
   public TestClientIdsDUnitTest() {
     super();
-    this.helper = new ManagementTestBase(name);
+    this.helper = new ManagementTestBase();
   }
 
   @Override

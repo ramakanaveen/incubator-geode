@@ -372,11 +372,6 @@ public class HAGIIBugDUnitTest extends JUnit4DistributedTestCase
     }
   }
 
-  public HAGIIBugDUnitTest(String arg0) {
-    super(arg0);
-
-  }
-
 }
 
 /**

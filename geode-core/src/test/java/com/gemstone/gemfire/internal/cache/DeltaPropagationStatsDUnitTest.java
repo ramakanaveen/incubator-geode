@@ -20,6 +20,7 @@
 package com.gemstone.gemfire.internal.cache;
 
 import org.junit.experimental.categories.Category;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -190,7 +191,9 @@ public class DeltaPropagationStatsDUnitTest extends JUnit4DistributedTestCase {
    * 
    * @throws Exception
    */
-  public void _testS2CDeltaPropagationFailedStats2() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testS2CDeltaPropagationFailedStats2() throws Exception {
   }
 
   /**
@@ -264,7 +267,9 @@ public class DeltaPropagationStatsDUnitTest extends JUnit4DistributedTestCase {
    * 
    * @throws Exception
    */
-  public void _testP2PDeltaPropagationFailedStats2() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testP2PDeltaPropagationFailedStats2() throws Exception {
   }
 
   /**
@@ -337,7 +342,9 @@ public class DeltaPropagationStatsDUnitTest extends JUnit4DistributedTestCase {
    * 
    * @throws Exception
    */
-  public void _testC2SDeltaPropagationFailedStats2() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testC2SDeltaPropagationFailedStats2() throws Exception {
   }
 
   public static void waitForLastKey() {
@@ -573,8 +580,7 @@ public class DeltaPropagationStatsDUnitTest extends JUnit4DistributedTestCase {
   public static Integer createServerCache(Boolean flag, DataPolicy policy,
       Scope scope, Boolean listener) throws Exception {
     ConnectionTable.threadWantsSharedResources();
-    DeltaPropagationStatsDUnitTest test = new DeltaPropagationStatsDUnitTest(
-        "temp");
+    DeltaPropagationStatsDUnitTest test = new DeltaPropagationStatsDUnitTest();
     Properties props = new Properties();
     if (!flag) {
       props

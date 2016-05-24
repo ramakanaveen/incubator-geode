@@ -43,19 +43,9 @@ import com.gemstone.gemfire.internal.cache.xmlcache.RegionAttributesCreation;
 @Category(DistributedTest.class)
 public class CacheXml40DUnitTest extends CacheXml30DUnitTest {
 
-  ////////  Constructors
-
-  public CacheXml40DUnitTest() {
-    super();
-  }
-
-  ////////  Helper methods
-
   protected String getGemFireVersion() {
     return CacheXml.VERSION_4_0;
   }
-
-  ////////  Test methods
 
   /**
    * Tests the cache server attribute

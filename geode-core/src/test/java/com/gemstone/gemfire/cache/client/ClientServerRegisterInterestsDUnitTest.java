@@ -69,10 +69,6 @@ public class ClientServerRegisterInterestsDUnitTest extends JUnit4DistributedTes
 
   private VM gemfireServerVm;
 
-  public ClientServerRegisterInterestsDUnitTest(final String testName) {
-    super(testName);
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     disconnectAllFromDS();

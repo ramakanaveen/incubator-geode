@@ -49,7 +49,6 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  *
  */
 @Category(DistributedTest.class)
-@Category(DistributedTest.class)
 public class NonDistinctOrderByPartitionedDUnitTest extends
     NonDistinctOrderByDUnitImpl {
 

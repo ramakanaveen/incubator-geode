@@ -357,8 +357,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
   public static int createServer(boolean isAccessor,
       List<FixedPartitionAttributes> fpaList) {
 
-    CacheTestCase test = new FixedPRSinglehopDUnitTest(
-        "FixedPRSinglehopDUnitTest");
+    FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     cache = test.getCache();
     CacheServer server = cache.addCacheServer();
     int port = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
@@ -397,8 +396,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
   public static int createServerWithLocator(String locator, boolean isAccessor,
       List<FixedPartitionAttributes> fpaList, boolean simpleFPR) {
 
-    CacheTestCase test = new FixedPRSinglehopDUnitTest(
-    "FixedPRSinglehopDUnitTest");
+    FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     Properties props = new Properties();
     props = new Properties();
     props.setProperty("locators", locator);
@@ -459,8 +457,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
   }
   
   public static int totalNumBucketsCreated () {
-    CacheTestCase test = new FixedPRSinglehopDUnitTest(
-    "FixedPRSinglehopDUnitTest");
+    FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     PartitionedRegion pr = (PartitionedRegion)cache.getRegion(PR_NAME);
     assertNotNull(pr);
     return pr.getLocalPrimaryBucketsListTestOnly().size();
@@ -468,8 +465,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
   
   public static void createPeer(boolean isAccessor,
       List<FixedPartitionAttributes> fpaList) {
-    CacheTestCase test = new FixedPRSinglehopDUnitTest(
-        "FixedPRSinglehopDUnitTest");
+    FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     cache = test.getCache();
 
     PartitionAttributesFactory paf = new PartitionAttributesFactory();
@@ -497,8 +493,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new FixedPRSinglehopDUnitTest(
-        "FixedPRSinglehopDUnitTest");
+    FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -523,8 +518,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new FixedPRSinglehopDUnitTest(
-        "FixedPRSinglehopDUnitTest");
+    FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -549,8 +543,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new FixedPRSinglehopDUnitTest(
-        "FixedPRSinglehopDUnitTest");
+    FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -574,8 +567,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
     props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new FixedPRSinglehopDUnitTest(
-        "FixedPRSinglehopDUnitTest");
+    FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);

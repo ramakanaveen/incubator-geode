@@ -51,7 +51,6 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.util.test.TestUtil;
 
 @Category(DistributedTest.class)
-@Category(DistributedTest.class)
 public class PartitionedRegionCompactRangeIndexDUnitTest extends JUnit4DistributedTestCase {
 
   public PartitionedRegionCompactRangeIndexDUnitTest() {
@@ -80,7 +79,6 @@ public class PartitionedRegionCompactRangeIndexDUnitTest extends JUnit4Distribut
     QueryTestUtils.closeCacheInVM(vm2);
   }
   
-  @Test
   @Test
   public void testGIIUpdateWithIndexDoesNotDuplicateEntryInIndexWhenAlreadyRecoveredFromPersistence() throws Exception {
     Host host = Host.getHost(0);

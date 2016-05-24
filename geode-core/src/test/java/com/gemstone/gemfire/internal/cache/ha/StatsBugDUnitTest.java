@@ -63,7 +63,6 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * 
  * 
  */
-@Category(DistributedTest.class)
 @Ignore("Test was disabled by renaming to DisabledTest")
 @Category(DistributedTest.class)
 public class StatsBugDUnitTest extends JUnit4DistributedTestCase
@@ -104,12 +103,6 @@ public class StatsBugDUnitTest extends JUnit4DistributedTestCase
   /** prefix added to the keys of events generated on secondary */
   private static final String secondaryPrefix = "secondary_";
 
-  /**
-   * Constructor
-   * 
-   * @param name -
-   *          name for this test instance
-   */
   public StatsBugDUnitTest() {
     super();
   }

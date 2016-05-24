@@ -437,7 +437,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * DISABLED 4-16-04 - the current implementation assumes events
    * are processed synchronously, which is no longer true.
    */
-  public void _ttestOrderedUpdates() throws Throwable {
+  @Ignore("DISABLED 4-16-04 - the current implementation assumes events are processed synchronously, which is no longer true")
+  @Test
+  public void testOrderedUpdates() throws Throwable {
     if (getRegionAttributes().getScope() ==
         Scope.DISTRIBUTED_NO_ACK) {
       return;
@@ -4960,9 +4962,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       });
   }
 
-
   @Ignore("Disabled for 51542")
-  public void DISABLED_testNBRegionInvalidationDuringGetInitialImage() throws Throwable {
+  @Test
+  public void testNBRegionInvalidationDuringGetInitialImage() throws Throwable {
     DistributedTestCase.disconnectAllFromDS();
     if (!supportsReplication()) {
       return;
@@ -7509,7 +7511,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
   }
 
-  public void todo_testTXAlgebra() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testTXAlgebra() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
     if (getRegionAttributes().getScope().isGlobal()
         || getRegionAttributes().getDataPolicy().withPersistence()) {

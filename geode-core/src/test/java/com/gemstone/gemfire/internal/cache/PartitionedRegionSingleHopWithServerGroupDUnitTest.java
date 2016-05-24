@@ -751,8 +751,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   }
   
   public static int createServer(int redundantCopies, int totalNoofBuckets, String group) {
-    CacheTestCase test = new PartitionedRegionSingleHopWithServerGroupDUnitTest(
-        "PartitionedRegionSingleHopWithServerGroupDUnitTest");
+    PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     cache = test.getCache();
     CacheServer server = cache.addCacheServer();
     int port = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
@@ -823,12 +822,10 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
       int localMaxMemory,int redundantCopies, int totalNoofBuckets, String group) {
 
     Properties props = new Properties();
-    props = new Properties();
     props.setProperty("locators", locator);
     
     System.setProperty("gemfire.PoolImpl.honourServerGroupsInPRSingleHop", "true");
-    CacheTestCase test = new PartitionedRegionSingleHopWithServerGroupDUnitTest(
-        "PartitionedRegionSingleHopWithServerGroupDUnitTest");
+    PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
 
@@ -909,12 +906,10 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
       int localMaxMemory,int redundantCopies, int totalNoofBuckets, String group) {
 
     Properties props = new Properties();
-    props = new Properties();
     props.setProperty("locators", locator);
     
     System.setProperty("gemfire.PoolImpl.honourServerGroupsInPRSingleHop", "true");
-    CacheTestCase test = new PartitionedRegionSingleHopWithServerGroupDUnitTest(
-        "PartitionedRegionSingleHopWithServerGroupDUnitTest");
+    PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
 
@@ -1046,12 +1041,10 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   
   public static void createClientWithLocator(String host, int port0, String group) {
     Properties props = new Properties();
-    props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     props.setProperty(DistributionConfig.LOCATORS_NAME, "");
     props.setProperty(DistributionConfig.LOG_FILE_NAME, "");
-    CacheTestCase test = new PartitionedRegionSingleHopWithServerGroupDUnitTest(
-        "PartitionedRegionSingleHopWithServerGroupDUnitTest");
+    PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -1072,11 +1065,9 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   
   public static void create2ClientWithLocator(String host, int port0, String group1, String group2) {
     Properties props = new Properties();
-    props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PartitionedRegionSingleHopWithServerGroupDUnitTest(
-        "PartitionedRegionSingleHopWithServerGroupDUnitTest");
+    PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -1101,11 +1092,9 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   
   public static void createClientWith3PoolLocator(String host, int port0, String group1, String group2,String group3) {
     Properties props = new Properties();
-    props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PartitionedRegionSingleHopWithServerGroupDUnitTest(
-        "PartitionedRegionSingleHopWithServerGroupDUnitTest");
+    PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
@@ -1291,8 +1280,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
 
   
   public static int createAccessorServer(int redundantCopies, int numBuckets, String group) {
-    CacheTestCase test = new PartitionedRegionSingleHopWithServerGroupDUnitTest(
-        "PartitionedRegionSingleHopWithServerGroupDUnitTest");
+    PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     cache = test.getCache();
     CacheServer server = cache.addCacheServer();
     int port = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
@@ -1360,11 +1348,9 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   
   public static void createClientWithLocatorWithoutSystemProperty(String host, int port0, String group) {
     Properties props = new Properties();
-    props = new Properties();
     props.setProperty("mcast-port", "0");
     props.setProperty("locators", "");
-    CacheTestCase test = new PartitionedRegionSingleHopWithServerGroupDUnitTest(
-        "PartitionedRegionSingleHopWithServerGroupDUnitTest");
+    PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
