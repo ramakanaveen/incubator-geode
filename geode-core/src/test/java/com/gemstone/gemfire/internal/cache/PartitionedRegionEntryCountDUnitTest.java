@@ -47,10 +47,6 @@ import com.gemstone.gemfire.test.dunit.VM;
 public class PartitionedRegionEntryCountDUnitTest extends JUnit4CacheTestCase {
   private static final long serialVersionUID = 19808034671087558L;
 
-  public PartitionedRegionEntryCountDUnitTest(final String name) {
-    super();
-  }
-
   @Test
   public void testTotalEntryCountAfterLocalDestroyEviction() {
     final Host host = Host.getHost(0);

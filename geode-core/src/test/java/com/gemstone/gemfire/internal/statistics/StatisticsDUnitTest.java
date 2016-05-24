@@ -441,7 +441,7 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
                 double mean = sv.getSnapshotsAverage();
                 double stdDev = sv.getSnapshotsStandardDeviation();
                 
-                assertEquals(mostRecent, max);
+                assertEquals(mostRecent, max, 0f);
   
                 double summation = 0;
                 double[] rawSnapshots = sv.getRawSnapshots();
@@ -449,7 +449,7 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
                   //log.convertToLogWriter().info("DEBUG " + ri.getName() + " " + statName + " rawSnapshots[" + j + "] = " + rawSnapshots[j]);
                   summation += rawSnapshots[j];
                 }
-                assertEquals(mean, summation / sv.getSnapshotsSize());
+                assertEquals(mean, summation / sv.getSnapshotsSize(), 0);
                 
                 combinedPuts += mostRecent;
               }
@@ -457,7 +457,7 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
           }
           
           // assert that sum of mostRecent values for all puts equals totalPuts
-          assertEquals((double)totalPuts, combinedPuts);
+          assertEquals((double)totalPuts, combinedPuts, 0);
           puts.getAndAdd(totalPuts);
         }
       });

@@ -49,10 +49,6 @@ import com.gemstone.gemfire.test.dunit.VM;
 @Category(DistributedTest.class)
 public class PRBadToDataDUnitTest extends JUnit4CacheTestCase {
 
-  public PRBadToDataDUnitTest(final String name) {
-    super();
-  }
-
   @Test
   public void testBadToData() {
     final Host host = Host.getHost(0);
