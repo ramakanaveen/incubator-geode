@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -76,17 +77,6 @@ public class InterruptClientServerDUnitTest extends JUnit4CacheTestCase {
       }
     });
   }
-  
-  public void _testLoop() throws Throwable {
-    for(int i=0; i < 100; i++) {
-      System.err.println("i=" +i);
-      System.out.println("i=" +i);
-      testClientPutWithInterrupt();
-      tearDown();
-      setUp();
-    }
-  }
-
 
   /**
    * A simple test case that we are actually

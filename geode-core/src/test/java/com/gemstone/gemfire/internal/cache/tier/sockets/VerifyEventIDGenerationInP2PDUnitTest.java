@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -86,20 +87,15 @@ public class VerifyEventIDGenerationInP2PDUnitTest extends JUnit4DistributedTest
     receiver = false;
   }
 
-  public void _testEventIDGeneration() throws Exception
-  {
+  @Ignore("TODO")
+  @Test
+  public void testEventIDGeneration() throws Exception {
     createEntry();
     vm0.invoke(() -> VerifyEventIDGenerationInP2PDUnitTest.get());
     Boolean pass = (Boolean)vm0.invoke(() -> VerifyEventIDGenerationInP2PDUnitTest.verifyResult());
     assertFalse(pass.booleanValue());
   }
 
-  @Test
-  public void testDummy() throws Exception
-  {
-    
-  }
-  
   private void createCache(Properties props) throws Exception
   {
     DistributedSystem ds = getSystem(props);

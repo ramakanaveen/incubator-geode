@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -113,9 +114,9 @@ public class InterestListRecoveryDUnitTest extends JUnit4DistributedTestCase
     createClientCache(NetworkUtils.getServerHostName(host), new Integer(PORT1), new Integer(PORT2));
   }
 
-  // this test fails because of bug# 35352 , hence commented the bug is Deferred to: Danube
-  public void XtestKeyInterestRecoveryWhileServerFailover() throws Exception
-  {
+  @Ignore("TODO: this test fails because of #35352: proxy.markServerUnavailable() is not causing interestListEndpoint to change")
+  @Test
+  public void testKeyInterestRecoveryWhileServerFailover() throws Exception {
     createEntries();
     server1.invoke(() -> InterestListRecoveryDUnitTest.createEntries());
     registerK1toK5();

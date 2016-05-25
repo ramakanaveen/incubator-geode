@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -399,8 +400,9 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    * 2. do put() operations so that size of the objects that were put >
    * localMaxMemory of partition region
    */
-  public void _testLocalMaxMemoryInPartitionedRegion() throws Throwable
-  {
+  @Ignore("TODO")
+  @Test
+  public void testLocalMaxMemoryInPartitionedRegion() throws Throwable {
     Host host = Host.getHost(0);
     /** creating 4 VMs */
     createVMs(host);

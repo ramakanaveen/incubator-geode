@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -143,16 +144,9 @@ public class HAGIIBugDUnitTest extends JUnit4DistributedTestCase
     assertNotNull(cache);
   }
 
-  
+  @Ignore("TODO")
   @Test
-  public void testDummy() throws Exception
-  {
-    LogWriterUtils.getLogWriter().info("This is Dummy test for the GII");  
-  }
-  
-  
-  public void _testGIIBug() throws Exception
-  {
+  public void testGIIBug() throws Exception {
 
     vm0.invoke(putFromVmBeforeGII("vm0_1"));
     populateKeySet("vm0_1");

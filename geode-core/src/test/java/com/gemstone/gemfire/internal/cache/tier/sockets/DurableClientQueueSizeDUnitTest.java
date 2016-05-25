@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -237,7 +238,9 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
     vm2.invoke(() -> DurableClientQueueSizeDUnitTest.verifyQueueSize( PoolImpl.PRIMARY_QUEUE_TIMED_OUT, PoolImpl.PRIMARY_QUEUE_TIMED_OUT));
   }
 
-  public void _testMultiPoolClientFailsOver() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testMultiPoolClientFailsOver() throws Exception {
   }
 
   public static void closeCache() throws Exception {

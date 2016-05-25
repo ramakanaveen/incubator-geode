@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -117,6 +118,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
   /**
    * Send the distribution manager a message it can't deserialize
    */
+  @Ignore("TODO: use Awaitility and reenable assertions")
   @Test
   public void testExceptionInThreads() throws InterruptedException {
     DM dm = getSystem().getDistributionManager();
@@ -131,7 +133,9 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
 //    assertTrue(!dm.exceptionInThreads());
   }
 
-  public void _testGetDistributionManagerIds() {
+  @Ignore("TODO: this passes when enabled")
+  @Test
+  public void testGetDistributionManagerIds() {
     int systemCount = 0;
     for (int h = 0; h < Host.getHostCount(); h++) {
       Host host = Host.getHost(h);
@@ -143,9 +147,6 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
 
     assertEquals(systemCount, dm.getNormalDistributionManagerIds().size());
   }
-  
-  
-
 
   /**
    * Demonstrate that a new UDP port is used when an attempt is made to

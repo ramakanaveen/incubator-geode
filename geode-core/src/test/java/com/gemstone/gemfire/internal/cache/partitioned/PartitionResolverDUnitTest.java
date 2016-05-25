@@ -19,6 +19,7 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -365,7 +366,9 @@ public class PartitionResolverDUnitTest extends JUnit4CacheTestCase {
     verifyResolverCountInVM(datastore2, getResolverCountForVM(datastore2));
   }
 
-  public void _testTxOps() {
+  @Ignore("TODO")
+  @Test
+  public void testTxOps() {
     initAccessorAndDataStore(0);
     doOps(true);
     verifyResolverCountInVM(accessor, 7);

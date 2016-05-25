@@ -72,17 +72,6 @@ public class InterruptsDUnitTest extends JUnit4CacheTestCase {
     });
   }
   
-  public void _testLoop() throws Throwable {
-    for(int i=0; i < 10; i++) {
-      System.err.println("i=" +i);
-      System.out.println("i=" +i);
-      testDRPutWithInterrupt();
-      tearDown();
-      setUp();
-    }
-  }
-
-
   /**
    * A simple test case that we are actually
    * persisting with a PR.

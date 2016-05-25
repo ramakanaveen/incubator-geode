@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -430,9 +431,9 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase
 
   }
 
-
-  public void _testEventIDPropagationForDestroyRegion() throws Exception
-  {
+  @Ignore("TODO: test passes")
+  @Test
+  public void testEventIDPropagationForDestroyRegion() throws Exception {
     createClientServerConfiguration();
     client1.invoke(() -> HAEventIdPropagationDUnitTest.setReceivedOperationToFalse());
     Object eventId1 = server1.invoke(() -> HAEventIdPropagationDUnitTest.destroyRegion());
@@ -445,8 +446,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase
     if (!eventId1.equals(eventId2)) {
       fail("Test failed as the eventIds are not equal");
     }
- }
-
+  }
 
   public static void setReceivedOperationToFalse()
   {

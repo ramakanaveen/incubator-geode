@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -606,12 +607,9 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
     }
   }
 
-  /**
-   *
-   *
-   * @throws Exception
-   */
-  public void _testSpecificClientCQIsGIIedPart1() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testSpecificClientCQIsGIIedPart1() throws Exception {
     Integer size = Integer.valueOf(10);
     // slow start for dispatcher
     serverVM0.invoke(() -> ConflationDUnitTest.setIsSlowStart( "30000" ));

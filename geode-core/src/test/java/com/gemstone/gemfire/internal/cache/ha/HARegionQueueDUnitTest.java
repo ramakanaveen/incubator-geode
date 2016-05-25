@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import junit.framework.Assert;
@@ -224,12 +226,14 @@ public class HARegionQueueDUnitTest extends DistributedTestCase {
    */
   
   /**
-   * Behaviour of take() has been changed for relaible messaging feature. Region queue take()
+   * Behaviour of take() has been changed for reliable messaging feature. Region queue take()
    * operation will no longer add to the Dispatch Message Map. Hence disabling the test - SUYOG
-  */
-    
-  public void _testBugNo35988() throws Exception
-  {
+   *
+   * Test for #35988 HARegionQueue.take() is not functioning as expected
+   */
+  @Ignore("TODO")
+  @Test
+  public void testBugNo35988() throws Exception {
     
     CacheSerializableRunnable createQueue = new CacheSerializableRunnable(
         "CreateCache, HARegionQueue and start thread") {

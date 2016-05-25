@@ -19,6 +19,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -839,13 +840,25 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
       }
     });
   }
-  
-  public void _testBug42195() {
+
+  /**
+   * Replicate Region test for bug #42195: putIfAbsent from client does not put old value in local cache
+   */
+  @Ignore("TODO")
+  @Test
+  public void testBug42195() {
     doPutIfAbsentPutsKeyInLocalClientCacheWork(REP_REG_NAME);
   }
-  public void _testBug42195PR() {
+
+  /**
+   * Partitioned Region test for bug #42195: putIfAbsent from client does not put old value in local cache
+   */
+  @Ignore("TODO")
+  @Test
+  public void testBug42195PR() {
     doPutIfAbsentPutsKeyInLocalClientCacheWork(PR_REG_NAME);
   }
+
   private void doPutIfAbsentPutsKeyInLocalClientCacheWork(final String regionName) {
     Host host = Host.getHost(0);
     VM server = host.getVM(0);

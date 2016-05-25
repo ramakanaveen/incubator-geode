@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -177,10 +178,11 @@ public class TXOrderDUnitTest extends JUnit4CacheTestCase {
   }
 
   /**
-   * test bug#40870
-   * @throws Exception
+   * Tests fix for #40870 Remote CacheListeners invoke afterCreate with Operation.LOCAL_LOAD_CREATE when create executed transactionally"
    */
-  public void _testFarSideOpForLoad() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testFarSideOpForLoad() throws Exception {
     Host host = Host.getHost(0);
     VM vm1 = host.getVM(0);
     VM vm2 = host.getVM(1);

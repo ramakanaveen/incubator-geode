@@ -217,7 +217,9 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * while the first VM is connected. Also, verify that the first client is not
    * affected by the second one attempting to connect.
    */
-  public void XtestMultipleVMsWithSameDurableId() {
+  @Ignore("TODO")
+  @Test
+  public void testMultipleVMsWithSameDurableId() {
     // Start a server
     final int serverPort = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
         .intValue();

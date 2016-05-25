@@ -19,6 +19,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -214,8 +215,9 @@ public class UnregisterInterestDUnitTest extends JUnit4DistributedTestCase {
     client2.invoke(() -> UnregisterInterestDUnitTest.timedWaitForInvalidates(5));
   }
 
-  public void _testUnregisterInterestFilters() throws Exception {
-    
+  @Ignore("TODO")
+  @Test
+  public void testUnregisterInterestFilters() throws Exception {
   }
 
   public static void checkRIArtifacts(Integer interestType, Integer value, Integer valueInv) {

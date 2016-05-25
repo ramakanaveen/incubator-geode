@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.parallel;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -143,7 +144,9 @@ public class ParallelGatewaySenderQueueOverflowDUnitTest extends WANTestBase {
    *   
    * @throws Exception
    */
-  public void _testParallelSenderQueueEventsOverflow() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testParallelSenderQueueEventsOverflow() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
 
@@ -224,7 +227,9 @@ public class ParallelGatewaySenderQueueOverflowDUnitTest extends WANTestBase {
    * 
    * @throws Exception
    */
-  public void _testParallelSenderQueueEventsOverflow_2() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testParallelSenderQueueEventsOverflow_2() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
 
@@ -305,7 +310,9 @@ public class ParallelGatewaySenderQueueOverflowDUnitTest extends WANTestBase {
     vm3.invoke(() -> WANTestBase.validateRegionSize( getTestMethodName(), 50 ));
   }
 
-  public void _testParallelSenderQueueNoEventsOverflow() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testParallelSenderQueueNoEventsOverflow() throws Exception {
     Integer lnPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     Integer nyPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, lnPort ));
 
@@ -384,7 +391,9 @@ public class ParallelGatewaySenderQueueOverflowDUnitTest extends WANTestBase {
    * Test to validate that ParallelGatewaySenderQueue diskSynchronous attribute
    * when persistence of sender is enabled. 
    */
-  public void _test_ValidateParallelGatewaySenderQueueAttributes_1() {
+  @Ignore("TODO")
+  @Test
+  public void test_ValidateParallelGatewaySenderQueueAttributes_1() {
     Integer localLocPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     
     Integer remoteLocPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, localLocPort ));
@@ -447,7 +456,9 @@ public class ParallelGatewaySenderQueueOverflowDUnitTest extends WANTestBase {
    * Test to validate that ParallelGatewaySenderQueue diskSynchronous attribute
    * when persistence of sender is not enabled. 
    */
-  public void _test_ValidateParallelGatewaySenderQueueAttributes_2() {
+  @Ignore("TODO")
+  @Test
+  public void test_ValidateParallelGatewaySenderQueueAttributes_2() {
     Integer localLocPort = (Integer)vm0.invoke(() -> WANTestBase.createFirstLocatorWithDSId( 1 ));
     
     Integer remoteLocPort = (Integer)vm1.invoke(() -> WANTestBase.createFirstRemoteLocator( 2, localLocPort ));

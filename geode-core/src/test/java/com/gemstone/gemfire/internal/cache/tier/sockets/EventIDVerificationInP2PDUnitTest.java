@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -103,8 +104,9 @@ public class EventIDVerificationInP2PDUnitTest extends JUnit4DistributedTestCase
     verifyOperations();
   }
 
-  public void _testEventIDsNOACK() throws Exception
-  {
+  @Ignore("TODO")
+  @Test
+  public void testEventIDsNOACK() throws Exception {
     createServerCache(new Integer(0));
     vm0.invoke(() -> EventIDVerificationInP2PDUnitTest.createServerCache( new Integer(0) ));
 

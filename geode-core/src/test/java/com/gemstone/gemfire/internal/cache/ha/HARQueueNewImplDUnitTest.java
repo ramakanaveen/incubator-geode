@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.gemstone.gemfire.LogWriter;
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -553,11 +556,6 @@ public class HARQueueNewImplDUnitTest extends DistributedTestCase {
     serverVM1.invoke(() -> ConflationDUnitTest.unsetIsSlowStart());
   }
 
-  /*
-   * public void PtestRefCountForConcurrentPutAndRemove() throws Exception { }
-   * public void PtestRefCountForConcurrentGIIPut() throws Exception { }
-   */
-
   /**
    * This test verifies that when two BridgeServerImpl instances are created in
    * a single VM, they do share the client-messages-region.
@@ -751,14 +749,13 @@ public class HARQueueNewImplDUnitTest extends DistributedTestCase {
   }
 
   /**
-   * This test verifies that the memory foorprint of the ha region queues is
+   * This test verifies that the memory footprint of the ha region queues is
    * less when ha-overflow is enabled (with an appropriate value of haCapacity)
    * compared to when it is disabled, for the same amount of data feed.
-   * 
-   * @throws Exception
    */
-  public void _testMemoryFootprintOfHARegionQueuesWithAndWithoutOverflow()
-      throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testMemoryFootprintOfHARegionQueuesWithAndWithoutOverflow() throws Exception {
     serverVM0.invoke(() -> HARQueueNewImplDUnitTest.closeCache());
     serverVM1.invoke(() -> HARQueueNewImplDUnitTest.closeCache());
     Thread.sleep(2000);

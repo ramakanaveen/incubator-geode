@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -669,7 +670,9 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
    * Test's Number of Instantiators at all clients & servers with one Server
    * being stopped and then restarted
    */
-  public void _testInstantiatorsWithServerKillAndReInvoked() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testInstantiatorsWithServerKillAndReInvoked() throws Exception {
     PORT1 = initServerCache(server1);
     PORT2 = initServerCache(server2);
     client1
@@ -773,14 +776,14 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
     factory.setPoolName(p.getName());
     cache.createRegion(REGION_NAME, factory.create());
   }
+
   /**
    * Test's same eventId being same for the Instantiators at all clients &
    * servers
-   * 
    */
-  // disabled - the eventID received does not match the sender's eventID.  Why is this a requirement anyway?
-  public void _testInstantiatorsEventIdVerificationClientsAndServers()
-      throws Exception {
+  @Ignore("TODO: disabled - the eventID received does not match the sender's eventID.  Why is this a requirement anyway?")
+  @Test
+  public void _testInstantiatorsEventIdVerificationClientsAndServers() throws Exception {
     PORT1 = initServerCache(server1, 1);
     PORT2 = initServerCache(server2, 2);
 
@@ -801,7 +804,6 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
     assertTrue("EventId found Different", pass.booleanValue());
 
     PoolImpl.IS_INSTANTIATOR_CALLBACK = false;
-
   }
   
   @Test

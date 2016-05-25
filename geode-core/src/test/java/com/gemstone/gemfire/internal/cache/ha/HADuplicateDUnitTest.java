@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -120,8 +121,9 @@ public class HADuplicateDUnitTest extends JUnit4DistributedTestCase
     server2.invoke(() -> HADuplicateDUnitTest.closeCache());
   }
 
-  public void _testDuplicate() throws Exception
-  {
+  @Ignore("TODO")
+  @Test
+  public void testDuplicate() throws Exception {
     createClientServerConfiguration();
     server1.invoke(putForKnownKeys());
     server1.invoke(stopServer());
