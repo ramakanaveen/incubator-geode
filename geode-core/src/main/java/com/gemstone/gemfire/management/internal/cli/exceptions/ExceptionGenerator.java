@@ -18,7 +18,9 @@ package com.gemstone.gemfire.management.internal.cli.exceptions;
 
 import joptsimple.OptionException;
 
+import com.gemstone.gemfire.management.internal.cli.parser.CommandTarget;
 import com.gemstone.gemfire.management.internal.cli.parser.Option;
+import com.gemstone.gemfire.management.internal.cli.parser.OptionSet;
 
 /**
  * Converts joptsimple exceptions into corresponding exceptions for cli
@@ -27,21 +29,21 @@ import com.gemstone.gemfire.management.internal.cli.parser.Option;
  */
 public class ExceptionGenerator {
 
-  public static CliCommandOptionException generate(Option option, OptionException e) {
-    if (e.getClass().getSimpleName().contains("MissingRequiredOptionException")) {
-      return new CliCommandOptionMissingException(e);
+  public static CliCommandOptionException generate(Option option, OptionException cause) {
+    if (cause.getClass().getSimpleName().contains("MissingRequiredOptionException")) {
+      return new CliCommandOptionMissingException(option, cause);
 
-    } else if (e.getClass().getSimpleName().contains("OptionMissingRequiredArgumentException")) {
-      return new CliCommandOptionValueMissingException(e);
+    } else if (cause.getClass().getSimpleName().contains("OptionMissingRequiredArgumentException")) {
+      return new CliCommandOptionValueMissingException(option, cause);
 
-    } else if (e.getClass().getSimpleName().contains("UnrecognizedOptionException")) {
-      return new CliCommandOptionNotApplicableException(e);
+    } else if (cause.getClass().getSimpleName().contains("UnrecognizedOptionException")) {
+      return new CliCommandOptionNotApplicableException(option, cause);
 
-    } else if (e.getClass().getSimpleName().contains("MultipleArgumentsForOptionException")) {
-      return new CliCommandOptionHasMultipleValuesException(e);
+    } else if (cause.getClass().getSimpleName().contains("MultipleArgumentsForOptionException")) {
+      return new CliCommandOptionHasMultipleValuesException(option, cause);
 
     } else {
-      return new CliCommandOptionException(e);
+      return new CliCommandOptionException(cause);
     }
   }
 }
