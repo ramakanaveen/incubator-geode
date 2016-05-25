@@ -16,30 +16,18 @@
  */
 package com.gemstone.gemfire.test.dunit.tests;
 
-import org.junit.experimental.categories.Category;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-import static org.assertj.core.api.Assertions.*;
-
-import org.junit.experimental.categories.Category;
-
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
-@SuppressWarnings("serial")
 @Category(DistributedTest.class)
+@SuppressWarnings("serial")
 public class GetTestMethodNameDUnitTest extends JUnit4DistributedTestCase {
-
-  public GetTestMethodNameDUnitTest(final String name) {
-    super();
-  }
 
   @Test
   public void testGetTestMethodName() {

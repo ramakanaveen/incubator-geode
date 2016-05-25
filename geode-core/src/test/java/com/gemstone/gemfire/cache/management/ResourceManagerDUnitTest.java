@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.cache.management;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,6 +24,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -45,7 +39,6 @@ import com.gemstone.gemfire.cache.partition.PartitionRegionInfo;
 import com.gemstone.gemfire.cache.query.QueryException;
 import com.gemstone.gemfire.cache.query.QueryInvalidException;
 import com.gemstone.gemfire.cache.query.SelectResults;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.cache.BucketAdvisor;
@@ -56,9 +49,9 @@ import com.gemstone.gemfire.internal.cache.PartitionedRegion;
 import com.gemstone.gemfire.internal.cache.PartitionedRegionDataStore;
 import com.gemstone.gemfire.internal.cache.PartitionedRegionDataStore.CreateBucketResult;
 import com.gemstone.gemfire.internal.cache.control.InternalResourceManager;
+import com.gemstone.gemfire.internal.cache.control.InternalResourceManager.ResourceType;
 import com.gemstone.gemfire.internal.cache.control.ResourceEvent;
 import com.gemstone.gemfire.internal.cache.control.ResourceListener;
-import com.gemstone.gemfire.internal.cache.control.InternalResourceManager.ResourceType;
 import com.gemstone.gemfire.internal.cache.partitioned.BecomePrimaryBucketMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.BecomePrimaryBucketMessage.BecomePrimaryBucketResponse;
 import com.gemstone.gemfire.internal.cache.partitioned.Bucket;
@@ -69,13 +62,14 @@ import com.gemstone.gemfire.internal.cache.partitioned.InternalPartitionDetails;
 import com.gemstone.gemfire.internal.cache.partitioned.PRLoad;
 import com.gemstone.gemfire.internal.cache.partitioned.RemoveBucketMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.RemoveBucketMessage.RemoveBucketResponse;
-import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
@@ -88,11 +82,7 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 public class ResourceManagerDUnitTest extends JUnit4CacheTestCase {
   private static final Logger logger = LogService.getLogger();
 
-  public static final int SYSTEM_LISTENERS = 1;
-
-  public ResourceManagerDUnitTest(final String name) {
-    super();
-  }
+  private static final int SYSTEM_LISTENERS = 1;
 
   /**
    * Creates a cache in the controller and exercises all methods on the
