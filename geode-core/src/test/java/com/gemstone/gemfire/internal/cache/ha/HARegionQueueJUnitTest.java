@@ -38,6 +38,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -1974,7 +1975,9 @@ public class HARegionQueueJUnitTest
    * Test is commented as assertion for sequence violation is removed in the
    * source(HARegionQueue.putObject) is removed. - Suyog
    */
-  public void _testExceptionInPutForSequenceViolationWithoutGII() {
+  @Ignore("TODO")
+  @Test
+  public void testExceptionInPutForSequenceViolationWithoutGII() {
     DistributedSystem ds = cache.getDistributedSystem();
     cache.close();
     ds.disconnect();
@@ -2011,7 +2014,7 @@ public class HARegionQueueJUnitTest
     
     try{
       rq.put(cf2);
-      fail("Test failed because asertion error was expected but there was'nt any");  
+      fail("Test failed because assertion error was expected but there was'nt any");
     }catch(AssertionError ignore) {
       System.out.println("Got the right assertion failure");
     }catch(Exception e) {

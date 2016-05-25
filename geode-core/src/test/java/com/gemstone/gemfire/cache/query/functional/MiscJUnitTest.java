@@ -55,6 +55,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -77,7 +78,9 @@ public class MiscJUnitTest {
     CacheUtils.closeCache();
   }
 
-  public void xtestNestQueryInFromClause() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testNestQueryInFromClause() throws Exception {
     Region region = CacheUtils.createRegion("Portfolios", Portfolio.class);
     region.put("0", new Portfolio(0));
     region.put("1", new Portfolio(1));
@@ -91,7 +94,9 @@ public class MiscJUnitTest {
     if (!p.status.equals("active") || p.getID() != 0) fail(query.getQueryString());
   }
 
-  public void xtestNestQueryInWhereClause() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testNestQueryInWhereClause() throws Exception {
     Region region = CacheUtils.createRegion("Portfolios", Portfolio.class);
     region.put("0", new Portfolio(0));
     region.put("1", new Portfolio(1));
@@ -119,7 +124,9 @@ public class MiscJUnitTest {
     // DISTINCT * FROM /Portfolios p where p.ID = x.ID).status
   }
 
-  public void xtestVoidMethods() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testVoidMethods() throws Exception {
     Region region = CacheUtils.createRegion("Data", Data.class);
     region.put("0", new Data());
     Query query = CacheUtils.getQueryService().newQuery("SELECT DISTINCT * FROM /Data where voidMethod");
@@ -130,7 +137,9 @@ public class MiscJUnitTest {
     if (result.size() != 1) fail(query.getQueryString());
   }
 
-  public void xtestMiscQueries() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testMiscQueries() throws Exception {
     String testData[] = { "NULL", "UNDEFINED"};
     for (int i = 0; i < testData.length; i++) {
       Query query = CacheUtils.getQueryService().newQuery("SELECT DISTINCT * FROM " + testData[i]);
@@ -139,7 +148,9 @@ public class MiscJUnitTest {
     }
   }
 
-  public void xtestBug32763() throws FunctionDomainException, TypeMismatchException, NameResolutionException,
+  @Ignore("TODO")
+  @Test
+  public void testBug32763() throws FunctionDomainException, TypeMismatchException, NameResolutionException,
       QueryInvocationTargetException, TimeoutException, CacheWriterException
     {
     Region region = CacheUtils.createRegion("pos", Portfolio.class);
@@ -352,7 +363,9 @@ public class MiscJUnitTest {
    * Tests the where clause formed with CompiledComparison nesting
    * @throws Exception
    */
-  public void _testBug40333_InPartitionedRegion_1() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testBug40333_InPartitionedRegion_1() throws Exception {
     CacheUtils.startCache();
     final Cache cache = CacheUtils.getCache();
     AttributesFactory attributesFactory = new AttributesFactory();
@@ -391,7 +404,9 @@ public class MiscJUnitTest {
    * Tests the where clause formed with CompiledComparison nesting with CompiledIN
    * @throws Exception
    */
-  public void _testBug40333_InPartitionedRegion_2() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testBug40333_InPartitionedRegion_2() throws Exception {
     CacheUtils.startCache();
     final Cache cache = CacheUtils.getCache();
     AttributesFactory attributesFactory = new AttributesFactory();

@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -75,7 +76,7 @@ public class CompiledJunctionInternalsJUnitTest {
   
  /*************************************************
   AND JUNCTION TESTS.
-RangeJunction related tests when part of GroupJunction, 
+RangeJunction related tests when part of GroupJunction,
  CompositeGroupJunction or AllGroupJunction
  **************************************************/ 
 
@@ -1329,7 +1330,9 @@ RangeJunction related tests when part of GroupJunction,
    * Tests the creation of a single RangeJunction if the CompiledJunction only
    * contains same index condition without iter operand for OR
    */
-  public void _testOrganizedOperandsSingleRangeJunctionCreationWithNoIterOperandForOR() {
+  @Ignore("TODO")
+  @Test
+  public void testOrganizedOperandsSingleRangeJunctionCreationWithNoIterOperandForOR() {
     LogWriter logger = CacheUtils.getLogger();
     try {
       CompiledComparison cv[] = null;
@@ -2664,7 +2667,9 @@ RangeJunction related tests when part of GroupJunction,
    * NotEqualConditionEvaluator.
    * 
    */
-  public void _testNotEqualCoupledWithUndefinedAndNotNull() {
+  @Ignore("TODO")
+  @Test
+  public void testNotEqualCoupledWithUndefinedAndNotNull() {
     LogWriter logger = CacheUtils.getLogger();
     try {
       ExecutionContext context = new QueryExecutionContext(null, CacheUtils

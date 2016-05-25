@@ -33,6 +33,7 @@ import javax.transaction.UserTransaction;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -410,11 +411,12 @@ public class QueryAndJtaJUnitTest {
     assertEquals(0, ((SelectResults) q.execute()).size());
   }
 
-  /*
+  /**
    * Enable this test when indexes are made transactional.
    */
-  //@Test
-  public void _testFailedIndexUpdateOnJTACommitForPut() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testFailedIndexUpdateOnJTACommitForPut() throws Exception {
     Person.THROW_ON_INDEX = true;
     AttributesFactory af = new AttributesFactory();
     af.setDataPolicy(DataPolicy.REPLICATE);

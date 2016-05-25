@@ -2442,62 +2442,6 @@ public class OplogJUnitTest extends DiskRegionTestingBase {
   }
 
   /**
-   * Tests if the preblowing of a file with size greater than the disk space
-   * available so that preblowing results in IOException , is able to recover
-   * without problem
-   *
-   */
-  //Now we preallocate spaces for if files and also crfs and drfs. So the below test is not valid
-  // any more. See revision: r42359 and r42320. So disabling this test.
-  public void _testPreblowErrorCondition()
-  {
-    DiskStoreFactory dsf = cache.createDiskStoreFactory();
-    ((DiskStoreFactoryImpl)dsf).setMaxOplogSizeInBytes(100000000L * 1024L * 1024L * 1024L);
-    dsf.setAutoCompact(false);
-    File dir = new File("testingDirectoryDefault");
-    dir.mkdir();
-    dir.deleteOnExit();
-    File[] dirs = { dir };
-    int size[] = new int[] { Integer.MAX_VALUE };
-    dsf.setDiskDirsAndSizes(dirs, size);
-    AttributesFactory factory = new AttributesFactory();
-    logWriter.info("<ExpectedException action=add>"
-                   + "Could not pregrow"
-                   + "</ExpectedException>");
-    try {
-      DiskStore ds = dsf.create("test");
-      factory.setDiskStoreName(ds.getName());
-      factory.setDiskSynchronous(true);
-      factory.setDataPolicy(DataPolicy.PERSISTENT_REPLICATE);
-      factory.setScope(Scope.LOCAL);
-      try {
-        region = cache.createVMRegion("test", factory.createRegionAttributes());
-      }
-      catch (Exception e1) {
-        logWriter.error("Test failed due to exception", e1);
-        fail("Test failed due to exception " + e1);
-
-      }
-      region.put("key1", new byte[900]);
-      byte[] val = null;
-      try {
-        val = (byte[])((LocalRegion)region).getValueOnDisk("key1");
-      }
-      catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-        fail(e.toString());
-      }
-      assertTrue(val.length == 900);
-    } finally {
-      logWriter.info("<ExpectedException action=remove>"
-                     + "Could not pregrow"
-                     + "</ExpectedException>");
-    }
-    closeDown();
-  }
-
-  /**
    * Tests if the byte buffer pool in asynch mode tries to contain the pool size
    *
    */

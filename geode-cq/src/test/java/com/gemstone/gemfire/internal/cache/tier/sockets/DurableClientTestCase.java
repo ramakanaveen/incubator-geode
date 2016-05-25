@@ -1056,15 +1056,15 @@ public class DurableClientTestCase extends DistributedTestCase {
   }
 
   @Ignore("This test is failing inconsistently, see bug 51258")
-  public void DISABLED_testDurableNonHAFailover() throws InterruptedException
-  {
-      durableFailover(0);
-      durableFailoverAfterReconnect(0);   
+  @Test
+  public void testDurableNonHAFailover() throws InterruptedException {
+    durableFailover(0);
+    durableFailoverAfterReconnect(0);
   }
 
   @Ignore("This test is failing inconsistently, see bug 51258")
-  public void DISABLED_testDurableHAFailover() throws InterruptedException
-  {
+  @Test
+  public void testDurableHAFailover() throws InterruptedException {
     //Clients see this when the servers disconnect
     IgnoredException.addIgnoredException("Could not find any server");
     durableFailover(1);

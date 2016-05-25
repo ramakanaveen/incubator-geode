@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -166,46 +167,39 @@ public class BlockingHARegionQueueJUnitTest extends HARegionQueueJUnitTest
   /**
    * Test Scenario :Blocking Queue capacity is 1. The first put should be
    * successful.The second put should block till the first put expires.
-   * 
    */
   //fix for 40314 - capacity constraint is checked for primary only and
   //expiry is not applicable on primary so marking this test as invalid.
-  public void _testBlockingPutAndExpiry()
-  {
-    try {
-      HARegionQueueAttributes hrqa = new HARegionQueueAttributes();
-      hrqa.setBlockingQueueCapacity(1);
-      hrqa.setExpiryTime(4);
-      final HARegionQueue hrq = this.createHARegionQueue(
-          "testBlockingPutAndExpiry", hrqa);
-      
-      EventID id1 = new EventID(new byte[] { 1 }, 1, 1);
-      hrq.put(new ConflatableObject("key1", "val1", id1, false, "testing"));
-      Thread t1 = new Thread(new Runnable() {
-        public void run()
-        {
-          try {
-            EventID id2 = new EventID(new byte[] { 1 }, 1, 2);
-            hrq
-                .put(new ConflatableObject("key1", "val2", id2, false,
-                    "testing"));
-          }
-          catch (Exception e) {
-            encounteredException = true;
-          }
-        }
-      });
-      t1.start();
-      Thread.sleep(2000);
-      assertTrue("put-thread expected to blocked, but was not ", t1.isAlive());
-      Thread.sleep(2500);
-      assertFalse("Put-thread blocked unexpectedly", t1.isAlive());
-      assertFalse("Exception occured in put-thread", encounteredException);
+  @Ignore("TODO")
+  @Test
+  public void testBlockingPutAndExpiry() throws Exception {
+    HARegionQueueAttributes hrqa = new HARegionQueueAttributes();
+    hrqa.setBlockingQueueCapacity(1);
+    hrqa.setExpiryTime(4);
+    final HARegionQueue hrq = this.createHARegionQueue(
+        "testBlockingPutAndExpiry", hrqa);
 
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      fail("Test failed because of exception " + e);
-    }
+    EventID id1 = new EventID(new byte[] { 1 }, 1, 1);
+    hrq.put(new ConflatableObject("key1", "val1", id1, false, "testing"));
+    Thread t1 = new Thread(new Runnable() {
+      public void run()
+      {
+        try {
+          EventID id2 = new EventID(new byte[] { 1 }, 1, 2);
+          hrq
+              .put(new ConflatableObject("key1", "val2", id2, false,
+                  "testing"));
+        }
+        catch (Exception e) {
+          encounteredException = true;
+        }
+      }
+    });
+    t1.start();
+    Thread.sleep(2000);
+    assertTrue("put-thread expected to blocked, but was not ", t1.isAlive());
+    Thread.sleep(2500);
+    assertFalse("Put-thread blocked unexpectedly", t1.isAlive());
+    assertFalse("Exception occurred in put-thread", encounteredException);
   }
 }

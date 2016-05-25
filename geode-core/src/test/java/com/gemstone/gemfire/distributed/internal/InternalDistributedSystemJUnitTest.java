@@ -36,6 +36,7 @@ import java.util.logging.Level;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -285,7 +286,9 @@ public class InternalDistributedSystemJUnitTest
    *
    * @deprecated This test creates a "loner" distributed system
    */
-  public void _testEmptyLocators() {
+  @Ignore("TODO")
+  @Test
+  public void testEmptyLocators() {
     Properties props = new Properties();
     props.put(DistributionConfig.MCAST_PORT_NAME, String.valueOf(0));
     props.put(DistributionConfig.LOCATORS_NAME, "");
@@ -390,11 +393,13 @@ public class InternalDistributedSystemJUnitTest
   }
 
   /**
-   * @deprecated This test cannot be run because the
+   * This test cannot be run because the
    * gemfire.ack-wait-threshold system property is set on this VM,
    * thus overriding the value passed into the API.
    */
-  public void _testGetAckWaitThreshold() {
+  @Ignore("TODO: This test cannot be run because the gemfire.ack-wait-threshold system property is set on this VM, thus overriding the value passed into the API. Use ProvideSystemProperty Rule.")
+  @Test
+  public void testGetAckWaitThreshold() {
     String time = String.valueOf(DistributionConfig.MIN_ACK_WAIT_THRESHOLD);
     Properties props = new Properties();
     // a loner is all this test needs
@@ -406,11 +411,13 @@ public class InternalDistributedSystemJUnitTest
   }
 
   /**
-   * @deprecated This test cannot be run because the
+   * This test cannot be run because the
    * gemfire.ack-wait-threshold system property is set on this VM,
    * thus overriding the value passed into the API.
    */
-  public void _testInvalidAckWaitThreshold() {
+  @Ignore("TODO: This test cannot be run because the gemfire.ack-wait-threshold system property is set on this VM, thus overriding the value passed into the API. Use ProvideSystemProperty Rule.")
+  @Test
+  public void testInvalidAckWaitThreshold() {
     Properties props = new Properties();
     props.put(DistributionConfig.ACK_WAIT_THRESHOLD_NAME, "blah");
     try {

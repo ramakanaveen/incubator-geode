@@ -37,6 +37,7 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -90,7 +91,9 @@ public class NestedQueryJUnitTest {
     CacheUtils.closeCache();
   }
 
-  public void atestQueries() throws Exception{
+  @Ignore("TODO")
+  @Test
+  public void testQueries_TODO() throws Exception{
     String queryString;
     Query query;
     Object result;

@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -308,35 +309,4 @@ public class LIFOEvictionAlgoEnabledRegionJUnitTest {
       fail("Test failed");
     }
   }
-  /**
-   * This test does the following :<br>
-   * 1)Verify Entry value after faultin should be byte []<br>
-   */
-  // not using it. added as may needed if functionality gets added
-   public void _testFaultInEntryValueShouldbeSerialized() {
-     try {
-       assertNotNull(cache);
-       LocalRegion rgn = (LocalRegion)cache.getRegion(Region.SEPARATOR + regionName);
-       assertNotNull(rgn);
-
-       assertEquals("Region is not properly cleared ", 0, rgn.size());
-       assertTrue("Entry count not 0 ", new Long(0).equals(new Long(lifoStats
-           .getCounter())));
-       // put eight entries into the region
-       for (int i = 0; i < 8; i++) {
-         rgn.put(new Long(i), new Long(i));
-       }
-
-       // assert for value should be Byte Array 
-       // here value is not delivered to client and should be get deserialized
-       // value in region should be serialized form
-       assertTrue("FaultIn Value in not a byte Array ",rgn.get(new Long(6)) instanceof byte[]);
-       
-     }
-     catch (Exception ex) {
-       ex.printStackTrace();
-       fail("Test failed");
-     }
-  }
 }
-

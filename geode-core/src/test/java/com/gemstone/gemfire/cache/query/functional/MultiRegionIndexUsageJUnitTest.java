@@ -33,6 +33,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -223,8 +224,9 @@ public class MultiRegionIndexUsageJUnitTest {
 
   }// end of test
 
-  //@Test
-  public void _testChangedFormClauseOrder2() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testChangedFormClauseOrder2() throws Exception {
     CacheUtils
         .log("------------- testChangedFormClauseOrder2 start------------- ");
     SelectResults rs[][] = new SelectResults[1][2];
@@ -622,8 +624,9 @@ public class MultiRegionIndexUsageJUnitTest {
 
   }// end of test
 
-  //@Test
-  public void _testFunctionUse2() throws Exception {
+  @Ignore("TODO")
+  @Test
+  public void testFunctionUse2() throws Exception {
     CacheUtils.log("------------- testFunctionUse2 start------------- ");
     SelectResults rs[][] = new SelectResults[1][2];
     // Test Case No. IUMR019
