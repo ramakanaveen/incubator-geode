@@ -281,27 +281,6 @@ public class InternalDistributedSystemJUnitTest
   }
 
   /**
-   * Test a configuration with an <code>mcastPort</code> of zero and
-   * an empty <code>locators</code>.
-   *
-   * @deprecated This test creates a "loner" distributed system
-   */
-  @Ignore("TODO")
-  @Test
-  public void testEmptyLocators() {
-    Properties props = new Properties();
-    props.put(DistributionConfig.MCAST_PORT_NAME, String.valueOf(0));
-    props.put(DistributionConfig.LOCATORS_NAME, "");
-    try {
-      createSystem(props);
-      fail("Should have thrown an IllegalArgumentException");
-
-    } catch (IllegalArgumentException ex) {
-      // pass...
-    }
-  }
-
-  /**
    * Tests that getting the log level is what we expect.
    */
   @Test
