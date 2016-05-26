@@ -1067,27 +1067,27 @@ public interface DiskEntry extends RegionEntry {
         }
         if (entry instanceof LRUEntry) {
           LRUEntry le = (LRUEntry)entry;
-          boolean wasEvicted = le.testEvicted();
-          le.unsetEvicted();
-          if (!Token.isRemovedFromDisk(newValue)) {
-            if(newValue == Token.TOMBSTONE) {
-              if (oldValue == null) {
-                dr.incNumOverflowOnDisk(-1L);
-                dr.incNumOverflowBytesOnDisk(-oldValueLength);
-                incrementBucketStats(region, 0/*InVM*/, -1/*OnDisk*/, -oldValueLength);
-              } else {
-                dr.incNumEntriesInVM(-1L);
-              }
+          le.unsetEvicted();          
+        }
+        if (!Token.isRemovedFromDisk(newValue)) {
+          if(newValue == Token.TOMBSTONE) {
+            if (oldValue == null) {
+              dr.incNumOverflowOnDisk(-1L);
+              dr.incNumOverflowBytesOnDisk(-oldValueLength);
+              incrementBucketStats(region, 0/*InVM*/, -1/*OnDisk*/, -oldValueLength);
             } else {
-              if (oldValue == null) {
-                dr.incNumEntriesInVM(1L);
-                dr.incNumOverflowOnDisk(-1L);
-                dr.incNumOverflowBytesOnDisk(-oldValueLength);
-                incrementBucketStats(region, 1/*InVM*/, -1/*OnDisk*/, -oldValueLength);
-              } else if(oldValue == Token.TOMBSTONE) {
-                dr.incNumEntriesInVM(1L);
-                incrementBucketStats(region, 1/*InVM*/, 0/*OnDisk*/, 0/*overflowBytesOnDisk*/);
-              }
+              dr.incNumEntriesInVM(-1L);
+              incrementBucketStats(region, -1/*InVM*/, 0/*OnDisk*/, 0);
+            }
+          } else {
+            if (oldValue == null) {
+              dr.incNumEntriesInVM(1L);
+              dr.incNumOverflowOnDisk(-1L);
+              dr.incNumOverflowBytesOnDisk(-oldValueLength);
+              incrementBucketStats(region, 1/*InVM*/, -1/*OnDisk*/, -oldValueLength);
+            } else if(oldValue == Token.TOMBSTONE) {
+              dr.incNumEntriesInVM(1L);
+              incrementBucketStats(region, 1/*InVM*/, 0/*OnDisk*/, 0/*overflowBytesOnDisk*/);
             }
           }
         }
@@ -1769,8 +1769,6 @@ public interface DiskEntry extends RegionEntry {
                   && ((LRUEntry)entry).testEvicted()) {
                 // Moved this here to fix bug 40116.
                 region.updateSizeOnEvict(entry.getKey(), entryValSize);
-                // note the old size was already accounted for
-                // onDisk was already inced so just do the valueLength here
                 dr.incNumEntriesInVM(-1);
                 dr.incNumOverflowOnDisk(1L);
                 dr.incNumOverflowBytesOnDisk(did.getValueLength());
