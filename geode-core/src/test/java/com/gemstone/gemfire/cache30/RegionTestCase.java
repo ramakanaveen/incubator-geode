@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +34,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.LogWriter;
@@ -74,6 +68,7 @@ import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
@@ -115,10 +110,6 @@ public abstract class RegionTestCase extends JUnit4CacheTestCase {
     subrgnWriter = null;
   }
   
-  public RegionTestCase() {
-    super();
-  }
-  
   @Override
   public final void postTearDownCacheTestCase() throws Exception {
     cleanup();
@@ -128,8 +119,6 @@ public abstract class RegionTestCase extends JUnit4CacheTestCase {
   
   protected void postTearDownRegionTestCase() throws Exception {
   }
-  
-  ////////  Helper methods
   
   /**
    * Returns a region with the given name and the attributes for this
@@ -155,7 +144,6 @@ public abstract class RegionTestCase extends JUnit4CacheTestCase {
    */
   protected abstract RegionAttributes getRegionAttributes();
   
-  
   /** pauses only if no ack */
   protected void pauseIfNecessary() {
   }
@@ -170,8 +158,6 @@ public abstract class RegionTestCase extends JUnit4CacheTestCase {
   protected void flushIfNecessary(Region r) {
     // Only needed for no-ack regions
   }
-  
-  //////////////////////  Test Methods  //////////////////////
   
   /**
    * Tests that creating an entry in a region actually creates it

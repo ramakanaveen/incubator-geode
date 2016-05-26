@@ -16,23 +16,13 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.internal.lang.ThrowableUtils.*;
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
-import static com.gemstone.gemfire.internal.lang.ThrowableUtils.*;
-
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -53,9 +43,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
-
 import org.apache.logging.log4j.Logger;
+import org.junit.AfterClass;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.DataSerializable;
@@ -117,9 +108,7 @@ import com.gemstone.gemfire.internal.cache.TXStateProxy;
 import com.gemstone.gemfire.internal.cache.Token;
 import com.gemstone.gemfire.internal.cache.TombstoneService;
 import com.gemstone.gemfire.internal.cache.delta.Delta;
-import com.gemstone.gemfire.internal.cache.versions.RegionVersionHolder;
 import com.gemstone.gemfire.internal.cache.versions.RegionVersionVector;
-import com.gemstone.gemfire.internal.cache.versions.VMRegionVersionVector;
 import com.gemstone.gemfire.internal.cache.versions.VersionTag;
 import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.internal.offheap.MemoryAllocatorImpl;
@@ -128,15 +117,14 @@ import com.gemstone.gemfire.test.dunit.AsyncInvocation;
 import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
 import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.RMIException;
+import com.gemstone.gemfire.test.dunit.IgnoredException;
+import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
@@ -150,33 +138,19 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   Properties props = new Properties();
 
   final int putRange_1Start = 1;
-
   final int putRange_1End = 5;
-
   final int putRange_2Start = 6;
-
   final int putRange_2End = 10;
-
   final int putRange_3Start = 11;
-
   final int putRange_3End = 15;
-
   final int putRange_4Start = 16;
-
   final int putRange_4End = 20;
-
   final int removeRange_1Start = 2;
-
   final int removeRange_1End = 4;
-
   final int removeRange_2Start = 7;
-
   final int removeRange_2End = 9;
 
-  public MultiVMRegionTestCase() {
-    super();
-  }
-  
+  @AfterClass
   public static void caseTearDown() throws Exception {
     disconnectAllFromDS();
   }
@@ -185,18 +159,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   protected final void postTearDownRegionTestCase() throws Exception {
     CCRegion = null;
   }
-
-  // @todo can be used in tests
-//  protected CacheSerializableRunnable createRegionTask(final String name) {
-//    return new CacheSerializableRunnable("Create Region") {
-//      public void run2() throws CacheException {
-//        assertNotNull(createRegion(name));
-//      }
-//    };
-//  }
-
-
-  ////////  Test Methods
 
   /**
    * This is a for the ConcurrentMap operations.
