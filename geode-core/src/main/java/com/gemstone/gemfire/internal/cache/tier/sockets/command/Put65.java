@@ -58,7 +58,7 @@ import com.gemstone.gemfire.internal.util.Breadcrumbs;
 import com.gemstone.gemfire.security.GemFireSecurityException;
 
 /**
- * @since 6.5 
+ * @since GemFire 6.5
  */
 public class Put65 extends BaseCommand {
 
@@ -405,8 +405,7 @@ public class Put65 extends BaseCommand {
                   servConn.getProxyID(), true, clientEvent, true);
             } else {
               result = region.basicBridgePut(key, value, delta, isObject,
-                callbackArg, servConn.getProxyID(), true, clientEvent, servConn
-                    .isSqlFabricSystem());
+                callbackArg, servConn.getProxyID(), true, clientEvent);
             }
             if (msg.isRetry() && clientEvent.isConcurrencyConflict()
                 && clientEvent.getVersionTag() != null) {

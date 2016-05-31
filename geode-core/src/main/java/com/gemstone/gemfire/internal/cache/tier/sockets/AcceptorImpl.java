@@ -95,7 +95,7 @@ import com.gemstone.gemfire.internal.util.ArrayUtils;
  * Implements the acceptor thread on the bridge server. Accepts connections from
  * the edge and starts up threads to process requests from these.
  * 
- * @since 2.0.2
+ * @since GemFire 2.0.2
  */
 @SuppressWarnings("deprecation")
 public class AcceptorImpl extends Acceptor implements Runnable
@@ -243,7 +243,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
    * The ip address or host name this acceptor is to bind to;
    * <code>null</code> or "" indicates
    * it will listen on all local addresses.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private final String bindHostName;
   
@@ -254,9 +254,6 @@ public class AcceptorImpl extends Acceptor implements Runnable
   
   /** The client health monitor tracking connections for this acceptor */
   private ClientHealthMonitor healthMonitor;
-  
-  //Identifies if this Acceptor was started by SqlFabric Procedure
-  private final boolean isSqlFabricHub ;
   
   /** bridge's setting of notifyBySubscription */
   private final boolean notifyBySubscription;
@@ -296,12 +293,10 @@ public class AcceptorImpl extends Acceptor implements Runnable
    *          the maximum number of connections allowed in the server pool
    * @param maxThreads
    *          the maximum number of threads allowed in the server pool
-   * @param  isSqlfStarted
-   *          true if the Accpetor is started via SqlFabric procedure      
    * 
    * @see SocketCreator#createServerSocket(int, int, InetAddress)
    * @see ClientHealthMonitor
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public AcceptorImpl(int port,
                       String bindHostName, boolean notifyBySubscription,
@@ -310,7 +305,6 @@ public class AcceptorImpl extends Acceptor implements Runnable
                       int maximumMessageCount, int messageTimeToLive,
                       int transactionTimeToLive,
                       ConnectionListener listener,List overflowAttributesList, 
-                      boolean isSqlfStarted,
                       boolean isGatewayReceiver, List<GatewayTransportFilter> transportFilter,
                       boolean tcpNoDelay)
       throws IOException
@@ -318,7 +312,6 @@ public class AcceptorImpl extends Acceptor implements Runnable
     this.bindHostName = calcBindHostName(c, bindHostName);
     this.connectionListener = listener == null ? new ConnectionListenerAdapter() : listener;
     this.notifyBySubscription = notifyBySubscription;
-    this.isSqlFabricHub = isSqlfStarted;
     this.isGatewayReceiver = isGatewayReceiver;
     this.gatewayTransportFilters = transportFilter;
     {
@@ -1707,7 +1700,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
 //   /**
 //    * Calculates the bind address based on gemfire.properties.
 //    * Returns null if no bind address is configured.
-//    * @since 5.7
+//    * @since GemFire 5.7
 //    */
 //   public static InetAddress calcBindAddress(Cache cache) throws IOException {
 //     InternalDistributedSystem system = (InternalDistributedSystem)cache
@@ -1735,7 +1728,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
    * @return the ip address or host name this acceptor will listen on.
    *         An "" if all local addresses will be listened to.
    
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private static String calcBindHostName(Cache cache, String bindName) {
     if (bindName != null && !bindName.equals("")) {
@@ -1773,7 +1766,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
   /**
    * Gets the address that this bridge server can be contacted on from external
    * processes.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public String getExternalAddress() {
     String result = this.bindHostName;
@@ -1826,10 +1819,6 @@ public class AcceptorImpl extends Acceptor implements Runnable
     return connectionListener;
   }  
   
-  public boolean isSqlFabricSystem() {
-    return this.isSqlFabricHub;
-  }
-
   public boolean isGatewayReceiver() {
     return this.isGatewayReceiver;
   }

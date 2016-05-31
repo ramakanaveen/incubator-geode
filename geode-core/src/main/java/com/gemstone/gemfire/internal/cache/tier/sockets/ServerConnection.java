@@ -72,7 +72,7 @@ import com.gemstone.gemfire.security.GemFireSecurityException;
  * cache connection. Each server connection runs in its own thread to maximize
  * concurrency and improve response times to edge requests
  *
- * @since 2.0.2
+ * @since GemFire 2.0.2
  */
 public class ServerConnection implements Runnable {
 
@@ -2098,9 +2098,5 @@ public class ServerConnection implements Runnable {
   
   public void setClientDisconnectCleanly() {
     this.clientDisconnectedCleanly = true;
-  }
-  
-  public boolean isSqlFabricSystem() {
-    return this.acceptor.isSqlFabricSystem();
   }
 }

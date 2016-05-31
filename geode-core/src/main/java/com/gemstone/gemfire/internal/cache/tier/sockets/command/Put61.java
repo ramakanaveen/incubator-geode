@@ -47,7 +47,7 @@ import com.gemstone.gemfire.internal.security.AuthorizeRequest;
 import com.gemstone.gemfire.security.GemFireSecurityException;
 
 /**
- * @since 6.1 
+ * @since GemFire 6.1
  */
 public class Put61 extends BaseCommand {
 
@@ -233,8 +233,7 @@ public class Put61 extends BaseCommand {
               delta = valuePart.getSerializedForm();              
             }
             result = region.basicBridgePut(key, value, delta, isObject,
-                callbackArg, servConn.getProxyID(), true, new EventIDHolder(eventId), servConn
-                    .isSqlFabricSystem());
+                callbackArg, servConn.getProxyID(), true, new EventIDHolder(eventId));
           }
           if (result) {
             servConn.setModificationInfo(true, regionName, key);

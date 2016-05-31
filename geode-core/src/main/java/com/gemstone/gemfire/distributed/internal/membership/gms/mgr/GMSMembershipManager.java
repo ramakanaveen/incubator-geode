@@ -377,7 +377,7 @@ public class GMSMembershipManager implements MembershipManager, Manager
    A list of messages received during channel startup that couldn't be processed yet.
    Additions or removals of this list must be synchronized
    via {@link #startupLock}.
-   @since 5.0
+   @since GemFire 5.0
    */
   protected LinkedList<StartupEvent> startupMessages = new LinkedList<StartupEvent>();
   
@@ -1605,7 +1605,7 @@ public class GMSMembershipManager implements MembershipManager, Manager
     GemFireCacheImpl cache = GemFireCacheImpl.getInstance();
     if (cache != null && (cache instanceof Cache)) {
       if (!Boolean.getBoolean("gemfire.autoReconnect-useCacheXMLFile")
-          && !cache.isSqlfSystem() && !sharedConfigEnabled) {
+          && !sharedConfigEnabled) {
         try {
           logger.info("generating XML to rebuild the cache after reconnect completes");
           StringPrintWriter pw = new StringPrintWriter(); 
