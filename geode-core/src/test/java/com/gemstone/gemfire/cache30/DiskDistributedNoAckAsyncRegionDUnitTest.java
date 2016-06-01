@@ -45,10 +45,10 @@ public class DiskDistributedNoAckAsyncRegionDUnitTest extends DiskDistributedNoA
     diskDirs[0] = new File("diskRegionDirs/" + OSProcess.getId());
     diskDirs[0].mkdirs();
     factory.setDiskStoreName(getCache().createDiskStoreFactory()
-                             .setDiskDirs(diskDirs)
+                             .setDiskDirs(getDiskDirs())
                              .setTimeInterval(1000)
                              .setQueueSize(0)
-                             .create("DiskDistributedNoAckAsyncRegionDUnitTest")
+                             .create(getUniqueName())
                              .getName());
     factory.setDiskSynchronous(false);
     factory.setDataPolicy(DataPolicy.PERSISTENT_REPLICATE);

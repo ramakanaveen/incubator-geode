@@ -41,13 +41,9 @@ public class DiskDistributedNoAckSyncOverflowRegionDUnitTest extends DiskDistrib
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_NO_ACK);
     
-    File[] diskDirs = new File[1];
-    diskDirs[0] = new File("diskRegionDirs/" + OSProcess.getId());
-    diskDirs[0].mkdirs();
-    
     factory.setDiskStoreName(getCache().createDiskStoreFactory()
-                             .setDiskDirs(diskDirs)
-                             .create("DiskDistributedNoAckSyncOverflowRegionDUnitTest")
+                             .setDiskDirs(getDiskDirs())
+                             .create(getUniqueName())
                              .getName());
 
     factory.setEvictionAttributes(EvictionAttributes
