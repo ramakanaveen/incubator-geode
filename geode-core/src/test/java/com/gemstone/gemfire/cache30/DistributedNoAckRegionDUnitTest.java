@@ -300,7 +300,7 @@ public class DistributedNoAckRegionDUnitTest extends MultiVMRegionTestCase {
    */
   @Override
   protected long getRepeatTimeoutMs() {
-    return 5000;
+    return 120*1000;
   }
   
 }
