@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
 import org.junit.Test;
 
@@ -111,12 +113,15 @@ public class PartitionedRegionDUnitTestCase extends JUnit4CacheTestCase
   
   protected void preTearDownPartitionedRegionDUnitTest() throws Exception {
   }
-  
+
+  @BeforeClass
   public static void caseSetUp() {
     DUnitLauncher.launchIfNeeded();
     // this makes sure we don't have any connection left over from previous tests
     disconnectAllFromDS();
   }
+
+  @AfterClass
   public static void caseTearDown() {
     // this makes sure we don't leave anything for the next tests
     disconnectAllFromDS();
