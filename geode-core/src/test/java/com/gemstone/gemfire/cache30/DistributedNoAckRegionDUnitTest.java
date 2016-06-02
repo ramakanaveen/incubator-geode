@@ -294,7 +294,7 @@ public class DistributedNoAckRegionDUnitTest extends MultiVMRegionTestCase {
 
   /**
    * The number of milliseconds to try repeating validation code in the
-   * event that AssertionFailedError is thrown.  For DISTRIBUTED_NO_ACK 
+   * event that AssertionError is thrown.  For DISTRIBUTED_NO_ACK
    * scopes, a repeat timeout is used to account for the fact that a
    * previous operation may have not yet completed.
    */

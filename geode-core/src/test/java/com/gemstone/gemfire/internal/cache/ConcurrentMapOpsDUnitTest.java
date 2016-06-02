@@ -14,20 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -37,7 +26,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.AssertionFailedError;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.Delta;
 import com.gemstone.gemfire.InvalidDeltaException;
@@ -54,29 +45,29 @@ import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
 import com.gemstone.gemfire.cache.client.internal.DestroyOp;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.MembershipManager;
 import com.gemstone.gemfire.distributed.internal.membership.gms.MembershipManagerHelper;
 import com.gemstone.gemfire.internal.AvailablePort;
+import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * tests for the concurrentMapOperations. there are more tests in ClientServerMiscDUnitTest
- *
  */
 @Category(DistributedTest.class)
 public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
 
-  protected static final String REP_REG_NAME = "repRegion";
-  protected static final String PR_REG_NAME = "prRegion";
+  private static final String REP_REG_NAME = "repRegion";
+  private static final String PR_REG_NAME = "prRegion";
   private static final int MAX_ENTRIES = 113;
   
   enum OP {PUTIFABSENT, REPLACE, REMOVE}
@@ -101,11 +92,11 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
     });
   }
 
-  protected Region createReplicateRegion() {
+  private Region createReplicateRegion() {
     return getCache().createRegionFactory(RegionShortcut.REPLICATE).setConcurrencyChecksEnabled(true).create(REP_REG_NAME);
   }
 
-  protected Region createPartitionedRegion() {
+  private Region createPartitionedRegion() {
     return getCache().createRegionFactory(RegionShortcut.PARTITION).setConcurrencyChecksEnabled(true).create(PR_REG_NAME);
   }
 
@@ -173,8 +164,8 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
       }
     });
   }
-  
-   static abstract class AbstractConcMapOpsListener implements CacheListener<Integer, String> {
+
+  private static abstract class AbstractConcMapOpsListener implements CacheListener<Integer, String> {
     public void afterCreate(EntryEvent<Integer, String> event) {
       validate(event);
     }
@@ -201,15 +192,15 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
     }
     abstract void validate(EntryEvent event);
   }
-  
-  static class NotInvokedListener extends AbstractConcMapOpsListener {
+
+  private static class NotInvokedListener extends AbstractConcMapOpsListener {
     @Override
     void validate(EntryEvent event) {
       fail("should not be called.  Event="+event);
     }
   }
 
-  static class InitialCreatesListener extends AbstractConcMapOpsListener {
+  private static class InitialCreatesListener extends AbstractConcMapOpsListener {
     AtomicInteger numCreates = new AtomicInteger();
     @Override
     void validate(EntryEvent event) {
@@ -218,12 +209,6 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
       }
       numCreates.incrementAndGet();
     }
-  }
-  /**
-   * @param name
-   */
-  public ConcurrentMapOpsDUnitTest() {
-    super();
   }
 
   // test for bug #42164
@@ -397,7 +382,7 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
         final Region r = getCache().getRegion(REP_REG_NAME);
         final Region pr = getCache().getRegion(PR_REG_NAME);
         WaitCriterion wc = new WaitCriterion() {
-          AssertionFailedError e = null;
+          AssertionError e = null;
           public boolean done() {
             try {
               if (!emptyClient) {
@@ -414,7 +399,7 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
               assertNull(pr.putIfAbsent("keyForNull", null));
               assertNull(r.putIfAbsent("clientNullKey", null));
               assertNull(pr.putIfAbsent("clientNullKey", null));
-            } catch (AssertionFailedError ex) {
+            } catch (AssertionError ex) {
               r.getCache().getLoggerI18n().fine("SWAP:caught ", ex);
               e = ex;
               return false;
@@ -449,7 +434,7 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
         final Region r = getCache().getRegion(REP_REG_NAME);
         final Region pr = getCache().getRegion(PR_REG_NAME);
         WaitCriterion wc = new WaitCriterion() {
-          AssertionFailedError e = null;
+          AssertionError e = null;
           public boolean done() {
             try {
               assertEquals("value2", r.putIfAbsent("key0", null));
@@ -463,7 +448,7 @@ public class ConcurrentMapOpsDUnitTest extends JUnit4CacheTestCase {
               assertNull(r.replace("NoKeyOnServer", "value"));
               assertTrue(r.replace("clientNullKey", null, "newValue"));
               assertTrue(pr.replace("clientNullKey", null, "newValue"));
-            } catch (AssertionFailedError ex) {
+            } catch (AssertionError ex) {
               e = ex;
               return false;
             }

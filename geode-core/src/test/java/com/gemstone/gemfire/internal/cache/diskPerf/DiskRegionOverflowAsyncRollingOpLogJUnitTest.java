@@ -55,10 +55,8 @@ public class DiskRegionOverflowAsyncRollingOpLogJUnitTest extends
 
   DiskRegionProperties diskProps = new DiskRegionProperties();
 
-  @Before
-  public void setUp() throws Exception
-  {
-    super.setUp();
+  @Override
+  protected final void postSetUp() throws Exception {
     diskProps.setRegionName("OverflowAsyncRollingOpLogRegion");
     diskProps.setDiskDirs(dirs);
     this.log = ds.getLogWriter();
@@ -69,13 +67,10 @@ public class DiskRegionOverflowAsyncRollingOpLogJUnitTest extends
     diskProps.setMaxOplogSize(10485760l);
     region = DiskRegionHelperFactory.getAsyncOverFlowOnlyRegion(cache,
         diskProps);
-
   }
 
   @After
-  public void tearDown() throws Exception
-  {
-    super.tearDown();
+  protected final void postTearDown() throws Exception {
     if (cache != null) {
       cache.close();
     }
@@ -83,8 +78,6 @@ public class DiskRegionOverflowAsyncRollingOpLogJUnitTest extends
       ds.disconnect();
     }
   }
-
-  
 
   @Test
   public void testGetPerfRollingOpog()

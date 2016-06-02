@@ -16,17 +16,11 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.util.Properties;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.RegionAttributes;
@@ -34,20 +28,17 @@ import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.OffHeapTestUtil;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests Global Region with OffHeap memory.
  * 
  * @since 9.0
  */
-@SuppressWarnings({ "deprecation", "serial" })
 @Category(DistributedTest.class)
+@SuppressWarnings({ "deprecation", "serial", "rawtypes", "unchecked" })
 public class GlobalRegionOffHeapDUnitTest extends GlobalRegionDUnitTest {
 
-  public GlobalRegionOffHeapDUnitTest() {
-    super();
-  }
-  
   @Override
   public final void preTearDownAssertions() throws Exception {
     SerializableRunnable checkOrphans = new SerializableRunnable() {
@@ -64,9 +55,9 @@ public class GlobalRegionOffHeapDUnitTest extends GlobalRegionDUnitTest {
   }
 
   @Override
-  @Ignore("DISABLED - bug 47951")
+  @Ignore("TODO: DISABLED due to bug 47951")
   @Test
-  public void testNBRegionInvalidationDuringGetInitialImage() throws Throwable {
+  public void testNBRegionInvalidationDuringGetInitialImage() throws Exception {
     //DISABLED - bug 47951
   }
 
@@ -77,7 +68,6 @@ public class GlobalRegionOffHeapDUnitTest extends GlobalRegionDUnitTest {
     return props;
   }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected RegionAttributes getRegionAttributes() {
     RegionAttributes attrs = super.getRegionAttributes();
@@ -86,7 +76,6 @@ public class GlobalRegionOffHeapDUnitTest extends GlobalRegionDUnitTest {
     return factory.create();
   }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected RegionAttributes getRegionAttributes(String type) {
     RegionAttributes ra = super.getRegionAttributes(type);

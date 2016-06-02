@@ -16,11 +16,10 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.After;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
@@ -29,26 +28,25 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
  * The test will verify <br>
  * 1. Multiple oplogs are being rolled at once <br>
  * 2. The Number of entries getting logged to the HTree are taking care of creation 
- * 
  */
 @Category(IntegrationTest.class)
-public class MultipleOplogsRollingFeatureJUnitTest extends
-    DiskRegionTestingBase
-{
+public class MultipleOplogsRollingFeatureJUnitTest extends DiskRegionTestingBase {
 
-  protected Object mutex = new Object();
+  private volatile boolean FLAG = false;
 
-  protected boolean CALLBACK_SET = false;
+  private Object mutex = new Object();
 
-  protected volatile boolean FLAG = false;
+  private boolean CALLBACK_SET = false;
 
-  DiskRegionProperties diskProps = new DiskRegionProperties();
+  private DiskRegionProperties diskProps = new DiskRegionProperties();
 
-  @After
-  public void tearDown() throws Exception
-  {
+  @Override
+  protected final void preTearDown() throws Exception {
     LocalRegion.ISSUE_CALLBACKS_TO_CACHE_OBSERVER = false;
-    super.tearDown();
+  }
+
+  @Override
+  protected final void postTearDown() throws Exception {
     diskProps.setDiskDirs(dirs);
   }
 
@@ -58,8 +56,7 @@ public class MultipleOplogsRollingFeatureJUnitTest extends
    * 2. The Number of entries are properly conflated
    */
   @Test
-  public void testMultipleRolling()
-  {
+  public void testMultipleRolling() {
     System.setProperty("gemfire.MAX_OPLOGS_PER_COMPACTION", "17");
     try {
       deleteFiles();
@@ -161,8 +158,7 @@ public class MultipleOplogsRollingFeatureJUnitTest extends
     }
   }
 
-  private void waitForCompactor(long maxWaitingTime)
-  {
+  private void waitForCompactor(long maxWaitingTime) {
     long maxWaitTime = maxWaitingTime;
     long start = System.currentTimeMillis();
     while (!FLAG) { // wait until
@@ -179,8 +175,7 @@ public class MultipleOplogsRollingFeatureJUnitTest extends
     }
   }
 
-  private void addEntries(int opLogNum, int valueSize)
-  {
+  private void addEntries(int opLogNum, int valueSize) {
     assertNotNull(region);
     byte[] val = new byte[valueSize];
     for (int i = 0; i < valueSize; ++i) {
@@ -217,8 +212,7 @@ public class MultipleOplogsRollingFeatureJUnitTest extends
     }
   }
 
-  private CacheObserver getCacheObserver()
-  {
+  private CacheObserver getCacheObserver() {
     return (new CacheObserverAdapter() {
 
       public void beforeGoingToCompact()
@@ -251,6 +245,5 @@ public class MultipleOplogsRollingFeatureJUnitTest extends
 
       }
     });
-
   }
 }

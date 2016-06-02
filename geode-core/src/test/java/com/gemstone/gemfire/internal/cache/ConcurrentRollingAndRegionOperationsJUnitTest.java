@@ -16,31 +16,18 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.EntryNotFoundException;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.internal.cache.CacheObserver;
-import com.gemstone.gemfire.internal.cache.CacheObserverAdapter;
-import com.gemstone.gemfire.internal.cache.CacheObserverHolder;
-import com.gemstone.gemfire.internal.cache.DiskEntry;
-import com.gemstone.gemfire.internal.cache.DiskRegionHelperFactory;
-import com.gemstone.gemfire.internal.cache.DiskRegionProperties;
-import com.gemstone.gemfire.internal.cache.DiskRegionTestingBase;
-import com.gemstone.gemfire.internal.cache.LocalRegion;
-import com.gemstone.gemfire.internal.cache.RegionEntry;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
@@ -51,13 +38,9 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
  * A region operation is done on the same key that is about to be rolled or has
  * just been rolled and the region operation is verified to have been correctly
  * executed.
- * 
- *  
  */
 @Category(IntegrationTest.class)
-public class ConcurrentRollingAndRegionOperationsJUnitTest extends
-    DiskRegionTestingBase
-{
+public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTestingBase {
 
   protected volatile boolean hasBeenNotified;
 
@@ -65,12 +48,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends
 
   protected boolean encounteredFailure = false;
 
-
-  @Before
-  public void setUp() throws Exception
-  {
+  @Override
+  protected final void preSetUp() throws Exception {
     this.hasBeenNotified = false;
-    super.setUp();
   }
 
   void putBeforeRoll(final Region region)

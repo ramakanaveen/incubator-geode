@@ -18,6 +18,7 @@ package com.gemstone.gemfire.internal.cache;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
 
@@ -39,67 +40,41 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
  * This test is for testing Disk attributes set programmatically
  * The generated cacheXml is used to create a cache and teh region
  * properties retested.
- * 
  */
 @Category(IntegrationTest.class)
-public class DiskRegCachexmlGeneratorJUnitTest extends DiskRegionTestingBase
-{
-  PrintWriter pw;
+public class DiskRegCachexmlGeneratorJUnitTest extends DiskRegionTestingBase {
 
-  DiskRegionProperties diskProps = new DiskRegionProperties();
+  private PrintWriter pw;
 
-  DiskRegionProperties diskProps1 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps = new DiskRegionProperties();
+  private DiskRegionProperties diskProps1 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps2 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps3 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps4 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps5 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps6 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps7 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps8 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps9 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps10 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps11 = new DiskRegionProperties();
+  private DiskRegionProperties diskProps12 = new DiskRegionProperties();
 
-  DiskRegionProperties diskProps2 = new DiskRegionProperties();
+  private Region region1;
+  private Region region2;
+  private Region region3;
+  private Region region4;
+  private Region region5;
+  private Region region6;
+  private Region region7;
+  private Region region8;
+  private Region region9;
+  private Region region10;
+  private Region region11;
+  private Region region12;
 
-  DiskRegionProperties diskProps3 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps4 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps5 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps6 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps7 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps8 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps9 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps10 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps11 = new DiskRegionProperties();
-
-  DiskRegionProperties diskProps12 = new DiskRegionProperties();
-
-  Region region1;
-
-  Region region2;
-
-  Region region3;
-
-  Region region4;
-
-  Region region5;
-
-  Region region6;
-
-  Region region7;
-
-  Region region8;
-
-  Region region9;
-
-  Region region10;
-
-  Region region11;
-
-  Region region12;
-
-  @Before
-  public void setUp() throws Exception
-  {
-    super.setUp();
+  @Override
+  protected final void postSetUp() throws Exception {
     diskDirSize = new int[4];
     diskDirSize[0] = Integer.MAX_VALUE;
     diskDirSize[1] = Integer.MAX_VALUE;
@@ -119,15 +94,7 @@ public class DiskRegCachexmlGeneratorJUnitTest extends DiskRegionTestingBase
     diskProps12.setDiskDirs(dirs);
   }
 
-  @After
-  public void tearDown() throws Exception
-  {
-    super.tearDown();
-
-  }
-
-  public void createCacheXML()
-  {
+  private void createCacheXML() throws IOException {
     // create the region1 which is SyncPersistOnly and set DiskWriteAttibutes
     diskProps1.setRolling(true);
     diskProps1.setMaxOplogSize(1073741824L);
@@ -220,23 +187,14 @@ public class DiskRegCachexmlGeneratorJUnitTest extends DiskRegionTestingBase
     region12 = DiskRegionHelperFactory.getAsyncOverFlowAndPersistRegion(cache,
         diskProps12);
 
-
     //cacheXmlGenerator: generates cacheXml file
-    try {
-      FileWriter fw = new FileWriter(new File("DiskRegCachexmlGeneratorJUnitTest.xml"));
-      PrintWriter pw = new PrintWriter(fw);
-      CacheXmlGenerator.generate(cache, pw);
-    }
-    catch (Exception ex) {
-      logWriter.error("Exception occured",ex);
-      fail("FAILED While cache xml generation");
-    }
-
+    FileWriter fw = new FileWriter(new File("DiskRegCachexmlGeneratorJUnitTest.xml"));
+    PrintWriter pw = new PrintWriter(fw);
+    CacheXmlGenerator.generate(cache, pw);
   }
   
   @Test
-  public void testVerifyCacheXml() throws Exception
-  {
+  public void testVerifyCacheXml() throws Exception {
     createCacheXML();
     ds.disconnect();
     // Connect to the GemFire distributed system
@@ -299,4 +257,3 @@ public class DiskRegCachexmlGeneratorJUnitTest extends DiskRegionTestingBase
   }
 
 }// end of DiskRegCachexmlGeneratorJUnitTest
-

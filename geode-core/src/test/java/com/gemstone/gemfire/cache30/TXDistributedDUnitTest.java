@@ -26,17 +26,9 @@
  * @see MultiVMRegionTestCase
  *
  */
-
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -45,9 +37,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.SystemFailure;
@@ -82,28 +73,25 @@ import com.gemstone.gemfire.internal.cache.TXManagerImpl;
 import com.gemstone.gemfire.internal.cache.TXState;
 import com.gemstone.gemfire.internal.cache.TXStateInterface;
 import com.gemstone.gemfire.internal.cache.TXStateProxyImpl;
-//import com.gemstone.gemfire.internal.cache.locks.TXLockId;
 import com.gemstone.gemfire.internal.cache.locks.TXLockBatch;
 import com.gemstone.gemfire.internal.cache.locks.TXLockService;
 import com.gemstone.gemfire.internal.cache.locks.TXLockServiceImpl;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
+import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 @Category(DistributedTest.class)
 public class TXDistributedDUnitTest extends JUnit4CacheTestCase {
-  public TXDistributedDUnitTest() {
-    super();
-  }
 
   protected RegionAttributes getRegionAttributes() {
     return this.getRegionAttributes(Scope.DISTRIBUTED_ACK);
@@ -760,7 +748,7 @@ public class TXDistributedDUnitTest extends JUnit4CacheTestCase {
               assertNotNull(re);
               assertEquals("val1_3", re.getValue());
               break;
-            } catch (AssertionFailedError e) {
+            } catch (AssertionError e) {
               if (giveUp > System.currentTimeMillis()) {
                 throw e;
               }
@@ -1329,8 +1317,9 @@ public class TXDistributedDUnitTest extends JUnit4CacheTestCase {
     }
   }
   
-  @Ignore("Disabled for 51260")
-  public void DISABLED_testRemoteCommitFailure() {
+  @Ignore("TODO: Disabled for #51260")
+  @Test
+  public void testRemoteCommitFailure() throws Exception {
     try {
     disconnectAllFromDS();
     final String rgnName1= getUniqueName()  + "_1";

@@ -16,16 +16,12 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheException;
@@ -37,6 +33,8 @@ import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests the performance of Regions when Roles are assigned.
@@ -45,10 +43,6 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
  */
 @Category(DistributedTest.class)
 public class RolePerformanceDUnitTest extends JUnit4CacheTestCase {
-
-  public RolePerformanceDUnitTest() {
-    super();
-  }
 
   /**
    * Compares times required for series of puts with Roles assigned to
@@ -69,7 +63,7 @@ public class RolePerformanceDUnitTest extends JUnit4CacheTestCase {
         break;
       }
       // only catch assertion failures...
-      catch (junit.framework.AssertionFailedError e) {
+      catch (AssertionError e) {
         if (i == maxAttempts) {
           throw e;
         }

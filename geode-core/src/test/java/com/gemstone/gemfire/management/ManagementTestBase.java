@@ -16,35 +16,49 @@
  */
 package com.gemstone.gemfire.management;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import com.gemstone.gemfire.LogWriter;
-import com.gemstone.gemfire.cache.*;
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.cache.RegionFactory;
+import com.gemstone.gemfire.cache.RegionShortcut;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.statistics.SampleCollector;
-import com.gemstone.gemfire.management.internal.*;
-import com.gemstone.gemfire.test.dunit.*;
+import com.gemstone.gemfire.management.internal.FederatingManager;
+import com.gemstone.gemfire.management.internal.LocalManager;
+import com.gemstone.gemfire.management.internal.MBeanJMXAdapter;
+import com.gemstone.gemfire.management.internal.ManagementStrings;
+import com.gemstone.gemfire.management.internal.SystemManagementService;
+import com.gemstone.gemfire.test.dunit.Assert;
+import com.gemstone.gemfire.test.dunit.AsyncInvocation;
+import com.gemstone.gemfire.test.dunit.Host;
+import com.gemstone.gemfire.test.dunit.Invoke;
+import com.gemstone.gemfire.test.dunit.SerializableCallable;
+import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.Wait;
+import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-import java.util.*;
-
+@SuppressWarnings("serial")
 public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
 
   private static final int MAX_WAIT = 70 * 1000;
 
-  private static final long serialVersionUID = 1L;
   /**
    * log writer instance
    */
@@ -184,7 +198,6 @@ public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
     }
   }
 
-  @SuppressWarnings("serial")
   public void createCache(VM vm1) throws Exception {
     vm1.invoke(new SerializableRunnable("Create Cache") {
       public void run() {
@@ -194,7 +207,6 @@ public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
 
   }
 
-  @SuppressWarnings("serial")
   public void createCache(VM vm1, final Properties props) throws Exception {
     vm1.invoke(new SerializableRunnable("Create Cache") {
       public void run() {
@@ -240,7 +252,6 @@ public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
     return cache;
   }
 
-  @SuppressWarnings("serial")
   public void createManagementCache(VM vm1) throws Exception {
     vm1.invoke(new SerializableRunnable("Create Management Cache") {
       public void run() {
@@ -249,7 +260,6 @@ public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
     });
   }
 
-  @SuppressWarnings("serial")
   public void closeCache(VM vm1) throws Exception {
     vm1.invoke(new SerializableRunnable("Close Cache") {
       public void run() {
@@ -320,7 +330,6 @@ public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
    *
    * @throws Exception
    */
-  @SuppressWarnings("serial")
   public void startManagingNode(VM vm1) throws Exception {
     vm1.invoke(new SerializableRunnable("Start Being Managing Node") {
       public void run() {
@@ -345,7 +354,6 @@ public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
    *
    * @throws Exception
    */
-  @SuppressWarnings("serial")
   public void startManagingNodeAsync(VM vm1) throws Exception {
     vm1.invokeAsync(new SerializableRunnable("Start Being Managing Node") {
 
@@ -367,7 +375,6 @@ public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
    *
    * @throws Exception
    */
-  @SuppressWarnings("serial")
   public void stopManagingNode(VM vm1) throws Exception {
     vm1.invoke(new SerializableRunnable("Stop Being Managing Node") {
       public void run() {
@@ -389,7 +396,6 @@ public abstract class ManagementTestBase extends JUnit4DistributedTestCase {
    * remove all the artifacts of management namely a) Notification region b)
    * Monitoring Region c) Management task should stop
    */
-  @SuppressWarnings("serial")
   public void checkManagedNodeCleanup(VM vm) throws Exception {
     vm.invoke(new SerializableRunnable("Managing Node Clean up") {
 

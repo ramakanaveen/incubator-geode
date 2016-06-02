@@ -16,18 +16,14 @@
  */
 package com.gemstone.gemfire.management;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.EntryEvent;
@@ -45,41 +41,31 @@ import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientProxy;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.RMIException;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
-
-import junit.framework.AssertionFailedError;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Client health stats check
- * 
- * 
  */
 @Category(DistributedTest.class)
+@SuppressWarnings("serial")
 public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
 
   private static final String k1 = "k1";
-
   private static final String k2 = "k2";
-
   private static final String client_k1 = "client-k1";
-
   private static final String client_k2 = "client-k2";
 
   /** name of the test region */
   private static final String REGION_NAME = "ClientHealthStatsDUnitTest_Region";
 
-  private VM server = null;
-
   private static VM client = null;
-  
   private static VM client2 = null;
-
   private static VM managingNode = null;
 
   private static ManagementTestBase helper = new ManagementTestBase(){};
@@ -91,9 +77,7 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
   
   private static GemFireCacheImpl cache = null;
 
-  public ClientHealthStatsDUnitTest() {
-    super();
-  }
+  private VM server = null;
 
   @Override
   public final void postSetUp() throws Exception {
@@ -104,6 +88,7 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
     server = host.getVM(1);
     client = host.getVM(2);
     client2 = host.getVM(3);
+
     IgnoredException.addIgnoredException("Connection reset");
   }
 
@@ -117,19 +102,16 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
 
     disconnectAllFromDS();
   }
-  
-  public static void reset() throws Exception {
+
+  private static void reset() throws Exception {
     lastKeyReceived = false;
     numOfCreates = 0;
     numOfUpdates = 0;
     numOfInvalidates = 0;
   }
 
-  private static final long serialVersionUID = 1L;
-
   @Test
   public void testClientHealthStats_SubscriptionEnabled() throws Exception {
-
     helper.createManagementCache(managingNode);
     helper.startManagingNode(managingNode);
 
@@ -150,7 +132,6 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
   
   @Test
   public void testClientHealthStats_SubscriptionDisabled() throws Exception {
-
     helper.createManagementCache(managingNode);
     helper.startManagingNode(managingNode);
 
@@ -171,7 +152,6 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
   
   @Test
   public void testClientHealthStats_DurableClient() throws Exception {
-
     helper.createManagementCache(managingNode);
     helper.startManagingNode(managingNode);
 
@@ -238,15 +218,14 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
       
       @Override
       public String description() {
-        // TODO Auto-generated method stub
         return "Proxy has not paused yet";
       }
     };
     
     Wait.waitForCriterion(criterion, 15 * 1000, 200, true);	  
   }
-  
-  public static int createServerCache() throws Exception {
+
+  private static int createServerCache() throws Exception {
     Cache cache = helper.createCache(false);
 
     RegionFactory<String, String> rf = cache.createRegionFactory(RegionShortcut.REPLICATE);
@@ -259,22 +238,16 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
     return server1.getPort();
   }
 
-  
-  
-  public static void closeClientCache() throws Exception {
+  private static void closeClientCache() throws Exception {
     cache.close(true);
   }
 
-  public static void createClientCache(Host host, Integer port, int clientNum, boolean subscriptionEnabled, boolean durable) throws Exception {
-
+  private static void createClientCache(Host host, Integer port, int clientNum, boolean subscriptionEnabled, boolean durable) throws Exception {
     Properties props = new Properties();
     props.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME, "durable-"+clientNum);
     props.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, "300000");
-
-//    props.setProperty("log-file", getTestMethodName()+"_client_" + clientNum + ".log");
     props.setProperty("log-level", "info");
-    props.setProperty("statistic-archive-file", getTestMethodName()+"_client_" + clientNum
-        + ".gfs");
+    props.setProperty("statistic-archive-file", getTestMethodName()+"_client_" + clientNum + ".gfs");
     props.setProperty("statistic-sampling-enabled", "true");
 
     ClientCacheFactory ccf = new ClientCacheFactory(props);
@@ -321,10 +294,9 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
       r.registerInterest("ALL_KEYS", true);
       cache.readyForEvents();
     }
-
   }
 
-  public static void doPuts() throws Exception {
+  private static void doPuts() throws Exception {
     Cache cache = GemFireCacheImpl.getInstance();
     final Region<String, String> r = cache.getRegion(Region.SEPARATOR + REGION_NAME);
     Thread t1 = new Thread(new Runnable() {
@@ -357,8 +329,8 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
     t2.join();
     t3.join();
   }
-  
-  public static void resumePuts() {
+
+  private static void resumePuts() {
     Cache cache = GemFireCacheImpl.getInstance();
     Region<String, String> r = cache.getRegion(Region.SEPARATOR + REGION_NAME);
     for (int i = 0; i < 100; i++) {
@@ -367,7 +339,7 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
     r.put("last_key", "last_value");
   }
 
-  public static void waitForLastKey() {
+  private static void waitForLastKey() {
     WaitCriterion wc = new WaitCriterion() {
       @Override
       public boolean done() {
@@ -381,14 +353,12 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
     Wait.waitForCriterion(wc, 60*1000, 500, true);
   }
 
-
-  @SuppressWarnings("serial")
-  protected static DistributedMember getMember() throws Exception {
+  private static DistributedMember getMember() throws Exception {
     GemFireCacheImpl cache = GemFireCacheImpl.getInstance();
     return cache.getDistributedSystem().getDistributedMember();
   }
 
-  protected static void verifyClientStats(DistributedMember serverMember, int serverPort, int numSubscriptions) {
+  private static void verifyClientStats(DistributedMember serverMember, int serverPort, int numSubscriptions) {
     GemFireCacheImpl cache = GemFireCacheImpl.getInstance();
     try {
       ManagementService service = ManagementService.getExistingManagementService(cache);
@@ -401,8 +371,6 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
       
       ClientHealthStatus[] clientStatuses = bean.showAllClientStats();
 
- 
-      
       ClientHealthStatus clientStatus1 = bean.showClientStats(clientIds[0]);
       ClientHealthStatus clientStatus2 = bean.showClientStats(clientIds[1]);
       assertNotNull(clientStatus1);
@@ -416,22 +384,18 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
       assertTrue(clientStatuses.length == 2);
       for (ClientHealthStatus status : clientStatuses) {
         System.out.println("<ExpectedString> ClientStats of the Server is  " + status + "</ExpectedString> ");
-
       }
-
 
       DistributedSystemMXBean dsBean = service.getDistributedSystemMXBean();
       assertEquals(2, dsBean.getNumClients());
       assertEquals(numSubscriptions, dsBean.getNumSubscriptions());
 
     } catch (Exception e) {
-      e.printStackTrace();
-      fail("Error while verifying cache server from remote member " + e);
+      fail("Error while verifying cache server from remote member", e);
     }
-
   }
 
-  protected static void put() {
+  private static void put() {
     Cache cache = GemFireCacheImpl.getInstance();
     Region r1 = cache.getRegion(Region.SEPARATOR + REGION_NAME);
     assertNotNull(r1);
@@ -457,11 +421,9 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
     } catch (Exception e) {
       // sleep
     }
-
   }
 
-
-  public static void verifyStats(int serverPort) throws Exception {
+  private static void verifyStats(int serverPort) throws Exception {
     Cache cache = GemFireCacheImpl.getInstance();
     ManagementService service = ManagementService.getExistingManagementService(cache);
     CacheServerMXBean serverBean = service.getLocalCacheServerMXBean(serverPort);
@@ -477,5 +439,4 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
     ClientQueueDetail queueDetails = serverBean.showClientQueueDetails()[0];
     assertEquals(queueDetails.getQueueSize(), ccp.getQueueSizeStat());
   }
-
 }

@@ -108,9 +108,7 @@ public class ConcurrentRegionOperationsJUnitTest extends DiskRegionTestingBase
   private static int counter = 0;
 
   @Before
-  public void setUp() throws Exception
-  {
-    super.setUp();
+  protected final void postsetUp() throws Exception {
     counter++;
     if (longTest) {
       TIME_TO_RUN = 10000;
@@ -120,12 +118,6 @@ public class ConcurrentRegionOperationsJUnitTest extends DiskRegionTestingBase
       numberOfClearThreads = 2;
       numberOfForceRollThreads = 3;
     }
-  }
-
-  @After
-  public void tearDown() throws Exception
-  {
-    super.tearDown();
   }
 
   @Test

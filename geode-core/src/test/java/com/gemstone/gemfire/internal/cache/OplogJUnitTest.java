@@ -117,17 +117,13 @@ public class OplogJUnitTest extends DiskRegionTestingBase {
   protected volatile Thread rollerThread = null;
 
   @Override
-  @Before
-  public void setUp() throws Exception {
-    super.setUp();
+  protected final void postSetUp() throws Exception {
     diskProps.setDiskDirs(dirs);
     DiskStoreImpl.SET_IGNORE_PREALLOCATE = true;
   }
 
   @Override
-  @After
-  public void tearDown() throws Exception {
-    super.tearDown();
+  protected final void postTearDown() throws Exception {
     DiskStoreImpl.SET_IGNORE_PREALLOCATE = false;
   }
 

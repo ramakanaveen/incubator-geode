@@ -16,14 +16,11 @@
  */
 package com.gemstone.gemfire.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-
-import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,7 +31,6 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 /**
  * Test that DistributionConfigImpl handles SSL options correctly.
- * 
  */
 @Category(IntegrationTest.class)
 public class SSLConfigJUnitTest {
@@ -49,7 +45,6 @@ public class SSLConfigJUnitTest {
   private static final Properties GATEWAY_SSL_PROPS_MAP = new Properties();
   private static final Properties GATEWAY_PROPS_SUBSET_MAP = new Properties();
   
-
   static {
     
     SSL_PROPS_MAP.put("javax.net.ssl.keyStoreType", "jks");
@@ -104,8 +99,6 @@ public class SSLConfigJUnitTest {
 
   }
   
-  //----- test methods ------
-
   @Test
   public void testMCastPortWithSSL() throws Exception {
     Properties props = new Properties( );
@@ -143,7 +136,7 @@ public class SSLConfigJUnitTest {
   }
   
   @Test
-  public void testConfigCopyWithSSL( ) throws Exception {
+  public void testConfigCopyWithSSL() throws Exception {
     boolean sslenabled = false;
     String sslprotocols = "any";
     String sslciphers = "any";
@@ -332,7 +325,6 @@ public class SSLConfigJUnitTest {
     isEqual( config.getGatewaySSLRequireAuthentication(), gatewaySslRequireAuth );
   }
   
-
   @Test
   public void testManagerConfig() throws Exception {
     boolean sslenabled = false;
@@ -382,7 +374,6 @@ public class SSLConfigJUnitTest {
     isEqual( config.getJmxManagerSSLCiphers(), jmxManagerSslciphers );
     isEqual( config.getJmxManagerSSLRequireAuthentication(), jmxManagerSslRequireAuth );
   }
-  
   
   @Test
   public void testCacheServerConfig() throws Exception {
@@ -456,7 +447,6 @@ public class SSLConfigJUnitTest {
   
   @Test
   public void testCustomizedClusterSslConfig() throws Exception {
-    
     boolean sslenabled = true;
     String  sslprotocols = "SSLv1";
     String  sslciphers = "RSA_WITH_NOTHING";
@@ -622,7 +612,6 @@ public class SSLConfigJUnitTest {
     
     clusterSSLProperties = config.getClusterSSLProperties();
     isEqual( SSL_PROPS_MAP, clusterSSLProperties );
-    
   }
   
   @Test
@@ -691,7 +680,7 @@ public class SSLConfigJUnitTest {
     gemFireProps.put(DistributionConfig.SERVER_SSL_CIPHERS_NAME, cacheServerSslciphers);
     gemFireProps.put(DistributionConfig.SERVER_SSL_REQUIRE_AUTHENTICATION_NAME, String.valueOf(cacheServerSslRequireAuth));
 
-    gemFireProps.putAll(getGfSecurityPropertiesforCS(false));
+    gemFireProps.putAll(getGfSecurityPropertiesForCS(false));
 
     DistributionConfigImpl config = new DistributionConfigImpl( gemFireProps );
     isEqual( config.getClusterSSLEnabled(), sslenabled );
@@ -734,7 +723,7 @@ public class SSLConfigJUnitTest {
     gemFireProps.put(DistributionConfig.GATEWAY_SSL_CIPHERS_NAME, gatewaySslciphers);
     gemFireProps.put(DistributionConfig.GATEWAY_SSL_REQUIRE_AUTHENTICATION_NAME, String.valueOf(gatewaySslRequireAuth));
 
-    gemFireProps.putAll(getGfSecurityPropertiesforGateway(false));
+    gemFireProps.putAll(getGfSecurityPropertiesForGateway(false));
 
     DistributionConfigImpl config = new DistributionConfigImpl( gemFireProps );
     isEqual( config.getClusterSSLEnabled(), sslenabled );
@@ -752,7 +741,6 @@ public class SSLConfigJUnitTest {
     isEqual( GATEWAY_SSL_PROPS_MAP.get("gateway-ssl-keystore-password"), config.getGatewaySSLKeyStorePassword());
     isEqual( GATEWAY_SSL_PROPS_MAP.get("gateway-ssl-truststore"), config.getGatewaySSLTrustStore());
     isEqual( GATEWAY_SSL_PROPS_MAP.get("gateway-ssl-truststore-password"),config.getGatewaySSLTrustStorePassword());
-    
   }
   
   @Test
@@ -804,7 +792,6 @@ public class SSLConfigJUnitTest {
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore-password"),config.getJmxManagerSSLTrustStorePassword());
   }
   
-  
   @Test
   public void testPartialCustomizedCacheServerSslConfig() throws Exception {
     boolean sslenabled = false;
@@ -828,7 +815,7 @@ public class SSLConfigJUnitTest {
     gemFireProps.put(DistributionConfig.SERVER_SSL_CIPHERS_NAME, cacheServerSslciphers);
     gemFireProps.put(DistributionConfig.SERVER_SSL_REQUIRE_AUTHENTICATION_NAME, String.valueOf(cacheServerSslRequireAuth));
 
-    gemFireProps.putAll(getGfSecurityPropertiesforCS(true));
+    gemFireProps.putAll(getGfSecurityPropertiesForCS(true));
 
     DistributionConfigImpl config = new DistributionConfigImpl( gemFireProps );
     isEqual( config.getClusterSSLEnabled(), sslenabled );
@@ -877,7 +864,7 @@ public class SSLConfigJUnitTest {
     gemFireProps.put(DistributionConfig.GATEWAY_SSL_CIPHERS_NAME, gatewaySslciphers);
     gemFireProps.put(DistributionConfig.GATEWAY_SSL_REQUIRE_AUTHENTICATION_NAME, String.valueOf(gatewaySslRequireAuth));
 
-    gemFireProps.putAll(getGfSecurityPropertiesforGateway(true));
+    gemFireProps.putAll(getGfSecurityPropertiesForGateway(true));
 
     DistributionConfigImpl config = new DistributionConfigImpl( gemFireProps );
     isEqual( config.getClusterSSLEnabled(), sslenabled );
@@ -901,11 +888,10 @@ public class SSLConfigJUnitTest {
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-keystore-password"), config.getGatewaySSLKeyStorePassword());
     isEqual( GATEWAY_PROPS_SUBSET_MAP.get("gateway-ssl-truststore"), config.getGatewaySSLTrustStore());
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore-password"),config.getGatewaySSLTrustStorePassword());
-
   }
   
   @Test
-  public void testP2pSSLPropsOverriden_ServerPropsNotOverriden(){
+  public void testP2pSSLPropsOverriden_ServerPropsNotOverriden() throws Exception {
     boolean sslenabled = true;
     String  sslprotocols = "overrriden";
     String  sslciphers = "overrriden";
@@ -923,7 +909,7 @@ public class SSLConfigJUnitTest {
     gemFireProps.put(DistributionConfig.CLUSTER_SSL_CIPHERS_NAME, sslciphers);
     gemFireProps.put(DistributionConfig.CLUSTER_SSL_REQUIRE_AUTHENTICATION_NAME, String.valueOf(requireAuth));
 
-    gemFireProps.putAll(getGfSecurityPropertiesforCS(true));
+    gemFireProps.putAll(getGfSecurityPropertiesForCS(true));
 
     DistributionConfigImpl config = new DistributionConfigImpl( gemFireProps );
     isEqual( config.getClusterSSLEnabled(), sslenabled );
@@ -954,11 +940,10 @@ public class SSLConfigJUnitTest {
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-keystore-password"), config.getServerSSLKeyStorePassword());
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore"), config.getServerSSLTrustStore());
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore-password"),config.getServerSSLTrustStorePassword());
-    
   }
   
   @Test
-  public void testP2pSSLPropsOverriden_ServerPropsOverriden(){
+  public void testP2pSSLPropsOverriden_ServerPropsOverriden() throws Exception {
     boolean sslenabled = true;
     String  sslprotocols = "overrriden";
     String  sslciphers = "overrriden";
@@ -981,7 +966,7 @@ public class SSLConfigJUnitTest {
     gemFireProps.put(DistributionConfig.SERVER_SSL_CIPHERS_NAME, cacheServerSslciphers);
     gemFireProps.put(DistributionConfig.SERVER_SSL_REQUIRE_AUTHENTICATION_NAME, String.valueOf(cacheServerSslRequireAuth));
 
-    gemFireProps.putAll(getGfSecurityPropertiesforCS(true));
+    gemFireProps.putAll(getGfSecurityPropertiesForCS(true));
 
     DistributionConfigImpl config = new DistributionConfigImpl( gemFireProps );
     isEqual( config.getClusterSSLEnabled(), sslenabled );
@@ -1015,7 +1000,7 @@ public class SSLConfigJUnitTest {
   }
   
   @Test
-  public void testClusterSSLPropsOverriden_GatewayPropsNotOverriden(){
+  public void testClusterSSLPropsOverriden_GatewayPropsNotOverriden() throws Exception {
     boolean sslenabled = true;
     String  sslprotocols = "overrriden";
     String  sslciphers = "overrriden";
@@ -1033,7 +1018,7 @@ public class SSLConfigJUnitTest {
     gemFireProps.put(DistributionConfig.CLUSTER_SSL_CIPHERS_NAME, sslciphers);
     gemFireProps.put(DistributionConfig.CLUSTER_SSL_REQUIRE_AUTHENTICATION_NAME, String.valueOf(requireAuth));
 
-    gemFireProps.putAll(getGfSecurityPropertiesforGateway(true));
+    gemFireProps.putAll(getGfSecurityPropertiesForGateway(true));
 
     DistributionConfigImpl config = new DistributionConfigImpl( gemFireProps );
     isEqual( config.getClusterSSLEnabled(), sslenabled );
@@ -1064,11 +1049,10 @@ public class SSLConfigJUnitTest {
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-keystore-password"), config.getGatewaySSLKeyStorePassword());
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore"), config.getGatewaySSLTrustStore());
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore-password"),config.getGatewaySSLTrustStorePassword());
-    
   }
   
   @Test
-  public void testP2pSSLPropsOverriden_GatewayPropsOverriden(){
+  public void testP2pSSLPropsOverriden_GatewayPropsOverridden() throws Exception {
     boolean sslenabled = true;
     String  sslprotocols = "overrriden";
     String  sslciphers = "overrriden";
@@ -1091,7 +1075,7 @@ public class SSLConfigJUnitTest {
     gemFireProps.put(DistributionConfig.GATEWAY_SSL_CIPHERS_NAME, gatewayServerSslciphers);
     gemFireProps.put(DistributionConfig.GATEWAY_SSL_REQUIRE_AUTHENTICATION_NAME, String.valueOf(gatewayServerSslRequireAuth));
 
-    gemFireProps.putAll(getGfSecurityPropertiesforGateway(true));
+    gemFireProps.putAll(getGfSecurityPropertiesForGateway(true));
 
     DistributionConfigImpl config = new DistributionConfigImpl( gemFireProps );
     isEqual( config.getClusterSSLEnabled(), sslenabled );
@@ -1117,11 +1101,10 @@ public class SSLConfigJUnitTest {
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-keystore-password"), config.getGatewaySSLKeyStorePassword());
     isEqual( GATEWAY_PROPS_SUBSET_MAP.get("gateway-ssl-truststore"), config.getGatewaySSLTrustStore());
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore-password"),config.getGatewaySSLTrustStorePassword());
-    
   }
   
   @Test
-  public void testP2pSSLPropsOverriden_JMXPropsNotOverriden(){
+  public void testP2pSSLPropsOverriden_JMXPropsNotOverriden() throws Exception {
     boolean sslenabled = true;
     String  sslprotocols = "overrriden";
     String  sslciphers = "overrriden";
@@ -1170,7 +1153,6 @@ public class SSLConfigJUnitTest {
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-keystore-password"), config.getJmxManagerSSLKeyStorePassword());
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore"), config.getJmxManagerSSLTrustStore());
     isEqual( CLUSTER_SSL_PROPS_MAP.get("cluster-ssl-truststore-password"),config.getJmxManagerSSLTrustStorePassword()); 
-    
   }
   
   private static Properties getGfSecurityPropertiesSSL() {
@@ -1224,7 +1206,7 @@ public class SSLConfigJUnitTest {
     return gfSecurityProps;
   }
   
-  private static Properties getGfSecurityPropertiesforCS(boolean partialCSSslConfigOverride) {
+  private static Properties getGfSecurityPropertiesForCS(boolean partialCSSslConfigOverride) {
     Properties gfSecurityProps = new Properties();
 
     Set<Entry<Object, Object>> entrySet = CLUSTER_SSL_PROPS_MAP.entrySet();
@@ -1245,7 +1227,7 @@ public class SSLConfigJUnitTest {
     return gfSecurityProps;
   }
 
-  private static Properties getGfSecurityPropertiesforGateway(boolean partialGatewaySslConfigOverride) {
+  private static Properties getGfSecurityPropertiesForGateway(boolean partialGatewaySslConfigOverride) {
     Properties gfSecurityProps = new Properties();
 
     Set<Entry<Object, Object>> entrySet = CLUSTER_SSL_PROPS_MAP.entrySet();
@@ -1265,11 +1247,11 @@ public class SSLConfigJUnitTest {
     return gfSecurityProps;
   }
   
-  public void isEqual( boolean a, boolean e ) throws AssertionFailedError {
-    assertEquals( a, e );
+  private void isEqual(boolean a, boolean e) {
+    assertEquals(a,e );
   }
   
-  public void isEqual( Object a, Object e ) throws AssertionFailedError {
+  private void isEqual(Object a,Object e ) {
     assertEquals( a, e );
   } 
   

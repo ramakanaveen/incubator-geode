@@ -17,7 +17,8 @@
 package com.gemstone.gemfire.cache30;
 
 import static com.gemstone.gemfire.internal.lang.ThrowableUtils.*;
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInput;
@@ -41,8 +42,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
 import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Ignore;
@@ -134,21 +133,21 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
   private static final Logger logger = LogService.getLogger();
-  
-  Properties props = new Properties();
 
-  final int putRange_1Start = 1;
-  final int putRange_1End = 5;
-  final int putRange_2Start = 6;
-  final int putRange_2End = 10;
-  final int putRange_3Start = 11;
-  final int putRange_3End = 15;
-  final int putRange_4Start = 16;
-  final int putRange_4End = 20;
-  final int removeRange_1Start = 2;
-  final int removeRange_1End = 4;
-  final int removeRange_2Start = 7;
-  final int removeRange_2End = 9;
+  private Properties props = new Properties();
+
+  private final int putRange_1Start = 1;
+  private final int putRange_1End = 5;
+  private final int putRange_2Start = 6;
+  private final int putRange_2End = 10;
+  private final int putRange_3Start = 11;
+  private final int putRange_3End = 15;
+  private final int putRange_4Start = 16;
+  private final int putRange_4End = 20;
+  private final int removeRange_1Start = 2;
+  private final int removeRange_1End = 4;
+  private final int removeRange_2Start = 7;
+  private final int removeRange_2End = 9;
 
   @AfterClass
   public static void caseTearDown() throws Exception {
@@ -333,7 +332,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * one VM updates the value in another VM.
    */
   @Test
-  public void testDistributedUpdate() {
+  public void testDistributedUpdate() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -401,11 +400,8 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    */
   @Ignore("DISABLED 4-16-04 - the current implementation assumes events are processed synchronously, which is no longer true")
   @Test
-  public void testOrderedUpdates() throws Throwable {
-    if (getRegionAttributes().getScope() ==
-        Scope.DISTRIBUTED_NO_ACK) {
-      return;
-    }
+  public void testOrderedUpdates() throws Exception {
+    assumeFalse(getRegionAttributes().getScope() == Scope.DISTRIBUTED_NO_ACK);
 
     final String name = this.getUniqueName();
     final Object key = "KEY";
@@ -443,7 +439,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
                   queue.put(value);
 
                 } catch (InterruptedException ex) {
-                  com.gemstone.gemfire.test.dunit.Assert.fail("Why was I interrupted?", ex);
+                  fail("Why was I interrupted?", ex);
                 }
               }
             });
@@ -465,7 +461,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
                 assertEquals(i, value.intValue());
 
               } catch (InterruptedException ex) {
-                com.gemstone.gemfire.test.dunit.Assert.fail("Why was I interrupted?", ex);
+                fail("Why was I interrupted?", ex);
               }
             }
           }
@@ -487,10 +483,10 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     ThreadUtils.join(ai1, 30 * 1000);
 
     if (ai0.exceptionOccurred()) {
-      com.gemstone.gemfire.test.dunit.Assert.fail("ai0 failed", ai0.getException());
+      fail("ai0 failed", ai0.getException());
 
     } else if (ai1.exceptionOccurred()) {
-      com.gemstone.gemfire.test.dunit.Assert.fail("ai1 failed", ai1.getException());
+      fail("ai1 failed", ai1.getException());
     }
   }
 
@@ -499,7 +495,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * <code>netSearch</code>.
    */
   @Test
-  public void testDistributedGet() {
+  public void testDistributedGet() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -534,9 +530,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * not have that key defined.
    */
   @Test
-  public void testDistributedPutNoUpdate()
-    throws InterruptedException {
-
+  public void testDistributedPutNoUpdate() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -591,7 +585,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * second VM should see the updated value.
    */
   @Test
-  public void testDefinedEntryUpdated() {
+  public void testDefinedEntryUpdated() throws Exception {
     final String name = this.getUniqueName();
     final Object key = "KEY";
     final Object oldValue = "OLD_VALUE";
@@ -648,7 +642,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * propagated to all VMs that define that entry.
    */
   @Test
-  public void testDistributedDestroy() throws InterruptedException {
+  public void testDistributedDestroy() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -739,9 +733,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * propagated to all VMs that define that region.
    */
   @Test
-  public void testDistributedRegionDestroy()
-    throws InterruptedException {
-
+  public void testDistributedRegionDestroy() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -789,10 +781,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * other VMs that define that entry.
    */
   @Test
-  public void testLocalDestroy() throws InterruptedException {
-    if (!supportsLocalDestroyAndLocalInvalidate()) {
-      return;
-    }
+  public void testLocalDestroy() throws Exception {
+    assumeTrue(supportsLocalDestroyAndLocalInvalidate());
+
     // test not valid for persistBackup region since they have to be
     // mirrored KEYS_VALUES
     if (getRegionAttributes().getDataPolicy().withPersistence()) return;
@@ -859,9 +850,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * to other VMs that define that region.
    */
   @Test
-  public void testLocalRegionDestroy()
-    throws InterruptedException {
-
+  public void testLocalRegionDestroy() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -908,7 +897,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * propagated to all VMs that define that entry.
    */
   @Test
-  public void testDistributedInvalidate() {
+  public void testDistributedInvalidate() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -984,7 +973,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * in multiple VMs does not cause any problems.
    */
   @Test
-  public void testDistributedInvalidate4() throws InterruptedException {
+  public void testDistributedInvalidate4() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -1057,11 +1046,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * region is propagated to all VMs that define that entry.
    */
   @Test
-  public void testDistributedRegionInvalidate()
-    throws InterruptedException {
-    if (!supportsSubregions()) {
-      return;
-    }
+  public void testDistributedRegionInvalidate() throws Exception {
+    assumeTrue(supportsSubregions());
+
     final String name = this.getUniqueName();
     final String subname = "sub";
     final boolean useSubs = getRegionAttributes().getPartitionAttributes() == null;
@@ -1152,7 +1139,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    */
   @Category(FlakyTest.class) // GEODE-153 & GEODE-932: time sensitive, waitForInvocation (waitForCriterion), 3 second timeouts
   @Test
-  public void testRemoteCacheListener() throws InterruptedException {
+  public void testRemoteCacheListener() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -1206,7 +1193,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
                 try {
                   assertEquals(newValue, DataSerializer.readObject(dis));
                 } catch (Exception e) {
-                  com.gemstone.gemfire.test.dunit.Assert.fail("Unexpected Exception", e);
+                  fail("Unexpected Exception", e);
                 }
               }
             };
@@ -1259,7 +1246,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
                 try {
                   assertEquals(newValue, DataSerializer.readObject(dis));
                 } catch (Exception e) {
-                  com.gemstone.gemfire.test.dunit.Assert.fail("Unexpected Exception", e);
+                  fail("Unexpected Exception", e);
                 }
               }
             };
@@ -1378,15 +1365,13 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       });
   }
 
-
   /**
    * Tests that a {@link CacheListener} is invoked in a remote VM.
    */
   @Test
-  public void testRemoteCacheListenerInSubregion() throws InterruptedException {
-    if (!supportsSubregions()) {
-      return;
-    }
+  public void testRemoteCacheListenerInSubregion() throws Exception {
+    assumeTrue(supportsSubregions());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -1482,10 +1467,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * essentially tests <code>netLoad</code>.
    */
   @Test
-  public void testRemoteCacheLoader() throws InterruptedException {
-    if (!supportsNetLoad()) {
-      return;
-    }
+  public void testRemoteCacheLoader() throws Exception {
+    assumeTrue(supportsNetLoad());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -1546,10 +1530,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * is actually passed.
    */
   @Test
-  public void testRemoteCacheLoaderArg() throws InterruptedException {
-    if (!supportsNetLoad()) {
-      return;
-    }
+  public void testRemoteCacheLoaderArg() throws Exception {
+    assumeTrue(supportsNetLoad());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -1628,10 +1611,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * CacheLoaderException} results is propagated back to the caller.
    */
   @Test
-  public void testRemoteCacheLoaderException() throws InterruptedException {
-    if (!supportsNetLoad()) {
-      return;
-    }
+  public void testRemoteCacheLoaderException() throws Exception {
+    assumeTrue(supportsNetLoad());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -1694,12 +1676,10 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       });
   }
 
-
   @Test
-  public void testCacheLoaderWithNetSearch() throws CacheException {
-    if (!supportsNetLoad()) {
-      return;
-    }
+  public void testCacheLoaderWithNetSearch() throws Exception {
+    assumeTrue(supportsNetLoad());
+
     // some tests use mirroring by default (e.g. persistBackup regions)
     // if so, then this test won't work right
     if (getRegionAttributes().getDataPolicy().withReplication()
@@ -1748,7 +1728,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             assertEquals(value, result);
             return result;
           } catch (TimeoutException ex) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("Why did I time out?", ex);
+            fail("Why did I time out?", ex);
           }
           return null;
         }
@@ -1790,11 +1770,8 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     assertEquals(value, region.getEntry(key).getValue());
   }
 
-
   @Test
-  public void testCacheLoaderWithNetLoad() throws CacheException {
-
-
+  public void testCacheLoaderWithNetLoad() throws Exception {
     // replicated regions and partitioned regions make no sense for this
     // test
     if (getRegionAttributes().getDataPolicy().withReplication() ||
@@ -1843,7 +1820,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             assertEquals(value, result);
             return result;
           } catch (TimeoutException ex) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("Why did I time out?", ex);
+            fail("Why did I time out?", ex);
           }
           return null;
         }
@@ -1877,7 +1854,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * there is no remote loader.
    */
   @Test
-  public void testNoRemoteCacheLoader() throws InterruptedException {
+  public void testNoRemoteCacheLoader() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -1912,10 +1889,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * value).
    */
   @Test
-  public void testNoLoaderWithInvalidEntry() {
-    if (!supportsNetLoad()) {
-      return;
-    }
+  public void testNoLoaderWithInvalidEntry() throws Exception {
+    assumeTrue(supportsNetLoad());
+
     final String name = this.getUniqueName();
     final Object key = "KEY";
     final Object value = "VALUE";
@@ -1974,7 +1950,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * CacheWriterException}s are propagated appropriately.
    */
   @Test
-  public void testRemoteCacheWriter() throws InterruptedException {
+  public void testRemoteCacheWriter() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -2305,7 +2281,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
           } catch (CacheWriterException ex) {
             if (region.isDestroyed()) {
-              com.gemstone.gemfire.test.dunit.Assert.fail("should not have an exception if region is destroyed", ex);
+              fail("should not have an exception if region is destroyed", ex);
             }
             assertEquals(1, region.size());
             if (region.getAttributes().getOffHeap() && !(region instanceof PartitionedRegion)) {
@@ -2360,9 +2336,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * is invoked instead of a remote one.
    */
   @Test
-  public void testLocalAndRemoteCacheWriters()
-    throws InterruptedException {
-
+  public void testLocalAndRemoteCacheWriters() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -2458,9 +2432,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * <code>CacheWriter</code> even if it is in another VM.
    */
   @Test
-  public void testCacheLoaderModifyingArgument()
-    throws InterruptedException {
-
+  public void testCacheLoaderModifyingArgument() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -2568,10 +2540,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * returns <code>null</code> instead of causing infinite recursion.
    */
   @Test
-  public void testRemoteLoaderNetSearch() throws CacheException {
-    if (!supportsNetLoad()) {
-      return;
-    }
+  public void testRemoteLoaderNetSearch() throws Exception {
+    assumeTrue(supportsNetLoad());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -2602,7 +2573,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
                   assertNull(helper.netSearch(true));
 
                 } catch (TimeoutException ex) {
-                  com.gemstone.gemfire.test.dunit.Assert.fail("Why did I time out?", ex);
+                  fail("Why did I time out?", ex);
                 }
                 return value;
               }
@@ -2617,7 +2588,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a local loader is preferred to a remote one
    */
   @Test
-  public void testLocalCacheLoader() {
+  public void testLocalCacheLoader() throws Exception {
     final String name = this.getUniqueName();
     final Object key = "KEY";
     final Object value = "VALUE";
@@ -2691,7 +2662,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testDistributedPut: Created Region");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -2708,7 +2679,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
          }
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -2870,10 +2841,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * DataPolicy#REPLICATE}.
    */
   @Test
-  public void testReplicate() throws InterruptedException {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testReplicate() throws Exception {
+    assumeTrue(supportsReplication());
+
     //pauseIfNecessary(100); // wait for previous tearDown to complete
 
     final String name = this.getUniqueName();
@@ -2999,10 +2969,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * region.
    */
   @Test
-  public void testDeltaWithReplicate() throws InterruptedException {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testDeltaWithReplicate() throws Exception {
+    assumeTrue(supportsReplication());
+
     //pauseIfNecessary(100); // wait for previous tearDown to complete
     
     final String name = this.getUniqueName();
@@ -3102,17 +3071,14 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     
   }
   
-  
-  
   /**
    * Tests that a newly-created mirrored region contains all of the
    * entries of another region.
    */
   @Test
-  public void testGetInitialImage() {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testGetInitialImage() throws Exception {
+    assumeTrue(supportsReplication());
+
     final String name = this.getUniqueName();
     final Object key1 = "KEY1";
     final Object value1 = "VALUE1";
@@ -3185,19 +3151,18 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       });
   }
 
-
   private static final int CHUNK_SIZE = 500 * 1024; // == InitialImageOperation.CHUNK_SIZE_IN_BYTES
   private static final int NUM_ENTRIES = 100;
   private static final int VALUE_SIZE = CHUNK_SIZE * 10 / NUM_ENTRIES;
+
   /**
    * Tests that a newly-created mirrored region contains all of the
    * entries of another region, with a large quantity of data.
    */
   @Test
-  public void testLargeGetInitialImage() {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testLargeGetInitialImage() throws Exception {
+    assumeTrue(supportsReplication());
+
     final String name = this.getUniqueName();
     final Integer[] keys = new Integer[NUM_ENTRIES];
     final byte[][] values = new byte[NUM_ENTRIES][];
@@ -3274,11 +3239,8 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * non-mirrored region and the afterCreate event is invoked on a listener.
    */
   @Test
-  public void testMirroredDataFromNonMirrored()
-    throws InterruptedException {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testMirroredDataFromNonMirrored() throws Exception {
+    assumeTrue(supportsReplication());
 
     final String name = this.getUniqueName();
     final Object key1 = "KEY1";
@@ -3393,11 +3355,8 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * region.
    */
   @Test
-  public void testNoMirroredDataToNonMirrored()
-    throws InterruptedException {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testNoMirroredDataToNonMirrored() throws Exception {
+    assumeTrue(supportsReplication());
 
     final String name = this.getUniqueName();
     final Object key1 = "KEY1";
@@ -3477,10 +3436,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that a local load occurs, even with mirroring
    */
   @Test
-  public void testMirroredLocalLoad() {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testMirroredLocalLoad() throws Exception {
+    assumeTrue(supportsReplication());
+
     final String name = this.getUniqueName();
     final Object key = "KEY";
     final Object value = "VALUE";
@@ -3555,10 +3513,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * mirroring
    */
   @Test
-  public void testMirroredNetLoad() {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testMirroredNetLoad() throws Exception {
+    assumeTrue(supportsReplication());
+
     final String name = this.getUniqueName();
     final Object key = "KEY";
     final Object value = "VALUE";
@@ -3613,13 +3570,11 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       });
   }
 
-  ////////  Region Keep Alive Tests
-
   /**
    * Tests that a region is not kept alive
    */
   @Test
-  public void testNoRegionKeepAlive() throws InterruptedException {
+  public void testNoRegionKeepAlive() throws Exception {
     final String name = this.getUniqueName();
     final Object key = "KEEP_ALIVE_KEY";
     final Object value = "VALUE";
@@ -3662,15 +3617,10 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       });
   }
 
-
-
   @Test
-  public void testNetSearchObservesTtl()
-  throws InterruptedException
-  {
-    if(getRegionAttributes().getPartitionAttributes() != null)
-      return;
-    
+  public void testNetSearchObservesTtl() throws Exception {
+    assumeTrue(getRegionAttributes().getPartitionAttributes() == null);
+
     final String name = this.getUniqueName();
     final int shortTimeout = 10; // ms
     final int longTimeout = 1000000; // ms
@@ -3755,12 +3705,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   }
 
   @Test
-  public void testNetSearchObservesIdleTime()
-  throws InterruptedException
-  {
-    if(getRegionAttributes().getPartitionAttributes() != null)
-      return;
-    
+  public void testNetSearchObservesIdleTime() throws Exception {
+    assumeTrue(getRegionAttributes().getPartitionAttributes() == null);
+
     final String name = this.getUniqueName();
     final int shortTimeout = 10; // ms
     final int longTimeout = 10000; // ms
@@ -3846,8 +3793,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     });
   }
 
-
-  static TestCacheListener destroyListener = null;
+  private static TestCacheListener destroyListener = null;
 
   /**
    * Tests that an entry in a distributed region that expires with a distributed
@@ -3855,157 +3801,155 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    */
   @Category(FlakyTest.class) // GEODE-583: time sensitive, expiration, waitForCriterion, short timeouts
   @Test
-  public void testEntryTtlDestroyEvent() throws InterruptedException {
-      
-      if(getRegionAttributes().getPartitionAttributes() != null)
-        return;
-      
-      final String name = this.getUniqueName();
-      final int timeout = 22; // ms
-      final Object key = "KEY";
-      final Object value = "VALUE";
+  public void testEntryTtlDestroyEvent() throws Exception {
+    assumeTrue(getRegionAttributes().getPartitionAttributes() == null);
 
-      Host host = Host.getHost(0);
-      VM vm0 = host.getVM(0);
-      VM vm1 = host.getVM(1);
+    final String name = this.getUniqueName();
+    final int timeout = 22; // ms
+    final Object key = "KEY";
+    final Object value = "VALUE";
 
-      class DestroyListener extends TestCacheListener {
-        boolean eventIsExpiration = false;
+    Host host = Host.getHost(0);
+    VM vm0 = host.getVM(0);
+    VM vm1 = host.getVM(1);
 
-        public void afterDestroyBeforeAddEvent(EntryEvent event) {
-          eventIsExpiration = event.isExpiration();
+    class DestroyListener extends TestCacheListener {
+      boolean eventIsExpiration = false;
+
+      public void afterDestroyBeforeAddEvent(EntryEvent event) {
+        eventIsExpiration = event.isExpiration();
+      }
+      public void afterDestroy2(EntryEvent event) {
+        if (event.isOriginRemote()) {
+          assertTrue(!event.getDistributedMember().equals(getSystem().getDistributedMember()));
+        } else {
+          assertEquals(getSystem().getDistributedMember(), event.getDistributedMember());
         }
-        public void afterDestroy2(EntryEvent event) {
-          if (event.isOriginRemote()) {
-            assertTrue(!event.getDistributedMember().equals(getSystem().getDistributedMember()));
-          } else {
-            assertEquals(getSystem().getDistributedMember(), event.getDistributedMember());
-          }
-          assertEquals(Operation.EXPIRE_DESTROY, event.getOperation());
-          assertEquals(value, event.getOldValue());
-          eventIsExpiration = event.getOperation().isExpiration();
-        }
-
-        public void afterCreate2(EntryEvent event) {
-          // ignore
-        }
-
-        public void afterUpdate2(EntryEvent event) {
-          // ignore
-        }
+        assertEquals(Operation.EXPIRE_DESTROY, event.getOperation());
+        assertEquals(value, event.getOldValue());
+        eventIsExpiration = event.getOperation().isExpiration();
       }
 
+      public void afterCreate2(EntryEvent event) {
+        // ignore
+      }
 
-      SerializableRunnable createRegion = new CacheSerializableRunnable("Create with Listener") {
+      public void afterUpdate2(EntryEvent event) {
+        // ignore
+      }
+    }
+
+
+    SerializableRunnable createRegion = new CacheSerializableRunnable("Create with Listener") {
+      public void run2() throws CacheException {
+        AttributesFactory fac = new AttributesFactory(getRegionAttributes());
+        fac.addCacheListener(destroyListener = new DestroyListener());
+        createRegion(name, fac.create());
+      }
+    };
+
+    vm1.invoke(createRegion);
+
+    vm0.invoke(new CacheSerializableRunnable("Create with TTL") {
         public void run2() throws CacheException {
-          AttributesFactory fac = new AttributesFactory(getRegionAttributes());
-          fac.addCacheListener(destroyListener = new DestroyListener());
-          createRegion(name, fac.create());
-        }
-      };
-
-      vm1.invoke(createRegion);
-
-      vm0.invoke(new CacheSerializableRunnable("Create with TTL") {
-          public void run2() throws CacheException {
-            AttributesFactory factory = new AttributesFactory(getRegionAttributes());
-            factory.setStatisticsEnabled(true);
-            ExpirationAttributes expire =
-              new ExpirationAttributes(timeout,
-                                       ExpirationAction.DESTROY);
-            factory.setEntryTimeToLive(expire);
-            if (!getRegionAttributes().getDataPolicy().withReplication()) {
-              factory.setDataPolicy(DataPolicy.NORMAL);
-              factory.setSubscriptionAttributes(new SubscriptionAttributes(InterestPolicy.ALL));
-            }
-            System.setProperty(LocalRegion.EXPIRY_MS_PROPERTY, "true");
-            try {
-              createRegion(name, factory.create());
-              ExpiryTask.suspendExpiration();
-              // suspend to make sure we can see that the put is distributed to this member
-            } 
-            finally {
-              System.getProperties().remove(LocalRegion.EXPIRY_MS_PROPERTY);
-            }
+          AttributesFactory factory = new AttributesFactory(getRegionAttributes());
+          factory.setStatisticsEnabled(true);
+          ExpirationAttributes expire =
+            new ExpirationAttributes(timeout,
+                                     ExpirationAction.DESTROY);
+          factory.setEntryTimeToLive(expire);
+          if (!getRegionAttributes().getDataPolicy().withReplication()) {
+            factory.setDataPolicy(DataPolicy.NORMAL);
+            factory.setSubscriptionAttributes(new SubscriptionAttributes(InterestPolicy.ALL));
           }
-        });
-      
-      try {
-
-      // let region create finish before doing put
-      //pause(10);
-
-      vm1.invoke(new SerializableCallable() {
-        public Object call() throws Exception {
-          Region region = getRootRegion().getSubregion(name);
-          DestroyListener dl = (DestroyListener)region.getAttributes().getCacheListeners()[0];
-          dl.enableEventHistory();
-          region.put(key, value);
-          // reset listener after create event
-          assertTrue(dl.wasInvoked());
-          List<CacheEvent> history = dl.getEventHistory();
-          CacheEvent ce = history.get(0);
-          dl.disableEventHistory();
-          assertEquals(Operation.CREATE, ce.getOperation());
-          return null;
+          System.setProperty(LocalRegion.EXPIRY_MS_PROPERTY, "true");
+          try {
+            createRegion(name, factory.create());
+            ExpiryTask.suspendExpiration();
+            // suspend to make sure we can see that the put is distributed to this member
+          }
+          finally {
+            System.getProperties().remove(LocalRegion.EXPIRY_MS_PROPERTY);
+          }
         }
       });
-      vm0.invoke(new CacheSerializableRunnable("Check create received from vm1") {
+
+    try {
+
+    // let region create finish before doing put
+    //pause(10);
+
+    vm1.invoke(new SerializableCallable() {
+      public Object call() throws Exception {
+        Region region = getRootRegion().getSubregion(name);
+        DestroyListener dl = (DestroyListener)region.getAttributes().getCacheListeners()[0];
+        dl.enableEventHistory();
+        region.put(key, value);
+        // reset listener after create event
+        assertTrue(dl.wasInvoked());
+        List<CacheEvent> history = dl.getEventHistory();
+        CacheEvent ce = history.get(0);
+        dl.disableEventHistory();
+        assertEquals(Operation.CREATE, ce.getOperation());
+        return null;
+      }
+    });
+    vm0.invoke(new CacheSerializableRunnable("Check create received from vm1") {
+      public void run2() throws CacheException {
+        final Region region = getRootRegion().getSubregion(name);
+        WaitCriterion waitForCreate = new WaitCriterion() {
+          public boolean done() {
+            return region.getEntry(key) != null;
+          }
+          public String description() {
+            return "never saw create of " + key;
+          }
+        };
+        Wait.waitForCriterion(waitForCreate, 3000, 10, true);
+      }
+    });
+
+    } finally {
+      vm0.invoke(new CacheSerializableRunnable("resume expiration") {
+        public void run2() throws CacheException {
+          ExpiryTask.permitExpiration();
+        }
+      });
+    }
+
+    // now wait for it to expire
+    vm0.invoke(new CacheSerializableRunnable("Check local destroy") {
         public void run2() throws CacheException {
           final Region region = getRootRegion().getSubregion(name);
-          WaitCriterion waitForCreate = new WaitCriterion() {
+          WaitCriterion waitForExpire = new WaitCriterion() {
             public boolean done() {
-              return region.getEntry(key) != null;
+              return region.getEntry(key) == null;
             }
             public String description() {
-              return "never saw create of " + key;
+              return "never saw expire of " + key + " entry=" + region.getEntry(key);
             }
           };
-          Wait.waitForCriterion(waitForCreate, 3000, 10, true);
+          Wait.waitForCriterion(waitForExpire, 4000, 10, true);
         }
       });
-      
-      } finally {
-        vm0.invoke(new CacheSerializableRunnable("resume expiration") {
-          public void run2() throws CacheException {
-            ExpiryTask.permitExpiration();
-          }
-        });
-      }
-      
-      // now wait for it to expire
-      vm0.invoke(new CacheSerializableRunnable("Check local destroy") {
-          public void run2() throws CacheException {
-            final Region region = getRootRegion().getSubregion(name);
-            WaitCriterion waitForExpire = new WaitCriterion() {
-              public boolean done() {
-                return region.getEntry(key) == null;
-              }
-              public String description() {
-                return "never saw expire of " + key + " entry=" + region.getEntry(key);
-              }
-            };
-            Wait.waitForCriterion(waitForExpire, 4000, 10, true);
-          }
-        });
 
-      vm1.invoke(new CacheSerializableRunnable("Verify destroyed and event") {
-          public void run2() throws CacheException {
-            final Region region = getRootRegion().getSubregion(name);
-            WaitCriterion waitForExpire = new WaitCriterion() {
-              public boolean done() {
-                return region.getEntry(key) == null;
-              }
-              public String description() {
-                return "never saw expire of " + key + " entry=" + region.getEntry(key);
-              }
-            };
-            Wait.waitForCriterion(waitForExpire, 4000, 10, true);
-            assertTrue(destroyListener.waitForInvocation(555));
-            assertTrue(((DestroyListener)destroyListener).eventIsExpiration);
-          }
-        });
-    }
+    vm1.invoke(new CacheSerializableRunnable("Verify destroyed and event") {
+        public void run2() throws CacheException {
+          final Region region = getRootRegion().getSubregion(name);
+          WaitCriterion waitForExpire = new WaitCriterion() {
+            public boolean done() {
+              return region.getEntry(key) == null;
+            }
+            public String description() {
+              return "never saw expire of " + key + " entry=" + region.getEntry(key);
+            }
+          };
+          Wait.waitForCriterion(waitForExpire, 4000, 10, true);
+          assertTrue(destroyListener.waitForInvocation(555));
+          assertTrue(((DestroyListener)destroyListener).eventIsExpiration);
+        }
+      });
+  }
 
   /**
    * Tests that an entry in a distributed region expires with a local
@@ -4013,261 +3957,258 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    */
   @Category(FlakyTest.class) // GEODE-671: time sensitive, expiration, retry loop, async actions, waitForCriterion
   @Test
-  public void testEntryTtlLocalDestroy() throws InterruptedException {
-      if(getRegionAttributes().getPartitionAttributes() != null)
-        return;
-      final boolean mirrored = getRegionAttributes().getDataPolicy().withReplication();
-      final boolean partitioned = getRegionAttributes().getPartitionAttributes() != null ||
-           getRegionAttributes().getDataPolicy().withPartitioning();
-      if (!mirrored) {
-        // This test fails intermittently because the DSClock we inherit from the existing
-        // distributed system is stuck in the "stopped" state.
-        // The DSClock is going away when java groups is merged and at that
-        // time this following can be removed.
-        disconnectAllFromDS();
-      }
+  public void testEntryTtlLocalDestroy() throws Exception {
+    assumeTrue(getRegionAttributes().getPartitionAttributes() == null);
 
-      final String name = this.getUniqueName();
-      final int timeout = 10; // ms
-      final Object key = "KEY";
-      final Object value = "VALUE";
-
-      Host host = Host.getHost(0);
-      VM vm0 = host.getVM(0);
-      VM vm1 = host.getVM(1);
-
-      SerializableRunnable create = new CacheSerializableRunnable("Populate") {
-        public void run2() throws CacheException {
-        System.setProperty(LocalRegion.EXPIRY_MS_PROPERTY, "true");
-        try {
-          Region region = createRegion(name);
-        }
-        finally {
-          System.getProperties().remove(LocalRegion.EXPIRY_MS_PROPERTY);
-        }
-      }
-      };
-
-      vm1.invoke(create);
-      
-      vm0.invoke(new CacheSerializableRunnable("Create with TTL") {
-          public void run2() throws CacheException {
-            AttributesFactory factory = new AttributesFactory(getRegionAttributes());
-            factory.setStatisticsEnabled(true);
-            ExpirationAttributes expire =
-              new ExpirationAttributes(timeout,
-                                       ExpirationAction.LOCAL_DESTROY);
-            factory.setEntryTimeToLive(expire);
-            if (!mirrored) {
-              // make it cached all events so that remote creates will also
-              // be created here
-              if(!partitioned){
-               factory.setDataPolicy(DataPolicy.NORMAL);
-              }
-              factory.setSubscriptionAttributes(new SubscriptionAttributes(InterestPolicy.ALL));
-              factory.addCacheListener(new CountingDistCacheListener());
-            }
-            /**
-             * Crank up the expiration so test runs faster.
-             * This property only needs to be set while the region is created
-             */
-            System.setProperty(LocalRegion.EXPIRY_MS_PROPERTY, "true");
-            try {
-              createRegion(name, factory.create());
-              if (mirrored) fail("Should have thrown an IllegalStateException");
-            }
-            catch (IllegalStateException e) {
-              if (!mirrored) throw e;
-            } 
-            finally {
-              System.getProperties().remove(LocalRegion.EXPIRY_MS_PROPERTY);
-            }
-          }
-        });
-      if (mirrored) return;
-
-      vm1.invoke(new SerializableCallable() {
-        public Object call() throws Exception {
-          Region region = getRootRegion().getSubregion(name);
-          region.put(key, value);
-          return null;
-        }
-      });
-      
-      vm0.invoke(new CacheSerializableRunnable("Check local destroy") {
-          public void run2() throws CacheException {
-            final Region region =
-              getRootRegion().getSubregion(name);
-            // make sure we created the entry
-            {
-              CountingDistCacheListener l = (CountingDistCacheListener)
-                region.getAttributes().getCacheListeners()[0];
-              int retry = 1000;
-              while (retry-- > 0) {
-                try {
-                  l.assertCount(1, 0, 0, 0);
-                  // TODO: a race exists in which assertCount may also see a destroyCount of 1
-                  logger.info("DEBUG: saw create");
-                  break;
-                } catch (AssertionFailedError e) {
-                  if (retry > 0) {
-                    Wait.pause(1);
-                  } else {
-                    throw e;
-                  }
-                }
-              }
-            }
-
-            { // now make sure it expires
-              // this should happen really fast since timeout is 10 ms.
-              // But it may take longer in some cases because of thread
-              // scheduling delays and machine load (see GEODE-410).
-              // The previous code would fail after 100ms; now we wait 3000ms.
-              WaitCriterion waitForUpdate = new WaitCriterion() {
-                public boolean done() {
-                  Region.Entry re = region.getEntry(key);
-                  if (re != null) {
-                    EntryExpiryTask eet = getEntryExpiryTask(region, key);
-                    if (eet != null) {
-                      long stopTime = ((InternalDistributedSystem)(region.getCache().getDistributedSystem())).getClock().getStopTime();
-                      logger.info("DEBUG: waiting for expire destroy expirationTime= " + eet.getExpirationTime() + " now=" + eet.getNow() + " stopTime=" + stopTime + " currentTimeMillis=" + System.currentTimeMillis());
-                    } else {
-                      logger.info("DEBUG: waiting for expire destroy but expiry task is null");
-                    }
-                  }
-                  return re == null;
-                }
-                public String description() {
-                  String expiryInfo = "";
-                  try {
-                    EntryExpiryTask eet = getEntryExpiryTask(region, key);
-                    if (eet != null) {
-                      expiryInfo = "expirationTime= " + eet.getExpirationTime() + " now=" + eet.getNow() + " currentTimeMillis=" + System.currentTimeMillis();
-                    }
-                  } catch (EntryNotFoundException ex) {
-                    expiryInfo ="EntryNotFoundException when getting expiry task";
-                  }
-                  return "Entry for key " + key + " never expired (since it still exists) " + expiryInfo;
-                }
-              };
-              Wait.waitForCriterion(waitForUpdate, 30000, 1, true);
-            }
-            assertNull(region.getEntry(key));
-          }
-        });
-
-      vm1.invoke(new CacheSerializableRunnable("Verify local") {
-          public void run2() throws CacheException {
-            Region region =
-              getRootRegion().getSubregion(name);
-            Region.Entry entry = region.getEntry(key);
-            assertEquals(value, entry.getValue());
-          }
-        });
+    final boolean mirrored = getRegionAttributes().getDataPolicy().withReplication();
+    final boolean partitioned = getRegionAttributes().getPartitionAttributes() != null ||
+         getRegionAttributes().getDataPolicy().withPartitioning();
+    if (!mirrored) {
+      // This test fails intermittently because the DSClock we inherit from the existing
+      // distributed system is stuck in the "stopped" state.
+      // The DSClock is going away when java groups is merged and at that
+      // time this following can be removed.
+      disconnectAllFromDS();
     }
-    
-    private static EntryExpiryTask getEntryExpiryTask(Region r, Object key) {
-      EntryExpiryTask result = null;
+
+    final String name = this.getUniqueName();
+    final int timeout = 10; // ms
+    final Object key = "KEY";
+    final Object value = "VALUE";
+
+    Host host = Host.getHost(0);
+    VM vm0 = host.getVM(0);
+    VM vm1 = host.getVM(1);
+
+    SerializableRunnable create = new CacheSerializableRunnable("Populate") {
+      public void run2() throws CacheException {
+      System.setProperty(LocalRegion.EXPIRY_MS_PROPERTY, "true");
       try {
-        LocalRegion lr = (LocalRegion) r;
-        result = lr.getEntryExpiryTask(key);
-      } catch (EntryNotFoundException ignore) {
+        Region region = createRegion(name);
       }
-      return result;
+      finally {
+        System.getProperties().remove(LocalRegion.EXPIRY_MS_PROPERTY);
+      }
     }
+    };
 
-    /**
-     * Tests to makes sure that a distributed update resets the
-     * expiration timer.
-     */
+    vm1.invoke(create);
+
+    vm0.invoke(new CacheSerializableRunnable("Create with TTL") {
+        public void run2() throws CacheException {
+          AttributesFactory factory = new AttributesFactory(getRegionAttributes());
+          factory.setStatisticsEnabled(true);
+          ExpirationAttributes expire =
+            new ExpirationAttributes(timeout,
+                                     ExpirationAction.LOCAL_DESTROY);
+          factory.setEntryTimeToLive(expire);
+          if (!mirrored) {
+            // make it cached all events so that remote creates will also
+            // be created here
+            if(!partitioned){
+             factory.setDataPolicy(DataPolicy.NORMAL);
+            }
+            factory.setSubscriptionAttributes(new SubscriptionAttributes(InterestPolicy.ALL));
+            factory.addCacheListener(new CountingDistCacheListener());
+          }
+          /**
+           * Crank up the expiration so test runs faster.
+           * This property only needs to be set while the region is created
+           */
+          System.setProperty(LocalRegion.EXPIRY_MS_PROPERTY, "true");
+          try {
+            createRegion(name, factory.create());
+            if (mirrored) fail("Should have thrown an IllegalStateException");
+          }
+          catch (IllegalStateException e) {
+            if (!mirrored) throw e;
+          }
+          finally {
+            System.getProperties().remove(LocalRegion.EXPIRY_MS_PROPERTY);
+          }
+        }
+      });
+    if (mirrored) return;
+
+    vm1.invoke(new SerializableCallable() {
+      public Object call() throws Exception {
+        Region region = getRootRegion().getSubregion(name);
+        region.put(key, value);
+        return null;
+      }
+    });
+
+    vm0.invoke(new CacheSerializableRunnable("Check local destroy") {
+        public void run2() throws CacheException {
+          final Region region =
+            getRootRegion().getSubregion(name);
+          // make sure we created the entry
+          {
+            CountingDistCacheListener l = (CountingDistCacheListener)
+              region.getAttributes().getCacheListeners()[0];
+            int retry = 1000;
+            while (retry-- > 0) {
+              try {
+                l.assertCount(1, 0, 0, 0);
+                // TODO: a race exists in which assertCount may also see a destroyCount of 1
+                logger.info("DEBUG: saw create");
+                break;
+              } catch (AssertionError e) {
+                if (retry > 0) {
+                  Wait.pause(1);
+                } else {
+                  throw e;
+                }
+              }
+            }
+          }
+
+          { // now make sure it expires
+            // this should happen really fast since timeout is 10 ms.
+            // But it may take longer in some cases because of thread
+            // scheduling delays and machine load (see GEODE-410).
+            // The previous code would fail after 100ms; now we wait 3000ms.
+            WaitCriterion waitForUpdate = new WaitCriterion() {
+              public boolean done() {
+                Region.Entry re = region.getEntry(key);
+                if (re != null) {
+                  EntryExpiryTask eet = getEntryExpiryTask(region, key);
+                  if (eet != null) {
+                    long stopTime = ((InternalDistributedSystem)(region.getCache().getDistributedSystem())).getClock().getStopTime();
+                    logger.info("DEBUG: waiting for expire destroy expirationTime= " + eet.getExpirationTime() + " now=" + eet.getNow() + " stopTime=" + stopTime + " currentTimeMillis=" + System.currentTimeMillis());
+                  } else {
+                    logger.info("DEBUG: waiting for expire destroy but expiry task is null");
+                  }
+                }
+                return re == null;
+              }
+              public String description() {
+                String expiryInfo = "";
+                try {
+                  EntryExpiryTask eet = getEntryExpiryTask(region, key);
+                  if (eet != null) {
+                    expiryInfo = "expirationTime= " + eet.getExpirationTime() + " now=" + eet.getNow() + " currentTimeMillis=" + System.currentTimeMillis();
+                  }
+                } catch (EntryNotFoundException ex) {
+                  expiryInfo ="EntryNotFoundException when getting expiry task";
+                }
+                return "Entry for key " + key + " never expired (since it still exists) " + expiryInfo;
+              }
+            };
+            Wait.waitForCriterion(waitForUpdate, 30000, 1, true);
+          }
+          assertNull(region.getEntry(key));
+        }
+      });
+
+    vm1.invoke(new CacheSerializableRunnable("Verify local") {
+        public void run2() throws CacheException {
+          Region region =
+            getRootRegion().getSubregion(name);
+          Region.Entry entry = region.getEntry(key);
+          assertEquals(value, entry.getValue());
+        }
+      });
+  }
+    
+  private static EntryExpiryTask getEntryExpiryTask(Region r, Object key) {
+    EntryExpiryTask result = null;
+    try {
+      LocalRegion lr = (LocalRegion) r;
+      result = lr.getEntryExpiryTask(key);
+    } catch (EntryNotFoundException ignore) {
+    }
+    return result;
+  }
+
+  /**
+   * Tests to makes sure that a distributed update resets the
+   * expiration timer.
+   */
   @Test
-  public void testUpdateResetsIdleTime() throws InterruptedException {
+  public void testUpdateResetsIdleTime() throws Exception {
+    final String name = this.getUniqueName();
+    // test no longer waits for this timeout to expire
+    final int timeout = 90; // seconds
+    final Object key = "KEY";
+    final Object value = "VALUE";
 
-      final String name = this.getUniqueName();
-      // test no longer waits for this timeout to expire
-      final int timeout = 90; // seconds
-      final Object key = "KEY";
-      final Object value = "VALUE";
+    Host host = Host.getHost(0);
+    VM vm0 = host.getVM(0);
+    VM vm1 = host.getVM(1);
 
-      Host host = Host.getHost(0);
-      VM vm0 = host.getVM(0);
-      VM vm1 = host.getVM(1);
+    vm0.invoke(new CacheSerializableRunnable("Create with Idle") {
+      public void run2() throws CacheException {
+        AttributesFactory factory = new AttributesFactory(getRegionAttributes());
+        factory.setStatisticsEnabled(true);
+        ExpirationAttributes expire =
+            new ExpirationAttributes(timeout,
+                ExpirationAction.DESTROY);
+        factory.setEntryIdleTimeout(expire);
+        LocalRegion region =
+            (LocalRegion) createRegion(name, factory.create());
+        if (region.getDataPolicy().withPartitioning()) {
+          // Force all buckets to be created locally so the
+          // test will know that the create happens in this vm
+          // and the update (in vm1) is remote.
+          PartitionRegionHelper.assignBucketsToPartitions(region);
+        }
+        region.create(key, null);
+        EntryExpiryTask eet = region.getEntryExpiryTask(key);
+        region.create("createExpiryTime", eet.getExpirationTime());
+        Wait.waitForExpiryClockToChange(region);
+      }
+    });
 
+    vm1.invoke(new CacheSerializableRunnable("Create Region " + name) {
+      public void run2() throws CacheException {
+        AttributesFactory factory = new AttributesFactory(getRegionAttributes());
+        factory.setStatisticsEnabled(true);
+        ExpirationAttributes expire =
+            new ExpirationAttributes(timeout,
+                ExpirationAction.DESTROY);
+        factory.setEntryIdleTimeout(expire);
+        if(getRegionAttributes().getPartitionAttributes() != null){
+          createRegion(name, factory.create());
+        } else {
+          createRegion(name);
+        }
+      }
+    });
 
-      vm0.invoke(new CacheSerializableRunnable("Create with Idle") {
-        public void run2() throws CacheException {
-          AttributesFactory factory = new AttributesFactory(getRegionAttributes());
-          factory.setStatisticsEnabled(true);
-          ExpirationAttributes expire =
-              new ExpirationAttributes(timeout,
-                  ExpirationAction.DESTROY);
-          factory.setEntryIdleTimeout(expire);
-          LocalRegion region =
-              (LocalRegion) createRegion(name, factory.create());
-          if (region.getDataPolicy().withPartitioning()) {
-            // Force all buckets to be created locally so the
-            // test will know that the create happens in this vm
-            // and the update (in vm1) is remote.
-            PartitionRegionHelper.assignBucketsToPartitions(region);
+    vm1.invoke(new CacheSerializableRunnable("Update entry") {
+      public void run2() throws CacheException {
+        final Region r = getRootRegion().getSubregion(name);
+        assertNotNull(r);
+        r.put(key, value);
+      }
+    });
+
+    vm0.invoke(new CacheSerializableRunnable("Verify reset") {
+      public void run2() throws CacheException {
+        final LocalRegion region =
+            (LocalRegion) getRootRegion().getSubregion(name);
+
+        // wait for update to reach us from vm1 (needed if no-ack)
+        WaitCriterion waitForUpdate = new WaitCriterion() {
+          public boolean done() {
+            return value.equals(region.get(key));
           }
-          region.create(key, null);
-          EntryExpiryTask eet = region.getEntryExpiryTask(key);
-          region.create("createExpiryTime", eet.getExpirationTime());
-          Wait.waitForExpiryClockToChange(region);
-        }
-      });
-
-      vm1.invoke(new CacheSerializableRunnable("Create Region " + name) {
-        public void run2() throws CacheException {
-          AttributesFactory factory = new AttributesFactory(getRegionAttributes());
-          factory.setStatisticsEnabled(true);
-          ExpirationAttributes expire =
-              new ExpirationAttributes(timeout,
-                  ExpirationAction.DESTROY);
-          factory.setEntryIdleTimeout(expire);
-          if(getRegionAttributes().getPartitionAttributes() != null){
-            createRegion(name, factory.create());  
-          } else {
-            createRegion(name);
-          }          
-        }
-      });
-
-      vm1.invoke(new CacheSerializableRunnable("Update entry") {
-        public void run2() throws CacheException {
-          final Region r = getRootRegion().getSubregion(name);
-          assertNotNull(r);
-          r.put(key, value);
-        }
-      });
-
-      vm0.invoke(new CacheSerializableRunnable("Verify reset") {
-        public void run2() throws CacheException {
-          final LocalRegion region =
-              (LocalRegion) getRootRegion().getSubregion(name);
-
-          // wait for update to reach us from vm1 (needed if no-ack)
-          WaitCriterion waitForUpdate = new WaitCriterion() {
-            public boolean done() {
-              return value.equals(region.get(key));
-            }
-            public String description() {
-              return "never saw update of " + key;
-            }
-          };
-          Wait.waitForCriterion(waitForUpdate, 3000, 10, true);
-
-          EntryExpiryTask eet = region.getEntryExpiryTask(key);
-          long createExpiryTime = (Long) region.get("createExpiryTime");
-          long updateExpiryTime = eet.getExpirationTime();
-          if (updateExpiryTime - createExpiryTime <= 0L) {
-            fail("update did not reset the expiration time. createExpiryTime=" + createExpiryTime + " updateExpiryTime=" + updateExpiryTime);
+          public String description() {
+            return "never saw update of " + key;
           }
-        }
-      });
-    }
+        };
+        Wait.waitForCriterion(waitForUpdate, 3000, 10, true);
 
+        EntryExpiryTask eet = region.getEntryExpiryTask(key);
+        long createExpiryTime = (Long) region.get("createExpiryTime");
+        long updateExpiryTime = eet.getExpirationTime();
+        if (updateExpiryTime - createExpiryTime <= 0L) {
+          fail("update did not reset the expiration time. createExpiryTime=" + createExpiryTime + " updateExpiryTime=" + updateExpiryTime);
+        }
+      }
+    });
+  }
 
   private static final int NB1_CHUNK_SIZE = 500 * 1024; // == InitialImageOperation.CHUNK_SIZE_IN_BYTES
   private static final int NB1_NUM_ENTRIES = 1000;
@@ -4278,15 +4219,11 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * another cache is doing a getInitialImage.
    */
   @Test
-  public void testNonblockingGetInitialImage() throws Throwable {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testNonblockingGetInitialImage() throws Exception {
+    assumeTrue(supportsReplication());
     // don't run this test if global scope since its too difficult to predict
     // how many concurrent operations will occur
-    if (getRegionAttributes().getScope().isGlobal()) {
-      return;
-    }
+    assumeFalse(getRegionAttributes().getScope().isGlobal());
 
     final String name = this.getUniqueName();
     final byte[][] values = new byte[NB1_NUM_ENTRIES][];
@@ -4390,7 +4327,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
         } else {
           numProfiles = adv.adviseReplicates().size();              
         }
-        Assert.assertTrue(numProfiles >= expectedProfiles);
+        assertTrue(numProfiles >= expectedProfiles);
         
         // operate on every odd entry with different value, alternating between
         // updates, invalidates, and destroys. These operations are likely
@@ -4480,10 +4417,10 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       ThreadUtils.join(async, 30 * 1000);
     }
     if (async.exceptionOccurred()) {
-      com.gemstone.gemfire.test.dunit.Assert.fail("async failed", async.getException());
+      fail("async failed", async.getException());
     }
     if (asyncGII.exceptionOccurred()) {
-      com.gemstone.gemfire.test.dunit.Assert.fail("asyncGII failed", asyncGII.getException());
+      fail("asyncGII failed", asyncGII.getException());
     }
 
     // Locally destroy the region in vm0 so we know that they are not found by
@@ -4609,19 +4546,13 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * another cache is doing a getInitialImage.
    */
   @Test
-  public void testTXNonblockingGetInitialImage() throws Throwable {
-    if (!supportsReplication()) {
-      return;
-    }
-    if (!supportsTransactions()) {
-      return;
-    }
+  public void testTXNonblockingGetInitialImage() throws Exception {
+    assumeTrue(supportsReplication());
+    assumeTrue(supportsTransactions());
     // don't run this test if global scope since its too difficult to predict
     // how many concurrent operations will occur
-    if (getRegionAttributes().getScope().isGlobal()
-        || getRegionAttributes().getDataPolicy().withPersistence()) {
-      return;
-    }
+    assumeFalse(getRegionAttributes().getScope().isGlobal());
+    assumeFalse(getRegionAttributes().getDataPolicy().withPersistence());
 
     final String name = this.getUniqueName();
     final byte[][] values = new byte[NB1_NUM_ENTRIES][];
@@ -4812,10 +4743,10 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     }
 
     if (async.exceptionOccurred()) {
-      com.gemstone.gemfire.test.dunit.Assert.fail("async failed", async.getException());
+      fail("async failed", async.getException());
     }
     if (asyncGII.exceptionOccurred()) {
-      com.gemstone.gemfire.test.dunit.Assert.fail("asyncGII failed", asyncGII.getException());
+      fail("asyncGII failed", asyncGII.getException());
     }
 
     // Locally destroy the region in vm0 so we know that they are not found by
@@ -4926,11 +4857,11 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
   @Ignore("Disabled for 51542")
   @Test
-  public void testNBRegionInvalidationDuringGetInitialImage() throws Throwable {
+  public void testNBRegionInvalidationDuringGetInitialImage() throws Exception {
+    assumeTrue(supportsReplication());
+
     DistributedTestCase.disconnectAllFromDS();
-    if (!supportsReplication()) {
-      return;
-    }
+
     // don't run this for noAck, too many race conditions
     if (getRegionAttributes().getScope().isDistributedNoAck()) return;
 
@@ -5251,10 +5182,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   }
 
   @Test
-  public void testNBRegionDestructionDuringGetInitialImage() throws Throwable {
-    if (!supportsReplication()) {
-      return;
-    }
+  public void testNBRegionDestructionDuringGetInitialImage() throws Exception {
+    assumeTrue(supportsReplication());
+
     final String name = this.getUniqueName();
     final byte[][] values = new byte[NB1_NUM_ENTRIES][];
 
@@ -5431,7 +5361,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       // wait for nonblocking operations to complete
       ThreadUtils.join(async, 30 * 1000);
       if (async.exceptionOccurred()) {
-        com.gemstone.gemfire.test.dunit.Assert.fail("async invocation failed", async.getException());
+        fail("async invocation failed", async.getException());
       }
 
       vm2.invoke(new SerializableRunnable("Set fast image processing") {
@@ -5451,10 +5381,10 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       ThreadUtils.join(async, 30 * 1000);
     }
     if (async.exceptionOccurred()) {
-      com.gemstone.gemfire.test.dunit.Assert.fail("async failed", async.getException());
+      fail("async failed", async.getException());
     }
     if (asyncGII.exceptionOccurred()) {
-      com.gemstone.gemfire.test.dunit.Assert.fail("asyncGII failed", asyncGII.getException());
+      fail("asyncGII failed", asyncGII.getException());
     }
     } finally { 
       ex.remove();
@@ -5468,7 +5398,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * @since 3.5
    */
   @Test
-  public void testNoDataSerializer() {
+  public void testNoDataSerializer() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -5479,7 +5409,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             createRegion(name);
           }
         };
-
 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -5621,7 +5550,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * @since 3.5
    */
   @Test
-  public void testNoInstantiator() {
+  public void testNoInstantiator() throws Exception {
     assertTrue(getRegionAttributes().getScope().isDistributed());
 
     final String name = this.getUniqueName();
@@ -5632,7 +5561,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             createRegion(name);
           }
         };
-
 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -6051,16 +5979,14 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     cdcl.setEntryEvent(null);
   }
 
-  ////////////////////////// TX Tests //////////////////////////////
   /**
    * Tests that an entry update is propagated to other caches that
    * have that same entry defined.
    */
   @Test
   public void testTXSimpleOps() throws Exception {
-    if (!supportsTransactions()) {
-      return;
-    }
+    assumeTrue(supportsTransactions());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
     CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
 
@@ -6078,6 +6004,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       rgn.localDestroyRegion();
       return;
     }
+
     final String rgnName = getUniqueName();
 
     SerializableRunnable create = new SerializableRunnable("testTXSimpleOps: Create Region") {
@@ -6098,7 +6025,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testTXSimpleOps: Created region");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -6115,7 +6042,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testTXSimpleOps: Created Key");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -6352,6 +6279,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests that the push of a loaded value does not cause a conflict
    * on the side receiving the update
    */
+  @Ignore("TODO: this test always hits early out")
   @Test
   public void testTXUpdateLoadNoConflict() throws Exception {
     /*
@@ -6361,17 +6289,14 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     if(true) {
       return;
     }
-    
-    if (!supportsTransactions()) {
-      return;
-    }
+
+    assumeTrue(supportsTransactions());
+    assumeFalse(getRegionAttributes().getScope().isGlobal());
+    assumeFalse(getRegionAttributes().getDataPolicy().withPersistence());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
     CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
 
-    if (getRegionAttributes().getScope().isGlobal()
-        || getRegionAttributes().getDataPolicy().withPersistence()) {
-      return;
-    }
     final String rgnName = getUniqueName();
 
     SerializableRunnable create = new SerializableRunnable("testTXUpdateLoadNoConflict: Create Region & Load value") {
@@ -6399,7 +6324,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           flushIfNecessary(rgn);
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -6593,21 +6518,18 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       getSystem().getLogWriter().fine("testTXUpdateLoadNoConflict: Caused exception in createRegion");
       throw e;
     }
-
   }
 
   @Test
   public void testTXMultiRegion() throws Exception {
-    if (!supportsTransactions()) {
-      return;
-    }
+    assumeTrue(supportsTransactions());
+    assumeFalse(getRegionAttributes().getScope().isGlobal());
+    assumeFalse(getRegionAttributes().getDataPolicy().withPersistence());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
+
     CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
 
-    if (getRegionAttributes().getScope().isGlobal()
-        || getRegionAttributes().getDataPolicy().withPersistence()) {
-      return;
-    }
     final String rgnName1 = getUniqueName() + "MR1";
     final String rgnName2 = getUniqueName() + "MR2";
     final String rgnName3 = getUniqueName() + "MR3";
@@ -6622,7 +6544,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testTXMultiRegion: Created region1");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -6634,7 +6556,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testTXMultiRegion: Created key");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -6649,7 +6571,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testTXMultiRegion: Created region2");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -6662,7 +6584,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testTXMultiRegion: Created Key");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -6677,7 +6599,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testTXMultiRegion: Created Region");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -6690,7 +6612,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           getSystem().getLogWriter().info("testTXMultiRegion: Created Key");
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -7335,21 +7257,17 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       getSystem().getLogWriter().fine("testTXMultiRegion: Caused exception in createRegion");
       throw e;
     }
-
   }
 
   @Test
   public void testTXRmtMirror() throws Exception {
-    if (!supportsTransactions()) {
-      return;
-    }
+    assumeTrue(supportsTransactions());
+    assumeFalse(getRegionAttributes().getScope().isGlobal());
+    assumeFalse(getRegionAttributes().getDataPolicy().withPersistence());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
     CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
 
-    if (getRegionAttributes().getScope().isGlobal()
-        || getRegionAttributes().getDataPolicy().withPersistence()) {
-      return;
-    }
     final String rgnName = getUniqueName();
 
     SerializableRunnable createMirror = new SerializableRunnable("textTXRmtMirror: Create Mirrored Region") {
@@ -7363,7 +7281,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           createRegion(rgnName, rgnAtts.create());
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -7379,7 +7297,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           createRegion(rgnName, rgnAtts.create());
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -7470,17 +7388,15 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       getSystem().getLogWriter().fine("textTXRmtMirror: Caused exception in createRegion");
       throw e;
     }
-
   }
 
   @Ignore("TODO")
   @Test
   public void testTXAlgebra() throws Exception {
+    assumeFalse(getRegionAttributes().getScope().isGlobal());
+    assumeFalse(getRegionAttributes().getDataPolicy().withPersistence());
+
     assertTrue(getRegionAttributes().getScope().isDistributed());
-    if (getRegionAttributes().getScope().isGlobal()
-        || getRegionAttributes().getDataPolicy().withPersistence()) {
-      return;
-    }
 
     CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
     MyTransactionListener localTl = new MyTransactionListener();
@@ -7505,7 +7421,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           }
         }
         catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", e);
+          fail("While creating region", e);
         }
       }
     };
@@ -7806,7 +7722,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
               try {
                 rgn1.create("key", null);
               } catch (CacheException e) {
-                com.gemstone.gemfire.test.dunit.Assert.fail("While creating key", e);
+                fail("While creating key", e);
               }
             }
           });
@@ -7991,11 +7907,11 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
               try {
                 bridge.start();
               } catch (IOException ex) {
-                com.gemstone.gemfire.test.dunit.Assert.fail("While creating bridge", ex);
+                fail("While creating bridge", ex);
               }
             }
           } catch (CacheException ex) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", ex);
+            fail("While creating region", ex);
           }
         }
       };
@@ -8003,8 +7919,8 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     SerializableRunnable asserter = new SerializableRunnable("ensure tombstone has been received") {
       public void run() {
         RegionEntry entry = CCRegion.getRegionEntry("object2");
-        Assert.assertTrue(entry != null);
-        Assert.assertTrue(entry.isTombstone());
+        assertTrue(entry != null);
+        assertTrue(entry.isTombstone());
       }
     };
     
@@ -8078,7 +7994,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             RegionFactory f = getCache().createRegionFactory(getRegionAttributes());
             CCRegion = (LocalRegion)f.create(name);
           } catch (CacheException ex) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", ex);
+            fail("While creating region", ex);
           }
         }
       };
@@ -8096,7 +8012,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             assertTrue("expected some event conflation", events>0);
           }
         } catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("while performing concurrent operations", e);
+          fail("while performing concurrent operations", e);
         }
 //        } catch (InterruptedException e) {
 //          fail("someone interrupted my sleep");
@@ -8157,7 +8073,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             long events = CCRegion.getCachePerfStats().getDeltaFailedUpdates();
             assertTrue("expected some failed deltas", events>0);
           } catch (CacheException e) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("while performing concurrent operations", e);
+            fail("while performing concurrent operations", e);
           }
         }
       };
@@ -8266,7 +8182,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           boolean includeClear = true;
           doOpsLoop(msToRun, includeClear);
         } catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("while performing concurrent operations", e);
+          fail("while performing concurrent operations", e);
         }
       }
     };
@@ -8281,7 +8197,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           f.setDiskSynchronous(syncDiskWrite);
           CCRegion = (LocalRegion)f.create(name);
         } catch (CacheException ex) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", ex);
+          fail("While creating region", ex);
         }
       }
     };
@@ -8380,7 +8296,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             }
             CCRegion = (LocalRegion)f.create(name);
           } catch (CacheException ex) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", ex);
+            fail("While creating region", ex);
           }
         }
       };
@@ -8396,7 +8312,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
         try {
           doOpsLoop(5000, true);
         } catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("while performing concurrent operations", e);
+          fail("while performing concurrent operations", e);
         }
 //        } catch (InterruptedException e) {
 //          fail("someone interrupted my sleep");
@@ -8493,7 +8409,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
               sendSerialMessageToAll(); // flush the ops
             }
           } catch (CacheException ex) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", ex);
+            fail("While creating region", ex);
           }
         }
       };
@@ -8516,7 +8432,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
               sendSerialMessageToAll(); // flush the ops
             }
           } catch (CacheException e) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("while performing destroy operations", e);
+            fail("while performing destroy operations", e);
           }
 //          OSProcess.printStacks(0, getLogWriter(), false);
         }
@@ -8543,7 +8459,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           };
           try {
             Wait.waitForCriterion(waitForExpiration, TombstoneService.REPLICATED_TOMBSTONE_TIMEOUT+10000, 1000, true);
-          } catch (AssertionFailedError e) {
+          } catch (AssertionError e) {
             CCRegion.dumpBackingMap();
             com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("tombstone service state: " + CCRegion.getCache().getTombstoneService());
             throw e;
@@ -8593,12 +8509,12 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             if (CCRegion.getScope().isDistributedNoAck()) {
               sendSerialMessageToAll(); // flush the ops
             }
-          } catch (AssertionFailedError e) {
+          } catch (AssertionError e) {
             CCRegion.dumpBackingMap();
             com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("tombstone service state: " + CCRegion.getCache().getTombstoneService());
             throw e;
           } catch (CacheException e) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("while performing create/destroy operations", e);
+            fail("while performing create/destroy operations", e);
           }
         }
       });
@@ -8631,7 +8547,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
               sendSerialMessageToAll(); // flush the ops
             }
           } catch (CacheException e) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("while performing create operations", e);
+            fail("while performing create operations", e);
           }
         }
       });
@@ -8714,7 +8630,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             }
             CCRegion = (LocalRegion)f.create(name);
           } catch (CacheException ex) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", ex);
+            fail("While creating region", ex);
           }
         }
       };
@@ -8734,7 +8650,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             assertTrue("expected some event conflation", events>0);
           }
         } catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("while performing concurrent operations", e);
+          fail("while performing concurrent operations", e);
         }
       }
     };
@@ -8895,7 +8811,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             }
             CCRegion = (LocalRegion)f.create(name);
           } catch (CacheException ex) {
-            com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", ex);
+            fail("While creating region", ex);
           }
         }
       };
@@ -8915,7 +8831,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             assertTrue("expected some event conflation", events>0);
           }
         } catch (CacheException e) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("while performing concurrent operations", e);
+          fail("while performing concurrent operations", e);
         }
       }
     };
@@ -9033,7 +8949,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           }
           CCRegion = (LocalRegion)f.create(regionName);
         } catch (CacheException ex) {
-          com.gemstone.gemfire.test.dunit.Assert.fail("While creating region", ex);
+          fail("While creating region", ex);
         }
       }
     };
@@ -9085,7 +9001,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   
   /**
    * The number of milliseconds to try repeating validation code in the
-   * event that AssertionFailedError is thrown.  For ACK scopes, no
+   * event that AssertionError is thrown.  For ACK scopes, no
    * repeat should be necessary.
    */
   protected long getRepeatTimeoutMs() {
