@@ -16,14 +16,10 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheException;
@@ -36,21 +32,18 @@ import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache.TimeoutException;
 import com.gemstone.gemfire.test.dunit.Assert;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests the functionality of a {@link Scope#LOCAL locally scoped}
  * cache {@link Region} including its callbacks.  Note that even
- * though this test is a {@link com.gemstone.gemfire.test.dunit.DistributedTestCase}, it does
+ * though this test is a dunit test, it does
  * not perform any distribution.
  *
  * @since 3.0
  */
 @Category(DistributedTest.class)
 public class LocalRegionDUnitTest extends CacheListenerTestCase {
-
-  public LocalRegionDUnitTest() {
-    super();
-  }
 
   /**
    * Returns the attributes of a region to be tested.

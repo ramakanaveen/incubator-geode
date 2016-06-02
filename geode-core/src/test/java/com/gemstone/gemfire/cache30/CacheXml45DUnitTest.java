@@ -16,27 +16,48 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 import com.company.app.DBLoader;
-import com.gemstone.gemfire.cache.*;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import com.gemstone.gemfire.cache.AttributesFactory;
+import com.gemstone.gemfire.cache.AttributesMutator;
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.CacheException;
+import com.gemstone.gemfire.cache.CacheListener;
+import com.gemstone.gemfire.cache.CacheTransactionManager;
+import com.gemstone.gemfire.cache.DataPolicy;
+import com.gemstone.gemfire.cache.Declarable;
+import com.gemstone.gemfire.cache.EvictionAction;
+import com.gemstone.gemfire.cache.EvictionAttributes;
+import com.gemstone.gemfire.cache.InterestPolicy;
+import com.gemstone.gemfire.cache.LossAction;
+import com.gemstone.gemfire.cache.MembershipAttributes;
+import com.gemstone.gemfire.cache.MirrorType;
+import com.gemstone.gemfire.cache.PartitionAttributes;
+import com.gemstone.gemfire.cache.PartitionAttributesFactory;
+import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.cache.RegionAttributes;
+import com.gemstone.gemfire.cache.ResumptionAction;
+import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.SubscriptionAttributes;
+import com.gemstone.gemfire.cache.TransactionListener;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.DistributedRegion;
-import com.gemstone.gemfire.internal.cache.xmlcache.*;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
+import com.gemstone.gemfire.internal.cache.xmlcache.CacheCreation;
+import com.gemstone.gemfire.internal.cache.xmlcache.CacheTransactionManagerCreation;
+import com.gemstone.gemfire.internal.cache.xmlcache.CacheXml;
+import com.gemstone.gemfire.internal.cache.xmlcache.RegionAttributesCreation;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
-
-import java.io.*;
-import java.util.*;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests the declarative caching functionality introduced in GemFire
@@ -47,22 +68,10 @@ import java.util.*;
 @Category(DistributedTest.class)
 public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
 
-  ////////  Constructors
-
-  public CacheXml45DUnitTest() {
-    super();
-  }
-
-  ////////  Helper methods
-
   protected String getGemFireVersion() {
     return CacheXml.VERSION_5_0;
   }
 
-  ////////  Test methods
-  
-
-  
   public void setBridgeAttributes(CacheServer bridge1)
   {
     super.setBridgeAttributes(bridge1);

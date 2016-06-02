@@ -21,14 +21,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -37,6 +30,9 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -55,19 +51,17 @@ import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.locks.DLockGrantor;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- *
- */
 @Category(DistributedTest.class)
-public class PutAllGlobalDUnitTest extends JUnit4DistributedTestCase {
+public class PutAllGlobalDUnitTest extends JUnit4DistributedTestCase { // TODO: reformat
     /**
      * timeout period for the put() operation, when it is run
      * concurrent with a conflicting putAll() operation
@@ -76,10 +70,6 @@ public class PutAllGlobalDUnitTest extends JUnit4DistributedTestCase {
     
     private static ServerSocket serverSocket;
     
-    /** Creates a new instance of PutAllGlobalDUnitTest */
-    public PutAllGlobalDUnitTest() {
-        super();
-    }
     static Cache cache;
     static Properties props = new Properties();
     static Properties propsWork = new Properties();

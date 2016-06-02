@@ -19,18 +19,14 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.ArrayList;
 import java.util.Properties;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.GemFireCache;
@@ -48,15 +44,14 @@ import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.FilterProfile;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- */
 @Category(DistributedTest.class)
 public class UnregisterInterestDUnitTest extends JUnit4DistributedTestCase {
 
@@ -72,13 +67,6 @@ public class UnregisterInterestDUnitTest extends JUnit4DistributedTestCase {
   private static final int regex = 2;
   private static final int filter = 3;
   private static final boolean receiveValuesConstant = true;
-
-  /**
-   * @param name
-   */
-  public UnregisterInterestDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {

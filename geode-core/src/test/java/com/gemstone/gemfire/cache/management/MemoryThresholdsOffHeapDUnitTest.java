@@ -74,7 +74,6 @@ import com.gemstone.gemfire.internal.cache.partitioned.RegionAdvisor;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
@@ -96,7 +95,6 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  */
 @Category(DistributedTest.class)
 public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
-  private static final long serialVersionUID = -684231183212051910L;
 
   final String expectedEx = LocalizedStrings.MemoryMonitor_MEMBER_ABOVE_CRITICAL_THRESHOLD.getRawText().replaceAll("\\{[0-9]+\\}",
       ".*?");

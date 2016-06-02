@@ -20,21 +20,15 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static org.junit.Assume.assumeTrue;
 
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.Properties;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -44,17 +38,11 @@ import com.gemstone.gemfire.cache.Operation;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.RegionFactory;
 import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
-import com.gemstone.gemfire.cache.util.GatewayConflictHelper;
-import com.gemstone.gemfire.cache.util.GatewayConflictResolver;
-import com.gemstone.gemfire.cache.util.TimestampedEntryEvent;
 import com.gemstone.gemfire.distributed.internal.DistributionAdvisor;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.DistributionManager;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.NetMember;
-import com.gemstone.gemfire.internal.cache.AbstractRegionEntry;
-import com.gemstone.gemfire.internal.cache.CacheDistributionAdvisor.InitialImageAdvice;
 import com.gemstone.gemfire.internal.cache.DistributedCacheOperation;
 import com.gemstone.gemfire.internal.cache.DistributedRegion;
 import com.gemstone.gemfire.internal.cache.EntryEventImpl;
@@ -63,7 +51,6 @@ import com.gemstone.gemfire.internal.cache.InitialImageOperation;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
 import com.gemstone.gemfire.internal.cache.RegionClearedException;
 import com.gemstone.gemfire.internal.cache.RegionEntry;
-import com.gemstone.gemfire.internal.cache.Token;
 import com.gemstone.gemfire.internal.cache.TombstoneService;
 import com.gemstone.gemfire.internal.cache.UpdateOperation;
 import com.gemstone.gemfire.internal.cache.VersionTagHolder;
@@ -73,26 +60,22 @@ import com.gemstone.gemfire.internal.cache.versions.VersionTag;
 import com.gemstone.gemfire.internal.cache.vmotion.VMotionObserver;
 import com.gemstone.gemfire.internal.cache.vmotion.VMotionObserverHolder;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 @Category(DistributedTest.class)
 public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitTest {
 
-  public DistributedAckRegionCCEDUnitTest() {
-    super();
-  }
-  
+  @Override
   protected boolean supportsTransactions() {
     return true;
   }
-  
 
   @Override
   public Properties getDistributedSystemProperties() {
@@ -104,10 +87,10 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
     return p;
   }
 
-
   /**
    * Returns region attributes for a <code>GLOBAL</code> region
    */
+  @Override
   protected RegionAttributes getRegionAttributes() {
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -115,6 +98,8 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
     factory.setConcurrencyChecksEnabled(true);
     return factory.create();
   }
+
+  @Override
   protected RegionAttributes getRegionAttributes(String type) {
     RegionAttributes ra = getCache().getRegionAttributes(type);
     if (ra == null) {
@@ -126,41 +111,30 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
     return factory.create();
   }
 
+  @Ignore("replicates don't allow local destroy")
   @Override
   @Test
   public void testLocalDestroy() throws InterruptedException {
     // replicates don't allow local destroy
   }
 
-//  public void testRepeatedClearWithConcurrentEvents() throws Exception {
-//    for (int i=0; i<50; i++) {
-//      getLogWriter().info("running test #"+i);
-//      z_versionTestClearWithConcurrentEvents(true);
-//      tearDown();
-//      setUp();
-//    }
-//  }
-
-
+  @Ignore("replicates don't allow local destroy")
   @Override
   @Test
   public void testEntryTtlLocalDestroy() throws InterruptedException {
     // replicates don't allow local destroy
   }
 
-  
   /**
    * This test creates a server cache in vm0 and a peer cache in vm1.
    * It then tests to see if GII transferred tombstones to vm1 like it's supposed to.
    * A client cache is created in vm2 and the same sort of check is performed
    * for register-interest.
    */
-
   @Test
   public void testGIISendsTombstones() throws Exception {
     versionTestGIISendsTombstones();
   }
-
 
   /**
    * test for bug #45564.  a create() is received by region creator and then
@@ -284,7 +258,6 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
     }
   }  
 
-  
   protected void do_version_recovery_if_necessary(final VM vm0, final VM vm1, final VM vm2, final Object[] params) {
     // do nothing here
   }
@@ -382,8 +355,6 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
       });
     disconnectAllFromDS();
   }
-  
-  
 
   /**
    * Test for bug #46087 and #46089 where the waiting thread pool is flooded with
@@ -391,9 +362,8 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
    */
   @Test
   public void testAggressiveTombstoneReaping() {
-    if (this.getClass() != DistributedAckRegionCCEDUnitTest.class) {
-      return; // not really a scope-related thing
-    }
+    assumeTrue(getClass() == DistributedAckRegionCCEDUnitTest.class);
+
     final String name = this.getUniqueName() + "-CC";
 
 
@@ -433,11 +403,6 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
     }
   }
 
-  
-  
-  
-  
-  
   /**
    * This tests the concurrency versioning system to ensure that event conflation
    * happens correctly and that the statistic is being updated properly
@@ -446,10 +411,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
   public void testConcurrentEventsOnEmptyRegion() {
     versionTestConcurrentEventsOnEmptyRegion();
   }
-  
-  
-  
-  
+
   /**
    * This tests the concurrency versioning system to ensure that event conflation
    * happens correctly and that the statistic is being updated properly
@@ -458,19 +420,16 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
   public void testConcurrentEventsOnNonReplicatedRegion() {
     versionTestConcurrentEventsOnNonReplicatedRegion();
   }
-  
-  
+
   @Test
   public void testGetAllWithVersions() {
     versionTestGetAllWithVersions();
   }
 
-  
   @Test
   public void testEntryVersionRollover() throws Exception {
-    if (this.getClass() != DistributedAckRegionCCEDUnitTest.class) {
-      return;
-    }
+    assumeTrue(getClass() == DistributedAckRegionCCEDUnitTest.class);
+
     final String name = this.getUniqueName() + "-CC";
     final int numEntries = 1;
     SerializableRunnable createRegion = new SerializableRunnable("Create Region") {

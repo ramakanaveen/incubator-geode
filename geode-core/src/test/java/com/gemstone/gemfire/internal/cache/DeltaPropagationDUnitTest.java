@@ -19,17 +19,13 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.File;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.DeltaTestImpl;
 import com.gemstone.gemfire.InvalidDeltaException;
@@ -68,18 +64,20 @@ import com.gemstone.gemfire.internal.cache.lru.EnableLRU;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheServerTestUtil;
 import com.gemstone.gemfire.internal.cache.tier.sockets.ConflationDUnitTest;
 import com.gemstone.gemfire.internal.tcp.ConnectionTable;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * @since 6.1
  */
 @Category(DistributedTest.class)
 public class DeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
+
   private final static Compressor compressor = SnappyCompressor.getDefaultInstance();
   
   protected static Cache cache = null;
@@ -151,13 +149,6 @@ public class DeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   public static final String INVALIDATE = "INVALIDATE";
 
   public static final String DESTROY = "DESTROY";
-
-  /**
-   * @param name
-   */
-  public DeltaPropagationDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {

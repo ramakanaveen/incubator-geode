@@ -21,12 +21,7 @@ package com.gemstone.gemfire.security;
 import static com.gemstone.gemfire.cache30.ClientServerTestCase.*;
 import static com.gemstone.gemfire.distributed.internal.DistributionConfig.*;
 import static com.gemstone.gemfire.internal.AvailablePort.*;
-import static com.gemstone.gemfire.test.dunit.Assert.assertEquals;
-import static com.gemstone.gemfire.test.dunit.Assert.assertFalse;
-import static com.gemstone.gemfire.test.dunit.Assert.assertNotNull;
-import static com.gemstone.gemfire.test.dunit.Assert.assertNull;
-import static com.gemstone.gemfire.test.dunit.Assert.assertTrue;
-import static com.gemstone.gemfire.test.dunit.Assert.fail;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 import static com.gemstone.gemfire.test.dunit.DistributedTestUtils.*;
 import static com.gemstone.gemfire.test.dunit.LogWriterUtils.*;
 import static com.gemstone.gemfire.test.dunit.NetworkUtils.*;
@@ -86,7 +81,6 @@ import com.gemstone.gemfire.distributed.Locator;
 import com.gemstone.gemfire.pdx.PdxReader;
 import com.gemstone.gemfire.pdx.PdxSerializable;
 import com.gemstone.gemfire.pdx.PdxWriter;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 
@@ -846,7 +840,7 @@ public final class SecurityTestUtils {
       cache = null;
     }
 
-    DistributedTestCase.disconnectFromDS();
+    disconnectFromDS();
   }
 
   protected static void closeCache(final Boolean keepAlive) {
@@ -859,7 +853,7 @@ public final class SecurityTestUtils {
       cache = null;
     }
 
-    DistributedTestCase.disconnectFromDS();
+    disconnectFromDS();
   }
 
   // ------------------------- private static methods -------------------------

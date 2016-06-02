@@ -16,16 +16,12 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.DeltaTestImpl;
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -44,18 +40,16 @@ import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.tcp.ConnectionTable;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
- * 
  * Tests the P2P delta propagation functionality.
- * 
  */
 @Category(DistributedTest.class)
-public class P2PDeltaPropagationDUnitTest extends JUnit4DistributedTestCase
-{
+public class P2PDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
 
   static VM server1 = null;
 
@@ -89,13 +83,7 @@ public class P2PDeltaPropagationDUnitTest extends JUnit4DistributedTestCase
   private static boolean check = false;
 
   protected static Object waitLock = new Object();
-  /**
-   * Constructor
-   */
-  public P2PDeltaPropagationDUnitTest() {
-    super();
-  }
-  
+
   /*
    * Delta gets distributed in P2P D-ACK.
    */

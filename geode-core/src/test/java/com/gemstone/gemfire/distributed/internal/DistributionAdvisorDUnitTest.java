@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,26 +24,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.CancelCriterion;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- *
- *
- */
 @Category(DistributedTest.class)
 public class DistributionAdvisorDUnitTest extends JUnit4DistributedTestCase {
+
   private transient DistributionAdvisor.Profile profiles[];
   protected transient DistributionAdvisor advisor;
   
-  public DistributionAdvisorDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     // connect to distributed system in every VM

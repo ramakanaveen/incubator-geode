@@ -16,62 +16,28 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.List;
 import java.util.Properties;
 
-import org.jgroups.protocols.UDP;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import com.gemstone.gemfire.cache.TimeoutException;
-import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
-import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
-import com.gemstone.gemfire.distributed.internal.membership.MembershipManager;
-import com.gemstone.gemfire.distributed.internal.membership.gms.MembershipManagerHelper;
-import com.gemstone.gemfire.distributed.internal.membership.gms.messenger.JGroupsMessenger;
-import com.gemstone.gemfire.distributed.internal.membership.gms.mgr.GMSMembershipManager;
-import com.gemstone.gemfire.internal.AvailablePort;
-import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
 import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
+import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /** A test of 46438 - missing response to an update attributes message */
 @Category(DistributedTest.class)
 public class ConnectDisconnectDUnitTest extends JUnit4CacheTestCase {
   
-  static {
-//    System.setProperty("DistributionManager.VERBOSE", "true");
-  }
-
-
   private IgnoredException ex;
 
-  public ConnectDisconnectDUnitTest() {
-    super();
-  }
-  
-  
-  // see bugs #50785 and #46438 
+  // see bugs #50785 and #46438
   @Test
   public void testManyConnectsAndDisconnects() throws Throwable {
 //    invokeInEveryVM(new SerializableRunnable() {

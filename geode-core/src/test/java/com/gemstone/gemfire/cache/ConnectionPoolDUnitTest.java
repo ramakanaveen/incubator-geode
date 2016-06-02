@@ -17,14 +17,7 @@
 package com.gemstone.gemfire.cache;
 
 import static com.gemstone.gemfire.test.dunit.Assert.*;
-import static com.gemstone.gemfire.test.dunit.AsyncInvocation.*;
-import static com.gemstone.gemfire.test.dunit.DistributedTestUtils.*;
-import static com.gemstone.gemfire.test.dunit.Invoke.*;
-import static com.gemstone.gemfire.test.dunit.NetworkUtils.*;
-import static com.gemstone.gemfire.test.dunit.ThreadUtils.*;
-import static com.gemstone.gemfire.test.dunit.Wait.*;
-
-import static org.junit.runners.MethodSorters.NAME_ASCENDING;
+import static org.junit.runners.MethodSorters.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -50,10 +43,9 @@ import com.gemstone.gemfire.cache.client.internal.Endpoint;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
-import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.cache30.CertifiableTestCacheListener;
+import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.cache30.TestCacheLoader;
 import com.gemstone.gemfire.cache30.TestCacheWriter;
 import com.gemstone.gemfire.distributed.DistributedMember;
@@ -70,7 +62,6 @@ import com.gemstone.gemfire.internal.cache.tier.sockets.ClientProxyMembershipID;
 import com.gemstone.gemfire.internal.logging.InternalLogWriter;
 import com.gemstone.gemfire.internal.logging.LocalLogWriter;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
@@ -90,14 +81,13 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  * (this happens in the controller VM). the client then spins up
  * 10 different threads and issues gets on keys. The server data loader returns the
  * data to the client.
+ *
  * Test uses Groboutils TestRunnable objects to achieve multi threading behavior
  * in the test.
  */
 @Category(DistributedTest.class)
 @FixMethodOrder(NAME_ASCENDING)
 public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
-
-  private static final long serialVersionUID = 1L;
 
   /** The port on which the bridge server was started in this VM */
   private static int bridgeServerPort;

@@ -47,7 +47,6 @@ import com.gemstone.gemfire.internal.cache.ClientServerObserver;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverAdapter;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverHolder;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
@@ -100,7 +99,7 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
   
   @BeforeClass
   public static void caseSetUp() throws Exception {
-    DistributedTestCase.disconnectAllFromDS();
+    disconnectAllFromDS();
   }
 
   @Override

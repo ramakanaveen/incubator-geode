@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -36,12 +29,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runners.MethodSorters;
 
 import com.gemstone.gemfire.cache.Cache;
@@ -53,11 +47,12 @@ import com.gemstone.gemfire.internal.jta.CacheUtils;
 import com.gemstone.gemfire.internal.jta.JTAUtils;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.util.test.TestUtil;
 
 /**
@@ -65,12 +60,9 @@ import com.gemstone.gemfire.util.test.TestUtil;
  * Transaction Manager in multy threaded thransactions. We will have around five
  * threads doing different activities. The response to those activities by
  * transaction manager is tested.
- * 
- * 
- *  
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Category(DistributedTest.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TxnManagerMultiThreadDUnitTest extends JUnit4DistributedTestCase {
 
   /////constructor/////

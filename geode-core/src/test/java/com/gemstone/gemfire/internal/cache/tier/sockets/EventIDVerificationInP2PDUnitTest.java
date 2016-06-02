@@ -16,17 +16,13 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.util.Properties;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -42,9 +38,10 @@ import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.cache.EventID;
 import com.gemstone.gemfire.internal.cache.InternalCacheEvent;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Test to verify EventID generated from a peer is correctly passed on to the
@@ -52,18 +49,15 @@ import com.gemstone.gemfire.test.dunit.VM;
  * GLOBAL scope the EventIDs should be same in P2P for a propagation of given
  * operation. In case of NO-ACK EventIDs should be different.Currently this test
  * is commented because of a bug.
- * 
- * 
  */
-
 @Category(DistributedTest.class)
-public class EventIDVerificationInP2PDUnitTest extends JUnit4DistributedTestCase
-{
+public class EventIDVerificationInP2PDUnitTest extends JUnit4DistributedTestCase {
+
   private static Cache cache = null;
 
   static VM vm0 = null;
 
-  private static final String REGION_NAME = "EventIDVerificationInP2PDUnitTest_region";
+  private static final String REGION_NAME = EventIDVerificationInP2PDUnitTest.class.getSimpleName() + "_region";
 
   protected static EventID eventId;
 
@@ -74,12 +68,6 @@ public class EventIDVerificationInP2PDUnitTest extends JUnit4DistributedTestCase
   static int DISTRIBUTED_ACK = 1;
 
   static int GLOBAL = 2;
-
-  /* Constructor */
-
-  public EventIDVerificationInP2PDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {

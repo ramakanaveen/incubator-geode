@@ -22,18 +22,14 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -50,18 +46,17 @@ import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.cache.util.CacheWriterAdapter;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- *
- */
 @Category(DistributedTest.class)
-public class DistAckMapMethodsDUnitTest extends JUnit4DistributedTestCase{
+public class DistAckMapMethodsDUnitTest extends JUnit4DistributedTestCase { // TODO: reformat
+
     static Cache cache;
     static Properties props = new Properties();
     static DistributedSystem ds = null;
@@ -73,11 +68,6 @@ public class DistAckMapMethodsDUnitTest extends JUnit4DistributedTestCase{
     
     //helper class referece objects
     static Object afterDestroyObj;
-    
-    /** Creates a new instance of DistAckMapMethodsDUnitTest */
-    public DistAckMapMethodsDUnitTest() {
-        super();
-    }
     
     @Override
     public final void postSetUp() throws Exception {

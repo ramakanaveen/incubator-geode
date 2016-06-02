@@ -16,19 +16,16 @@
  */
 package com.gemstone.gemfire.cache.client.internal;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.Region;
@@ -42,10 +39,11 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.security.AuthenticationRequiredException;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.Host;
+import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.util.test.TestUtil;
 
 /**
@@ -53,8 +51,6 @@ import com.gemstone.gemfire.util.test.TestUtil;
  */
 @Category(DistributedTest.class)
 public class CacheServerSSLConnectionDUnitTest extends JUnit4DistributedTestCase {
-
-  private static final long serialVersionUID = 1L;
 
   private static final String TRUSTED_STORE = "trusted.keystore";
   private static final String CLIENT_KEY_STORE = "client.keystore";
@@ -73,10 +69,6 @@ public class CacheServerSSLConnectionDUnitTest extends JUnit4DistributedTestCase
   @Override
   public final void preSetUp() throws Exception {
     disconnectAllFromDS();
-  }
-
-  public CacheServerSSLConnectionDUnitTest() {
-    super();
   }
 
   public Cache createCache(Properties props) throws Exception

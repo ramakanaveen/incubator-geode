@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.internal.process;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,17 +24,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Multi-process tests for ProcessLauncher.
  * 
  * @since 7.0
  */
-@SuppressWarnings("serial")
 @Category(DistributedTest.class)
+@SuppressWarnings("serial")
 public class LocalProcessLauncherDUnitTest extends JUnit4DistributedTestCase {
 
   public LocalProcessLauncherDUnitTest() {

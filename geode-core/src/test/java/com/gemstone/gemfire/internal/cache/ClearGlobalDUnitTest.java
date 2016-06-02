@@ -22,14 +22,12 @@
 
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -40,29 +38,20 @@ import com.gemstone.gemfire.cache.RegionEvent;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache.TimeoutException;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.internal.cache.CacheObserverAdapter;
-import com.gemstone.gemfire.internal.cache.CacheObserverHolder;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
-
-import java.util.Properties;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * For the Global region subsequent puts should be blocked until the clear
  * operation is completely done
- *
  */
 @Category(DistributedTest.class)
-public class ClearGlobalDUnitTest extends JUnit4DistributedTestCase
-{
+public class ClearGlobalDUnitTest extends JUnit4DistributedTestCase {
 
-  /** Creates a new instance of ClearGlobalDUnitTest */
-  public ClearGlobalDUnitTest() {
-    super();
-  }
   static VM server1 = null;
   
   static Cache cache;

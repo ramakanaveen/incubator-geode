@@ -16,17 +16,13 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.File;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -39,32 +35,22 @@ import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.internal.cache.CacheObserverAdapter;
-import com.gemstone.gemfire.internal.cache.CacheObserverHolder;
-import com.gemstone.gemfire.internal.cache.DiskRegionHelperFactory;
-import com.gemstone.gemfire.internal.cache.DiskRegionProperties;
-import com.gemstone.gemfire.internal.cache.LocalRegion;
-import com.gemstone.gemfire.internal.cache.SearchLoadAndWriteProcessor;
-import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Bug40299 DUNIT Test: The Clear operation during a NetSearchMessage.doGet() in progress can 
  * cause DiskAccessException by accessing cleared oplogs and
  * eventually destroy region.
  * The Test verifies that fix prevents this.
- * 
  */
-
 @Category(DistributedTest.class)
-public class Bug40299DUnitTest extends JUnit4CacheTestCase
-{
+public class Bug40299DUnitTest extends JUnit4CacheTestCase {
 
   protected static String regionName = "TestRegion";
 
@@ -75,16 +61,6 @@ public class Bug40299DUnitTest extends JUnit4CacheTestCase
   private static VM vm0 = null;
 
   protected static Cache cache = null;
-
-
-  /**
-   * Constructor
-   * 
-   * @param name
-   */
-  public Bug40299DUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {

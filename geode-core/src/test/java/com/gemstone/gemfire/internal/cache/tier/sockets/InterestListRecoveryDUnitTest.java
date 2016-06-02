@@ -16,15 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.EOFException;
 import java.net.SocketException;
@@ -32,6 +24,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.LogWriter;
 import com.gemstone.gemfire.SystemFailure;
@@ -43,6 +39,9 @@ import com.gemstone.gemfire.cache.InterestResultPolicy;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.client.PoolManager;
+import com.gemstone.gemfire.cache.client.internal.PoolImpl;
+import com.gemstone.gemfire.cache.client.internal.RegisterInterestTracker;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
@@ -50,18 +49,15 @@ import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
-import com.gemstone.gemfire.cache.client.*;
-import com.gemstone.gemfire.cache.client.internal.PoolImpl;
-import com.gemstone.gemfire.cache.client.internal.RegisterInterestTracker;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
- *
  * Test Scenario :
  *
  * one client(c1) two servers(s1,s2)
@@ -73,11 +69,12 @@ import com.gemstone.gemfire.cache.client.internal.RegisterInterestTracker;
  * see interest list on s1 contains only s4, s5
  * s2 ----> unavaliable // fail over should to s1 with intrest list s4,s5
  * see only k4 and k5 are registerd on s1
- *
  */
 @Category(DistributedTest.class)
-public class InterestListRecoveryDUnitTest extends JUnit4DistributedTestCase
-{
+public class InterestListRecoveryDUnitTest extends JUnit4DistributedTestCase {
+
+  private static final String REGION_NAME = InterestListRecoveryDUnitTest.class.getSimpleName() + "_region";
+
   private static Cache cache = null;
 
   VM server1 = null;
@@ -88,14 +85,6 @@ public class InterestListRecoveryDUnitTest extends JUnit4DistributedTestCase
 
   private static int PORT1;
   private static int PORT2;
-
-
-  private static final String REGION_NAME = "InterestListRecoveryDUnitTest_region";
-
-  /** constructor */
-  public InterestListRecoveryDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {

@@ -16,17 +16,13 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheException;
@@ -44,19 +40,19 @@ import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache.TimeoutException;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This class tests various search load and write scenarios for distributed regions
  */
-@SuppressWarnings({"deprecation", "unchecked", "rawtypes", "serial"})
 @Category(DistributedTest.class)
+@SuppressWarnings({"deprecation", "unchecked", "rawtypes", "serial"})
 public class SearchAndLoadDUnitTest extends JUnit4CacheTestCase {
 
   static boolean loaderInvoked;
@@ -81,10 +77,6 @@ public class SearchAndLoadDUnitTest extends JUnit4CacheTestCase {
   static boolean exceptionThrown;
   static final CountDownLatch readyForExceptionLatch = new CountDownLatch(1);
   static final CountDownLatch loaderInvokedLatch = new CountDownLatch(1);
-
-  public SearchAndLoadDUnitTest() {
-    super();
-  }
 
   @Override
   public final void preTearDownCacheTestCase() throws Exception {
@@ -408,8 +400,7 @@ public class SearchAndLoadDUnitTest extends JUnit4CacheTestCase {
   @Test
   public void testNetLoad()
   throws CacheException, InterruptedException {
-    Invoke.invokeInEveryVM(DistributedTestCase.class,
-        "disconnectFromDS");
+    disconnectAllFromDS();
 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -504,8 +495,7 @@ public class SearchAndLoadDUnitTest extends JUnit4CacheTestCase {
   @Test
   public void testEmptyNetLoad()
   throws CacheException, InterruptedException {
-    Invoke.invokeInEveryVM(DistributedTestCase.class,
-        "disconnectFromDS");
+    disconnectAllFromDS();
 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);

@@ -16,18 +16,12 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
+import static com.jayway.awaitility.Awaitility.*;
+import static java.util.concurrent.TimeUnit.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static com.jayway.awaitility.Awaitility.await;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.File;
@@ -41,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.DataSerializable;
@@ -87,17 +82,17 @@ import com.gemstone.gemfire.internal.cache.partitioned.ManageBucketMessage.Manag
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
+import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
-import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.RMIException;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
@@ -105,6 +100,7 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  */
 @Category(DistributedTest.class)
 public class PersistentPartitionedRegionDUnitTest extends PersistentPartitionedRegionTestBase {
+
   private static final int NUM_BUCKETS = 15;
   //This must be bigger than the dunit ack-wait-threshold for the revoke
   //tests. The command line is setting the ack-wait-threshold to be 

@@ -16,16 +16,12 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -43,13 +39,14 @@ import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.cache.EventID;
 import com.gemstone.gemfire.internal.cache.HARegion;
 import com.gemstone.gemfire.internal.cache.RegionQueue;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This test checks Expiration of events in the regionqueue.
@@ -58,12 +55,9 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * 3. Checks size of the regionqueue. Size of the regionqueue should be greater than 0.
  * 4. Waits for the period which is slightly greater than expiration period.
  * 5. Checks size of the regionqueue. Size of the regionqueue should be equal to 0.
- *
  */
-
 @Category(DistributedTest.class)
-public class HAExpiryDUnitTest extends JUnit4DistributedTestCase
-{
+public class HAExpiryDUnitTest extends JUnit4DistributedTestCase {
 
   VM vm0 = null;
 

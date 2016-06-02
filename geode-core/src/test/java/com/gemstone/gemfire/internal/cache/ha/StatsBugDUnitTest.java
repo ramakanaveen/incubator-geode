@@ -16,19 +16,13 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Iterator;
 import java.util.Properties;
 
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -43,12 +37,12 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePort;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
@@ -60,13 +54,11 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * appearing because invalidate stats was part of Endpoint which used to get
  * closed during fail over , with the failed endpoint getting closed. This bug
  * has been fixed by moving the invalidate stat to be part of our implementation.
- * 
- * 
  */
-@Ignore("Test was disabled by renaming to DisabledTest")
 @Category(DistributedTest.class)
-public class StatsBugDUnitTest extends JUnit4DistributedTestCase
-{
+@Ignore("Test was disabled by renaming to DisabledTest")
+public class StatsBugDUnitTest extends JUnit4DistributedTestCase {
+
   /** primary cache server */
   VM primary = null;
 

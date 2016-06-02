@@ -16,18 +16,12 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Properties;
 
-import junit.framework.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -39,21 +33,20 @@ import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.cache.EventID;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.HARegion;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Test to verify :
  * 
  * 1)put() on a mirrored HARegion does not propagate 2)localDestroy() allowed on
  * a mirrored region 3) GII happens normally
- * 
- * 
  */
 @Category(DistributedTest.class)
-public class HARegionDUnitTest extends JUnit4DistributedTestCase
-{
+public class HARegionDUnitTest extends JUnit4DistributedTestCase {
+  
   VM vm0 = null;
 
   VM vm1 = null;
@@ -201,7 +194,7 @@ public class HARegionDUnitTest extends JUnit4DistributedTestCase
    */
   public static void verifyRegionNotDestroyed()
   {
-    Assert.assertTrue(cache.getRegion(REGION_NAME) != null);
+    assertTrue(cache.getRegion(REGION_NAME) != null);
   }
   
   /**
@@ -273,10 +266,10 @@ public class HARegionDUnitTest extends JUnit4DistributedTestCase
 
   public static void verifyAddingDispatchMesgs()
   {
-    Assert.assertTrue(HARegionQueue.getDispatchedMessagesMapForTesting()
+    assertTrue(HARegionQueue.getDispatchedMessagesMapForTesting()
         .isEmpty());
     hrq.addDispatchedMessage(new ThreadIdentifier(new byte[1],1),1);
-    Assert.assertTrue(!HARegionQueue.getDispatchedMessagesMapForTesting()
+    assertTrue(!HARegionQueue.getDispatchedMessagesMapForTesting()
         .isEmpty());
   }
 

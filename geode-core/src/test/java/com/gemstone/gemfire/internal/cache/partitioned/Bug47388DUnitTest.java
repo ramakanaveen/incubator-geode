@@ -19,16 +19,10 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.EntryEvent;
@@ -50,11 +44,12 @@ import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.ha.HARegionQueueStats;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientProxy;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * The test creates two datastores with a partitioned region, and also running a
@@ -64,11 +59,9 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * ensures that the EXPIRE_DESTROY events are propagated to the subscriber
  * client and the secondary server does process the QRMs for the EXPIRE_DESTROY
  * events.
- * 
- * 
  */
-@SuppressWarnings("serial")
 @Category(DistributedTest.class)
+@SuppressWarnings("serial")
 public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
 
   private static VM vm0 = null;
@@ -81,13 +74,6 @@ public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
   private static volatile boolean lastKeyDestroyed = false;
 
   public static final String REGION_NAME = "Bug47388DUnitTest_region";
-
-  /**
-   * @param name
-   */
-  public Bug47388DUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {

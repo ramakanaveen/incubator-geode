@@ -16,23 +16,18 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import static com.gemstone.gemfire.test.dunit.DistributedTestUtils.*;
+import static org.junit.Assert.*;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Random;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.DataSerializable;
 import com.gemstone.gemfire.Instantiator;
@@ -58,16 +53,18 @@ import com.gemstone.gemfire.internal.cache.ClientServerObserverAdapter;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverHolder;
 import com.gemstone.gemfire.internal.cache.EventID;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase {
+
   private static Cache cache = null;
 
   private static VM client1 = null;
@@ -93,14 +90,6 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
   static boolean testEventIDResult = false;
 
   public static boolean testObject20Loaded = false;
-
-
-
-
-  public InstantiatorPropagationDUnitTest() {
-    super();
-    // TODO Auto-generated constructor stub
-  }
 
   @Override
   public final void postSetUp() throws Exception {

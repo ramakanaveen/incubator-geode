@@ -16,50 +16,42 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-import com.gemstone.gemfire.cache.AttributesFactory;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.InterestResultPolicy;
-import com.gemstone.gemfire.cache.MirrorType;
 import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.client.Pool;
+import com.gemstone.gemfire.cache.client.PoolFactory;
+import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.FilterProfile;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
-import com.gemstone.gemfire.internal.cache.InitialImageOperation;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
-import com.gemstone.gemfire.cache.client.*;
-import com.gemstone.gemfire.cache.query.data.Portfolio;
 import com.gemstone.gemfire.internal.cache.PoolFactoryImpl;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
- * 
- * 
  * We have 2 servers and One client which registers some keys with durable
  * interest and some without it. We maintain queues on only One server as
  * redundancy level is one. Following 2 tests have the two TestCase scenarios
@@ -80,7 +72,6 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * Unregister Some Keys (Here K1, K3) // Step 12: Modify values on the server
  * for all the Keys // Step 13: Check the values for the ones not unregistered
  * and the Unregistered Keys' Values should be null
- * 
  */
 @Category(DistributedTest.class)
 public class DurableRegistrationDUnitTest extends JUnit4DistributedTestCase {

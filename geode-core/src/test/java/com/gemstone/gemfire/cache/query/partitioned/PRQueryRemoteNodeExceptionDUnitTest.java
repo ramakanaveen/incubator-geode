@@ -19,20 +19,14 @@
  */
 package com.gemstone.gemfire.cache.query.partitioned;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.cache.query.Utils.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
-import static com.gemstone.gemfire.cache.query.Utils.createPortfolioData;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheClosedException;
@@ -40,43 +34,27 @@ import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.query.Query;
 import com.gemstone.gemfire.cache.query.QueryInvocationTargetException;
-import com.gemstone.gemfire.cache.query.cq.dunit.CqQueryTestListener;
 import com.gemstone.gemfire.cache.query.data.PortfolioData;
 import com.gemstone.gemfire.cache.query.internal.DefaultQuery;
 import com.gemstone.gemfire.cache.query.internal.IndexTrackingQueryObserver;
-import com.gemstone.gemfire.cache.query.internal.QueryObserver;
 import com.gemstone.gemfire.cache.query.internal.QueryObserverAdapter;
 import com.gemstone.gemfire.cache.query.internal.QueryObserverHolder;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.distributed.internal.DistributionMessageObserver;
-import com.gemstone.gemfire.internal.cache.BucketRegion;
 import com.gemstone.gemfire.internal.cache.PartitionedRegion;
 import com.gemstone.gemfire.internal.cache.PartitionedRegionDUnitTestCase;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This test verifies exception handling on coordinator node for remote as
  * well as local querying.
- *
  */
 @Category(DistributedTest.class)
 public class PRQueryRemoteNodeExceptionDUnitTest extends PartitionedRegionDUnitTestCase {
-
-  /**
-   * constructor *
-   * 
-   * @param name
-   */
-
-  public PRQueryRemoteNodeExceptionDUnitTest() {
-    super();
-  }
 
   public void setCacheInVMs(VM... vms) {
     for (VM vm : vms) {

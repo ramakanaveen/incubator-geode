@@ -16,21 +16,16 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -63,31 +58,27 @@ import com.gemstone.gemfire.cache.query.internal.index.RangeIndex;
 import com.gemstone.gemfire.cache.query.types.CollectionType;
 import com.gemstone.gemfire.cache.query.types.ObjectType;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
+import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.persistence.query.CloseableIterator;
 import com.gemstone.gemfire.pdx.internal.PdxString;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
-public class PdxStringQueryDUnitTest extends JUnit4CacheTestCase{
-  private static int bridgeServerPort;
+public class PdxStringQueryDUnitTest extends JUnit4CacheTestCase {
 
-  public PdxStringQueryDUnitTest() {
-    super();
-   }
+  private static int bridgeServerPort;
 
   private final String rootRegionName = "root";
   private final String regionName = "PdxTest";
@@ -1896,7 +1887,7 @@ public class PdxStringQueryDUnitTest extends JUnit4CacheTestCase{
       }
     });
     
-    Invoke.invokeInEveryVM(DistributedTestCase.class, "disconnectFromDS");
+    disconnectAllFromDS();
   }
    
   protected void configAndStartBridgeServer(boolean isPr, boolean isAccessor, boolean asyncIndex) {
