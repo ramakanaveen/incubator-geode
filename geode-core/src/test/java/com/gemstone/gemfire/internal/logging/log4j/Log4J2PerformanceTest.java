@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.logging.log4j;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,6 +30,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 
@@ -49,13 +52,8 @@ public class Log4J2PerformanceTest extends LoggingPerformanceTestCase {
   
   private File config = null;
   
-  public Log4J2PerformanceTest(String name) {
-    super(name);
-  }
-
-  @Override
-  public void tearDown() throws Exception {
-    super.tearDown();
+  @After
+  public void tearDownLog4J2PerformanceTest() throws Exception {
     this.config = null; // leave this file in place for now
   }
   
@@ -111,7 +109,8 @@ public class Log4J2PerformanceTest extends LoggingPerformanceTestCase {
     final Logger logger = LogManager.getLogger();
     return logger;
   }
-  
+
+  @Override
   protected PerformanceLogger createPerformanceLogger() throws IOException {
     final Logger logger = createLogger();
     
@@ -127,25 +126,5 @@ public class Log4J2PerformanceTest extends LoggingPerformanceTestCase {
     };
     
     return perfLogger;
-  }
-
-  @Override
-  public void testCountBasedLogging() throws Exception {
-    super.testCountBasedLogging();
-  }
-
-  @Override
-  public void testTimeBasedLogging() throws Exception {
-    super.testTimeBasedLogging();
-  }
-
-  @Override
-  public void testCountBasedIsEnabled() throws Exception {
-    super.testCountBasedIsEnabled();
-  }
-
-  @Override
-  public void testTimeBasedIsEnabled() throws Exception {
-    super.testTimeBasedIsEnabled();
   }
 }

@@ -26,7 +26,6 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -432,7 +431,7 @@ public class DurableClientTestCase extends JUnit4DistributedTestCase {
         // Find the proxy
         CacheClientProxy proxy = getClientProxy();
         assertNotNull(proxy);
-        Assert.assertNotNull(proxy._socket);
+        assertNotNull(proxy._socket);
         long end = System.currentTimeMillis() + 60000;
         
         while(!proxy._socket.isClosed()) {
@@ -440,7 +439,7 @@ public class DurableClientTestCase extends JUnit4DistributedTestCase {
             break;
           }
         }
-        Assert.assertTrue(proxy._socket.isClosed());
+        assertTrue(proxy._socket.isClosed());
       }
     });
     

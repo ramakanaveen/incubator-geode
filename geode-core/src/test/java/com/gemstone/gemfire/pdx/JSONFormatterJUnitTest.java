@@ -16,7 +16,7 @@
  */
 package com.gemstone.gemfire.pdx;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.text.SimpleDateFormat;
 
@@ -47,10 +47,6 @@ public class JSONFormatterJUnitTest {
   private GemFireCacheImpl c;
   private final String PRIMITIVE_KV_STORE_REGION = "primitiveKVStore";
     
-  public JSONFormatterJUnitTest() {
-    super();
-  }
-
   @Before
   public void setUp() throws Exception {
     this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0").setPdxReadSerialized(true).create();
@@ -153,43 +149,43 @@ public class JSONFormatterJUnitTest {
 
       //Testcase-1: Validate json string against the pdxInstance.
       //validation for primitive types
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: Int type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: Int type values are not matched",
           testObject.getP_int(), jsonObject.getInt(testObject.getP_intFN()));
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: long type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: long type values are not matched",
           testObject.getP_long(), jsonObject.getLong(testObject.getP_longFN()));
 
       //validation for wrapper types
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: Boolean type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: Boolean type values are not matched",
           testObject.getW_bool().booleanValue(), jsonObject.getBoolean(testObject.getW_boolFN()));
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: Float type values are not matched",
-          testObject.getW_double().doubleValue(), jsonObject.getDouble(testObject.getW_doubleFN()));
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: bigDec type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: Float type values are not matched",
+          testObject.getW_double().doubleValue(), jsonObject.getDouble(testObject.getW_doubleFN()), 0);
+      assertEquals("VerifyPdxInstanceToJson: bigDec type values are not matched",
           testObject.getW_bigDec().longValue(), jsonObject.getLong(testObject.getW_bigDecFN()));
 
       //vlidation for array types
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: Byte[] type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: Byte[] type values are not matched",
           (int)testObject.getW_byteArray()[1], jsonObject.getJSONArray(testObject.getW_byteArrayFN()).getInt(1));
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: Double[] type values are not matched",
-          testObject.getW_doubleArray()[0], jsonObject.getJSONArray(testObject.getW_doubleArrayFN()).getDouble(0));
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: String[] type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: Double[] type values are not matched",
+          testObject.getW_doubleArray()[0], jsonObject.getJSONArray(testObject.getW_doubleArrayFN()).getDouble(0), 0);
+      assertEquals("VerifyPdxInstanceToJson: String[] type values are not matched",
           testObject.getW_strArray()[2], jsonObject.getJSONArray(testObject.getW_strArrayFN()).getString(2));
 
       //validation for collection types
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: list type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: list type values are not matched",
           testObject.getC_list().get(0),
           jsonObject.getJSONArray(testObject.getC_listFN()).getString(0));
 
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: stack type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: stack type values are not matched",
           testObject.getC_stack().get(2),
           jsonObject.getJSONArray(testObject.getC_stackFN()).getString(2));
 
       //validation for Map
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: Map type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: Map type values are not matched",
           testObject.getM_empByCity().get("Ahmedabad").get(0).getFname(),
           jsonObject.getJSONObject(testObject.getM_empByCityFN()).getJSONArray("Ahmedabad").getJSONObject(0).getString("fname"));
 
       //validation Enum
-      junit.framework.Assert.assertEquals("VerifyPdxInstanceToJson: Enum type values are not matched",
+      assertEquals("VerifyPdxInstanceToJson: Enum type values are not matched",
           testObject.getDay().toString(),
           jsonObject.getString(testObject.getDayFN()));
 

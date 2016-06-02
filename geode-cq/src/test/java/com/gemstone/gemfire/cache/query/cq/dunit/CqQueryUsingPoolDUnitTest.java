@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -63,10 +59,9 @@ import com.gemstone.gemfire.cache.query.data.Portfolio;
 import com.gemstone.gemfire.cache.query.internal.CqStateImpl;
 import com.gemstone.gemfire.cache.query.internal.DefaultQueryService;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.cache30.CertifiableTestCacheListener;
+import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
@@ -85,13 +80,13 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This class tests the ContiunousQuery mechanism in GemFire.
  * It does so by creating a cache server with a cache and a pre-defined region and
  * a data loader. The client creates the same region and attaches the connection pool.
- * 
- *
  */
 @Category(DistributedTest.class)
 public class CqQueryUsingPoolDUnitTest extends JUnit4CacheTestCase {
@@ -165,10 +160,6 @@ public class CqQueryUsingPoolDUnitTest extends JUnit4CacheTestCase {
       "SELECT ALL * FROM /root/invalidRegion p where p.ID > 0"
   };
   
-  public CqQueryUsingPoolDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     //We're seeing this on the server when the client
@@ -1185,7 +1176,7 @@ public class CqQueryUsingPoolDUnitTest extends JUnit4CacheTestCase {
         // Wait max time, till the CQ state is as expected.
         final long start = System.currentTimeMillis();
         while (cqState.getState() != state) {
-          junit.framework.Assert.assertTrue("Waited over " + MAX_TIME 
+          assertTrue("Waited over " + MAX_TIME
               + "ms for Cq State to be changed to " + state
               + "; consider raising " + WAIT_PROPERTY, 
               (System.currentTimeMillis() - start) < MAX_TIME);

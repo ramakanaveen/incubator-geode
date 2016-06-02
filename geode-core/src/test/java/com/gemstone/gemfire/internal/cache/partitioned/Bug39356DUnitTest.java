@@ -16,20 +16,14 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.CancelException;
 import com.gemstone.gemfire.LogWriter;
@@ -39,7 +33,6 @@ import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.PartitionAttributes;
 import com.gemstone.gemfire.cache.PartitionAttributesFactory;
 import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.internal.DistributionManager;
 import com.gemstone.gemfire.distributed.internal.DistributionMessage;
 import com.gemstone.gemfire.distributed.internal.DistributionMessageObserver;
@@ -48,24 +41,18 @@ import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedM
 import com.gemstone.gemfire.internal.cache.ForceReattemptException;
 import com.gemstone.gemfire.internal.cache.PartitionedRegion;
 import com.gemstone.gemfire.internal.cache.PartitionedRegionDataStore;
-import com.gemstone.gemfire.internal.cache.partitioned.ManageBucketMessage;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-
-/**
- *
- */
 @Category(DistributedTest.class)
 public class Bug39356DUnitTest extends JUnit4CacheTestCase {
+
   protected static final String REGION_NAME = "myregion";
-  
-  public Bug39356DUnitTest() {
-    super();
-  }
   
   /**
    * This tests the case where the VM forcing other
@@ -138,9 +125,9 @@ public class Bug39356DUnitTest extends JUnit4CacheTestCase {
             log.info("skipping bucket " + i + " because it has no data");
             continue;
           }
-          Assert.assertEquals("Expecting bucket " +  i + " to have two copies", 2, owners.size());
+          assertEquals("Expecting bucket " +  i + " to have two copies", 2, owners.size());
           log.info("bucket " + i + " had two copies");
-          }
+        }
       }
     };
     vm1.invoke(verifyBuckets);

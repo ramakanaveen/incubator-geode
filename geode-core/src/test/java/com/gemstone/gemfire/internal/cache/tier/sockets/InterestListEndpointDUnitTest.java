@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
 
-import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -82,11 +81,6 @@ public class InterestListEndpointDUnitTest extends JUnit4DistributedTestCase {
   private static final String server_k2 = "server-k2";
 
   static InterestListEndpointDUnitTest impl;
-
-  /** constructor */
-  public InterestListEndpointDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -266,8 +260,8 @@ public class InterestListEndpointDUnitTest extends JUnit4DistributedTestCase {
  public static void verifyUpdaterThreadIsAlive() throws InterruptedException
  {
    QueueConnectionImpl conn2 = (QueueConnectionImpl) pool.getPrimaryConnection();
-   Assert.assertNotSame(conn1, conn2);
-   Assert.assertFalse(conn1.getServer().equals(conn2.getServer()));
+   assertNotSame(conn1, conn2);
+   assertFalse(conn1.getServer().equals(conn2.getServer()));
    assertNull(((QueueConnectionImpl)conn1).getUpdater());
    assertTrue((conn2).getUpdater().isAlive());
  }

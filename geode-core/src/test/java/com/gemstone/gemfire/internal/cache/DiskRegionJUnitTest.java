@@ -27,13 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TemporaryFolder;
 
-import com.gemstone.gemfire.SystemFailure;
 import com.gemstone.gemfire.cache.DiskAccessException;
 import com.gemstone.gemfire.cache.DiskStore;
 import com.gemstone.gemfire.cache.EntryEvent;
@@ -53,7 +51,7 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 /**
  * TODO: fails when running integrationTest from gradle command-line on Windows 7
  * 
- * JUnit tests covering some miscellaneous functionalites of Disk Region.
+ * JUnit tests covering some miscellaneous functionality of Disk Region.
  */
 @Category(IntegrationTest.class)
 public class DiskRegionJUnitTest extends DiskRegionTestingBase {
@@ -97,6 +95,9 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
   private int counter = 0;
   private boolean hasBeenNotified = false;
 
+  @Rule
+  public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
   @Override
   protected final void postSetUp() throws Exception {
     this.exceptionOccured = false;
@@ -138,7 +139,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     assertNotNull(cacheListener.lastEvent);
     assertEquals(null, cacheListener.lastEvent.getOldValue());
 
-    Assert.assertTrue(region.get("1")==null);
+    assertTrue(region.get("1")==null);
     
     boolean exceptionOccured = false;
     try {
@@ -158,7 +159,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     region.close();
     region = DiskRegionHelperFactory.getSyncOverFlowAndPersistRegion(cache,props);
     
-    Assert.assertTrue(region.get("1")==null);
+    assertTrue(region.get("1")==null);
     region.destroyRegion();
   }
 
@@ -356,8 +357,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
           catch (InterruptedException e) {
             testFailed = true;
             failureCause = "interrupted exception not expected here";
-            fail("exception not expected here");
-
+            throw new AssertionError("exception not expected here", e);
           }
         }
         region.get(new Integer(0));
@@ -738,9 +738,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setRegionName("IGNORE_EXCEPTION_testSingleDirectorySizeViolation");
     //setting to null will make only one directory
-    File dir = new File("testSingleDirectoryNotHanging");
-    dir.mkdir();
-    dir.deleteOnExit();
+    File dir = temporaryFolder.newFolder("testSingleDirectoryNotHanging");
     File[] dirs = new File[] {dir};
     int[] dirSizes = { 2048 };
     diskRegionProperties.setDiskDirsAndSizes(dirs, dirSizes);
@@ -857,7 +855,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     }
     catch (DiskAccessException e) {
       logWriter.error("Exception occured but not expected", e);
-      fail("FAILED::" + e.toString());
+      throw new AssertionError("FAILED::", e);
     }
 
     // we should have put 2 values in each dir so the next one should not fit
@@ -868,7 +866,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     }
     catch (DiskAccessException e) {
       logWriter.error("Exception occured but not expected", e);
-      fail("FAILED::" + e.toString());
+      throw new AssertionError("FAILED::", e);
     }
 
     assertEquals(false, cache.isClosed());
@@ -913,7 +911,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     }
     catch (DiskAccessException e) {
       logWriter.error("Exception occured but not expected", e);
-      fail("FAILED::" + e.toString());
+      throw new AssertionError("FAILED::", e);
     }
 
     // we should have put 2 values in each dir so the next one should not fit
@@ -974,7 +972,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     }
     catch (DiskAccessException e) {
       logWriter.error("Exception occured but not expected", e);
-      fail("FAILED::" + e.toString());
+      throw new AssertionError("FAILED::", e);
     }
 
     // we should have put 2 values in each dir so the next one should not fit
@@ -985,7 +983,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     }
     catch (DiskAccessException e) {
       logWriter.error("Exception occured but not expected", e);
-      fail("FAILED::" + e.toString());
+      throw new AssertionError("FAILED::", e);
     }
 
     assertEquals(false, cache.isClosed());
@@ -1081,7 +1079,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
           logWriter.error("Exception occured but not expected", e);
           testFailed = true;
           failureCause = "FAILED::" + e.toString();
-          fail("FAILED::" + e.toString());
+          throw new AssertionError("FAILED::", e);
         }
 
         final Thread t1 = Thread.currentThread();
@@ -1299,7 +1297,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     }
     catch (Exception e) {
       logWriter.error("Exception occured but not expected", e);
-      fail("Failed while getting invalid entry:" + e.toString());
+      throw new AssertionError("Failed while getting invalid entry:", e);
 
     }
     assertTrue("get operation on invalid entry returned non null value",
@@ -1339,8 +1337,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     }
     catch (Exception ex) {
       ex.printStackTrace();
-      fail("Failed to get the value on disk");
-
+      throw new AssertionError("Failed to get the value on disk", ex);
     }
     //verify that the value retrieved above represents byte array.
     //verify the length of the byte[]
@@ -1554,20 +1551,9 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     diskRegionProperties.setSynchronous(true);   
     region = DiskRegionHelperFactory.getSyncOverFlowAndPersistRegion(cache, diskRegionProperties);
     byte[] bytes = new byte[256];
-    try {
     for(int i=0; i<1500; i++){
       region.put(new Integer(i%10),bytes);
     }  
-    }
-    catch (VirtualMachineError e) {
-      SystemFailure.initiateFailure(e);
-      throw e;
-    }
-    catch(Throwable th) {
-      th.printStackTrace();
-      logWriter.error(th);
-      fail("Test failed due to exception (see logs for details):" + th);
-    }    
   }
   
   /**
@@ -1671,9 +1657,6 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
       assertEquals(1, DiskRegionHelperFactory.getSyncPersistOnlyRegion(cache,
           props, Scope.LOCAL).size());
     }
-    catch (Exception e) {
-      logWriter.error("Test failed", e);
-    }
     finally {
       CacheObserverHolder.setInstance(old);
       LocalRegion.ISSUE_CALLBACKS_TO_CACHE_OBSERVER = false;
@@ -1728,9 +1711,6 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
       region.close();
       assertEquals(1,DiskRegionHelperFactory.getSyncPersistOnlyRegion(cache,
           props, Scope.LOCAL).size());
-    }
-    catch (Exception e) {
-      fail("Exception not expected but did occur due to " + e);
     }
     finally {
       CacheObserverHolder.setInstance(old);
@@ -2051,14 +2031,10 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
     region.create("key2", "value2");
     region.create("key3", "value3");
     ((LocalRegion)region).getDiskRegion().testHookCloseAllOverflowChannels();
-    try {
-      //Update key1, so that key2 goes on disk & encounters an exception
-      region.destroy("key1");
-      region.destroy("key3");
-    }
-    catch (DiskAccessException dae) {
-      fail("Should not have encountered DiskAccessException");
-    }
+
+    //Update key1, so that key2 goes on disk & encounters an exception
+    region.destroy("key1");
+    region.destroy("key3");
   }
   
   /**
@@ -2454,7 +2430,7 @@ public class DiskRegionJUnitTest extends DiskRegionTestingBase {
         }
       }
       assertTrue(i > 1);
-      Assert.assertTrue(switchedOplog[0].getOplogFile().delete());
+      assertTrue(switchedOplog[0].getOplogFile().delete());
       region.close();
       //We don't validate the oplogs until we recreate the disk store.
       DiskStoreImpl store = ((LocalRegion) region).getDiskStore();
