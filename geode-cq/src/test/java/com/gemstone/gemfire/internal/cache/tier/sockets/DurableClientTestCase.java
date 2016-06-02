@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -33,9 +26,10 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
-
 import junit.framework.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.InterestResultPolicy;
@@ -58,31 +52,33 @@ import com.gemstone.gemfire.cache.query.internal.cq.CqService;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.ServerLocation;
+import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.ClientServerObserver;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverAdapter;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverHolder;
-import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.InternalCache;
 import com.gemstone.gemfire.internal.cache.PoolFactoryImpl;
 import com.gemstone.gemfire.internal.cache.ha.HARegionQueue;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Class <code>DurableClientTestCase</code> tests durable client
  * functionality.
- * 
- * 
+ *
  * @since 5.2
  */ 
 @Category(DistributedTest.class)
 public class DurableClientTestCase extends JUnit4DistributedTestCase {
+
+  protected static volatile boolean isPrimaryRecovered = false;
 
   protected VM server1VM;
   protected VM server2VM;
@@ -90,12 +86,6 @@ public class DurableClientTestCase extends JUnit4DistributedTestCase {
   protected VM publisherClientVM;
   protected String regionName;
   
-  protected static volatile boolean isPrimaryRecovered = false;
-
-  public DurableClientTestCase() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     Host host = Host.getHost(0);
@@ -1068,16 +1058,16 @@ public class DurableClientTestCase extends JUnit4DistributedTestCase {
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
 
-  @Ignore("This test is failing inconsistently, see bug 51258")
-  public void DISABLED_testDurableNonHAFailover() throws InterruptedException
-  {
-      durableFailover(0);
-      durableFailoverAfterReconnect(0);   
+  @Ignore("TODO: This test is failing inconsistently, see bug 51258")
+  @Test
+  public void testDurableNonHAFailover() throws InterruptedException {
+    durableFailover(0);
+    durableFailoverAfterReconnect(0);
   }
 
-  @Ignore("This test is failing inconsistently, see bug 51258")
-  public void DISABLED_testDurableHAFailover() throws InterruptedException
-  {
+  @Ignore("TODO: This test is failing inconsistently, see bug 51258")
+  @Test
+  public void testDurableHAFailover() throws InterruptedException {
     //Clients see this when the servers disconnect
     IgnoredException.addIgnoredException("Could not find any server");
     durableFailover(1);

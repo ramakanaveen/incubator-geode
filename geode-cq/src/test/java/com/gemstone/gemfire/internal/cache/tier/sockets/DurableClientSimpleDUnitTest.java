@@ -16,18 +16,12 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Iterator;
 
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.CacheException;
@@ -54,21 +48,18 @@ import com.gemstone.gemfire.internal.cache.PoolFactoryImpl;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 @Category(DistributedTest.class)
 public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
-  public DurableClientSimpleDUnitTest() {
-    super();
-  }
   /**
    * Test that a durable client correctly receives updates.
    */
@@ -397,8 +388,9 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Test that starting a durable client on multiple servers (one live and one
    * not live) is processed correctly.
    */
-  @Ignore("Disabled for bug 52043")
-  public void DISABLED_testDurableClientMultipleServersOneLive() {
+  @Ignore("TODO: Disabled for bug 52043")
+  @Test
+  public void testDurableClientMultipleServersOneLive() {
     // Start server 1
     final int server1Port = ((Integer) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer(regionName, new Boolean(true))))
         .intValue();
@@ -1095,10 +1087,12 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Stop the server
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
-  
-  //This test method is disabled because it is failing
-  //periodically and causing cruise control failures
-  //See bug #47060
+
+  /**
+   * This test method is disabled because it is failing
+   * periodically and causing cruise control failures
+   * See bug #47060 (test seems to be enabled now!)
+   */
   @Test
   public void testReadyForEventsNotCalledImplicitlyWithCacheXML() {
     try {
@@ -1621,7 +1615,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Stop the server
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
-  
 
   /**
    * Tests the ha queued events stat
@@ -1883,9 +1876,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Stop the server
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
-  /**
-   * @throws Exception
-   */
+
   @Test
   public void testHAQueuedCqStatOnSecondary() throws Exception {
     String greaterThan5Query = "select * from /" + regionName + " p where p.ID > 5";
@@ -1972,8 +1963,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Stop the server
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
-  
-  
+
   /**
    * Server 2 comes up, client connects and registers cqs, server 2 then disconnects
    * events are put into region
@@ -1983,8 +1973,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * server 1 goes away
    * client comes back and receives all events
    * stats should still be correct
-   * 
-   * @throws Exception
    */
   @Test
   public void testHAQueuedCqStatForGII() throws Exception {
@@ -2075,7 +2063,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Stop the servers
     this.server2VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
-  
 
   /**
    * Start both servers, but shut down secondary server before durable client has
@@ -2174,6 +2161,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
     this.server2VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
+
   /**
    * Server 2 comes up and goes down after client connects and registers cqs
    * events are put into region
@@ -2182,8 +2170,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * check stats
    * client comes back and receives all events
    * stats should still be correct
-   * 
-   * @throws Exception
    */
   @Test
   public void testHAQueuedCqStatForGIINoFailover() throws Exception {
@@ -2281,7 +2267,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * server 1 goes down
    * dc reconnects
    * server 2 behaves accordingly
-   * @throws Exception
    */
   @Test
   public void testHAQueuedCqStatForFailover() throws Exception {
@@ -2368,7 +2353,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     this.server2VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
   
-  
   /**
    * Tests the ha queued cq stat
    */
@@ -2453,9 +2437,9 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Stop the server
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
+
   /**
    * Test functionality to close the cq and drain all events from the ha queue from the server
-   * @throws Exception
    */
   @Test
   public void testCloseCqAndDrainEvents() throws Exception {
@@ -2626,7 +2610,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Test functionality to close the cq and drain all events from the ha queue from the server
    * This draining should remove all events due to no interest registered
    * Continues to publish afterwards to verify that stats are correct
-   * @throws Exception
    */
   @Test
   public void testCloseAllCqsAndDrainEventsNoInterestRegistered() throws Exception {
@@ -2733,11 +2716,9 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
   
-  
   /**
    * Test functionality to close the cq and drain all events from the ha queue from the server
    * Two durable clients, one will have a cq be closed, the other should be unaffected
-   * @throws Exception
    */
   @Test
   public void testCloseCqAndDrainEvents2Client() throws Exception {
@@ -2856,7 +2837,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   /**
    * Tests situation where a client is trying to reconnect while a cq is being drained.
    * The client should be rejected until no cqs are currently being drained
-   * @throws Exception
    */
   @Test
   public void testRejectClientWhenDrainingCq() throws Exception {
@@ -2980,7 +2960,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   /**
    * Tests scenario where close cq will throw an exception due to a client
    * being reactivated
-   * @throws Exception
    */
   @Category(FlakyTest.class) // GEODE-1060: random ports, async actions, time sensitive, eats exceptions (fixed 1)
   @Test
@@ -3082,7 +3061,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   
   /**
    * Tests situation where a client is trying to reconnect while a cq is being drained
-   * @throws Exception
    */
   @Test
   public void testCqCloseExceptionDueToActiveConnection() throws Exception {
@@ -3153,12 +3131,10 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Stop the server
     this.server1VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
-  
-  
+
   /**
    * Test functionality to close the durable client 
    * and drain all events from the ha queue from the server
-   * @throws Exception
    */
   @Test
   public void testCloseCacheProxy() throws Exception {
