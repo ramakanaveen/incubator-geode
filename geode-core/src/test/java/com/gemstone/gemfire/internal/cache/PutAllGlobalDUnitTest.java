@@ -160,7 +160,7 @@ public class PutAllGlobalDUnitTest extends JUnit4DistributedTestCase {
     
   @Test
   public void testputAllGlobalRemoteVM() throws Throwable {
-        // Test Fails: AssertionFailedError: Should have thrown TimeoutException
+        // Test Fails: AssertionError: Should have thrown TimeoutException
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);

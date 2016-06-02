@@ -62,7 +62,7 @@ public class FailWithLineMissingFromMiddleOfOutputJUnitTest extends FailOutputTe
       assertOutputMatchesGoldenFile(process.getOutput(), goldenString);
       fail("assertOutputMatchesGoldenFile should have failed due to " + problem());
     } catch (AssertionError expected) {
-      assertTrue("AssertionFailedError message should contain \"" + problem() + "\"", 
+      assertTrue("AssertionError message should contain \"" + problem() + "\"",
           expected.getMessage().contains(problem()));
     }
   }

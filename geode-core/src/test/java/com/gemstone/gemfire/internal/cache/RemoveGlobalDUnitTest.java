@@ -170,7 +170,7 @@ public class RemoveGlobalDUnitTest extends JUnit4DistributedTestCase {
     
   @Test
   public void testRemoveGlobalMultiVM() throws Throwable{
-        //Commented the Test.As it is failing @ line no 145 : AssertionFailedError
+        //Commented the Test.As it is failing @ line no 145 : AssertionError
        
         SerializableRunnable createSimpleRegion = new CacheSerializableRunnable("create region with cache writer"){
             public void run2() throws CacheException{

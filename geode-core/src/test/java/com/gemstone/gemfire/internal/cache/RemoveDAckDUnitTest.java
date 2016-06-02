@@ -125,7 +125,7 @@ public class RemoveDAckDUnitTest extends JUnit4DistributedTestCase {
     
   @Test
   public void testRemoveMultiVM(){
-        //Commented the Test.As it is failing @ line no 133 : AssertionFailedError
+        //Commented the Test.As it is failing @ line no 133 : AssertionError
         Host host = Host.getHost(0);
         VM vm0 = host.getVM(0);
         VM vm1 = host.getVM(1);
