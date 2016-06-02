@@ -516,8 +516,8 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
     final String rName = getUniqueName();
     
     // Make sure the desired VMs will have a fresh DS.
-    AsyncInvocation d1 = replicate1.invokeAsync(() -> DistributedTestCase.disconnectFromDS());
-    AsyncInvocation d2 = replicate2.invokeAsync(() -> DistributedTestCase.disconnectFromDS());
+    AsyncInvocation d1 = replicate1.invokeAsync(() -> disconnectFromDS());
+    AsyncInvocation d2 = replicate2.invokeAsync(() -> disconnectFromDS());
     d1.join();
     assertFalse(d1.exceptionOccurred());
     d2.join();
@@ -921,8 +921,8 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
     final String rName = getUniqueName();
 
     // Make sure the desired VMs will have a fresh DS. TODO: convert these from AsyncInvocation to invoke
-    AsyncInvocation d0 = accessor.invokeAsync(() -> DistributedTestCase.disconnectFromDS());
-    AsyncInvocation d1 = ds1.invokeAsync(() -> DistributedTestCase.disconnectFromDS());
+    AsyncInvocation d0 = accessor.invokeAsync(() -> disconnectFromDS());
+    AsyncInvocation d1 = ds1.invokeAsync(() -> disconnectFromDS());
     d0.join();
     assertFalse(d0.exceptionOccurred());
     d1.join();
@@ -1145,7 +1145,7 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
     final VM vm = host.getVM(2);
     final String rName = getUniqueName();
 
-    vm.invoke(() -> DistributedTestCase.disconnectFromDS());
+    vm.invoke(() -> disconnectFromDS());
     
     vm.invoke(new CacheSerializableRunnable("test LocalRegion load passthrough when critical") {
       @Override

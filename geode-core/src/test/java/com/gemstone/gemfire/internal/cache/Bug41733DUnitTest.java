@@ -93,7 +93,7 @@ public class Bug41733DUnitTest extends JUnit4CacheTestCase {
           public void beforeProcessMessage(DistributionManager dm,
               DistributionMessage message) {
             if(message instanceof ManageBucketReplyMessage) {
-              DistributedTestCase.disconnectFromDS();
+              disconnectFromDS();
             }
           }
         });
@@ -144,7 +144,7 @@ public class Bug41733DUnitTest extends JUnit4CacheTestCase {
           public void beforeProcessMessage(DistributionManager dm,
               DistributionMessage message) {
             if(message instanceof ManageBucketMessage) {
-              vm0.invoke(() -> DistributedTestCase.disconnectFromDS());
+              vm0.invoke(() -> disconnectFromDS());
             }
           }
         });

@@ -1482,7 +1482,7 @@ public class PersistentPartitionedRegionDUnitTest extends PersistentPartitionedR
               DistributionMessage msg) {
             if(msg instanceof ManageBucketReplyMessage) {
               Cache cache = getCache();
-              DistributedTestCase.disconnectFromDS();
+              disconnectFromDS();
               
               await().atMost(30, SECONDS).until(() -> {return (cache == null || cache.isClosed());});
               LogWriterUtils.getLogWriter().info("Cache is confirmed closed");

@@ -103,7 +103,7 @@ public class Bug43684DUnitTest extends JUnit4DistributedTestCase {
     if (cache != null && !cache.isClosed()) {
       cache.close();
     }
-    DistributedTestCase.disconnectFromDS();
+    disconnectFromDS();
   }
 
   @Test
@@ -259,7 +259,7 @@ public class Bug43684DUnitTest extends JUnit4DistributedTestCase {
 
   @SuppressWarnings("rawtypes")
   public static Integer createServerCache(Boolean isReplicated, Boolean isPrimaryEmpty) throws Exception {
-    DistributedTestCase.disconnectFromDS();
+    disconnectFromDS();
     Properties props = new Properties();
     props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
 //    props.setProperty("log-file", "server_" + OSProcess.getId() + ".log");
@@ -288,7 +288,7 @@ public class Bug43684DUnitTest extends JUnit4DistributedTestCase {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static void createClientCache(Host host, Integer port) {
-    DistributedTestCase.disconnectFromDS();
+    disconnectFromDS();
     Properties props = new Properties();
 //    props.setProperty("log-file", "client_" + OSProcess.getId() + ".log");
 //    props.setProperty("log-level", "fine");

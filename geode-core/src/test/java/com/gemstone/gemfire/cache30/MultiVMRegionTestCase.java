@@ -4860,7 +4860,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   public void testNBRegionInvalidationDuringGetInitialImage() throws Exception {
     assumeTrue(supportsReplication());
 
-    DistributedTestCase.disconnectAllFromDS();
+    disconnectAllFromDS();
 
     // don't run this for noAck, too many race conditions
     if (getRegionAttributes().getScope().isDistributedNoAck()) return;

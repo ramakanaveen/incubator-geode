@@ -83,17 +83,11 @@ import com.gemstone.gemfire.test.dunit.Wait;
  */
 @Category(DistributedTest.class)
 public class ShutdownAllDUnitTest extends JUnit4CacheTestCase {
-  protected static HangingCacheListener listener;
 
+  private static HangingCacheListener listener;
 
-  final String expectedExceptions = InternalGemFireError.class.getName()+"||ShutdownAllRequest: disconnect distributed without response";
+  private static final String expectedExceptions = InternalGemFireError.class.getName()+"||ShutdownAllRequest: disconnect distributed without response";
 
-  public ShutdownAllDUnitTest() {
-    super();
-  }
-  /**
-   * 
-   */
   private static final int MAX_WAIT = 600 * 1000;
   
   @Override
@@ -101,7 +95,7 @@ public class ShutdownAllDUnitTest extends JUnit4CacheTestCase {
     //Get rid of any existing distributed systems. We want
     //to make assertions about the number of distributed systems
     //we shut down, so we need to start with a clean slate.
-    DistributedTestCase.disconnectAllFromDS();
+    disconnectAllFromDS();
   }
 
   @Test

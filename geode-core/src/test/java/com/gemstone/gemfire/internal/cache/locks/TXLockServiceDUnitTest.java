@@ -399,7 +399,7 @@ public class TXLockServiceDUnitTest extends JUnit4DistributedTestCase {
         TXLockService.destroyServices();
       }
     });
-    Host.getHost(0).getVM(originatorVM).invoke(() -> DistributedTestCase.disconnectFromDS());
+    Host.getHost(0).getVM(originatorVM).invoke(() -> disconnectFromDS());
     
     
     // grantor sends TXOriginatorRecoveryMessage...

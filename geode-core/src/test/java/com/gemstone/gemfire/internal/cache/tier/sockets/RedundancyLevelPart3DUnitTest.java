@@ -16,38 +16,29 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverAdapter;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverHolder;
 import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
-import com.gemstone.gemfire.cache.client.internal.PoolImpl;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests Redundancy Level Functionality
- * 
- * 
  */
 @Category(DistributedTest.class)
-public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase
-{
-    /** constructor */
-  public RedundancyLevelPart3DUnitTest() {
-    super();
-  }
-  
+public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase {
+
+  @BeforeClass
   public static void caseSetUp() throws Exception {
-    DistributedTestCase.disconnectAllFromDS();
+    disconnectAllFromDS();
   }
   
   /**
@@ -55,11 +46,9 @@ public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase
    * After every failure, the order, the dispatcher, the interest registration and the makePrimary calls
    * are verified. The failure detection in these tests could be either through CCU or cache operation,
    * whichever occurs first
-   *
    */
   @Test
-  public void testRegisterInterestAndMakePrimaryWithFullRedundancy()
-  {
+  public void testRegisterInterestAndMakePrimaryWithFullRedundancy() {
     try {
       CacheServerTestUtil.disableShufflingOfEndpoints();
       createClientCache(NetworkUtils.getServerHostName(Host.getHost(0)), PORT1, PORT2, PORT3, PORT4, 3);
@@ -159,12 +148,9 @@ public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase
    * After every failure, the order, the dispatcher, the interest registration and the makePrimary calls
    * are verified. The failure detection in these tests could be either through CCU or cache operation,
    * whichever occurs first
-   *
    */
-  
   @Test
-  public void testRegisterInterestAndMakePrimaryWithZeroRedundancy()
-  {
+  public void testRegisterInterestAndMakePrimaryWithZeroRedundancy() {
     try {
       CacheServerTestUtil.disableShufflingOfEndpoints();
       createClientCache(NetworkUtils.getServerHostName(Host.getHost(0)), PORT1, PORT2, PORT3, PORT4, 0);
@@ -212,11 +198,9 @@ public class RedundancyLevelPart3DUnitTest extends RedundancyLevelTestBase
    * After every failure, the order, the dispatcher, the interest registration and the makePrimary calls
    * are verified. The failure detection in these tests could be either through CCU or cache operation,
    * whichever occurs first
-   *
    */
   @Test
-  public void testRegisterInterestAndMakePrimaryWithRedundancyOne()
-  {
+  public void testRegisterInterestAndMakePrimaryWithRedundancyOne() {
     try {
 //      long maxWaitTime = 60000;
       CacheServerTestUtil.disableShufflingOfEndpoints();

@@ -16,45 +16,41 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.experimental.categories.Category;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.client.PoolFactory;
 import com.gemstone.gemfire.cache.client.PoolManager;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
 import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
- * @since 5.7
- *
  * Test reconnecting a durable client that is using
  * the locator to discover its servers
+ *
+ * @since 5.7
  */
 @Category(DistributedTest.class)
-public class DurableClientReconnectAutoDUnitTest extends
-    DurableClientReconnectDUnitTest {
+public class DurableClientReconnectAutoDUnitTest extends DurableClientReconnectDUnitTest {
 
+  @BeforeClass
   public static void caseSetUp() throws Exception {
-    DistributedTestCase.disconnectAllFromDS();
+    disconnectAllFromDS();
   }
  
-  public DurableClientReconnectAutoDUnitTest() {
-    super();
-  }
-  
+  @Ignore("do nothing, this test doesn't make sense with the locator")
+  @Override
   @Test
   public void testDurableReconnectSingleServerWithZeroConnPerServer() {
     //do nothing, this test doesn't make sense with the locator
   }
 
+  @Ignore("do nothing, this test doesn't make sense with the locator")
+  @Override
   @Test
   public void testDurableReconnectSingleServer() throws Exception {
     //do nothing, this test doesn't make sense with the locator
