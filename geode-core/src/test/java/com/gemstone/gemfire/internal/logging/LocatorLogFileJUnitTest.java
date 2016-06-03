@@ -16,19 +16,17 @@
  */
 package com.gemstone.gemfire.internal.logging;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestName;
-
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
 
 import com.gemstone.gemfire.distributed.Locator;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
@@ -45,15 +43,16 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
  */
 @Category(IntegrationTest.class)
 public class LocatorLogFileJUnitTest {
-  @Rule public TestName name = new TestName();
 
   protected static final int TIMEOUT_MILLISECONDS = 180 * 1000; // 2 minutes
   protected static final int INTERVAL_MILLISECONDS = 100; // 100 milliseconds
   
   private Locator locator;
   private FileInputStream fis;
-  
-  
+
+  @Rule
+  public TestName name = new TestName();
+
   @After
   public void tearDown() throws Exception {
     if (this.locator != null) {

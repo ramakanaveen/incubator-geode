@@ -16,31 +16,27 @@
  */
 package com.gemstone.gemfire.disttx;
 
+import static org.junit.Assert.*;
+
 import java.util.Properties;
 
-import com.gemstone.gemfire.internal.cache.TXManagerImpl;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.CacheTransactionManager;
 import com.gemstone.gemfire.cache.RegionShortcut;
+import com.gemstone.gemfire.internal.cache.TXManagerImpl;
 import com.gemstone.gemfire.internal.cache.TXManagerImplJUnitTest;
 import com.gemstone.gemfire.test.junit.categories.DistributedTransactionsTest;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
-import static junit.framework.TestCase.assertTrue;
-
 /**
  * Same tests as that of {@link TXManagerImplJUnitTest} after setting
  * "distributed-transactions" property to true
- *
  */
 @Category({IntegrationTest.class, DistributedTransactionsTest.class })
 public class DistTXManagerImplJUnitTest extends TXManagerImplJUnitTest {
 
-  public DistTXManagerImplJUnitTest() {
-  }
-  
   @Override
   protected void createCache() {
     Properties props = new Properties();

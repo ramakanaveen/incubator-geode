@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.Properties;
 
@@ -24,24 +26,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
-import junit.framework.TestCase;
-
-import com.gemstone.gemfire.cache.*;
-import com.gemstone.gemfire.distributed.*;
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.cache.DiskStoreFactory;
+import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 /**
  * This test tests Illegal arguements being passed to create disk regions. The
  * creation of the DWA object should throw a relevant exception if the
  * arguements specified are incorrect.
- * 
- *  
  */
 @Category(IntegrationTest.class)
-public class DiskRegionIllegalArguementsJUnitTest
-{
+public class DiskRegionIllegalArguementsJUnitTest {
 
   protected static Cache cache = null;
 

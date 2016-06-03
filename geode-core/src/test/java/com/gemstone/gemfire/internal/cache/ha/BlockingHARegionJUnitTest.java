@@ -16,35 +16,38 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
-import java.util.Properties;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import static org.junit.Assert.*;
 
-import junit.framework.TestCase;
+import java.util.Properties;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.cache.EventID;
-import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 @Category(IntegrationTest.class)
-public class BlockingHARegionJUnitTest
-{
-  static Cache cache = null;
+public class BlockingHARegionJUnitTest {
+
+  private static Cache cache = null;
+
+  /** boolean to record an exception occurence in another thread**/
+  private static volatile boolean exceptionOccured = false;
+  /** StringBuffer to store the exception**/
+  private static StringBuffer exceptionString = new StringBuffer();
+  /** boolen to quit the for loop**/
+  private static volatile boolean quitForLoop = false;
 
   @Before
-  public void setUp() throws Exception
-  {
+  public void setUp() throws Exception {
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
     if (cache != null) {
@@ -54,15 +57,13 @@ public class BlockingHARegionJUnitTest
       .connect(props));
   }
 
-/**
- * This test has a scenario where the HAReqionQueue capacity is just 1. There will
- * be two thread. One doing a 1000 puts and the other doing a 1000 takes. The validation
- * for this test is that it should not encounter any exceptions
- *
- */
+  /**
+   * This test has a scenario where the HAReqionQueue capacity is just 1. There will
+   * be two thread. One doing a 1000 puts and the other doing a 1000 takes. The validation
+   * for this test is that it should not encounter any exceptions
+   */
   @Test
-  public void testBoundedPuts()
-  {
+  public void testBoundedPuts() throws Exception {
     try {
       exceptionOccured = false;
       HARegionQueueAttributes harqa = new HARegionQueueAttributes();
@@ -104,8 +105,7 @@ public class BlockingHARegionJUnitTest
    *
    */
   @Test
-  public void testPutBeingBlocked()
-  {
+  public void testPutBeingBlocked() throws Exception {
     try {
       exceptionOccured = false;
       quitForLoop = false;
@@ -174,8 +174,7 @@ public class BlockingHARegionJUnitTest
    *
    */
   @Test
-  public void testConcurrentPutsNotExceedingLimit()
-  {
+  public void testConcurrentPutsNotExceedingLimit() throws Exception {
     try {
       exceptionOccured = false;
       quitForLoop = false;
@@ -245,95 +244,87 @@ public class BlockingHARegionJUnitTest
    * put simultaneously. They will reach a state where the queue is full and they will all
    * go in a wait state. the region size would be verified to be 20000 (10000 puts and 10000 DACE objects).
    * then the threads are interrupted and made to quit the loop
-   *
-   *TODO:
-   *
    */
-  public void _testConcurrentPutsTakesNotExceedingLimit()
-  {
-    try {
-      exceptionOccured = false;
-      quitForLoop = false;
-      HARegionQueueAttributes harqa = new HARegionQueueAttributes();
-      harqa.setBlockingQueueCapacity(10000);
-      final HARegionQueue hrq = HARegionQueue.getHARegionQueueInstance(
-          "BlockingHARegionJUnitTest_Region", cache, harqa,
-          HARegionQueue.BLOCKING_HA_QUEUE, false);
-      Thread thread1 = new DoPuts(hrq,40000,1);
-      Thread thread2 = new DoPuts(hrq,40000,2);
-      Thread thread3 = new DoPuts(hrq,40000,3);
-      Thread thread4 = new DoPuts(hrq,40000,4);
-      Thread thread5 = new DoPuts(hrq,40000,5);
-      
-      Thread thread6 = new DoTake(hrq,5000);
-      Thread thread7 = new DoTake(hrq,5000);
-      Thread thread8 = new DoTake(hrq,5000);
-      Thread thread9 = new DoTake(hrq,5000);
-      Thread thread10 = new DoTake(hrq,5000);
-      
-      thread1.start();
-      thread2.start();
-      thread3.start();
-      thread4.start();
-      thread5.start();
-      
-      thread6.start();
-      thread7.start();
-      thread8.start();
-      thread9.start();
-      thread10.start();
-      
-      ThreadUtils.join(thread6, 30 * 1000);
-      ThreadUtils.join(thread7, 30 * 1000);
-      ThreadUtils.join(thread8, 30 * 1000);
-      ThreadUtils.join(thread9, 30 * 1000);
-      ThreadUtils.join(thread10, 30 * 1000);
-      
-      WaitCriterion ev = new WaitCriterion() {
-        public boolean done() {
-          return hrq.region.size() == 20000;  
-        }
-        public String description() {
-          return null;
-        }
-      };
-      Wait.waitForCriterion(ev, 30 * 1000, 200, true);
-      
-      assertTrue(thread1.isAlive());
-      assertTrue(thread2.isAlive());
-      assertTrue(thread3.isAlive());
-      assertTrue(thread4.isAlive());
-      assertTrue(thread5.isAlive());
-      
-      assertTrue(hrq.region.size()==20000);
-      
-      quitForLoop = true;
-      
-      Thread.sleep(2000);
-      
-      thread1.interrupt();
-      thread2.interrupt();
-      thread3.interrupt();
-      thread4.interrupt();
-      thread5.interrupt();
-      
-      Thread.sleep(2000);
-      
-      
-      ThreadUtils.join(thread1, 30 * 1000);
-      ThreadUtils.join(thread2, 30 * 1000);
-      ThreadUtils.join(thread3, 30 * 1000);
-      ThreadUtils.join(thread4, 30 * 1000);
-      ThreadUtils.join(thread5, 30 * 1000);
-      
-      cache.close();
-    }
-    catch (Exception e) {
-      fail(" Test encountered an exception "+e);
-    }
+  @Ignore("TODO: test is disabled")
+  @Test
+  public void testConcurrentPutsTakesNotExceedingLimit() throws Exception {
+    exceptionOccured = false;
+    quitForLoop = false;
+    HARegionQueueAttributes harqa = new HARegionQueueAttributes();
+    harqa.setBlockingQueueCapacity(10000);
+    final HARegionQueue hrq = HARegionQueue.getHARegionQueueInstance(
+        "BlockingHARegionJUnitTest_Region", cache, harqa,
+        HARegionQueue.BLOCKING_HA_QUEUE, false);
+    Thread thread1 = new DoPuts(hrq,40000,1);
+    Thread thread2 = new DoPuts(hrq,40000,2);
+    Thread thread3 = new DoPuts(hrq,40000,3);
+    Thread thread4 = new DoPuts(hrq,40000,4);
+    Thread thread5 = new DoPuts(hrq,40000,5);
+
+    Thread thread6 = new DoTake(hrq,5000);
+    Thread thread7 = new DoTake(hrq,5000);
+    Thread thread8 = new DoTake(hrq,5000);
+    Thread thread9 = new DoTake(hrq,5000);
+    Thread thread10 = new DoTake(hrq,5000);
+
+    thread1.start();
+    thread2.start();
+    thread3.start();
+    thread4.start();
+    thread5.start();
+
+    thread6.start();
+    thread7.start();
+    thread8.start();
+    thread9.start();
+    thread10.start();
+
+    ThreadUtils.join(thread6, 30 * 1000);
+    ThreadUtils.join(thread7, 30 * 1000);
+    ThreadUtils.join(thread8, 30 * 1000);
+    ThreadUtils.join(thread9, 30 * 1000);
+    ThreadUtils.join(thread10, 30 * 1000);
+
+    WaitCriterion ev = new WaitCriterion() {
+      public boolean done() {
+        return hrq.region.size() == 20000;
+      }
+      public String description() {
+        return null;
+      }
+    };
+    Wait.waitForCriterion(ev, 30 * 1000, 200, true);
+
+    assertTrue(thread1.isAlive());
+    assertTrue(thread2.isAlive());
+    assertTrue(thread3.isAlive());
+    assertTrue(thread4.isAlive());
+    assertTrue(thread5.isAlive());
+
+    assertTrue(hrq.region.size()==20000);
+
+    quitForLoop = true;
+
+    Thread.sleep(2000);
+
+    thread1.interrupt();
+    thread2.interrupt();
+    thread3.interrupt();
+    thread4.interrupt();
+    thread5.interrupt();
+
+    Thread.sleep(2000);
+
+
+    ThreadUtils.join(thread1, 30 * 1000);
+    ThreadUtils.join(thread2, 30 * 1000);
+    ThreadUtils.join(thread3, 30 * 1000);
+    ThreadUtils.join(thread4, 30 * 1000);
+    ThreadUtils.join(thread5, 30 * 1000);
+
+    cache.close();
   }
-  
-  
+
   /**
    * Tests the bug in HARegionQueue where the take side put permit is not being
    * incremented   when the event arriving at the queue which has optimistically
@@ -341,11 +332,9 @@ public class BlockingHARegionJUnitTest
    * has a sequence ID less than the last dispatched sequence ID. This event is
    * rightly rejected from entering the queue but the take permit also needs to
    * increase & a notify issued  
-   * 
-   */  
+   */
   @Test
-  public void testHARQMaxCapacity_Bug37627()
-  {
+  public void testHARQMaxCapacity_Bug37627() throws Exception {
     try {
       exceptionOccured = false;
       quitForLoop = false;
@@ -383,9 +372,6 @@ public class BlockingHARegionJUnitTest
         fail(" Test failed due to " + exceptionString);
       }
     }
-    catch (Exception e) {
-      fail(" Test failed due to " + e);
-    }
     finally {
       if (cache != null) {
         cache.close();
@@ -394,39 +380,32 @@ public class BlockingHARegionJUnitTest
 
   }
   
-  
-
-  /** boolean to record an exception occurence in another thread**/
-  static volatile boolean exceptionOccured = false;
-/** StringBuffer to store the exception**/
-  static StringBuffer exceptionString = new StringBuffer();
-  /** boolen to quit the for loop**/
-  static volatile boolean quitForLoop = false;
-
   /**
    * class which does specified number of puts on the queue
-   *
    */
-  static class DoPuts extends Thread
-  {
+  private static class DoPuts extends Thread {
+
     HARegionQueue regionQueue = null;
     final int numberOfPuts;
+
     DoPuts(HARegionQueue haRegionQueue, int numberOfPuts) {
       this.regionQueue = haRegionQueue;
       this.numberOfPuts = numberOfPuts;
     }
-/**
- * region id can be specified to generate Thread unique events
- */
+
+    /**
+     * region id can be specified to generate Thread unique events
+     */
     int regionId = 0;
+
     DoPuts(HARegionQueue haRegionQueue, int numberOfPuts, int regionId) {
       this.regionQueue = haRegionQueue;
       this.numberOfPuts = numberOfPuts;
       this.regionId = regionId;
     }
-    
-    public void run()
-    {
+
+    @Override
+    public void run() {
       for (int i = 0; i < numberOfPuts; i++) {
         try {
           this.regionQueue.put(new ConflatableObject("" + i, "" + i,
@@ -451,8 +430,8 @@ public class BlockingHARegionJUnitTest
    * class which does a specified number of takes
    *
    */
-  static class DoTake extends Thread
-  {
+  private static class DoTake extends Thread {
+
     final HARegionQueue regionQueue;
     final int numberOfTakes;
 
@@ -461,8 +440,8 @@ public class BlockingHARegionJUnitTest
       this.numberOfTakes = numberOfTakes;
     }
 
-    public void run()
-    {
+    @Override
+    public void run() {
       for (int i = 0; i < numberOfTakes; i++) {
         try {
           assertNotNull(this.regionQueue.take());

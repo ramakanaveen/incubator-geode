@@ -16,20 +16,22 @@
  */
 package com.gemstone.gemfire.internal.jta;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.naming.Context;
 import javax.transaction.RollbackException;
+import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
-import javax.transaction.Status;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
@@ -38,12 +40,11 @@ import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.datasource.GemFireBasicDataSource;
 import com.gemstone.gemfire.internal.datasource.GemFireTransactionDataSource;
-import com.gemstone.gemfire.internal.datasource.RestartJUnitTest;
-import com.gemstone.gemfire.util.test.TestUtil;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
+import com.gemstone.gemfire.util.test.TestUtil;
 
 @Category(IntegrationTest.class)
-public class GlobalTransactionJUnitTest extends TestCase {
+public class GlobalTransactionJUnitTest {
 
   private static Properties props = null;
   private static DistributedSystem ds1 = null;
@@ -51,8 +52,8 @@ public class GlobalTransactionJUnitTest extends TestCase {
   private static UserTransaction utx = null;
   private static TransactionManager tm = null;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     props = new Properties();
     props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
     String path = TestUtil.getResourcePath(GlobalTransactionJUnitTest.class, "/jta/cachejta.xml");
@@ -63,15 +64,12 @@ public class GlobalTransactionJUnitTest extends TestCase {
     tm = TransactionManagerImpl.getTransactionManager();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     ds1.disconnect();
   }
 
-  public GlobalTransactionJUnitTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testGetSimpleDataSource() throws Exception {
     try {
       Context ctx = cache.getJNDIContext();
@@ -87,6 +85,7 @@ public class GlobalTransactionJUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testSetRollbackOnly() {
     try {
       utx.begin();
@@ -104,6 +103,7 @@ public class GlobalTransactionJUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testEnlistResource() {
     try {
       boolean exceptionoccured = false;
@@ -133,6 +133,7 @@ public class GlobalTransactionJUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterSynchronization() {
     try {
       boolean exceptionoccured = false;
@@ -161,6 +162,7 @@ public class GlobalTransactionJUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testEnlistResourceAfterRollBack() {
     try {
       boolean exceptionoccured = false;
@@ -191,6 +193,7 @@ public class GlobalTransactionJUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterSynchronizationAfterRollBack() {
     try {
       boolean exceptionoccured = false;
@@ -221,6 +224,7 @@ public class GlobalTransactionJUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testSuspend() {
     try {
       utx.begin();
@@ -236,6 +240,7 @@ public class GlobalTransactionJUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testResume() {
     try {
       utx.begin();

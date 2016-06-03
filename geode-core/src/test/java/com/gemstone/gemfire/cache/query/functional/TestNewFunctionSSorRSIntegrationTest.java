@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 /*
- * IndexUsageWithAliasAsProjAtrbtJUnitTest.java
+ * TestNewFunction.java
  *
- * Created on May 4, 2005, 11:10 AM
+ * Created on June 16, 2005, 3:55 PM
  */
 package com.gemstone.gemfire.cache.query.functional;
 
@@ -37,112 +37,92 @@ import com.gemstone.gemfire.cache.query.Index;
 import com.gemstone.gemfire.cache.query.IndexType;
 import com.gemstone.gemfire.cache.query.Query;
 import com.gemstone.gemfire.cache.query.QueryService;
-import com.gemstone.gemfire.cache.query.SelectResults;
+import com.gemstone.gemfire.cache.query.Utils;
 import com.gemstone.gemfire.cache.query.data.Portfolio;
 import com.gemstone.gemfire.cache.query.internal.QueryObserverAdapter;
 import com.gemstone.gemfire.cache.query.internal.QueryObserverHolder;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
+/**
+ * TODO: does this test provide any valuable coverage?
+ */
 @Category(IntegrationTest.class)
-public class IndexUsageWithAliasAsProjAtrbtJUnitTest {
+public class TestNewFunctionSSorRSIntegrationTest {
 
   @Before
-  public void setUp() throws java.lang.Exception {
+  public void setUp() throws Exception {
     CacheUtils.startCache();
   }
 
   @After
-  public void tearDown() throws java.lang.Exception {
+  public void tearDown() throws Exception {
     CacheUtils.closeCache();
   }
 
   @Test
-  public void testComparisonBetnWithAndWithoutIndexCreation() throws Exception {
-    //TASK IUM 7
+  public void testNewFunc() throws Exception {
     Region region = CacheUtils.createRegion("portfolios", Portfolio.class);
-    for(int i=0;i<4;i++){
-      region.put(""+i, new Portfolio(i));
+    for (int i = 0; i < 4; i++) {
+      region.put("" + i, new Portfolio(i));
+      // CacheUtils.log(new Portfolio(i));
     }
+
+    Object r[][] = new Object[2][2];
     QueryService qs;
     qs = CacheUtils.getQueryService();
+
     String queries[] = {
-        // IUM 7
-        "Select distinct security from /portfolios, secIds security where length > 1",
-        // IUM 8         
-        "Select distinct security from /portfolios , secIds security where length > 2 AND (intern <> 'SUN' OR intern <> 'DELL' )",
-        // IUM 9 
-        "Select distinct  security from /portfolios  pos , secIds security where length > 2 and pos.ID > 0"         
+      "SELECT DISTINCT * from /portfolios pf , pf.positions.values pos where status = 'inactive'",
+      "select distinct * from /portfolios where ID > 1 ",
 
     };
-    SelectResults r[][] = new SelectResults[queries.length][2];
 
     for (int i = 0; i < queries.length; i++) {
       Query q = null;
       q = CacheUtils.getQueryService().newQuery(queries[i]);
-      QueryObserverImpl observer = new QueryObserverImpl();
-      QueryObserverHolder.setInstance(observer);
-      r[i][0] =(SelectResults) q.execute();
-      if(!observer.isIndexesUsed){
-        CacheUtils.log("NO INDEX USED");
-      }else {
-        fail("If index were not there how did they get used ???? ");
+      QueryObserverImpl observer1 = new QueryObserverImpl();
+      QueryObserverHolder.setInstance(observer1);
+      r[i][0] = q.execute();
+      if (!observer1.isIndexesUsed) {
+        CacheUtils.log("NO INDEX IS USED!");
       }
+      CacheUtils.log(Utils.printResult(r[i][0]));
     }
 
-    //  Create an Index on status and execute the same query again.
-
-    qs = CacheUtils.getQueryService();
-    qs.createIndex("lengthIndex", IndexType.FUNCTIONAL,"length","/portfolios,secIds, positions.values");
+    qs.createIndex("sIndex", IndexType.FUNCTIONAL, "status", "/portfolios");
+    qs.createIndex("iIndex", IndexType.FUNCTIONAL, "ID", "/portfolios");
     for (int i = 0; i < queries.length; i++) {
       Query q = null;
       q = CacheUtils.getQueryService().newQuery(queries[i]);
       QueryObserverImpl observer2 = new QueryObserverImpl();
       QueryObserverHolder.setInstance(observer2);
-      r[i][1] = (SelectResults)q.execute();
-
-      if(observer2.isIndexesUsed){
+      r[i][1] = q.execute();
+      if (observer2.isIndexesUsed) {
         CacheUtils.log("YES INDEX IS USED!");
+      } else {
+        fail("Index NOT Used");
       }
-      else {
-        fail("Index should have been used!!! ");
-      }
+      CacheUtils.log(Utils.printResult(r[i][1]));
     }
-    CacheUtils.compareResultsOfWithAndWithoutIndex(r,this);        
+
+    StructSetOrResultsSet ssORrs = new StructSetOrResultsSet();
+    ssORrs.CompareQueryResultsWithoutAndWithIndexes(r, queries.length, queries);
   }
 
-  @Test
-  public void testQueryResultComposition() throws Exception {
-    Region region = CacheUtils.createRegion("pos", Portfolio.class);
-    for(int i=0;i<4;i++){
-      region.put(""+i, new Portfolio(i));
-    }
-    CacheUtils.getQueryService();
-    String queries[] = {
-        //"select distinct * from /pos, positions where value != null",
-        //"select distinct intern from /pos,names where length >= 3",
-        "select distinct nm from /pos prt,names nm where ID>0",
-        "select distinct prt from /pos prt, names where names[3]='ddd'"
-    };
-    for(int i=0;i<queries.length;i++){
-      Query q = CacheUtils.getQueryService().newQuery(queries[i]);
-      q.execute();
-    }
-  }
+  private static class QueryObserverImpl extends QueryObserverAdapter {
 
-  private static class QueryObserverImpl extends QueryObserverAdapter{
     boolean isIndexesUsed = false;
     ArrayList indexesUsed = new ArrayList();
 
-    @Override
     public void beforeIndexLookup(Index index, int oper, Object key) {
       indexesUsed.add(index.getName());
     }
 
-    @Override
     public void afterIndexLookup(Collection results) {
-      if(results != null){
+      if (results != null) {
         isIndexesUsed = true;
       }
     }
   }
+
 }

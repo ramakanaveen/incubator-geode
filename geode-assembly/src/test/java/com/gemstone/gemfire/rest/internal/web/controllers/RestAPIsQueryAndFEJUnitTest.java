@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.rest.internal.web.controllers;
 
+import static org.junit.Assert.*;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -24,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import junit.framework.TestCase;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -55,6 +55,9 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -67,7 +70,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 @Category(IntegrationTest.class)
-public class RestAPIsQueryAndFEJUnitTest extends TestCase {
+public class RestAPIsQueryAndFEJUnitTest {
 
   private Cache c;
 
@@ -1318,8 +1321,7 @@ public class RestAPIsQueryAndFEJUnitTest extends TestCase {
     queryResultByIndex.put(48, qIndex48_resultData);
   }
   
-  @Override
-  @SuppressWarnings("deprecation")
+  @Before
   public void setUp() throws Exception {
     
     AgentUtil agentUtil = new AgentUtil(GemFireVersion.getGemFireVersion());
@@ -1424,7 +1426,7 @@ public class RestAPIsQueryAndFEJUnitTest extends TestCase {
     FunctionService.registerFunction(new AddFreeItemToOrders());
   }
 
-  @Override
+  @After
   public void tearDown() {
     // shutdown and clean up the manager node.
     //this.c.close();
@@ -1441,7 +1443,7 @@ public class RestAPIsQueryAndFEJUnitTest extends TestCase {
     return headers;
   }
 
- 
+  @Test
   public void testCreateAsJson() { 
     executeQueryTestCases();
   }

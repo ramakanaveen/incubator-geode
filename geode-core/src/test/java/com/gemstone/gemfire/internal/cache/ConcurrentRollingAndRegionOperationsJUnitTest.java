@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -79,16 +79,16 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
           assertTrue(hasBeenNotified);
         }
         catch (InterruptedException e) {
-          fail("exception not expected here");
+          throw new AssertionError("exception not expected here", e);
         }
       }
     }
     try {
-      Assert.assertEquals("Value2", getValueOnDisk(region));
+      assertEquals("Value2", getValueOnDisk(region));
     }
     catch (EntryNotFoundException e) {
       logWriter.error("Exception occured", e);
-      fail("Entry not found although was supposed to be there");
+      throw new AssertionError("Entry not found although was supposed to be there", e);
     }
   }
 
@@ -118,17 +118,17 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
           assertTrue(hasBeenNotified);
         }
         catch (InterruptedException e) {
-          fail("exception not expected here");
+          throw new AssertionError("exception not expected here", e);
         }
       }
     }
     try {
-      Assert.assertEquals("Value1", getValueOnDisk(region));
-      Assert.assertEquals("Value1", getValueInHTree(region));
+      assertEquals("Value1", getValueOnDisk(region));
+      assertEquals("Value1", getValueInHTree(region));
     }
     catch (EntryNotFoundException e) {
       logWriter.error("Exception occured", e);
-      fail("Entry not found although was supposed to be there");
+      throw new AssertionError("Entry not found although was supposed to be there", e);
     }
   }
 
@@ -153,7 +153,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
           assertTrue(hasBeenNotified);
         }
         catch (InterruptedException e) {
-          fail("exception not expected here");
+          throw new AssertionError("exception not expected here", e);
         }
       }
     }
@@ -162,7 +162,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     }
     catch (Exception e) {
       logWriter.error("Exception occured", e);
-      fail("failed while trying to destroy due to " + e);
+      throw new AssertionError("failed while trying to destroy due to ", e);
     }
     boolean entryNotFound = false;
     try {
@@ -206,7 +206,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
           assertTrue(hasBeenNotified);
         }
         catch (InterruptedException e) {
-          fail("exception not expected here");
+          throw new AssertionError("exception not expected here", e);
         }
       }
     }
@@ -257,17 +257,17 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
           assertTrue(hasBeenNotified);
         }
         catch (InterruptedException e) {
-          fail("exception not expected here");
+          throw new AssertionError("exception not expected here", e);
         }
       }
     }
     region.put("Key", "Value2");
     try {
-      Assert.assertEquals("Value2", getValueOnDisk(region));
+      assertEquals("Value2", getValueOnDisk(region));
     }
     catch (EntryNotFoundException e) {
       logWriter.error("Exception occured", e);
-      fail("Entry not found although was supposed to be there");
+      throw new AssertionError("Entry not found although was supposed to be there", e);
     }
   }
 
@@ -292,18 +292,18 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
           assertTrue(hasBeenNotified);
         }
         catch (InterruptedException e) {
-          fail("exception not expected here");
+          throw new AssertionError("exception not expected here", e);
         }
       }
     }
     region.get("Key");
     try {
-      Assert.assertEquals("Value1", getValueOnDisk(region));
-      Assert.assertEquals("Value1", getValueInHTree(region));
+      assertEquals("Value1", getValueOnDisk(region));
+      assertEquals("Value1", getValueInHTree(region));
     }
     catch (EntryNotFoundException e) {
       logWriter.error("Exception occured", e);
-      fail("Entry not found although was supposed to be there");
+      throw new AssertionError("Entry not found although was supposed to be there", e);
     }
   }
 
@@ -328,7 +328,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
           assertTrue(hasBeenNotified);
         }
         catch (InterruptedException e) {
-          fail("exception not expected here");
+          throw new AssertionError("exception not expected here", e);
         }
       }
     }
@@ -337,7 +337,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     }
     catch (Exception e1) {
       logWriter.error("Exception occured", e1);
-      fail("encounter exception when not expected " + e1);
+      throw new AssertionError("encounter exception when not expected ", e1);
     }
     boolean entryNotFound = false;
     try {
@@ -380,7 +380,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
           assertTrue(hasBeenNotified);
         }
         catch (InterruptedException e) {
-          fail("exception not expected here");
+          throw new AssertionError("exception not expected here", e);
         }
       }
     }
@@ -424,7 +424,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
         ((DiskEntry)re).getDiskId());
   }
 
-  public void DARREL_DISABLE_testSyncPutBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testSyncPutBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -437,7 +439,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testAsyncPutBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testAsyncPutBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -450,7 +454,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testSyncPutAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testSyncPutAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -463,7 +469,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testAsyncPutAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testAsyncPutAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -476,7 +484,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testSyncGetBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testSyncGetBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -489,7 +499,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testAsyncGetBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testAsyncGetBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -502,7 +514,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testSyncGetAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testSyncGetAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -515,7 +529,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testAsyncGetAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testAsyncGetAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -528,7 +544,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testSyncClearBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testSyncClearBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -541,7 +559,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testAsyncClearBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testAsyncClearBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -554,7 +574,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testSyncClearAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testSyncClearAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -567,7 +589,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testAsyncClearAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testAsyncClearAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -580,7 +604,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testSyncDelBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testSyncDelBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -593,7 +619,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testAsyncDelBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testAsyncDelBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -606,7 +634,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testSyncDelAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testSyncDelAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -619,7 +649,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testAsyncDelAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testAsyncDelAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -632,7 +664,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     region.destroyRegion();
   }
 
-  public void DARREL_DISABLE_testCloseBeforeRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testCloseBeforeRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -644,7 +678,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     closeBeforeRoll(region);
   }
 
-  public void DARREL_DISABLE_testCloseAfterRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testCloseAfterRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -659,7 +695,9 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
         diskRegionProperties, Scope.LOCAL);
   }
 
-  public void DARREL_DISABLE_testconcurrentPutAndRoll()
+  @Ignore("TODO:DARREL_DISABLE: test is disabled")
+  @Test
+  public void testconcurrentPutAndRoll()
   {
     DiskRegionProperties diskRegionProperties = new DiskRegionProperties();
     diskRegionProperties.setDiskDirs(dirs);
@@ -702,7 +740,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
                 testFailed = true;
                 failureCause = "Exception occured when it was not supposed to occur, Exception is "
                     + e + "in concurrentPutAndRoll";
-                fail("exception not expected here");
+                throw new AssertionError("exception not expected here", e);
               }
             }
           }
@@ -719,7 +757,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
             testFailed = true;
             failureCause = "Exception occured when it was not supposed to occur, Exception is "
                 + e + "in concurrentPutAndRoll";
-            fail("exception not expected here");
+            throw new AssertionError("exception not expected here", e);
           }
         }
         startTime = System.currentTimeMillis();
@@ -746,7 +784,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
         }
       }
       catch (InterruptedException e) {
-        fail("exception not expected here");
+        throw new AssertionError("exception not expected here", e);
       }
     }
     if (this.totalTime < 2000) {
@@ -762,8 +800,6 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
    * is not yet destroyed but by the time a basicGet is done,the oplog gets
    * destroyed & the get operation sees the file length zero or it may encounter
    * null pointer exception while retrieving the oplog.
-   * 
-   *  
    */
   @Test
   public void testConcurrentRollingAndGet()
@@ -806,8 +842,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
                   catch (Exception e) {
                     encounteredFailure = true;
                     logWriter.error("Test encountered exception ", e);
-                    fail(" Test failed as could not obtain value from disk.Exception = "
-                        + e);
+                    throw new AssertionError(" Test failed as could not obtain value from disk.Exception = ", e);
                   }
 
                 }
@@ -834,9 +869,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
       }
       catch (InterruptedException e) {
         logWriter.error("Main thread encountered exception ", e);
-
-        fail(" Test failed as main thread encountered exception = " + e);
-
+        throw new AssertionError(" Test failed as main thread encountered exception = ", e);
       }
     }
 
@@ -877,7 +910,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
         }
         catch (Exception e) {
           logWriter.error("Exception occured", e);
-          fail("Exception occured when it was not supposed to occur");
+          throw new AssertionError("Exception occured when it was not supposed to occur", e);
         }
       }
     });
@@ -891,13 +924,13 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
         }
       }
       catch (InterruptedException e) {
-        fail("exception not expected here");
+        throw new AssertionError("exception not expected here", e);
       }
     }
     try {
       th.join(5000);
     } catch (InterruptedException ignore) {
-      fail("exception not expected here");
+      throw new AssertionError("exception not expected here", ignore);
     }
     assertFalse(th.isAlive());
     assertFalse(failureCause, testFailed);
@@ -918,7 +951,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
         }
         catch (Exception e) {
           logWriter.error("Exception occured", e);
-          fail("Exception occured when it was not supposed to occur");
+          throw new AssertionError("Exception occured when it was not supposed to occur", e);
         }
       }
     });
@@ -938,7 +971,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
     try {
       th.join(5000);
     } catch (InterruptedException ignore) {
-      fail("exception not expected here");
+      throw new AssertionError("exception not expected here", ignore);
     }
     assertFalse(th.isAlive());
     assertFalse(failureCause, testFailed);
@@ -967,7 +1000,7 @@ public class ConcurrentRollingAndRegionOperationsJUnitTest extends DiskRegionTes
         testFailed = true;
         failureCause = "Exception occured when it was not supposed to occur, due to "
             + e;
-        fail("Exception occured when it was not supposed to occur, due to " + e);
+        throw new AssertionError("Exception occured when it was not supposed to occur, due to ", e);
       }
     }
   }

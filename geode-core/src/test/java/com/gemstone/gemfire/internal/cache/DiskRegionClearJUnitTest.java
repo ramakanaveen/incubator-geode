@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static org.junit.Assert.*;
+
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -24,30 +26,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import com.gemstone.gemfire.SystemFailure;
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.CacheTransactionManager;
 import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.DiskStore;
-import com.gemstone.gemfire.cache.DiskStoreFactory;
-import com.gemstone.gemfire.cache.EntryEvent;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.RegionEvent;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.internal.cache.versions.VersionStamp;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
-// @TODO: use DiskRegionTestingBase and DiskRegionHelperFactory
 /**
  * Test methods to ensure that disk Clear is apparently atomic to region clear.
  * 
@@ -55,19 +47,20 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
  * wait for clear and if it is successfully recorded in memory than it should
  * be recored on disk. Else if not successfully recorded in memory than should not be
  * recorded on disk
- * 
+ *
+ * TODO: use DiskRegionTestingBase and DiskRegionHelperFactory
  */
 @Category(IntegrationTest.class)
 public class DiskRegionClearJUnitTest {
 
-  static Region testRegion = null;
-  static Object returnObject = null;
-  static boolean done = false;
-  static volatile int counter = 0;
-  static volatile boolean cleared = false;
-  static volatile long entries = 0;
-  static Cache cache = null;  
-  static DistributedSystem distributedSystem = null;
+  private static Region testRegion = null;
+  private static Object returnObject = null;
+  private static boolean done = false;
+  private static volatile int counter = 0;
+  private static volatile boolean cleared = false;
+  private static volatile long entries = 0;
+  private static Cache cache = null;
+  private static DistributedSystem distributedSystem = null;
   
   private static String regionName = "TestRegion";
 
@@ -85,7 +78,6 @@ public class DiskRegionClearJUnitTest {
     RegionAttributes regionAttributes = factory.create();
     testRegion = cache.createRegion("TestRegion1", regionAttributes);
     CacheObserverHolder.setInstance(new CacheObserverListener());
-    
   }
 
   @After
@@ -101,7 +93,7 @@ public class DiskRegionClearJUnitTest {
           try {
             root.localDestroyRegion("teardown");
           }
-          catch (VirtualMachineError e) {
+          catch (VirtualMachineError e) { // TODO: remove all this error handling
             SystemFailure.initiateFailure(e);
             throw e;
           }
@@ -115,7 +107,7 @@ public class DiskRegionClearJUnitTest {
       try {
         closeCache();
       }
-      catch (VirtualMachineError e) {
+      catch (VirtualMachineError e) { // TODO: remove all this error handling
         SystemFailure.initiateFailure(e);
         throw e;
       }
@@ -140,7 +132,6 @@ public class DiskRegionClearJUnitTest {
     testRegion.clear();
     assertEquals(0, dr.getStats().getNumEntriesInVM());
   }
- 
 
   /** Close the cache */
   private static synchronized final void closeCache() {
@@ -185,37 +176,32 @@ public class DiskRegionClearJUnitTest {
       }
     }
     ThreadUtils.join(thread, 10 * 60 * 1000);
-    Assert.assertTrue(counter == 3);
+    assertTrue(counter == 3);
     if(!cleared)
       fail("clear not done although puts have been done");    
   }
 
   @Test
-  public void testRecreateRegionAndCacheNegative() {
-    try {
-      LocalRegion.ISSUE_CALLBACKS_TO_CACHE_OBSERVER = false;
-      for(long i=0;i<100; i++) {
-        testRegion.put(new Long(i), new Long(i));
-      }
-      testRegion.clear();
-      assertEquals(0, testRegion.size());
-      cache.close();
-      distributedSystem.disconnect();
-      Properties properties = new Properties();
-      properties.setProperty("mcast-port", "0");
-      properties.setProperty("locators", "");
-      distributedSystem = DistributedSystem.connect(properties);
-      cache = CacheFactory.create(distributedSystem);
-      AttributesFactory factory = new AttributesFactory();
-      factory.setScope(Scope.DISTRIBUTED_ACK);
-      factory.setDataPolicy(DataPolicy.PERSISTENT_REPLICATE);
-      RegionAttributes regionAttributes = factory.create();
-      testRegion = cache.createRegion("TestRegion1", regionAttributes);
-      
+  public void testRecreateRegionAndCacheNegative() throws Exception {
+    LocalRegion.ISSUE_CALLBACKS_TO_CACHE_OBSERVER = false;
+    for(long i=0;i<100; i++) {
+      testRegion.put(new Long(i), new Long(i));
     }
-    catch (Exception e) {
-      fail("test failed due to "+e);
-     }
+    testRegion.clear();
+    assertEquals(0, testRegion.size());
+    cache.close();
+    distributedSystem.disconnect();
+    Properties properties = new Properties();
+    properties.setProperty("mcast-port", "0");
+    properties.setProperty("locators", "");
+    distributedSystem = DistributedSystem.connect(properties);
+    cache = CacheFactory.create(distributedSystem);
+    AttributesFactory factory = new AttributesFactory();
+    factory.setScope(Scope.DISTRIBUTED_ACK);
+    factory.setDataPolicy(DataPolicy.PERSISTENT_REPLICATE);
+    RegionAttributes regionAttributes = factory.create();
+    testRegion = cache.createRegion("TestRegion1", regionAttributes);
+      
     System.out.println("keySet after recovery = " + testRegion.keySet());
     assertEquals(0, testRegion.size());
   }
@@ -223,34 +209,32 @@ public class DiskRegionClearJUnitTest {
   @Test
   public void testRecreateRegionAndCachePositive() {
     int size = 0;
-      LocalRegion.ISSUE_CALLBACKS_TO_CACHE_OBSERVER = false;
-      for(long i=0;i<1000; i++) {
-        testRegion.put(new Long(i), new Long(i));
-      }
-      testRegion.clear();
-      for(long i=0;i<1000; i++) {
-        testRegion.put(new Long(i), new Long(i));
-      }
-      assertEquals(1000, testRegion.size());
-      cache.close();
-      distributedSystem.disconnect();
-      Properties properties = new Properties();
-      properties.setProperty("mcast-port", "0");
-      properties.setProperty("locators", "");
-      distributedSystem = DistributedSystem.connect(properties);
-      cache = CacheFactory.create(distributedSystem);
-      AttributesFactory factory = new AttributesFactory();
-      factory.setScope(Scope.DISTRIBUTED_ACK);
-      factory.setDataPolicy(DataPolicy.PERSISTENT_REPLICATE);
-      RegionAttributes regionAttributes = factory.create();
-      testRegion = cache.createRegion("TestRegion1", regionAttributes);
+    LocalRegion.ISSUE_CALLBACKS_TO_CACHE_OBSERVER = false;
+    for(long i=0;i<1000; i++) {
+      testRegion.put(new Long(i), new Long(i));
+    }
+    testRegion.clear();
+    for(long i=0;i<1000; i++) {
+      testRegion.put(new Long(i), new Long(i));
+    }
+    assertEquals(1000, testRegion.size());
+    cache.close();
+    distributedSystem.disconnect();
+    Properties properties = new Properties();
+    properties.setProperty("mcast-port", "0");
+    properties.setProperty("locators", "");
+    distributedSystem = DistributedSystem.connect(properties);
+    cache = CacheFactory.create(distributedSystem);
+    AttributesFactory factory = new AttributesFactory();
+    factory.setScope(Scope.DISTRIBUTED_ACK);
+    factory.setDataPolicy(DataPolicy.PERSISTENT_REPLICATE);
+    RegionAttributes regionAttributes = factory.create();
+    testRegion = cache.createRegion("TestRegion1", regionAttributes);
     assertEquals(1000, testRegion.size());
   }
-  
-  protected static class Thread1 implements Runnable {
 
-    
-    
+  private static class Thread1 implements Runnable {
+
     public void run() {
       for(long i=0 ; i< 100 ; i++) {     
       testRegion.put(new Long(i), new Long(i));
@@ -259,15 +243,14 @@ public class DiskRegionClearJUnitTest {
     }
   }
 
-  protected static class Thread2 implements Runnable {
+  private static class Thread2 implements Runnable {
 
     public void run() {
       testRegion.clear();
     }
   }
 
-  protected static class CacheObserverListener extends CacheObserverAdapter {
-    
+  private static class CacheObserverListener extends CacheObserverAdapter {
     
     public void afterRegionClear(RegionEvent event) {
       cleared = true;
@@ -281,8 +264,6 @@ public class DiskRegionClearJUnitTest {
     }
   }
 
-  protected static class CacheObserver extends CacheObserverAdapter
-  {
-
+  private static class CacheObserver extends CacheObserverAdapter {
   }
 }

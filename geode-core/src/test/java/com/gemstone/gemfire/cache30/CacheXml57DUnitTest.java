@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -31,6 +24,9 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheException;
@@ -62,53 +58,33 @@ import com.gemstone.gemfire.internal.cache.xmlcache.Declarable2;
 import com.gemstone.gemfire.internal.cache.xmlcache.RegionAttributesCreation;
 import com.gemstone.gemfire.internal.cache.xmlcache.RegionCreation;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
+import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
-import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
-
-import junit.framework.Assert;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests 5.7 cache.xml features.
  * 
  * @since 5.7
  */
-
 @Category(DistributedTest.class)
-public class CacheXml57DUnitTest extends CacheXml55DUnitTest
-{
-  //
+public class CacheXml57DUnitTest extends CacheXml55DUnitTest {
+
   private final static String ALIAS1;
   private final static String ALIAS2;
 
   static {
     String tmp_alias1 = "localhost";
     String tmp_alias2 = "localhost";
-//    try {
-//      tmp_alias1 = getServerHostName(Host.getHost(0)); 
-//      InetSocketAddress addr = createINSA(tmp_alias1, 10000);
-//      tmp_alias2 = addr.getHostName();
-//    } catch (IllegalArgumentException suppress) {
-//      //The runnables dont have a Host object initialized, but they dont need 
-//      //access to the aliases so its ok to suppress this.
-//    } finally {
-      ALIAS1 = tmp_alias1;
-      ALIAS2 = tmp_alias2;
-//    }
+    ALIAS1 = tmp_alias1;
+    ALIAS2 = tmp_alias2;
   }
 
-  // ////// Constructors
-
-  public CacheXml57DUnitTest() {
-    super();
-  }
-
-  // ////// Helper methods
-
-  protected String getGemFireVersion()
-  {
+  @Override
+  protected String getGemFireVersion() {
     return CacheXml.VERSION_5_7;
   }
 
@@ -128,6 +104,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     assertNotNull(server);
     assertEquals(CacheServer.DEFAULT_GROUPS, server.getGroups());
   }
+
   @Test
   public void testOneCacheServerGroups() throws CacheException {
     CacheCreation cache = new CacheCreation();
@@ -472,7 +449,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     
     Cache c= getCache();
     server = c.getCacheServers().get(0);
-    Assert.assertEquals(MyLoadProbe.class,server.getLoadProbe().getClass());
+    assertEquals(MyLoadProbe.class,server.getLoadProbe().getClass());
   }
   
   @Test
@@ -486,7 +463,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest
     
     Cache c = getCache();
     server = c.getCacheServers().get(0);
-    Assert.assertEquals(12345, server.getLoadPollInterval());
+    assertEquals(12345, server.getLoadPollInterval());
   }
   
   public static class MyLoadProbe extends ServerLoadProbeAdapter implements Declarable {

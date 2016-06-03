@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.util.concurrent;
 
+import static org.junit.Assert.*;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,17 +25,17 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ConcurrentMap;
 
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import junit.framework.TestCase;
 
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
 @Category(IntegrationTest.class)
-public class ConcurrentHashMapIteratorJUnitTest extends TestCase {
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class ConcurrentHashMapIteratorJUnitTest {
 
+  @Test
   public void test() throws InterruptedException {
     
     //Apparently, we need a distributed system to create
@@ -75,16 +77,16 @@ public class ConcurrentHashMapIteratorJUnitTest extends TestCase {
       fail("On run " + i + " did not find these elements of the initial set using the iterator " + missed);
     }
   }
-  
-  public void createBaseline(ConcurrentMap baselineMap, ConcurrentMap testMap, 
+
+  private void createBaseline(ConcurrentMap baselineMap, ConcurrentMap testMap,
       int start, int end) {
     for(int i = start; i < end; i++) {
       baselineMap.put(i, i);
       testMap.put(i, i);
     }
   }
-  
-  public static class RandomMutations extends Thread {
+
+  private static class RandomMutations extends Thread {
     private final ConcurrentMap baselineMap;
     private final ConcurrentMap testMap;
     private int start;

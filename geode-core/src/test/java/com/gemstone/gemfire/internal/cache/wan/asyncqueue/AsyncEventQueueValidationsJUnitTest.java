@@ -19,26 +19,18 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.asyncqueue;
 
-import org.junit.After;
-import org.junit.Before;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.asyncqueue.AsyncEventQueueFactory;
 import com.gemstone.gemfire.cache.wan.GatewaySender.OrderPolicy;
 import com.gemstone.gemfire.internal.cache.wan.AsyncEventQueueConfigurationException;
-import com.gemstone.gemfire.internal.cache.wan.MyAsyncEventListener;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
-import junit.framework.TestCase;
-
-/**
- *
- */
 @Category(IntegrationTest.class)
 public class AsyncEventQueueValidationsJUnitTest {
 
@@ -59,8 +51,7 @@ public class AsyncEventQueueValidationsJUnitTest {
             .contains(" can not be created with dispatcher threads less than 1"));
     }
   }
-  
-  
+
   @Test
   public void testConcurrentParallelAsyncEventQueueAttributesOrderPolicyThread() {
     cache = new CacheFactory().set("mcast-port", "0").create();
@@ -76,6 +67,4 @@ public class AsyncEventQueueValidationsJUnitTest {
             .contains("can not be created with OrderPolicy"));
     }
   }
-  
-  
 }

@@ -16,12 +16,7 @@
  */
 package com.gemstone.gemfire.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -60,34 +55,10 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 /**
  * TODO: Need to fix this testDeclarableFunctionsWithParms and testClassOnClasspath on Windows:
- * 
- * java.io.IOException: The process cannot access the file because another process has locked a portion of the file
-        at java.io.FileOutputStream.writeBytes(Native Method)
-        at java.io.FileOutputStream.write(FileOutputStream.java:325)
-        at com.gemstone.gemfire.internal.JarClassLoaderJUnitTest.writeJarBytesToFile(JarClassLoaderJUnitTest.java:704)
-        at com.gemstone.gemfire.internal.JarClassLoaderJUnitTest.testDeclarableFunctionsWithParms(JarClassLoaderJUnitTest.java:412)
-        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
-        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-        at java.lang.reflect.Method.invoke(Method.java:606)
-        at junit.framework.TestCase.runTest(TestCase.java:176)
-        at junit.framework.TestCase.runBare(TestCase.java:141)
-        at junit.framework.TestResult$1.protect(TestResult.java:122)
-        at junit.framework.TestResult.runProtected(TestResult.java:142)
-        at junit.framework.TestResult.run(TestResult.java:125)
-        at junit.framework.TestCase.run(TestCase.java:129)
-        at junit.framework.TestSuite.runTest(TestSuite.java:255)
-        at junit.framework.TestSuite.run(TestSuite.java:250)
-        at org.junit.internal.runners.JUnit38ClassRunner.run(JUnit38ClassRunner.java:84)
-        at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
-        at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
-        at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
-        at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)
-        at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
-        at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
  */
 @Category(IntegrationTest.class)
 public class JarClassLoaderJUnitTest {
+
   private static final String JAR_PREFIX = "vf.gf#";
   
   private final ClassBuilder classBuilder = new ClassBuilder();

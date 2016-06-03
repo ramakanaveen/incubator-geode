@@ -16,8 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,13 +26,13 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.jayway.awaitility.Awaitility;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.CacheWriterException;
 import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.EntryEvent;
 import com.gemstone.gemfire.cache.Region;
@@ -51,15 +50,12 @@ import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.ServerLocation;
 import com.gemstone.gemfire.internal.AvailablePort;
-import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-import com.jayway.awaitility.Awaitility;
-import com.jayway.awaitility.core.ConditionTimeoutException;
 
 /**
  * Start client 1
@@ -80,19 +76,15 @@ import com.jayway.awaitility.core.ConditionTimeoutException;
 @Category(DistributedTest.class)
 public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
 
-  VM server1 = null;
+  private static final String REGION_NAME = "UpdatePropagationDUnitTest_region";
 
-  VM server2 = null;
-
-  VM client1 = null;
-
-  VM client2 = null;
+  private VM server1 = null;
+  private VM server2 = null;
+  private VM client1 = null;
+  private VM client2 = null;
 
   private int PORT1 ;
-
   private int PORT2 ;
-
-  private static final String REGION_NAME = "UpdatePropagationDUnitTest_region";
 
   @Override
   public final void postSetUp() throws Exception {
@@ -189,27 +181,23 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
     return servers.stream().anyMatch(location -> location.getPort() == port);
   }
 
-  public void acquireConnectionsAndPutonK1andK2(String host)
-  {
+  private void acquireConnectionsAndPutonK1andK2(String host) {
     Region r1 = getCache().getRegion(Region.SEPARATOR + REGION_NAME);
     r1.put("key1", "server-value1");
     r1.put("key2", "server-value2");
   }
 
-  public void killServer(Integer port )
-  {
+  private void killServer(Integer port ) {
     Iterator iter = getCache().getCacheServers().iterator();
     if (iter.hasNext()) {
       CacheServer server = (CacheServer)iter.next();
       if(server.getPort() == port.intValue()){
         server.stop();
       }
-
     }
   }
 
-  public void startServer(Integer port) throws IOException
-  {
+  private void startServer(Integer port) throws IOException {
     CacheServer server1 = getCache().addCacheServer();
     server1.setPort(port.intValue());
     server1.setNotifyBySubscription(true);
@@ -218,10 +206,8 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
 
   /**
    * Creates entries on the server
-   *
    */
-  public void createEntriesK1andK2()
-  {
+  private void createEntriesK1andK2() {
     Region r1 = getCache().getRegion(Region.SEPARATOR+REGION_NAME);
     assertNotNull(r1);
     if (!r1.containsKey("key1")) {
@@ -241,8 +227,7 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
     }
   }
 
-  public void createClientCache(String host, Integer port1 , Integer port2 ) throws Exception
-  {
+  private void createClientCache(String host, Integer port1 , Integer port2 ) throws Exception {
     ClientCache cache;
     try {
       System.setProperty("gemfire.PoolImpl.DISABLE_RANDOM", "true");
@@ -270,8 +255,7 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
       .create(REGION_NAME);
   }
 
-  public Integer createServerCache() throws Exception
-  {
+  private Integer createServerCache() throws Exception {
     Cache cache = getCache();
     RegionAttributes attrs = createCacheServerAttributes();
     cache.createRegion(REGION_NAME, attrs);
@@ -284,32 +268,23 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
     return new Integer(server.getPort());
   }
   
-  protected RegionAttributes createCacheServerAttributes()
-  {
+  protected RegionAttributes createCacheServerAttributes() {
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
     factory.setDataPolicy(DataPolicy.REPLICATE);
     return factory.create();
   }
 
-  public void registerKeysK1andK2()
-  {
-    try {
-      Region r = getCache().getRegion(Region.SEPARATOR+ REGION_NAME);
-      assertNotNull(r);
-      List list = new ArrayList();
-      list.add("key1");
-      list.add("key2");
-      r.registerInterest(list);
-
-    }
-    catch (Exception ex) {
-      Assert.fail("failed while registering interest", ex);
-    }
+  private void registerKeysK1andK2() {
+    Region r = getCache().getRegion(Region.SEPARATOR+ REGION_NAME);
+    assertNotNull(r);
+    List list = new ArrayList();
+    list.add("key1");
+    list.add("key2");
+    r.registerInterest(list);
   }
 
-  public void verifySenderUpdateCount()
-  {
+  private void verifySenderUpdateCount() {
     Region r = getCache().getRegion(Region.SEPARATOR+ REGION_NAME);
     EventTrackingCacheListener listener = (EventTrackingCacheListener) r.getAttributes().getCacheListeners()[0];
 
@@ -320,8 +295,7 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
     assertEquals("Expected only 2 events for key2", 2, events.stream().filter(event -> event.getKey().equals("key2")).count());
   }
 
-  public void verifyUpdates()
-  {
+  private void verifyUpdates() {
     Awaitility.await().atMost(60, TimeUnit.SECONDS).until(() -> {
       Region r = getCache().getRegion(Region.SEPARATOR + REGION_NAME);
       // verify updates
@@ -337,21 +311,23 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
   }
 
   private static class EventTrackingCacheListener extends CacheListenerAdapter {
+
     List<EntryEvent> receivedEvents = new ArrayList<>();
 
-    @Override public void afterCreate(final EntryEvent event) {
+    @Override
+    public void afterCreate(final EntryEvent event) {
       receivedEvents.add(event);
     }
 
-    @Override public void afterUpdate(final EntryEvent event) {
+    @Override
+    public void afterUpdate(final EntryEvent event) {
       receivedEvents.add(event);
     }
 
-    @Override public void afterDestroy(final EntryEvent event) {
+    @Override
+    public void afterDestroy(final EntryEvent event) {
       receivedEvents.add(event);
     }
-
-
   }
 }
 

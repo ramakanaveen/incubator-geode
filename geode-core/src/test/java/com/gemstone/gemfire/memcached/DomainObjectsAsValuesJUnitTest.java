@@ -16,31 +16,21 @@
  */
 package com.gemstone.gemfire.memcached;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
+import net.spy.memcached.MemcachedClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.internal.AvailablePortHelper;
-import com.gemstone.gemfire.internal.SocketCreator;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
-
-import net.spy.memcached.MemcachedClient;
-import junit.framework.TestCase;
 
 @Category(IntegrationTest.class)
 public class DomainObjectsAsValuesJUnitTest {
@@ -65,7 +55,7 @@ public class DomainObjectsAsValuesJUnitTest {
     System.getProperties().remove("gemfire.mcast-port");
   }
 
-  public static class Customer implements java.io.Serializable {
+  private static class Customer implements java.io.Serializable {
     private static final long serialVersionUID = 4238572216598708877L;
     private String name;
     private String address;

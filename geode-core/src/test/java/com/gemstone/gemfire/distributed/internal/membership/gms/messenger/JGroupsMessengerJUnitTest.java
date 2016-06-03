@@ -17,7 +17,8 @@
 package com.gemstone.gemfire.distributed.internal.membership.gms.messenger;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
@@ -25,19 +26,16 @@ import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.lang.SerializationException;
 import org.jgroups.Address;
 import org.jgroups.Event;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
-import org.jgroups.Message.Flag;
 import org.jgroups.conf.ClassConfigurator;
 import org.jgroups.protocols.UNICAST3;
 import org.jgroups.protocols.pbcast.NAKACK2;
@@ -51,7 +49,6 @@ import com.gemstone.gemfire.ForcedDisconnectException;
 import com.gemstone.gemfire.GemFireIOException;
 import com.gemstone.gemfire.distributed.DistributedSystemDisconnectedException;
 import com.gemstone.gemfire.distributed.internal.DM;
-import com.gemstone.gemfire.distributed.internal.DMStats;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.DistributionConfigImpl;
 import com.gemstone.gemfire.distributed.internal.DistributionManager;
@@ -83,10 +80,9 @@ import com.gemstone.gemfire.internal.cache.DistributedCacheOperation;
 import com.gemstone.gemfire.internal.logging.log4j.AlertAppender;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
-import junit.framework.Assert;
-
 @Category(IntegrationTest.class)
 public class JGroupsMessengerJUnitTest {
+
   private Services services;
   private JGroupsMessenger messenger;
   private JoinLeave joinLeave;

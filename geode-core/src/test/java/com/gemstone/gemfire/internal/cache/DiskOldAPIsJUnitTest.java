@@ -16,32 +16,34 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.*;
-import java.util.*;
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.util.Properties;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.cache.*;
-import com.gemstone.gemfire.internal.Assert;
-import com.gemstone.gemfire.distributed.*;
+import com.gemstone.gemfire.cache.AttributesFactory;
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.cache.DataPolicy;
+import com.gemstone.gemfire.cache.DiskWriteAttributesFactory;
+import com.gemstone.gemfire.cache.EvictionAction;
+import com.gemstone.gemfire.cache.EvictionAttributes;
+import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
-
-import junit.framework.TestCase;
 
 /**
  * Tests the old disk apis to make sure they do the correct thing.
  * Once we drop these old deprecated disk apis then this unit test can be removed.
- * 
- *  
  */
 @Category(IntegrationTest.class)
-public class DiskOldAPIsJUnitTest
-{
+public class DiskOldAPIsJUnitTest {
 
   protected static Cache cache = null;
 
@@ -74,11 +76,12 @@ public class DiskOldAPIsJUnitTest
    * Make sure that if diskWriteAttributes sets sync then it shows up in the new apis.
    */
   @Test
-  public void testSyncBit() {
+  public void testSyncBit() throws Exception {
     doSyncBitTest(true);
     doSyncBitTest(false);
     doSyncBitTest(true);
   }
+
   private void doSyncBitTest(boolean destroyRegion) {
     DiskWriteAttributesFactory dwaf = new DiskWriteAttributesFactory();
     dwaf.setSynchronous(true);
@@ -202,7 +205,7 @@ public class DiskOldAPIsJUnitTest
    * Note that the isSync bit is tested by another method.
    */
   @Test
-  public void testDWA_1() {
+  public void testDWA_1() throws Exception {
     DiskWriteAttributesFactory dwaf = new DiskWriteAttributesFactory();
     dwaf.setMaxOplogSize(1);
     dwaf.setTimeInterval(333);
@@ -252,7 +255,7 @@ public class DiskOldAPIsJUnitTest
   }
   
   @Test
-  public void testDWA_2() {
+  public void testDWA_2() throws Exception {
     DiskWriteAttributesFactory dwaf = new DiskWriteAttributesFactory();
     dwaf.setMaxOplogSize(2);
     dwaf.setTimeInterval(1);
@@ -302,7 +305,7 @@ public class DiskOldAPIsJUnitTest
    * Make sure the old diskDirs apis get mapped onto the diskStore.
    */
   @Test
-  public void testDiskDirs() {
+  public void testDiskDirs() throws Exception {
     File f1 = new File("testDiskDir1");
     f1.mkdir();
     File f2 = new File("testDiskDir2");
@@ -360,7 +363,7 @@ public class DiskOldAPIsJUnitTest
    * Make sure the old diskDirs apis get mapped onto the diskStore.
    */
   @Test
-  public void testDiskDirsAndSizes() {
+  public void testDiskDirsAndSizes() throws Exception {
     File f1 = new File("testDiskDir1");
     f1.mkdir();
     File f2 = new File("testDiskDir2");

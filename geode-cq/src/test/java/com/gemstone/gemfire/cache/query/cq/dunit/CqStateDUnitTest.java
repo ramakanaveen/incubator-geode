@@ -16,16 +16,13 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.util.Properties;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.query.CqQuery;
 import com.gemstone.gemfire.cache.query.dunit.CloseCacheAuthorization;
@@ -42,23 +39,16 @@ import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class CqStateDUnitTest extends HelperTestCase {
 
-  
-  public CqStateDUnitTest() {
-    super();
-  }
-  
-  @Test
-  public void testNothingBecauseBug51953() {
-    // remove when bug #51953 is fixed
-  }
-  
   // this test is disabled due to a 25% failure rate in
   // CI testing.  See internal ticket #52229
-  public void disabledtestBug51222() throws Exception {
+  @Ignore("TODO: test is disabled due to flickering")
+  @Test
+  public void testBug51222() throws Exception {
     //The client can log this when the server shuts down.
     IgnoredException.addIgnoredException("Could not find any server");
     IgnoredException.addIgnoredException("java.net.ConnectException");

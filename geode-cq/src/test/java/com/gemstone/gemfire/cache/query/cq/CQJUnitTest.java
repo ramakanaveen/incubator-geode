@@ -16,17 +16,19 @@
  */
 package com.gemstone.gemfire.cache.query.cq;
 
+import static org.junit.Assert.*;
+
 import java.util.Properties;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import junit.framework.TestCase;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.query.CacheUtils;
 import com.gemstone.gemfire.cache.query.CqAttributes;
 import com.gemstone.gemfire.cache.query.CqAttributesFactory;
 import com.gemstone.gemfire.cache.query.QueryInvalidException;
@@ -35,7 +37,8 @@ import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 @Category(IntegrationTest.class)
-public class CQJUnitTest extends TestCase {
+public class CQJUnitTest {
+
   private DistributedSystem ds;
   private Cache cache;
   private QueryService qs;
@@ -43,11 +46,8 @@ public class CQJUnitTest extends TestCase {
   /////////////////////////////////////
   // Methods for setUp and tearDown
   /////////////////////////////////////
-  
-  public CQJUnitTest(String name) {
-    super(name);
-  }
-  
+
+  @Before
   public void setUp() throws Exception {
     Properties props = new Properties();
     props.setProperty("mcast-port", "0");
@@ -56,7 +56,8 @@ public class CQJUnitTest extends TestCase {
     this.cache = CacheFactory.create(ds);
     this.qs = cache.getQueryService();
   }
-  
+
+  @After
   public void tearDown() throws Exception {
     this.cache.close();
     this.ds.disconnect();
@@ -66,12 +67,12 @@ public class CQJUnitTest extends TestCase {
   // Test Methods
   /////////////////////////////////////
   
-  
   /**
    * Test to make sure CQs that have invalid syntax
    * throw QueryInvalidException, and CQs that have unsupported
    * CQ features throw UnsupportedOperationException
    */
+  @Test
   public void testValidateCQ() throws Exception {
    
     AttributesFactory attributesFactory = new AttributesFactory();

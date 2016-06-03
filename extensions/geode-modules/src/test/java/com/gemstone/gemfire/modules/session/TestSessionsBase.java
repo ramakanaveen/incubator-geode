@@ -16,10 +16,15 @@
 */
 package com.gemstone.gemfire.modules.session;
 
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.internal.AvailablePortHelper;
-import com.gemstone.gemfire.modules.session.catalina.DeltaSessionManager;
-import com.gemstone.gemfire.modules.session.catalina.PeerToPeerCacheLifecycleListener;
+import static org.junit.Assert.*;
+
+import java.beans.PropertyChangeEvent;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
@@ -29,14 +34,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.beans.PropertyChangeEvent;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import static junit.framework.Assert.*;
+import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.internal.AvailablePortHelper;
+import com.gemstone.gemfire.modules.session.catalina.DeltaSessionManager;
+import com.gemstone.gemfire.modules.session.catalina.PeerToPeerCacheLifecycleListener;
 
 public abstract class TestSessionsBase {
 

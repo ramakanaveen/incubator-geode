@@ -19,14 +19,9 @@ package com.gemstone.gemfire.cache.query;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-
-import junit.framework.Assert;
 
 import com.gemstone.gemfire.LogWriter;
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -39,19 +34,12 @@ import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.RegionFactory;
 import com.gemstone.gemfire.cache.RegionShortcut;
-import com.gemstone.gemfire.cache.client.ClientCacheFactory;
-import com.gemstone.gemfire.cache.query.data.Numbers;
-import com.gemstone.gemfire.cache.query.data.Portfolio;
-import com.gemstone.gemfire.cache.query.types.CollectionType;
-import com.gemstone.gemfire.cache.query.types.ObjectType;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 
 /**
  * Utility class for testing supported queries
- * 
- * 
  */
 public class QueryTestUtils implements Serializable {
 

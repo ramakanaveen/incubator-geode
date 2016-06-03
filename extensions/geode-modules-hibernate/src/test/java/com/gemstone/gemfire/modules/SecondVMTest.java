@@ -21,11 +21,9 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
-import junit.framework.TestCase;
-
 import org.hibernate.Session;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,17 +34,17 @@ import com.gemstone.gemfire.cache.GemFireCache;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.Region.Entry;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
+import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
-@Ignore("Can this test be deleted?")
 @Category(IntegrationTest.class)
-public class SecondVMTest extends TestCase {
+@Ignore("Can this test be deleted?")
+public class SecondVMTest {
 
   private Logger log = LoggerFactory.getLogger(getClass());
-  
-  public void testNoop() {
-    
-  }
-  public void _testStartEmptyVM() throws IOException {
+
+  @Ignore
+  @Test
+  public void testStartEmptyVM() throws IOException {
     Properties gemfireProperties = new Properties();
     gemfireProperties.setProperty("mcast-port", "5555");
     gemfireProperties.setProperty("log-level", "fine");
@@ -63,8 +61,10 @@ public class SecondVMTest extends TestCase {
       }
     }
   }
-  
-  public void _testStartVM() throws Exception {
+
+  @Ignore
+  @Test
+  public void testStartVM() throws Exception {
     java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.ALL);
     Session session = HibernateJUnitTest.getSessionFactory(null).openSession();
     log.info("SWAP:new session open");
