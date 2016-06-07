@@ -29,15 +29,10 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
-<<<<<<< HEAD
-=======
- * @since GemFire 5.7
- *
->>>>>>> origin/develop
  * Test reconnecting a durable client that is using
  * the locator to discover its servers
  *
- * @since 5.7
+ * @since GemFire 5.7
  */
 @Category(DistributedTest.class)
 public class DurableClientReconnectAutoDUnitTest extends DurableClientReconnectDUnitTest {

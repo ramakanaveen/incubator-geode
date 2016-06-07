@@ -28,12 +28,7 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
  * CacheException}.  This way, we don't need to have a lot of
  * try/catch code in the tests.
  *
-<<<<<<< HEAD
- * @since 3.0
-=======
- *
  * @since GemFire 3.0
->>>>>>> origin/develop
  */
 public abstract class CacheSerializableRunnable extends SerializableRunnable implements RepeatableRunnable {
 
