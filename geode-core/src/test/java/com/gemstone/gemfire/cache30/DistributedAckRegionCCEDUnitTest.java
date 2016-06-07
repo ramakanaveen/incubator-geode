@@ -283,6 +283,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
     versionTestClearWithConcurrentEventsAsync();
   }
 
+  @Category(FlakyTest.class) // bug #45704
   @Test
   public void testClearOnNonReplicateWithConcurrentEvents() throws Exception {
     versionTestClearOnNonReplicateWithConcurrentEvents();

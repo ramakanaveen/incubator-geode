@@ -48,17 +48,20 @@ public class DistributedAckPersistentRegionCCEDUnitTest extends DistributedAckRe
   @Ignore("Skip test for this configuration")
   @Override
   @Test
-  public void testClearOnNonReplicateWithConcurrentEvents() {}
+  public void testClearOnNonReplicateWithConcurrentEvents() {
+  }
 
   @Ignore("Skip test for this configuration")
   @Override
   @Test
-  public void testConcurrentEventsOnNonReplicatedRegion() {}
+  public void testConcurrentEventsOnNonReplicatedRegion() {
+  }
 
   @Ignore("Skip test for this configuration")
   @Override
   @Test
-  public void testGetAllWithVersions() {}
+  public void testGetAllWithVersions() {
+  }
 
   private VersionTag getVersionTag(VM vm, final String key) {
     SerializableCallable getVersionTag = new SerializableCallable("verify recovered entry") {
