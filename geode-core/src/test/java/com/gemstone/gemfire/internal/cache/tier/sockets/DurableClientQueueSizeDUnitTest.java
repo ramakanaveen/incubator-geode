@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -64,9 +65,9 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
 
   private static final int EXCEPTION = -5;
 
-  public static final String REGION_NAME = "DurableClientQueueSizeDunitTest_region";
+  public static final String REGION_NAME = DurableClientQueueSizeDUnitTest.class.getSimpleName() + "_region";
 
-  public static final String NEW_REGION = "DurableClientQueueSizeDunitTest_region_2";
+  public static final String NEW_REGION = DurableClientQueueSizeDUnitTest.class.getSimpleName() + "_region_2";
 
   public static final String POOL_NAME = "my-pool";
 
@@ -98,7 +99,7 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
 
   @Test
   public void testNonDurableClientFails() throws Exception {
-    vm2.invoke(DurableClientQueueSizeDUnitTest.class, "createClientCache",
+    vm2.invoke(DurableClientQueueSizeDUnitTest.class, "createClientCache", // TODO: change to lambda
         new Object[] { vm2.getHost(), new Integer[] { port0, port1 }, false });
 
     vm2.invoke(() -> DurableClientQueueSizeDUnitTest.verifyQueueSize( EXCEPTION ));
@@ -107,7 +108,9 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
   // this test is disabled due to a high rate of failure.  It fails with
   // the queue size being 11 instead of 10 in the first verifyQueueSize check.
   // See internal ticket #52227.
-  public void disabledtestSinglePoolClientReconnectsBeforeTimeOut() throws Exception {
+  @Ignore("TODO: test is disabled due to #52227")
+  @Test
+  public void testSinglePoolClientReconnectsBeforeTimeOut() throws Exception {
     int num = 10;
     vm2.invoke(DurableClientQueueSizeDUnitTest.class, "createClientCache",
         new Object[] { vm2.getHost(), new Integer[] { port0, port1 }});
@@ -182,7 +185,9 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
     vm2.invoke(() -> DurableClientQueueSizeDUnitTest.verifyQueueSize( PoolImpl.PRIMARY_QUEUE_NOT_AVAILABLE ));
   }
 
-  public void bug51854_testMultiPoolClientReconnectsBeforeTimeOut() throws Exception {
+  @Ignore("TODO: test is disabled due to #51854")
+  @Test
+  public void testMultiPoolClientReconnectsBeforeTimeOut() throws Exception {
     int num = 10;
     vm2.invoke(DurableClientQueueSizeDUnitTest.class, "createClientCache",
         new Object[] { vm2.getHost(), new Integer[] { port0, port1 }, "300",
@@ -204,7 +209,9 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
     vm2.invoke(() -> DurableClientQueueSizeDUnitTest.verifyQueueSize( EXCEPTION, EXCEPTION ));
   }
 
-  public void bug51854_testMultiPoolClientReconnectsAfterTimeOut() throws Exception {
+  @Ignore("TODO: test is disabled due to #51854")
+  @Test
+  public void testMultiPoolClientReconnectsAfterTimeOut() throws Exception {
     int num = 10;
     long timeout = 10;
     vm2.invoke(
@@ -232,7 +239,7 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
     vm2.invoke(() -> DurableClientQueueSizeDUnitTest.verifyQueueSize( PoolImpl.PRIMARY_QUEUE_TIMED_OUT, PoolImpl.PRIMARY_QUEUE_TIMED_OUT));
   }
 
-  @Ignore("TODO")
+  @Ignore("TODO: test is not implemented")
   @Test
   public void testMultiPoolClientFailsOver() throws Exception {
   }
@@ -261,18 +268,11 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
   public static Integer createCacheServer(Integer serverPort)
       throws Exception {
     Properties props = new Properties();
-    props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
-//    props.setProperty("log-level", "fine");
-//    props.setProperty("log-file", "server_" + OSProcess.getId() + ".log");
-//    props.setProperty("statistic-archive-file", "server_" + OSProcess.getId()
-//        + ".gfs");
-//    props.setProperty("statistic-sampling-enabled", "true");
-
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
     DurableClientQueueSizeDUnitTest test = new DurableClientQueueSizeDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     ds.disconnect();
     cache = (GemFireCacheImpl)CacheFactory.create(test.getSystem());
-//    cache = (GemFireCacheImpl) new CacheFactory(props).create();
 
     RegionFactory<String, String> rf = cache
         .createRegionFactory(RegionShortcut.REPLICATE);
@@ -302,27 +302,22 @@ public class DurableClientQueueSizeDUnitTest extends JUnit4DistributedTestCase {
   }
 
   public static void setSpecialDurable(Boolean bool) {
-    System.setProperty("gemfire.SPECIAL_DURABLE", bool.toString());
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "SPECIAL_DURABLE", bool.toString());
   }
 
   @SuppressWarnings("deprecation")
   public static void createClientCache(Host host, Integer[] ports,
       String timeoutSeconds, Boolean durable, Boolean multiPool) throws Exception {
     if (multiPool) {
-      System.setProperty("gemfire.SPECIAL_DURABLE", "true");
+      System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "SPECIAL_DURABLE", "true");
     }
     Properties props = new Properties();
     if (durable) {
-      props.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME,
+      props.setProperty(DURABLE_CLIENT_ID,
           "my-durable-client");
-      props.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME,
+      props.setProperty(DURABLE_CLIENT_TIMEOUT,
           timeoutSeconds);
     }
-    //    props.setProperty("log-file", "client_" + OSProcess.getId() + ".log");
-//    props.setProperty("log-level", "fine");
-//    props.setProperty("statistic-archive-file", "client_" + OSProcess.getId()
-//        + ".gfs");
-//    props.setProperty("statistic-sampling-enabled", "true");
 
     DistributedSystem ds = new DurableClientQueueSizeDUnitTest().getSystem(props);
     ds.disconnect();

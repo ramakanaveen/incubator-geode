@@ -16,6 +16,8 @@
 */
 package com.gemstone.gemfire.modules;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
@@ -46,8 +48,8 @@ public class SecondVMTest {
   @Test
   public void testStartEmptyVM() throws IOException {
     Properties gemfireProperties = new Properties();
-    gemfireProperties.setProperty("mcast-port", "5555");
-    gemfireProperties.setProperty("log-level", "fine");
+    gemfireProperties.setProperty(MCAST_PORT, "5555");
+    gemfireProperties.setProperty(LOG_LEVEL, "fine");
     Cache cache = new CacheFactory(gemfireProperties).create();
     System.in.read();
     Iterator it = cache.rootRegions().iterator();

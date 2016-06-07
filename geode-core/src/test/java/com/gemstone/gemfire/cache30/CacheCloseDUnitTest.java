@@ -39,7 +39,7 @@ import com.gemstone.gemfire.cache.RegionAttributes;
 /**
  * Test to make sure cache close is working.
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 @Category(DistributedTest.class)
 public class CacheCloseDUnitTest extends JUnit4CacheTestCase {

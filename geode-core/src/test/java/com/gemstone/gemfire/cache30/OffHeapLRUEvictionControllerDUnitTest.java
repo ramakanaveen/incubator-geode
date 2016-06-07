@@ -16,30 +16,25 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import java.util.Properties;
 
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.OffHeapTestUtil;
 import com.gemstone.gemfire.internal.cache.control.InternalResourceManager.ResourceType;
 import com.gemstone.gemfire.internal.cache.lru.HeapEvictor;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests the basic functionality of the lru eviction 
  * controller and its statistics using off-heap regions.
  * 
- * @since 9.0
+ * @since Geode 1.0
  */
 @Category(DistributedTest.class)
 public class OffHeapLRUEvictionControllerDUnitTest extends
@@ -66,8 +61,8 @@ public class OffHeapLRUEvictionControllerDUnitTest extends
 
   @Override
   public Properties getDistributedSystemProperties() {
-    Properties properties = super.getDistributedSystemProperties();    
-    properties.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "100m");    
+    Properties properties = super.getDistributedSystemProperties();
+    properties.setProperty(OFF_HEAP_MEMORY_SIZE, "100m");
     
     return properties;
   }  

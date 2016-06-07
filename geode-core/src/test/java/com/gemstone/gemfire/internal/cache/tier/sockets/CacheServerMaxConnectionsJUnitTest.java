@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -104,14 +105,13 @@ public class CacheServerMaxConnectionsJUnitTest {
 
   /**
    * Creates and starts the server instance
-   *¥
    */
   private int createServer() throws IOException {
     CacheServer server = null;
     Properties p = new Properties();
     // make it a loner
-    p.put("mcast-port", "0");
-    p.put("locators", "");
+    p.put(MCAST_PORT, "0");
+    p.put(LOCATORS, "");
     this.system = DistributedSystem.connect(p);
     this.cache = CacheFactory.create(system);
     server = this.cache.addCacheServer();

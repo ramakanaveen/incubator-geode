@@ -19,27 +19,22 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.DiskAccessException;
-import com.gemstone.gemfire.cache.EntryEvent;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
@@ -47,9 +42,7 @@ import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.persistence.UninterruptibleFileChannel;
 import com.gemstone.gemfire.test.dunit.Assert;
@@ -57,11 +50,12 @@ import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests that if a node doing GII experiences DiskAccessException, it should
  * also not try to recover from the disk
- *
  */
 @Category(DistributedTest.class)
 public class Bug39079DUnitTest extends JUnit4CacheTestCase {
@@ -84,8 +78,8 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
 
   private static final int maxEntries = 10000;
 
-  public Bug39079DUnitTest() {
-    super();
+  @Override
+  public final void preSetUp() throws Exception {
     File file1 = new File(getTestMethodName() + "1");
     file1.mkdir();
     file1.deleteOnExit();
@@ -109,18 +103,14 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
 
   /**
    * This method is used to create Cache in VM0
-   * 
-   * @return CacheSerializableRunnable
    */
-
   private CacheSerializableRunnable createCacheForVM0() {
     SerializableRunnable createCache = new CacheSerializableRunnable(
         "createCache") {
       public void run2() {
         try {
 
-          (new Bug39079DUnitTest())
-              .getSystem();         
+          new Bug39079DUnitTest().getSystem();
           
           assertTrue(getCache() != null);
           AttributesFactory factory = new AttributesFactory();
@@ -135,8 +125,7 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
           getCache().createRegion(regionName, attr);
         }
         catch (Exception ex) {
-          ex.printStackTrace();
-          fail("Error Creating cache / region ");
+          fail("Error Creating cache / region ", ex);
         }
       }
     };
@@ -145,8 +134,6 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
 
   /**
    * This method is used to create Cache in VM1
-   * 
-   * @return CacheSerializableRunnable
    */
   private CacheSerializableRunnable createCacheForVM1() {
     SerializableRunnable createCache = new CacheSerializableRunnable(
@@ -172,8 +159,7 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
 
         }
         catch (Exception ex) {
-          ex.printStackTrace();
-          fail("Error Creating cache / region " + ex);
+          fail("Error Creating cache / region ", ex);
         }
       }
     };
@@ -192,16 +178,12 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
     DiskStoreImpl.SET_IGNORE_PREALLOCATE = flag;
   }
 
-  
   /**
-   * If the node expreriences disk access exception during GII, it should
+   * If the node experiences disk access exception during GII, it should
    * get destroyed & not attempt to recover from the disk
-   * 
    */
-
   @Test
   public void testGIIDiskAccessException() {
-
     vm0.invoke(createCacheForVM0());
     vm1.invoke(createCacheForVM1());
     //Create DiskRegion locally in controller VM also
@@ -233,7 +215,6 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
         null, (GemFireCacheImpl)getCache(), new InternalRegionArguments()
             .setDestroyLockFlag(true).setRecreateFlag(false)
             .setSnapshotInputStream(null).setImageTarget(null));
-//    assertTrue("Distributed Region is null", distRegion != null); (cannot be null)
 
     ((AbstractRegionMap)distRegion.entries)
         .setEntryFactory(Bug39079DUnitTest.TestAbstractDiskRegionEntry.getEntryFactory());
@@ -248,29 +229,29 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
       //Ok
     }
     catch (Exception e) {
-      fail(" test failed because of exception =" + e.toString());
+      fail(" test failed because of exception =", e);
     }
 
     assertTrue(rgn == null || rgn.isDestroyed());
-
   }
 
   static class TestAbstractDiskRegionEntry extends VMThinDiskRegionEntryHeapObjectKey {
+
     protected TestAbstractDiskRegionEntry(RegionEntryContext r, Object key,
         Object value) {
       super(r, key, value);
     }
 
     private static RegionEntryFactory factory = new RegionEntryFactory() {
+
+      @Override
       public final RegionEntry createEntry(RegionEntryContext r, Object key,
           Object value) {
-
         throw new DiskAccessException(new IOException("Test Exception"));
-        //return new Bug39079DUnitTest.TestAbstractDiskRegionEntry(r, key, value);
       }
 
+      @Override
       public final Class getEntryClass() {
-
         return Bug39079DUnitTest.TestAbstractDiskRegionEntry.class;
       }
 
@@ -278,7 +259,8 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
       public RegionEntryFactory makeVersioned() {
         return this;
       }
-      
+
+      @Override
       public RegionEntryFactory makeOnHeap() {
         return this;
       }
@@ -300,12 +282,9 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
   /**
    * If IOException occurs while updating an entry in an already initialized
    * DiskRegion ,then the bridge servers should be stopped , if any running 
-   * 
-   * @throws Exception
    */
   @Test
-  public void testBridgeServerStoppingInSynchPersistOnlyForIOExceptionCase()
-      throws Exception {    
+  public void testBridgeServerStoppingInSynchPersistOnlyForIOExceptionCase() throws Exception {
    // create server cache 
    Integer port = (Integer)vm0.invoke(() -> Bug39079DUnitTest.createServerCache());
    //create cache client
@@ -320,8 +299,7 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
    vm1.invoke(() -> Bug39079DUnitTest.closeCacheAndDisconnect());
   }
   
-  public static Integer createServerCache() throws Exception
-  {
+  public static Integer createServerCache() throws Exception {
     new Bug39079DUnitTest().createCache(new Properties());
     DiskRegionProperties props = new DiskRegionProperties();
     props.setRegionName(REGION_NAME);
@@ -339,16 +317,14 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
     return new Integer(bs1.getPort());
   }
 
-  public static void closeCacheAndDisconnect()
-  {
+  public static void closeCacheAndDisconnect() {
     if (gemfirecache != null && !gemfirecache.isClosed()) {
       gemfirecache.close();
       gemfirecache.getDistributedSystem().disconnect();
     }
   }
   
-  private void createCache(Properties props) throws Exception
-  {
+  private void createCache(Properties props) throws Exception {
     DistributedSystem ds = getSystem(props);
     assertNotNull(ds);
     ds.disconnect();
@@ -358,12 +334,10 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
   }
   
   private static void validateRuningBridgeServerList(){
-    /*Region region = gemfirecache.getRegion(Region.SEPARATOR + REGION_NAME);
-    assertNotNull(region);*/
-    try {        
+    try {
       region.create("key1", new byte[16]);
       region.create("key2", new byte[16]);
-//    Get the oplog handle & hence the underlying file & close it
+      // Get the oplog handle & hence the underlying file & close it
       UninterruptibleFileChannel oplogFileChannel = ((LocalRegion)region).getDiskRegion()
           .testHook_getChild().getFileChannel();
       try {
@@ -389,12 +363,11 @@ public class Bug39079DUnitTest extends JUnit4CacheTestCase {
     }
   }
   
-  public static void createClientCache(String host, Integer port1)
-      throws Exception {
+  public static void createClientCache(String host, Integer port1) throws Exception {
     new Bug39079DUnitTest();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new Bug39079DUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory().addServer(host,
         port1.intValue())

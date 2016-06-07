@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.net.SocketException;
@@ -60,10 +61,10 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**      
+/**
  * Tests for durable reconnect issue
  * 
- * @since 5.2   
+ * @since GemFire 5.2
  */
 @Category(DistributedTest.class)
 public class DurableClientReconnectDUnitTest extends JUnit4DistributedTestCase {
@@ -87,7 +88,7 @@ public class DurableClientReconnectDUnitTest extends JUnit4DistributedTestCase {
   private static String SERVER3;
   private static String SERVER4;
 
-  private static final String REGION_NAME = "DurableClientReconnectDUnitTest_region";
+  private static final String REGION_NAME = DurableClientReconnectDUnitTest.class.getSimpleName() + "_region";
   
   private DurableClientReconnectDUnitTest instance = null ;
 
@@ -115,7 +116,7 @@ public class DurableClientReconnectDUnitTest extends JUnit4DistributedTestCase {
     SERVER4 = NetworkUtils.getServerHostName(host)+PORT4;
     
     //CacheServerTestUtil.disableShufflingOfEndpoints();
-    System.setProperty("gemfire.bridge.disableShufflingOfEndpoints", "false");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "bridge.disableShufflingOfEndpoints", "false");
   }
 
   @Test
@@ -722,10 +723,10 @@ public class DurableClientReconnectDUnitTest extends JUnit4DistributedTestCase {
 
   private Properties getClientDistributedSystemProperties( String durableClientId, int durableClientTimeout) {
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    properties.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME, durableClientId);
-    properties.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, String.valueOf(durableClientTimeout));
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
+    properties.setProperty(DURABLE_CLIENT_ID, durableClientId);
+    properties.setProperty(DURABLE_CLIENT_TIMEOUT, String.valueOf(durableClientTimeout));
     return properties;
   }
 

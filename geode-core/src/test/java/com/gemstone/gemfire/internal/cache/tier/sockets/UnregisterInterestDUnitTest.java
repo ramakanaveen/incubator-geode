@@ -19,6 +19,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class UnregisterInterestDUnitTest extends JUnit4DistributedTestCase {
 
   private static GemFireCache cache = null;
 
-  private static final String regionname = "UnregisterInterestDUnitTest_region";
+  private static final String regionname = UnregisterInterestDUnitTest.class.getSimpleName() + "_region";
   private static final int all_keys = 0;
   private static final int list = 1;
   private static final int regex = 2;
@@ -203,7 +204,7 @@ public class UnregisterInterestDUnitTest extends JUnit4DistributedTestCase {
     client2.invoke(() -> UnregisterInterestDUnitTest.timedWaitForInvalidates(5));
   }
 
-  @Ignore("TODO")
+  @Ignore("TODO: never implemented")
   @Test
   public void testUnregisterInterestFilters() throws Exception {
   }
@@ -318,7 +319,7 @@ public class UnregisterInterestDUnitTest extends JUnit4DistributedTestCase {
     DistributedSystem ds = new UnregisterInterestDUnitTest().getSystem();
     ds.disconnect();
     Properties props = new Properties();
-    props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
     CacheFactory cf = new CacheFactory(props);
     cache = cf.create();
     RegionFactory rf = ((GemFireCacheImpl)cache).createRegionFactory(RegionShortcut.REPLICATE);
@@ -334,8 +335,8 @@ public class UnregisterInterestDUnitTest extends JUnit4DistributedTestCase {
     ds.disconnect();
 
     Properties props = new Properties();
-    props.setProperty("locators", "");
-    props.setProperty("mcast-port", "0");
+    props.setProperty(LOCATORS, "");
+    props.setProperty(MCAST_PORT, "0");
     ClientCacheFactory ccf = new ClientCacheFactory(props);
     ccf.setPoolSubscriptionEnabled(true);
     ccf.addPoolServer(host.getHostName(), port);

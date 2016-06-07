@@ -16,23 +16,14 @@
  */
 package com.gemstone.gemfire.disttx;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import java.util.Properties;
 
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache30.TXRestrictionsDUnitTest;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.test.junit.categories.DistributedTransactionsTest;
-
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Same tests as that of {@link TXRestrictionsDUnitTest} after setting
@@ -41,16 +32,10 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTransactionsTest;
 @Category(DistributedTest.class)
 public class DistTXRestrictionsDUnitTest extends TXRestrictionsDUnitTest {
 
-  public DistTXRestrictionsDUnitTest() {
-    super();
-  }
-  
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-//    props.put("distributed-transactions", "true");
-    props.setProperty(DistributionConfig.DISTRIBUTED_TRANSACTIONS_NAME, "true");
-//    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
+    props.setProperty(DISTRIBUTED_TRANSACTIONS, "true");
     return props;
   }
 }

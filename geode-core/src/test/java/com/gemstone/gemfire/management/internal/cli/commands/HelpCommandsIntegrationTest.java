@@ -17,7 +17,6 @@
 package com.gemstone.gemfire.management.internal.cli.commands;
 
 import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.management.internal.cli.CommandManager;
@@ -25,12 +24,10 @@ import com.gemstone.gemfire.management.internal.cli.parser.CommandTarget;
 import com.gemstone.gemfire.management.internal.cli.result.CommandResult;
 import com.gemstone.gemfire.management.internal.cli.shell.Gfsh;
 import com.gemstone.gemfire.management.internal.cli.shell.GfshConfig;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ProvideSystemProperty;
 import org.junit.experimental.categories.Category;
@@ -38,6 +35,7 @@ import org.junit.experimental.categories.Category;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.management.internal.cli.commands.CliCommandTestBase.commandResultToString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -57,11 +55,11 @@ public class HelpCommandsIntegrationTest {
     jmxPort = AvailablePortHelper.getRandomAvailableTCPPort();
 
     Properties localProps = new Properties();
-    localProps.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    localProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    localProps.setProperty(DistributionConfig.JMX_MANAGER_NAME, "true");
-    localProps.setProperty(DistributionConfig.JMX_MANAGER_START_NAME, "true");
-    localProps.setProperty(DistributionConfig.JMX_MANAGER_PORT_NAME, String.valueOf(jmxPort));
+    localProps.setProperty(LOCATORS, "");
+    localProps.setProperty(MCAST_PORT, "0");
+    localProps.setProperty(JMX_MANAGER, "true");
+    localProps.setProperty(JMX_MANAGER_START, "true");
+    localProps.setProperty(JMX_MANAGER_PORT, String.valueOf(jmxPort));
 
     new CacheFactory(localProps).create();
 

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.ArrayList;
@@ -45,7 +46,6 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.cache30.CertifiableTestCacheListener;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.EventID;
 import com.gemstone.gemfire.internal.cache.EventIDHolder;
@@ -149,7 +149,6 @@ public class DestroyEntryPropagationDUnitTest extends JUnit4DistributedTestCase 
     vm2.invoke(() -> DestroyEntryPropagationDUnitTest.verifyEntriesAreDestroyed());
     // verify only key-1 is destroyed
     vm3.invoke(() -> DestroyEntryPropagationDUnitTest.verifyOnlyRegisteredEntriesAreDestroyed());
-
   }
 
   /**
@@ -175,7 +174,6 @@ public class DestroyEntryPropagationDUnitTest extends JUnit4DistributedTestCase 
     vm2.invoke(() -> DestroyEntryPropagationDUnitTest.verifyOnlyRegisteredEntriesAreDestroyed());
     //  verify destroy entry only for registered keys in client 2
     vm3.invoke(() -> DestroyEntryPropagationDUnitTest.verifyOnlyRegisteredEntriesAreDestroyed());
-
   }
 
   /**
@@ -256,7 +254,6 @@ public class DestroyEntryPropagationDUnitTest extends JUnit4DistributedTestCase 
     vm1.invoke(() -> DestroyEntryPropagationDUnitTest.verifyEntriesAreDestroyed());
 
     vm2.invoke(() -> DestroyEntryPropagationDUnitTest.verifyNoDestroyEntryInSender());
-
   }
 
   private void acquireConnectionsAndDestroyEntriesK1andK2() {
@@ -406,8 +403,8 @@ public class DestroyEntryPropagationDUnitTest extends JUnit4DistributedTestCase 
     int PORT1 = port1.intValue();
     int PORT2 = port2.intValue();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new DestroyEntryPropagationDUnitTest().createCache(props);
     CacheServerTestUtil.disableShufflingOfEndpoints();
     Pool p;

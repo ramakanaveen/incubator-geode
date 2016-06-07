@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.cache.execute.ResultCollector;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
@@ -56,10 +58,11 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @SuppressWarnings("serial")
 public class Bug51193DUnitTest extends JUnit4DistributedTestCase {
 
-  private static GemFireCacheImpl cache;
-  
+
   private static final String REGION_NAME = "Bug51193DUnitTest_region";
-  
+
+  private static GemFireCacheImpl cache;
+
   private static VM server0;
   
   private VM client0;
@@ -79,7 +82,7 @@ public class Bug51193DUnitTest extends JUnit4DistributedTestCase {
   }
 
   public static void closeCache() {
-    System.clearProperty("gemfire.CLIENT_FUNCTION_TIMEOUT");
+    System.clearProperty(DistributionConfig.GEMFIRE_PREFIX + "CLIENT_FUNCTION_TIMEOUT");
     if (cache != null && !cache.isClosed()) {
       cache.close();
       cache.getDistributedSystem().disconnect();
@@ -91,15 +94,12 @@ public class Bug51193DUnitTest extends JUnit4DistributedTestCase {
       Integer timeout) throws Exception {
     try {
       if (timeout > 0) {
-        System.setProperty("gemfire.CLIENT_FUNCTION_TIMEOUT",
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "CLIENT_FUNCTION_TIMEOUT",
             String.valueOf(timeout));
       }
       Properties props = new Properties();
-      props.setProperty("locators", "");
-      props.setProperty("mcast-port", "0");
-//      props.setProperty("statistic-archive-file", "client_" + OSProcess.getId()
-//          + ".gfs");
-//      props.setProperty("statistic-sampling-enabled", "true");
+      props.setProperty(LOCATORS, "");
+      props.setProperty(MCAST_PORT, "0");
       DistributedSystem ds = new Bug51193DUnitTest()
           .getSystem(props);
       ds.disconnect();
@@ -112,7 +112,7 @@ public class Bug51193DUnitTest extends JUnit4DistributedTestCase {
 
       crf.create(REGION_NAME);
     } finally {
-      System.clearProperty("gemfire.CLIENT_FUNCTION_TIMEOUT");
+      System.clearProperty(DistributionConfig.GEMFIRE_PREFIX + "CLIENT_FUNCTION_TIMEOUT");
     }
   }
 
@@ -120,7 +120,7 @@ public class Bug51193DUnitTest extends JUnit4DistributedTestCase {
   public static Integer createServerCache(Boolean createPR)
       throws Exception {
     Properties props = new Properties();
-    props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
 
     Bug51193DUnitTest test = new Bug51193DUnitTest();
     DistributedSystem ds = test.getSystem(props);

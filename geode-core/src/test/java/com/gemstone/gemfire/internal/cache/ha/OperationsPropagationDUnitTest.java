@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -35,7 +36,6 @@ import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.test.dunit.Assert;
@@ -55,39 +55,15 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
 
-  /**
-   * Server1
-   */
   VM server1 = null;
-
-  /**
-   * Server2
-   */
   VM server2 = null;
-
-  /**
-   * Client
-   */
   VM client1 = null;
 
-  /**
-   * Port of server1
-   */
   public int PORT1;
-
-  /**
-   * Port of server2
-   */
   public int PORT2;
 
-  /**
-   * Name of the region
-   */
-  private static final String REGION_NAME = "OperationsPropagationDUnitTest_Region";
+  private static final String REGION_NAME = OperationsPropagationDUnitTest.class.getSimpleName() + "_Region";
 
-  /**
-   * cache
-   */
   private static Cache cache = null;
 
   /**
@@ -123,7 +99,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
 
   /**
    * closes the cache and disconnects the vm from teh distributed system
-   *
    */
   public static void closeCache()
   {
@@ -135,9 +110,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
 
   /**
    * connect to the DS and create a cache
-   *
-   * @param props
-   * @throws Exception
    */
   private void createCache(Properties props) throws Exception
   {
@@ -156,9 +128,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
 
   /**
    * Create the server
-   *
-   * @return
-   * @throws Exception
    */
   public static Integer createServerCache() throws Exception
   {
@@ -176,21 +145,17 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
     server.setNotifyBySubscription(true);
     server.start();
     return new Integer(server.getPort());
-
   }
 
   /**
    * create the client and connect it to the server with the given port
-   *
-   * @param port2
-   * @throws Exception
    */
   public static void createClientCache(String host, Integer port2) throws Exception
   {
     int PORT2 = port2.intValue();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new OperationsPropagationDUnitTest().createCache(props);
     props.setProperty("retryAttempts", "2");
     props.setProperty("endpoints", "ep1="+host+":" + PORT2);
@@ -209,7 +174,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
     region = cache.createRegion(REGION_NAME, attrs);
     assertNotNull(region);
     region.registerInterest("ALL_KEYS");
-
   }
 
   public static final String CREATE_KEY = "createKey";
@@ -239,14 +203,16 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
   public static final String PUTALL_VALUE2 = "putAllValue2";
 
   /**
-   * This test: 1) First the initial keys and values 2) Verify that the initial
-   * keys and values have reached the client 3) Do the operations which we want
-   * to propagate (create, update, invalidate and destroy) 4) Verify the
+   * This test:
+   * 1) First the initial keys and values
+   * 2) Verify that the initial
+   * keys and values have reached the client
+   * 3) Do the operations which we want
+   * to propagate (create, update, invalidate and destroy)
+   * 4) Verify the
    * operations reached the client
    * 5) Do a removeAll
    * 6) Verify it reached the client
-   *
-   * @throws Exception
    */
   @Test
   public void testOperationsPropagation() throws Exception
@@ -261,7 +227,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
 
   /**
    * put the initial keys and values
-   *
    */
   public static void initialPutKeyValue()
   {
@@ -273,12 +238,10 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
     catch (Exception e) {
       Assert.fail(" Test failed due to " + e, e);
     }
-
   }
 
   /**
    * do the operations which you want to propagate
-   *
    */
   public static void doOperations()
   {
@@ -295,12 +258,10 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
     catch (Exception e) {
       Assert.fail(" Test failed due to " + e, e);
     }
-
   }
 
   /**
    * assert the initial key values are present
-   *
    */
   public static void assertKeyValuePresent()
   {
@@ -317,11 +278,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
       };
       Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
       
-      /*
-       * if (!(region.get(UPDATE_KEY).equals(UPDATE_VALUE1))) { fail(" Expected
-       * value to be " + UPDATE_VALUE1 + " but it is " +
-       * region.get(UPDATE_KEY)); }
-       */
       wc = new WaitCriterion() {
         String excuse;
         public boolean done() {
@@ -334,11 +290,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
       };
       Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
       
-      /*
-       * if (!(region.get(INVALIDATE_KEY).equals(INVALIDATE_VALUE))) { fail("
-       * Expected value to be " + INVALIDATE_VALUE + " but it is " +
-       * region.get(INVALIDATE_KEY)); }
-       */
       wc = new WaitCriterion() {
         String excuse;
         public boolean done() {
@@ -350,27 +301,17 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
         }
       };
       Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
-      
-      /*
-       * if (!(region.get(DESTROY_KEY).equals(DESTROY_VALUE))) { fail(" Expected
-       * value to be " + DESTROY_VALUE + " but it is " +
-       * region.get(DESTROY_KEY)); }
-       */
-
     }
     catch (Exception e) {
       Assert.fail(" Test failed due to " + e, e);
     }
-
   }
 
   /**
    * assert the operations reached the client successfully
-   *
    */
   public static void assertOperationsSucceeded()
   {
-
     try {
       //Thread.sleep(5000);
       WaitCriterion wc = new WaitCriterion() {
@@ -385,10 +326,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
       };
       Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
       
-      /*if (!(region.get(CREATE_KEY).equals(CREATE_VALUE))) {
-       fail("CREATE operation did not propagate to client : Expected value to be "
-       + CREATE_VALUE + " but it is " + region.get(CREATE_KEY));
-       }*/
       wc = new WaitCriterion() {
         String excuse;
         public boolean done() {
@@ -401,10 +338,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
       };
       Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
       
-      /*if (!(region.get(UPDATE_KEY).equals(UPDATE_VALUE2))) {
-       fail(" UPDATE operation did not propagate to Client : Expected value to be "
-       + UPDATE_VALUE2 + " but it is " + region.get(UPDATE_KEY));
-       }*/
       wc = new WaitCriterion() {
         String excuse;
         public boolean done() {
@@ -417,10 +350,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
       Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
       
 
-      /*if (region.containsKey(DESTROY_KEY)) {
-       fail(" DESTROY operation did not propagate to Client : Expected "
-       + DESTROY_KEY + " not to be present but it is ");
-       }*/
       wc = new WaitCriterion() {
         String excuse;
         public boolean done() {
@@ -433,10 +362,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
       };
       Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
       
-      /*if (!(region.get(INVALIDATE_KEY) == null)) {
-       fail(" INVALIDATE operation did not propagate to Client : Expected value to be null but it is "
-       + region.get(INVALIDATE_KEY));
-       }*/
       wc = new WaitCriterion() {
         String excuse;
         public boolean done() {
@@ -449,11 +374,6 @@ public class OperationsPropagationDUnitTest extends JUnit4DistributedTestCase {
       };
       Wait.waitForCriterion(wc, 60 * 1000, 1000, true);
       
-      /*
-       * if (!(region.get(PUTALL_KEY).equals(PUTALL_VALUE))) { fail("PUTALL
-       * operation did not propagate to client : Expected value to be " +
-       * PUTALL_VALUE + " but it is " + region.get(PUTALL_KEY)); }
-       */
       wc = new WaitCriterion() {
         String excuse;
         public boolean done() {

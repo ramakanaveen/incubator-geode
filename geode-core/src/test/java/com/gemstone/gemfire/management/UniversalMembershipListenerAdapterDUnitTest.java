@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.management;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.Assert.*;
 import static com.gemstone.gemfire.test.dunit.LogWriterUtils.*;
 
@@ -40,7 +41,6 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DurableClientAttributes;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.tier.InternalClientMembership;
@@ -66,10 +66,11 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 /**
  * Tests the UniversalMembershipListenerAdapter.
  *
- * @since 4.2.1
+ * @since GemFire 4.2.1
  */
 @Category(DistributedTest.class)
 public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTestCase {
+
   protected static final boolean CLIENT = true;
   protected static final boolean SERVER = false;
   
@@ -270,6 +271,7 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
     final boolean[] isClientBridge = new boolean[3];
 
     MembershipListener systemListener = new MembershipListener() {
+      @Override
       public synchronized void memberJoined(MembershipEvent event) {
         assertFalse(firedSystem[JOINED]);
         assertNull(memberSystem[JOINED]);
@@ -279,6 +281,7 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
         memberIdSystem[JOINED] = event.getMemberId();
         notify();
       }
+      @Override
       public synchronized void memberLeft(MembershipEvent event) {
         assertFalse(firedSystem[LEFT]);
         assertNull(memberSystem[LEFT]);
@@ -288,6 +291,7 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
         memberIdSystem[LEFT] = event.getMemberId();
         notify();
       }
+      @Override
       public synchronized void memberCrashed(MembershipEvent event) {
         assertFalse(firedSystem[CRASHED]);
         assertNull(memberSystem[CRASHED]);
@@ -343,6 +347,7 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
     };
 
     ClientMembershipListener bridgeListener = new ClientMembershipListener() {
+      @Override
       public synchronized void memberJoined(ClientMembershipEvent event) {
         assertFalse(firedBridge[JOINED]);
         assertNull(memberBridge[JOINED]);
@@ -354,6 +359,7 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
         isClientBridge[JOINED] = event.isClient();
         notify();
       }
+      @Override
       public synchronized void memberLeft(ClientMembershipEvent event) {
         assertFalse(firedBridge[LEFT]);
         assertNull(memberBridge[LEFT]);
@@ -365,6 +371,7 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
         isClientBridge[LEFT] = event.isClient();
         notify();
       }
+      @Override
       public synchronized void memberCrashed(ClientMembershipEvent event) {
         assertFalse(firedBridge[CRASHED]);
         assertNull(memberBridge[CRASHED]);
@@ -421,8 +428,8 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
       public Object call() {
         getLogWriter().info("[testLonerClientEventsInServer] create bridge client");
         Properties config = new Properties();
-        config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-        config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+        config.setProperty(MCAST_PORT, "0");
+        config.setProperty(LOCATORS, "");
         getSystem(config);
         AttributesFactory factory = new AttributesFactory();
         factory.setScope(Scope.LOCAL);
@@ -853,10 +860,10 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
     final Properties serverProperties = getSystem().getProperties();
 
     //Below removed properties are already got copied as cluster SSL properties 
-    serverProperties.remove(DistributionConfig.SSL_ENABLED_NAME);
-    serverProperties.remove(DistributionConfig.SSL_CIPHERS_NAME);
-    serverProperties.remove(DistributionConfig.SSL_PROTOCOLS_NAME);
-    serverProperties.remove(DistributionConfig.SSL_REQUIRE_AUTHENTICATION_NAME);
+    serverProperties.remove(SSL_ENABLED);
+    serverProperties.remove(SSL_CIPHERS);
+    serverProperties.remove(SSL_PROTOCOLS);
+    serverProperties.remove(SSL_REQUIRE_AUTHENTICATION);
 
     getLogWriter().info("[doTestSystemClientEventsInServer] ports[0]=" + ports[0]);
     getLogWriter().info("[doTestSystemClientEventsInServer] serverMemberId=" + serverMemberId);
@@ -1549,10 +1556,10 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
     final String serverMemberId = serverMember.toString();
     final Properties serverProperties = getSystem().getProperties();
 
-    serverProperties.remove(DistributionConfig.SSL_ENABLED_NAME);
-    serverProperties.remove(DistributionConfig.SSL_CIPHERS_NAME);
-    serverProperties.remove(DistributionConfig.SSL_PROTOCOLS_NAME);
-    serverProperties.remove(DistributionConfig.SSL_REQUIRE_AUTHENTICATION_NAME);
+    serverProperties.remove(SSL_ENABLED);
+    serverProperties.remove(SSL_CIPHERS);
+    serverProperties.remove(SSL_PROTOCOLS);
+    serverProperties.remove(SSL_REQUIRE_AUTHENTICATION);
     
     getLogWriter().info("[testServerEventsInPeerSystem] ports[0]=" + ports[0]);
     getLogWriter().info("[testServerEventsInPeerSystem] serverMemberId=" + serverMemberId);
@@ -1833,8 +1840,8 @@ public class UniversalMembershipListenerAdapterDUnitTest extends ClientServerTes
 
     getLogWriter().info("[testServerEventsInLonerClient] create loner bridge client");
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    config.setProperty(MCAST_PORT, "0");
+    config.setProperty(LOCATORS, "");
     getSystem(config);
         
     getLogWriter().info("[testServerEventsInLonerClient] create system bridge client");

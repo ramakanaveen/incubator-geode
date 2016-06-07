@@ -20,18 +20,14 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Properties;
 
 import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheException;
@@ -39,7 +35,6 @@ import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.RegionFactory;
 import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
 import com.gemstone.gemfire.internal.cache.RegionClearedException;
 import com.gemstone.gemfire.internal.cache.RegionEntry;
@@ -49,23 +44,16 @@ import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This test is only for GLOBAL REPLICATE Regions. Tests are
  * similar to {@link DistributedAckRegionCCEDUnitTest}.
- *
- * 
  */
 @Category(DistributedTest.class)
 public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
 
-  /**
-   * @param name
-   */
-  public GlobalRegionCCEDUnitTest() {
-    super();
-  }
-
+  @Override
   protected boolean supportsTransactions() {
     return true;
   }
@@ -73,9 +61,9 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties p = super.getDistributedSystemProperties();
-    p.put(DistributionConfig.CONSERVE_SOCKETS_NAME, "false");
+    p.put(CONSERVE_SOCKETS, "false");
     if (distributedSystemID > 0) {
-      p.put(DistributionConfig.DISTRIBUTED_SYSTEM_ID_NAME, ""
+      p.put(DISTRIBUTED_SYSTEM_ID, ""
           + distributedSystemID);
     }
     return p;
@@ -84,6 +72,7 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
   /**
    * Returns region attributes for a <code>GLOBAL</code> region
    */
+  @Override
   protected RegionAttributes getRegionAttributes() {
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.GLOBAL);
@@ -92,6 +81,7 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
     return factory.create();
   }
 
+  @Override
   protected RegionAttributes getRegionAttributes(String type) {
     RegionAttributes ra = getCache().getRegionAttributes(type);
     if (ra == null) {
@@ -104,12 +94,14 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
     return factory.create();
   }
 
+  @Ignore("replicates don't allow local destroy")
   @Override
   @Test
   public void testLocalDestroy() throws InterruptedException {
     // replicates don't allow local destroy
   }
 
+  @Ignore("replicates don't allow local destroy")
   @Override
   @Test
   public void testEntryTtlLocalDestroy() throws InterruptedException {
@@ -127,6 +119,7 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
     versionTestGIISendsTombstones();
   }
 
+  // TODO: delete this unused method
   protected void do_version_recovery_if_necessary(final VM vm0, final VM vm1,
       final VM vm2, final Object[] params) {
     // do nothing here
@@ -144,17 +137,24 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
 
   // these tests for clear() take too long with global regions and cause false dunit hangs
   // on older machines
-//  public void testClearWithConcurrentEvents() throws Exception {
-//    z_versionTestClearWithConcurrentEvents(true);
-//  }
-//
-//  public void testClearWithConcurrentEventsAsync() throws Exception {
-//    versionTestClearWithConcurrentEventsAsync();
-//  }
-//
-//  public void testClearOnNonReplicateWithConcurrentEvents() throws Exception {
-//    versionTestClearOnNonReplicateWithConcurrentEvents();
-//  }
+
+  @Ignore("TODO: takes too long with global regions and cause false dunit hangs")
+  @Test
+  public void testClearWithConcurrentEvents() throws Exception {
+    z_versionTestClearWithConcurrentEvents(true);
+  }
+
+  @Ignore("TODO: takes too long with global regions and cause false dunit hangs")
+  @Test
+  public void testClearWithConcurrentEventsAsync() throws Exception {
+    versionTestClearWithConcurrentEventsAsync();
+  }
+
+  @Ignore("TODO: takes too long with global regions and cause false dunit hangs")
+  @Test
+  public void testClearOnNonReplicateWithConcurrentEvents() throws Exception {
+    versionTestClearOnNonReplicateWithConcurrentEvents();
+  }
 
   @Test
   public void testTombstones() {
@@ -237,7 +237,8 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
    * properly
    */
   @Ignore("Disabling due to bug #52347")
-  public void DISABLED_testConcurrentEventsOnEmptyRegion() {
+  @Test
+  public void testConcurrentEventsOnEmptyRegion() {
     versionTestConcurrentEventsOnEmptyRegion();
   }
 
@@ -246,6 +247,7 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
    * conflation happens correctly and that the statistic is being updated
    * properly
    */
+  @Ignore("TODO: reenable this test")
   @Test
   public void testConcurrentEventsOnNonReplicatedRegion() {
     // Shobhit: Just commenting out for now as it is being fixed by Bruce.
@@ -257,6 +259,5 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
   public void testGetAllWithVersions() {
     versionTestGetAllWithVersions();
   }
-
 
 }

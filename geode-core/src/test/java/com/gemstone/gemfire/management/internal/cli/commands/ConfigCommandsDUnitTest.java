@@ -16,28 +16,6 @@
  */
 package com.gemstone.gemfire.management.internal.cli.commands;
 
-import static com.gemstone.gemfire.distributed.internal.DistributionConfig.*;
-import static com.gemstone.gemfire.internal.AvailablePort.*;
-import static com.gemstone.gemfire.internal.AvailablePortHelper.*;
-import static com.gemstone.gemfire.test.dunit.Assert.*;
-import static com.gemstone.gemfire.test.dunit.LogWriterUtils.*;
-import static com.gemstone.gemfire.test.dunit.Wait.*;
-import static org.apache.commons.io.FileUtils.*;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.Locator;
@@ -54,17 +32,31 @@ import com.gemstone.gemfire.management.internal.cli.i18n.CliStrings;
 import com.gemstone.gemfire.management.internal.cli.remote.CommandProcessor;
 import com.gemstone.gemfire.management.internal.cli.result.CommandResult;
 import com.gemstone.gemfire.management.internal.cli.util.CommandStringBuilder;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.SerializableCallable;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.VM;
-import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.*;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.internal.AvailablePort.SOCKET;
+import static com.gemstone.gemfire.internal.AvailablePort.getRandomAvailablePort;
+import static com.gemstone.gemfire.internal.AvailablePortHelper.getRandomAvailableTCPPorts;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+import static com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter;
+import static com.gemstone.gemfire.test.dunit.Wait.waitForCriterion;
+import static org.apache.commons.io.FileUtils.deleteDirectory;
 
 /**
  * Dunit class for testing GemFire config commands : export config
  *
- * @since 7.0
+ * @since GemFire 7.0
  */
 @Category(DistributedTest.class)
 @SuppressWarnings("serial")
@@ -104,12 +96,12 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
      * Create properties for the controller VM
      */
     final Properties localProps = new Properties();
-    localProps.setProperty(MCAST_PORT_NAME, "0");
-    localProps.setProperty(LOG_LEVEL_NAME, "info");
-    localProps.setProperty(STATISTIC_SAMPLING_ENABLED_NAME, "true");
-    localProps.setProperty(ENABLE_TIME_STATISTICS_NAME, "true");
-    localProps.setProperty(NAME_NAME, controllerName);
-    localProps.setProperty(GROUPS_NAME, "G1");
+    localProps.setProperty(MCAST_PORT, "0");
+    localProps.setProperty(LOG_LEVEL, "info");
+    localProps.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
+    localProps.setProperty(ENABLE_TIME_STATISTICS, "true");
+    localProps.setProperty(NAME, controllerName);
+    localProps.setProperty(GROUPS, "G1");
     getSystem(localProps);
     Cache cache = getCache();
 
@@ -146,7 +138,7 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
       assertEquals(true, cmdResult.getStatus().equals(Status.OK));
       assertEquals(true, resultStr.contains("G1"));
       assertEquals(true, resultStr.contains(controllerName));
-      assertEquals(true, resultStr.contains("archive-file-size-limit"));
+      assertEquals(true, resultStr.contains(ARCHIVE_FILE_SIZE_LIMIT));
       assertEquals(true, !resultStr.contains("copy-on-read"));
 
       cmdResult = executeCommand(command + " --" + CliStrings.DESCRIBE_CONFIG__HIDE__DEFAULTS + "=false");
@@ -167,16 +159,16 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
   @Test
   public void testExportConfig() throws Exception {
     Properties localProps = new Properties();
-    localProps.setProperty(NAME_NAME, "Manager");
-    localProps.setProperty(GROUPS_NAME, "Group1");
+    localProps.setProperty(NAME, "Manager");
+    localProps.setProperty(GROUPS, "Group1");
     setUpJmxManagerOnVm0ThenConnect(localProps);
 
     // Create a cache in another VM (VM1)
     Host.getHost(0).getVM(1).invoke(new SerializableRunnable() {
       public void run() {
         Properties localProps = new Properties();
-        localProps.setProperty(NAME_NAME, "VM1");
-        localProps.setProperty(GROUPS_NAME, "Group2");
+        localProps.setProperty(NAME, "VM1");
+        localProps.setProperty(GROUPS, "Group2");
         getSystem(localProps);
         getCache();
       }
@@ -186,8 +178,8 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
     Host.getHost(0).getVM(2).invoke(new SerializableRunnable() {
       public void run() {
         Properties localProps = new Properties();
-        localProps.setProperty(NAME_NAME, "VM2");
-        localProps.setProperty(GROUPS_NAME, "Group2");
+        localProps.setProperty(NAME, "VM2");
+        localProps.setProperty(GROUPS, "Group2");
         getSystem(localProps);
         getCache();
       }
@@ -195,7 +187,7 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
 
     // Create a cache in the local VM
     localProps = new Properties();
-    localProps.setProperty(NAME_NAME, "Shell");
+    localProps.setProperty(NAME, "Shell");
     getSystem(localProps);
     Cache cache = getCache();
 
@@ -267,8 +259,8 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
     setUpJmxManagerOnVm0ThenConnect(null);
 
     Properties localProps = new Properties();
-    localProps.setProperty(NAME_NAME, controller);
-    localProps.setProperty(LOG_LEVEL_NAME, "error");
+    localProps.setProperty(NAME, controller);
+    localProps.setProperty(LOG_LEVEL, "error");
     getSystem(localProps);
 
     final GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -312,8 +304,8 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
     setUpJmxManagerOnVm0ThenConnect(null);
 
     Properties localProps = new Properties();
-    localProps.setProperty(NAME_NAME, controller);
-    localProps.setProperty(LOG_LEVEL_NAME, "error");
+    localProps.setProperty(NAME, controller);
+    localProps.setProperty(LOG_LEVEL, "error");
     getSystem(localProps);
 
     final GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -322,7 +314,7 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
     Host.getHost(0).getVM(1).invoke(new SerializableRunnable() {
       public void run() {
         Properties localProps = new Properties();
-        localProps.setProperty(NAME_NAME, member1);
+        localProps.setProperty(NAME, member1);
         getSystem(localProps);
         Cache cache = getCache();
       }
@@ -360,8 +352,8 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
     setUpJmxManagerOnVm0ThenConnect(null);
 
     Properties localProps = new Properties();
-    localProps.setProperty(NAME_NAME, controller);
-    localProps.setProperty(LOG_LEVEL_NAME, "error");
+    localProps.setProperty(NAME, controller);
+    localProps.setProperty(LOG_LEVEL, "error");
     getSystem(localProps);
 
     final GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -370,7 +362,7 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
     Host.getHost(0).getVM(1).invoke(new SerializableRunnable() {
       public void run() {
         Properties localProps = new Properties();
-        localProps.setProperty(NAME_NAME, member1);
+        localProps.setProperty(NAME, member1);
         getSystem(localProps);
         Cache cache = getCache();
       }
@@ -437,9 +429,9 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
         final File locatorLogFile = new File(locatorDirectory, "locator-" + locatorPort + ".log");
 
         final Properties locatorProps = new Properties();
-        locatorProps.setProperty(NAME_NAME, "Locator");
-        locatorProps.setProperty(MCAST_PORT_NAME, "0");
-        locatorProps.setProperty(ENABLE_CLUSTER_CONFIGURATION_NAME, "true");
+        locatorProps.setProperty(NAME, "Locator");
+        locatorProps.setProperty(MCAST_PORT, "0");
+        locatorProps.setProperty(ENABLE_CLUSTER_CONFIGURATION, "true");
         locatorProps.setProperty(CLUSTER_CONFIGURATION_DIR, locatorDirectory);
 
         try {
@@ -465,8 +457,8 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
 
     // Start the default manager
     Properties managerProps = new Properties();
-    managerProps.setProperty(MCAST_PORT_NAME, "0");
-    managerProps.setProperty(LOCATORS_NAME, "localhost:" + locatorPort);
+    managerProps.setProperty(MCAST_PORT, "0");
+    managerProps.setProperty(LOCATORS, "localhost:" + locatorPort);
     setUpJmxManagerOnVm0ThenConnect(managerProps);
 
     // Create a cache in VM 1
@@ -475,14 +467,14 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
       @Override
       public Object call() throws Exception {
         Properties localProps = new Properties();
-        localProps.setProperty(MCAST_PORT_NAME, "0");
-        localProps.setProperty(LOCATORS_NAME, "localhost:" + locatorPort);
-        localProps.setProperty(LOG_LEVEL_NAME, "error");
-        localProps.setProperty(GROUPS_NAME, groupName);
+        localProps.setProperty(MCAST_PORT, "0");
+        localProps.setProperty(LOCATORS, "localhost:" + locatorPort);
+        localProps.setProperty(LOG_LEVEL, "error");
+        localProps.setProperty(GROUPS, groupName);
         getSystem(localProps);
 
         assertNotNull(getCache());
-        assertEquals("error", basicGetSystem().getConfig().getAttribute(LOG_LEVEL_NAME));
+        assertEquals("error", basicGetSystem().getConfig().getAttribute(LOG_LEVEL));
         return null;
       }
     });
@@ -508,7 +500,7 @@ public class ConfigCommandsDUnitTest extends CliCommandTestBase {
           fail("Error occurred in cluster configuration service", e);
         }
 
-        assertEquals("fine", gemfireProperties.get(LOG_LEVEL_NAME));
+        assertEquals("fine", gemfireProperties.get(LOG_LEVEL));
       }
     });
   }

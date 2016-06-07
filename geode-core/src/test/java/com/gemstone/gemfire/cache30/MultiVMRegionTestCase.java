@@ -5394,7 +5394,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests what happens when one VM attempts to read an object for
    * which it does not have a registered <code>DataSerializer</code>.
    *
-   * @since 3.5
+   * @since GemFire 3.5
    */
   @Test
   public void testNoDataSerializer() throws Exception {
@@ -5546,7 +5546,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * Tests what happens when one VM attempts to read an object for
    * which it does not have a registered <code>Instantiator</code>.
    *
-   * @since 3.5
+   * @since GemFire 3.5
    */
   @Test
   public void testNoInstantiator() throws Exception {

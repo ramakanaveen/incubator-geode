@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -92,7 +93,7 @@ public class HARegionQueueJUnitTest {
    * Creates the cache instance for the test
    */
   private Cache createCache() throws CacheException {
-    return new CacheFactory().set("mcast-port", "0").create();
+    return new CacheFactory().set(MCAST_PORT, "0").create();
   }
 
   /**
@@ -342,8 +343,6 @@ public class HARegionQueueJUnitTest {
   protected boolean testFailed = false;
 
   protected StringBuffer message = new StringBuffer();
-
-//  private int totalMessages = 0;
 
   protected Exception exception = null;
 
@@ -1731,7 +1730,7 @@ public class HARegionQueueJUnitTest {
     cache.close();
     ds.disconnect();
     Properties props = new Properties();
-    props.put("log-level", "config");
+    props.put(LOG_LEVEL, "config");
    //props.put("mcast-port","11111");
     try {
       cache= CacheFactory.create(DistributedSystem.connect(props));

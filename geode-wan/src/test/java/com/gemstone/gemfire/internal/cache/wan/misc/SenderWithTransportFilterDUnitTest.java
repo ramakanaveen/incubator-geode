@@ -16,14 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +29,9 @@ import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.DiskStore;
 import com.gemstone.gemfire.cache.DiskStoreFactory;
@@ -42,21 +39,15 @@ import com.gemstone.gemfire.cache.wan.GatewayReceiver;
 import com.gemstone.gemfire.cache.wan.GatewayReceiverFactory;
 import com.gemstone.gemfire.cache.wan.GatewaySenderFactory;
 import com.gemstone.gemfire.cache.wan.GatewayTransportFilter;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.wan.InternalGatewaySenderFactory;
 import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class SenderWithTransportFilterDUnitTest extends WANTestBase {
-
-  private static final long serialVersionUID = 1L;
-
-  public SenderWithTransportFilterDUnitTest() {
-    super();
-  }
 
   @Test
   public void testSerialSenderWithTansportFilter() {
@@ -113,8 +104,8 @@ public class SenderWithTransportFilterDUnitTest extends WANTestBase {
   public static int createReceiverWithTransportFilters(int locPort) {
     WANTestBase test = new WANTestBase();
     Properties props = test.getDistributedSystemProperties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "localhost[" + locPort
         + "]");
 
     InternalDistributedSystem ds = test.getSystem(props);
@@ -135,9 +126,7 @@ public class SenderWithTransportFilterDUnitTest extends WANTestBase {
       receiver.start();
     }
     catch (IOException e) {
-      e.printStackTrace();
-      fail("Test " + test.getName()
-          + " failed to start GatewayRecevier on port " + port);
+      fail("Test " + test.getName() + " failed to start GatewayRecevier on port " + port, e);
     }
     return port;
   }
@@ -216,24 +205,24 @@ public class SenderWithTransportFilterDUnitTest extends WANTestBase {
     public CheckSumTranportFilter(String name){
       this.name = name;
     }
-    
+
+    @Override
     public String toString(){
       return this.name;
     }
+
+    @Override
     public InputStream getInputStream(InputStream stream) {
       return new CheckedInputStream(stream, checker);
-      // return new ZipInputStream(stream);
     }
 
+    @Override
     public OutputStream getOutputStream(OutputStream stream) {
       return new CheckedOutputStream(stream, checker);
-      // return new ZipOutputStream(stream);
     }
 
+    @Override
     public void close() {
-      // TODO Auto-generated method stub
     }
-
   }
-  
 }

@@ -20,6 +20,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -50,7 +51,7 @@ import com.gemstone.gemfire.internal.cache.versions.VersionTag;
  * All disk region unit tests extend this base class , common method to be used in
  * all tests are present here.
  * 
- * @since 5.1
+ * @since GemFire 5.1
  */
 public abstract class DiskRegionTestingBase {
 
@@ -75,12 +76,12 @@ public abstract class DiskRegionTestingBase {
   public final void setUp() throws Exception {
     preSetUp();
 
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
-    props.setProperty("log-level", "config"); // to keep diskPerf logs smaller
-    props.setProperty("statistic-sampling-enabled", "true");
-    props.setProperty("enable-time-statistics", "true");
-    props.setProperty("statistic-archive-file", "stats.gfs");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
+    props.setProperty(LOG_LEVEL, "config"); // to keep diskPerf logs smaller
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
+    props.setProperty(ENABLE_TIME_STATISTICS, "true");
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "stats.gfs");
 
     File testingDirectory = new File("testingDirectory");
     testingDirectory.mkdir();
@@ -169,9 +170,6 @@ public abstract class DiskRegionTestingBase {
   }
 
   protected Cache createCache() {
-    // useful for debugging:
-//    props.put(DistributionConfig.LOG_FILE_NAME, "diskRegionTestingBase_system.log");
-//    props.put(DistributionConfig.LOG_LEVEL_NAME, getGemFireLogLevel());
     cache = new CacheFactory(props).create();
     ds = cache.getDistributedSystem();
     logWriter = cache.getLogger();

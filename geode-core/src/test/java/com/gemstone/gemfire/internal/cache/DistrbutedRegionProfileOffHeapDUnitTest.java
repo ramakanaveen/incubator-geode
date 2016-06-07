@@ -16,16 +16,13 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.PartitionAttributes;
@@ -34,20 +31,15 @@ import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionFactory;
 import com.gemstone.gemfire.cache.RegionShortcut;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class DistrbutedRegionProfileOffHeapDUnitTest extends JUnit4CacheTestCase {
-  private static final long serialVersionUID = 1L;
-
-  public DistrbutedRegionProfileOffHeapDUnitTest() {
-    super();
-  }
 
   @Override
   public final void preTearDownAssertions() throws Exception {
@@ -80,7 +72,7 @@ public class DistrbutedRegionProfileOffHeapDUnitTest extends JUnit4CacheTestCase
       public void run2() throws CacheException {
         disconnectFromDS();
         Properties properties = new Properties();
-        properties.put(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "2m");
+        properties.put(OFF_HEAP_MEMORY_SIZE, "2m");
         getSystem(properties);
 
         GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -138,7 +130,7 @@ public class DistrbutedRegionProfileOffHeapDUnitTest extends JUnit4CacheTestCase
         public void run2() throws CacheException {
           disconnectFromDS();
           Properties properties = new Properties();
-          properties.put(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "2m");
+          properties.put(OFF_HEAP_MEMORY_SIZE, "2m");
           getSystem(properties);
 
           GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -176,7 +168,7 @@ public class DistrbutedRegionProfileOffHeapDUnitTest extends JUnit4CacheTestCase
       public void run2() throws CacheException {
         disconnectFromDS();
         Properties properties = new Properties();
-        properties.put(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "2m");
+        properties.put(OFF_HEAP_MEMORY_SIZE, "2m");
         getSystem(properties);
 
         GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -197,7 +189,7 @@ public class DistrbutedRegionProfileOffHeapDUnitTest extends JUnit4CacheTestCase
       public void run2() throws CacheException {
         disconnectFromDS();
         Properties properties = new Properties();
-        properties.put(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "2m");
+        properties.put(OFF_HEAP_MEMORY_SIZE, "2m");
         getSystem(properties);
 
         GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -230,7 +222,7 @@ public class DistrbutedRegionProfileOffHeapDUnitTest extends JUnit4CacheTestCase
       public void run2() throws CacheException {
         disconnectFromDS();
         Properties properties = new Properties();
-        properties.put(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "2m");
+        properties.put(OFF_HEAP_MEMORY_SIZE, "2m");
         getSystem(properties);
 
         GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -251,7 +243,7 @@ public class DistrbutedRegionProfileOffHeapDUnitTest extends JUnit4CacheTestCase
       public void run2() throws CacheException {
         disconnectFromDS();
         Properties properties = new Properties();
-        properties.put(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "2m");
+        properties.put(OFF_HEAP_MEMORY_SIZE, "2m");
         getSystem(properties);
 
         GemFireCacheImpl cache = (GemFireCacheImpl) getCache();

@@ -20,8 +20,9 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.*;
 
 import java.net.UnknownHostException;
 import java.util.Properties;
@@ -39,7 +40,6 @@ import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.RegionFactory;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.distributed.internal.DistributionAdvisor;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.DistributionManager;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.NetMember;
@@ -80,9 +80,9 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
   @Override
   public Properties getDistributedSystemProperties() {
     Properties p = super.getDistributedSystemProperties();
-    p.put(DistributionConfig.CONSERVE_SOCKETS_NAME, "false");
+    p.put(CONSERVE_SOCKETS, "false");
     if (distributedSystemID > 0) {
-      p.put(DistributionConfig.DISTRIBUTED_SYSTEM_ID_NAME, ""+distributedSystemID);
+      p.put(DISTRIBUTED_SYSTEM_ID, ""+distributedSystemID);
     }
     return p;
   }
@@ -459,7 +459,7 @@ public class DistributedAckRegionCCEDUnitTest extends DistributedAckRegionDUnitT
       tag.setRegionVersion(CCRegion.getVersionVector().getNextVersion());
       VersionTagHolder holder = new VersionTagHolder(tag);
       ClientProxyMembershipID id = ClientProxyMembershipID.getNewProxyMembership(CCRegion.getDistributionManager().getSystem());
-      CCRegion.basicBridgePut("cckey0", "newvalue", null, true, null, id, true, holder, false);
+      CCRegion.basicBridgePut("cckey0", "newvalue", null, true, null, id, true, holder);
       vm0.invoke(new SerializableRunnable("check conflation count") {
         public void run() {
           assertEquals("expected one conflated event", 1, CCRegion.getCachePerfStats().getConflatedEventsCount());

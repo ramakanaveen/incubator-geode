@@ -16,9 +16,11 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -68,7 +70,9 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
   private static final Logger logger = LogService.getLogger();
-  
+
+  public static DistributedSystem ds;
+
   /**
    * Clears the exceptionInThread flag in the given distribution
    * manager. 
@@ -82,9 +86,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
     disconnectAllFromDS();
   }
 
-  ////////  Test Methods
-
-  protected static class ItsOkayForMyClassNotToBeFound 
+  protected static class ItsOkayForMyClassNotToBeFound
     extends SerialDistributionMessage {
 
     public int getDSFID() {
@@ -96,8 +98,6 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
       // We should never get here
     }
   };
-  
-  public static DistributedSystem ds;
   
   @Test
   public void testGetDistributionVMType() {
@@ -149,7 +149,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
     MembershipManager mgr = MembershipManagerHelper.getMembershipManager(sys);
     InternalDistributedMember idm = mgr.getLocalMember();
     // TODO GMS needs to have a system property allowing the bind-port to be set
-    System.setProperty("gemfire.jg-bind-port", ""+idm.getPort());
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "jg-bind-port", "" + idm.getPort());
     try {
       sys.disconnect();
       sys = getSystem();
@@ -161,7 +161,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
       assertTrue("should not have used a different udp port",
           idm.getPort() == idm2.getPort());
     } finally {
-      System.getProperties().remove("gemfire.jg-bind-port");
+      System.getProperties().remove(DistributionConfig.GEMFIRE_PREFIX + "jg-bind-port");
     }
   }
 
@@ -231,7 +231,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
         Thread.sleep(gracePeriod);
       }
       catch (InterruptedException e) {
-        fail("test was interrupted");
+        fail("test was interrupted", e);
       }
       
       vm0.invoke(connectDisconnect);
@@ -239,8 +239,8 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
           !mgr.isSurpriseMember(mbr));
       
     }
-    catch (java.net.UnknownHostException e) {
-      fail("unable to resolve localhost - test needs some attention");
+    catch (UnknownHostException e) {
+      fail("unable to resolve localhost - test needs some attention", e);
     }
     finally {
       if (sys != null && sys.isConnected()) {
@@ -272,14 +272,14 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
     // in order to set a small ack-wait-threshold, we have to remove the
     // system property established by the dunit harness
     String oldAckWait = (String)System.getProperties()
-              .remove("gemfire." + DistributionConfig.ACK_WAIT_THRESHOLD_NAME);
+        .remove(DistributionConfig.GEMFIRE_PREFIX + ACK_WAIT_THRESHOLD);
 
     try {
       final Properties props = getDistributedSystemProperties();
-      props.setProperty("mcast-port", "0");
-      props.setProperty(DistributionConfig.ACK_WAIT_THRESHOLD_NAME, "3");
-      props.setProperty(DistributionConfig.ACK_SEVERE_ALERT_THRESHOLD_NAME, "3");
-      props.setProperty(DistributionConfig.NAME_NAME, "putter");
+      props.setProperty(MCAST_PORT, "0");
+      props.setProperty(ACK_WAIT_THRESHOLD, "3");
+      props.setProperty(ACK_SEVERE_ALERT_THRESHOLD, "3");
+      props.setProperty(NAME, "putter");
   
       getSystem(props);
       Region rgn = (new RegionFactory())
@@ -290,7 +290,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
 
       vm1.invoke(new SerializableRunnable("Connect to distributed system") {
         public void run() {
-          props.setProperty(DistributionConfig.NAME_NAME, "sleeper");
+          props.setProperty(NAME, "sleeper");
           getSystem(props);
           IgnoredException.addIgnoredException("elapsed while waiting for replies");
           RegionFactory rf = new RegionFactory();
@@ -337,7 +337,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
     }
     finally {
       if (oldAckWait != null) {
-        System.setProperty("gemfire." + DistributionConfig.ACK_WAIT_THRESHOLD_NAME, oldAckWait);
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + ACK_WAIT_THRESHOLD, oldAckWait);
       }
     }
   }
@@ -358,7 +358,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
           Thread.sleep(15000);
         }
         catch (InterruptedException ie) {
-          fail("interrupted");
+          fail("interrupted", ie);
         }
       }
       @Override
@@ -415,14 +415,14 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
     // in order to set a small ack-wait-threshold, we have to remove the
     // system property established by the dunit harness
     String oldAckWait = (String)System.getProperties()
-              .remove("gemfire." + DistributionConfig.ACK_WAIT_THRESHOLD_NAME);
+        .remove(DistributionConfig.GEMFIRE_PREFIX + ACK_WAIT_THRESHOLD);
 
     try {
       final Properties props = getDistributedSystemProperties();
-      props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0"); // loner
-      props.setProperty(DistributionConfig.ACK_WAIT_THRESHOLD_NAME, "5");
-      props.setProperty(DistributionConfig.ACK_SEVERE_ALERT_THRESHOLD_NAME, "5");
-      props.setProperty(DistributionConfig.NAME_NAME, "putter");
+      props.setProperty(MCAST_PORT, "0"); // loner
+      props.setProperty(ACK_WAIT_THRESHOLD, "5");
+      props.setProperty(ACK_SEVERE_ALERT_THRESHOLD, "5");
+      props.setProperty(NAME, "putter");
   
       getSystem(props);
       Region rgn = (new RegionFactory())
@@ -433,7 +433,7 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
       
       vm1.invoke(new SerializableRunnable("Connect to distributed system") {
         public void run() {
-          props.setProperty(DistributionConfig.NAME_NAME, "sleeper");
+          props.setProperty(NAME, "sleeper");
           getSystem(props);
           LogWriter log = basicGetSystem().getLogWriter();
           log.info("<ExpectedException action=add>service failure</ExpectedException>");
@@ -510,39 +510,38 @@ public class DistributionManagerDUnitTest extends JUnit4DistributedTestCase {
     }
     finally {
       if (oldAckWait != null) {
-        System.setProperty("gemfire." + DistributionConfig.ACK_WAIT_THRESHOLD_NAME, oldAckWait);
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + ACK_WAIT_THRESHOLD, oldAckWait);
       }
     }
   }
 
   /**
    * test use of a bad bind-address for bug #32565
-   * @throws Exception
    */
   @Test
   public void testBadBindAddress() throws Exception {
     disconnectAllFromDS();
 
     final Properties props = getDistributedSystemProperties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0"); // loner
+    props.setProperty(MCAST_PORT, "0"); // loner
     // use a valid address that's not proper for this machine
-    props.setProperty(DistributionConfig.BIND_ADDRESS_NAME, "www.yahoo.com");
-    props.setProperty(DistributionConfig.ACK_WAIT_THRESHOLD_NAME, "5");
-    props.setProperty(DistributionConfig.ACK_SEVERE_ALERT_THRESHOLD_NAME, "5");
+    props.setProperty(BIND_ADDRESS, "www.yahoo.com");
+    props.setProperty(ACK_WAIT_THRESHOLD, "5");
+    props.setProperty(ACK_SEVERE_ALERT_THRESHOLD, "5");
     try {
       getSystem(props);
     } catch (IllegalArgumentException e) {
       com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("caught expected exception (1)", e);
     }
     // use an invalid address
-    props.setProperty(DistributionConfig.BIND_ADDRESS_NAME, "bruce.schuchardt");
+    props.setProperty(BIND_ADDRESS, "bruce.schuchardt");
     try {
       getSystem(props);
     } catch (IllegalArgumentException e) {
       com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("caught expected exception (2_", e);
     }
     // use a valid bind address
-    props.setProperty(DistributionConfig.BIND_ADDRESS_NAME, InetAddress.getLocalHost().getCanonicalHostName());
+    props.setProperty(BIND_ADDRESS, InetAddress.getLocalHost().getCanonicalHostName());
     getSystem().disconnect();
   }
   

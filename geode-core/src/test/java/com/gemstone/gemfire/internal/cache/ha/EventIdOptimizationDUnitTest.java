@@ -37,6 +37,7 @@ import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.RegionDestroyedException;
 import com.gemstone.gemfire.cache.RegionEvent;
 import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.client.internal.Connection;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
@@ -55,6 +56,14 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.MCAST_PORT;
 
 /**
  * This test verifies that eventId, while being sent across the network ( client
@@ -151,17 +160,6 @@ public class EventIdOptimizationDUnitTest extends JUnit4DistributedTestCase {
       new EventID(new byte[] { 1, 1 }, ID_VALUE_LONG, ID_VALUE_INT),
       new EventID(new byte[] { 1, 1 }, ID_VALUE_LONG, ID_VALUE_LONG) };
 
-  /** Constructor */
-  public EventIdOptimizationDUnitTest() {
-    super();
-  }
-
-  /**
-   * Sets up the cache-servers and clients for the test
-   * 
-   * @throws Exception -
-   *           thrown in any problem occurs in setUp
-   */
   @Override
   public final void postSetUp() throws Exception  {
     disconnectAllFromDS();
@@ -229,8 +227,8 @@ public class EventIdOptimizationDUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCache1(String hostName, Integer port) throws Exception
   {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new EventIdOptimizationDUnitTest().createCache(props);
 
     AttributesFactory factory = new AttributesFactory();
@@ -252,8 +250,8 @@ public class EventIdOptimizationDUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCache2(String hostName, Integer port) throws Exception
   {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new EventIdOptimizationDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     ClientServerTestCase.configureConnectionPool(factory, hostName, port.intValue(),-1, true, -1, 2, null);

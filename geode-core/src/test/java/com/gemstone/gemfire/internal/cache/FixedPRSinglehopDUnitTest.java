@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -44,7 +45,6 @@ import com.gemstone.gemfire.cache.client.internal.ClientPartitionAdvisor;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.partitioned.fixed.QuarterPartitionResolver;
 import com.gemstone.gemfire.internal.cache.partitioned.fixed.SingleHopQuarterPartitionResolver;
@@ -387,7 +387,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
     FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("locators", locator);
+    props.setProperty(LOCATORS, locator);
     DistributedSystem ds = test.getSystem(props);
     cache = new CacheFactory(props).create(ds);
     
@@ -430,7 +430,7 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
     File logFile = new File("locator-" + locatorPort + ".log");
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "true");
+    props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "true");
     try {
       locator = Locator.startLocatorAndDS(locatorPort, logFile, null, props);
     }
@@ -479,8 +479,8 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
   public static void createClient(int port0) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -504,8 +504,8 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
   public static void createClient(int port0, int port1) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -529,8 +529,8 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
   public static void createClientWithLocator(String host, int port0) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -553,8 +553,8 @@ public class FixedPRSinglehopDUnitTest extends JUnit4CacheTestCase {
   public static void createClient(int port0, int port1, int port2, int port3) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     FixedPRSinglehopDUnitTest test = new FixedPRSinglehopDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);

@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import java.util.Properties;
 
 import org.junit.Test;
@@ -63,7 +65,7 @@ public class ConnectDisconnectDUnitTest extends JUnit4CacheTestCase {
   
   static int LOCATOR_PORT;
   static String LOCATORS_STRING;
-  
+
   static int[] locatorPorts;
   
   public void setLocatorPorts(int[] ports) {
@@ -149,11 +151,11 @@ public class ConnectDisconnectDUnitTest extends JUnit4CacheTestCase {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty("log-level", "info");
-    props.setProperty("conserve-sockets", "false");
+    props.setProperty(LOG_LEVEL, "info");
+    props.setProperty(CONSERVE_SOCKETS, "false");
     if (LOCATOR_PORT > 0) {
-      props.setProperty("start-locator", "localhost["+LOCATOR_PORT+"]");
-      props.setProperty("locators", LOCATORS_STRING);
+      props.setProperty(START_LOCATOR, "localhost[" + LOCATOR_PORT + "]");
+      props.setProperty(LOCATORS, LOCATORS_STRING);
     }
     return props;
   }

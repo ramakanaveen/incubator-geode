@@ -19,6 +19,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -73,12 +74,12 @@ import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
- * @since 6.1
+ * @since GemFire 6.1
  */
 @Category(DistributedTest.class)
 public class DeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
 
-  private final static Compressor compressor = SnappyCompressor.getDefaultInstance();
+  private static final Compressor compressor = SnappyCompressor.getDefaultInstance();
   
   protected static Cache cache = null;
 
@@ -96,7 +97,7 @@ public class DeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
 
   private int PORT2;
 
-  private static final String regionName = "DeltaPropagationDUnitTest";
+  private static final String regionName = DeltaPropagationDUnitTest.class.getSimpleName();
 
   private static LogWriter logger = null;
 
@@ -678,10 +679,10 @@ public class DeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
       ((PoolFactoryImpl)pf).getPoolAttributes();
   
       Properties properties = new Properties();
-      properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-      properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
-      properties.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME, durableClientId);
-      properties.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, String.valueOf(60));
+      properties.setProperty(MCAST_PORT, "0");
+      properties.setProperty(LOCATORS, "");
+      properties.setProperty(DURABLE_CLIENT_ID, durableClientId);
+      properties.setProperty(DURABLE_CLIENT_TIMEOUT, String.valueOf(60));
   
       createDurableCacheClient(((PoolFactoryImpl)pf).getPoolAttributes(),
           regionName, properties, new Integer(DURABLE_CLIENT_LISTENER), Boolean.TRUE);
@@ -752,10 +753,10 @@ public class DeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
       ((PoolFactoryImpl)pf).getPoolAttributes();
   
       Properties properties = new Properties();
-      properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-      properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
-      properties.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME, durableClientId);
-      properties.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, String.valueOf(60));
+      properties.setProperty(MCAST_PORT, "0");
+      properties.setProperty(LOCATORS, "");
+      properties.setProperty(DURABLE_CLIENT_ID, durableClientId);
+      properties.setProperty(DURABLE_CLIENT_TIMEOUT, String.valueOf(60));
   
       createDurableCacheClient(((PoolFactoryImpl)pf).getPoolAttributes(),
           regionName, properties, new Integer(DURABLE_CLIENT_LISTENER), Boolean.FALSE);
@@ -1344,9 +1345,9 @@ public class DeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     CacheServerTestUtil.disableShufflingOfEndpoints();
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    props.setProperty(DistributionConfig.CLIENT_CONFLATION_PROP_NAME, conflate);
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
+    props.setProperty(CONFLATE_EVENTS, conflate);
     new DeltaPropagationDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     pool = ClientServerTestCase.configureConnectionPool(factory, "localhost", ports,

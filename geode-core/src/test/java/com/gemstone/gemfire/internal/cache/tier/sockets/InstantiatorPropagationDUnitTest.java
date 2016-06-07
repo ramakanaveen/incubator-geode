@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.DistributedTestUtils.*;
 import static org.junit.Assert.*;
 
@@ -45,7 +46,6 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.InternalInstantiator;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
@@ -83,7 +83,7 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
 
   private static int instanceCountWithOnePut = 1;
 
-  private static final String REGION_NAME = "ClientServerInstantiatorRegistrationDUnitTest";
+  private static final String REGION_NAME = InstantiatorPropagationDUnitTest.class.getSimpleName() + "_region";
   
   protected static EventID eventId;
 
@@ -109,11 +109,10 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
     assertNotNull(cache);
   }
 
-  public static void createClientCache(String host, Integer port1)
-      throws Exception {
+  public static void createClientCache(String host, Integer port1) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new InstantiatorPropagationDUnitTest().createCache(props);
     Pool p = PoolManager.createFactory().addServer(host, port1.intValue())
         .setMinConnections(1).setSubscriptionEnabled(true).setPingInterval(200)
@@ -715,7 +714,6 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
    * client(client1). Verified, if that instantiator gets propagated to the
    * server the client is connected to(server1), to client2, to the other
    * server(server2) in the DS and the client that is connected to server2.
-   * 
    */
   @Test
   public void testInstantiatorCount() throws Exception {
@@ -750,11 +748,10 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
     unregisterInstantiatorsInAllVMs();
   }
 
-  public static void createClientCache_EventId(String host, Integer port1) throws Exception
-  {
+  public static void createClientCache_EventId(String host, Integer port1) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new InstantiatorPropagationDUnitTest().createCache(props);
     Pool p = PoolManager.createFactory()
       .addServer(host, port1.intValue())
@@ -796,8 +793,7 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
   }
   
   @Test
-  public void testLazyRegistrationOfInstantiators()
-      throws Exception {
+  public void testLazyRegistrationOfInstantiators() throws Exception {
     try {
       PORT1 = initServerCache(server1);
       PORT2 = initServerCache(server2);
@@ -849,12 +845,7 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
   
   /**
    * this method initializes the appropriate server cache
-   * 
-   * @param server
-   * @param serverNo
-   * @return portNo.
    */
-
   private int initServerCache(VM server, int serverNo)
   {
     Object[] args = new Object[] { new Integer(getMaxThreads()) };
@@ -872,14 +863,8 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
 
   /**
    * This method creates the server cache
-   * 
-   * @param maxThreads
-   * @return
-   * @throws Exception
    */
-  public static Integer createServerCacheTwo(Integer maxThreads)
-      throws Exception
-  {
+  public static Integer createServerCacheTwo(Integer maxThreads) throws Exception {
     new InstantiatorPropagationDUnitTest()
         .createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
@@ -899,14 +884,8 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
 
   /**
    * This method creates the server cache
-   * 
-   * @param maxThreads
-   * @return
-   * @throws Exception
    */
-  public static Integer createServerCacheOne(Integer maxThreads)
-      throws Exception
-  {
+  public static Integer createServerCacheOne(Integer maxThreads) throws Exception {
     new InstantiatorPropagationDUnitTest()
         .createCache(new Properties());
     AttributesFactory factory = new AttributesFactory();
@@ -923,8 +902,7 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
     return new Integer(port);
   }
 
-  public static void setClientServerObserver1()
-  {
+  public static void setClientServerObserver1() {
     PoolImpl.IS_INSTANTIATOR_CALLBACK = true;
     ClientServerObserverHolder
         .setInstance(new ClientServerObserverAdapter() {
@@ -941,8 +919,6 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
 
   /**
    * sets the EventId value in the VM
-   * 
-   * @param eventID
    */
   public static void setEventId(EventID eventID)
   {
@@ -964,15 +940,13 @@ public class InstantiatorPropagationDUnitTest extends JUnit4DistributedTestCase 
   }
 }
 
+// TODO: move the following classes to be inner classes
 
 abstract class ConfigurableObject {
   public abstract void init(int index);
   public abstract int getIndex();
   public abstract void validate(int index);
 }
-
-
-
 
 class TestObject1 extends ConfigurableObject implements DataSerializable {
 
@@ -986,32 +960,37 @@ class TestObject1 extends ConfigurableObject implements DataSerializable {
    */
   static {
     Instantiator.register(new Instantiator(TestObject1.class, -100123) {
+      @Override
       public DataSerializable newInstance() {
         return new TestObject1();
       }
     });
   }
 
+  @Override
   public void init(int index) {
     Random random = new Random();
     this.field1 = random.nextInt();
   }
 
+  @Override
   public int getIndex() {
     return 1;
   }
 
+  @Override
   public void validate(int index) {
   }
 
+  @Override
   public void fromData(DataInput in) throws IOException, ClassNotFoundException {
     this.field1 = in.readInt();
   }
 
+  @Override
   public void toData(DataOutput out) throws IOException {
     out.writeInt(this.field1);
   }
-
 }
 
 class TestObject2 extends ConfigurableObject implements DataSerializable {
@@ -1023,6 +1002,7 @@ class TestObject2 extends ConfigurableObject implements DataSerializable {
 
   static {
     Instantiator.register(new Instantiator(TestObject2.class, -100122) {
+      @Override
       public DataSerializable newInstance() {
         return new TestObject2();
       }
@@ -1032,27 +1012,30 @@ class TestObject2 extends ConfigurableObject implements DataSerializable {
   /**
    * Initializes a Instantiator1DUnitTestObject1.
    */
-
+  @Override
   public void init(int index) {
     Random random = new Random();
     this.field1 = random.nextInt();
   }
 
+  @Override
   public int getIndex() {
     return 1;
   }
 
+  @Override
   public void validate(int index) {
   }
 
+  @Override
   public void fromData(DataInput in) throws IOException, ClassNotFoundException {
     this.field1 = in.readInt();
   }
 
+  @Override
   public void toData(DataOutput out) throws IOException {
     out.writeInt(this.field1);
   }
-
 }
 
 class TestObject3 extends ConfigurableObject implements DataSerializable {
@@ -1064,6 +1047,7 @@ class TestObject3 extends ConfigurableObject implements DataSerializable {
 
   static {
     Instantiator.register(new Instantiator(TestObject3.class, -121) {
+      @Override
       public DataSerializable newInstance() {
         return new TestObject3();
       }
@@ -1073,22 +1057,27 @@ class TestObject3 extends ConfigurableObject implements DataSerializable {
   /**
    * Initializes a Instantiator1DUnitTestObject1.
    */
+  @Override
   public void init(int index) {
     Random random = new Random();
     this.field1 = random.nextInt();
   }
 
+  @Override
   public int getIndex() {
     return 1;
   }
 
+  @Override
   public void validate(int index) {
   }
 
+  @Override
   public void fromData(DataInput in) throws IOException, ClassNotFoundException {
     this.field1 = in.readInt();
   }
 
+  @Override
   public void toData(DataOutput out) throws IOException {
     out.writeInt(this.field1);
   }
@@ -1103,6 +1092,7 @@ class TestObject4 extends ConfigurableObject implements DataSerializable {
 
   static {
     Instantiator.register(new Instantiator(TestObject4.class, -122) {
+      @Override
       public DataSerializable newInstance() {
         return new TestObject4();
       }
@@ -1112,22 +1102,27 @@ class TestObject4 extends ConfigurableObject implements DataSerializable {
   /**
    * Initializes a Instantiator1DUnitTestObject1.
    */
+  @Override
   public void init(int index) {
     Random random = new Random();
     this.field1 = random.nextInt();
   }
 
+  @Override
   public int getIndex() {
     return 1;
   }
 
+  @Override
   public void validate(int index) {
   }
 
+  @Override
   public void fromData(DataInput in) throws IOException, ClassNotFoundException {
     this.field1 = in.readInt();
   }
 
+  @Override
   public void toData(DataOutput out) throws IOException {
     out.writeInt(this.field1);
   }
@@ -1142,6 +1137,7 @@ class TestObject5 extends ConfigurableObject implements DataSerializable {
 
   static {
     Instantiator.register(new Instantiator(TestObject5.class, -123) {
+      @Override
       public DataSerializable newInstance() {
         return new TestObject5();
       }
@@ -1151,22 +1147,27 @@ class TestObject5 extends ConfigurableObject implements DataSerializable {
   /**
    * Initializes a Instantiator1DUnitTestObject1.
    */
+  @Override
   public void init(int index) {
     Random random = new Random();
     this.field1 = random.nextInt();
   }
 
+  @Override
   public int getIndex() {
     return 1;
   }
 
+  @Override
   public void validate(int index) {
   }
 
+  @Override
   public void fromData(DataInput in) throws IOException, ClassNotFoundException {
     this.field1 = in.readInt();
   }
 
+  @Override
   public void toData(DataOutput out) throws IOException {
     out.writeInt(this.field1);
   }
@@ -1181,6 +1182,7 @@ class TestObject6 extends ConfigurableObject implements DataSerializable {
 
   static {
     Instantiator.register(new Instantiator(TestObject6.class, -124) {
+      @Override
       public DataSerializable newInstance() {
         return new TestObject6();
       }

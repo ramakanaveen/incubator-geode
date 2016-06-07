@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -104,7 +105,6 @@ public class CqStateDUnitTest extends HelperTestCase {
         CqQuery cq = getCache().getQueryService().getCqs()[0];
         return cq.getState().isRunning();
       }
-      
     });
     
     assertTrue("Cq was not running on server" , isRunning);
@@ -112,22 +112,22 @@ public class CqStateDUnitTest extends HelperTestCase {
   
   public Properties getAuthenticatedServerProperties() {
     Properties props = new Properties();
-    props.put("mcast-port", "0");
-    props.put("security-client-accessor", CloseCacheAuthorization.class.getName() + ".create");
-    props.put("security-client-accessor-pp", CloseCacheAuthorization.class.getName() + ".create");
-    props.put("security-client-authenticator", DummyAuthenticator.class.getName() + ".create");
+    props.put(MCAST_PORT, "0");
+    props.put(SECURITY_CLIENT_ACCESSOR, CloseCacheAuthorization.class.getName() + ".create");
+    props.put(SECURITY_CLIENT_ACCESSOR_PP, CloseCacheAuthorization.class.getName() + ".create");
+    props.put(SECURITY_CLIENT_AUTHENTICATOR, DummyAuthenticator.class.getName() + ".create");
     return props;
   }
   
   public Properties getServerProperties() {
     Properties props = new Properties();
-    props.put("mcast-port", "0");
+    props.put(MCAST_PORT, "0");
     return props;
   }
   
   public Properties getClientProperties() {
     Properties props = new Properties();
-    props.put("security-client-auth-init", UserPasswordAuthInit.class.getName() + ".create");
+    props.put(SECURITY_CLIENT_AUTH_INIT, UserPasswordAuthInit.class.getName() + ".create");
     props.put("security-username", "root");
     props.put("security-password", "root");
     return props;

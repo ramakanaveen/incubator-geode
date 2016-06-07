@@ -16,36 +16,11 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.logging.log4j.Logger;
-
 import com.gemstone.gemfire.CancelException;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.GemFireCache;
-import com.gemstone.gemfire.cache.client.internal.locator.ClientConnectionRequest;
-import com.gemstone.gemfire.cache.client.internal.locator.ClientReplacementRequest;
-import com.gemstone.gemfire.cache.client.internal.locator.GetAllServersRequest;
-import com.gemstone.gemfire.cache.client.internal.locator.LocatorListRequest;
-import com.gemstone.gemfire.cache.client.internal.locator.LocatorStatusRequest;
-import com.gemstone.gemfire.cache.client.internal.locator.LocatorStatusResponse;
-import com.gemstone.gemfire.cache.client.internal.locator.QueueConnectionRequest;
-import com.gemstone.gemfire.cache.client.internal.locator.ServerLocationRequest;
+import com.gemstone.gemfire.cache.client.internal.locator.*;
 import com.gemstone.gemfire.cache.client.internal.locator.wan.LocatorMembershipListener;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.Locator;
@@ -82,6 +57,21 @@ import com.gemstone.gemfire.management.internal.configuration.handlers.SharedCon
 import com.gemstone.gemfire.management.internal.configuration.messages.ConfigurationRequest;
 import com.gemstone.gemfire.management.internal.configuration.messages.SharedConfigurationStatusRequest;
 import com.gemstone.gemfire.management.internal.configuration.messages.SharedConfigurationStatusResponse;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * Provides the implementation of a distribution <code>Locator</code>
@@ -104,7 +94,7 @@ import com.gemstone.gemfire.management.internal.configuration.messages.SharedCon
  * locator.startPeerLocation();
  * locator.startDistributeSystem();
  *
- * @since 4.0
+ * @since GemFire 4.0
  */
 public class InternalLocator extends Locator implements ConnectListener {
 
@@ -123,7 +113,7 @@ public class InternalLocator extends Locator implements ConnectListener {
   public static final String INHIBIT_DM_BANNER = "Locator.inhibitDMBanner";
   
   /** system property name for forcing locators to be preferred as coordinators */
-  public static final String LOCATORS_PREFERRED_AS_COORDINATORS = "gemfire.disable-floating-coordinator";
+  public static final String LOCATORS_PREFERRED_AS_COORDINATORS = DistributionConfig.GEMFIRE_PREFIX + "disable-floating-coordinator";
 
   /////////////////////  Instance Fields  //////////////////////
 
@@ -131,7 +121,7 @@ public class InternalLocator extends Locator implements ConnectListener {
   private final TcpServer server;
 
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private final PrimaryHandler handler;
   
@@ -308,7 +298,7 @@ public class InternalLocator extends Locator implements ConnectListener {
    * @param loadSharedConfigFromDir 
    *    load the shared configuration from the shared configuration directory
    * @throws IOException 
-   * @since 7.0
+   * @since GemFire 7.0
    */
   public static InternalLocator startLocator(
       int port,
@@ -543,14 +533,14 @@ public class InternalLocator extends Locator implements ConnectListener {
     // set bind-address explicitly only if not wildcard and let any explicit
     // value in distributedSystemProperties take precedence (#46870)
     if (bindAddress != null && !bindAddress.isAnyLocalAddress()) {
-      env.setProperty(DistributionConfig.BIND_ADDRESS_NAME,
+      env.setProperty(BIND_ADDRESS,
           bindAddress.getHostAddress());
     }
     
     if (distributedSystemProperties != null) {
       env.putAll(distributedSystemProperties);
     }
-    env.setProperty(DistributionConfig.CACHE_XML_FILE_NAME, "");
+    env.setProperty(CACHE_XML_FILE, "");
 
     // create a DC so that all of the lookup rules, gemfire.properties, etc,
     // are considered and we have a config object we can trust
@@ -633,7 +623,7 @@ public class InternalLocator extends Locator implements ConnectListener {
    * 
    * @param withDS true if a distributed system has been or will be started
    * @throws IOException
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public void startPeerLocation(boolean withDS) throws IOException {
     if(isPeerLocator()) {
@@ -708,7 +698,7 @@ public class InternalLocator extends Locator implements ConnectListener {
    * distributed system already exists, this method will have no affect.
    * 
    * @throws UnknownHostException
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public void startDistributedSystem() throws UnknownHostException {
     InternalDistributedSystem existing = InternalDistributedSystem.getConnectedInstance();
@@ -752,11 +742,11 @@ public class InternalLocator extends Locator implements ConnectListener {
           }
           if (setLocatorsProp) {
             Properties updateEnv = new Properties();
-            updateEnv.setProperty(DistributionConfig.LOCATORS_NAME, locatorsProp);
+            updateEnv.setProperty(LOCATORS, locatorsProp);
             this.config.setApiProps(updateEnv);
             // fix for bug 41248
             String propName = DistributionConfig.GEMFIRE_PREFIX +
-                                 DistributionConfig.LOCATORS_NAME;
+                LOCATORS;
             if (System.getProperty(propName) != null) {
               System.setProperty(propName, locatorsProp);
             }
@@ -822,7 +812,7 @@ public class InternalLocator extends Locator implements ConnectListener {
    * @param distributedSystem
    *                The distributed system to use for the statistics.
    *                
-   * @since 5.7
+   * @since GemFire 5.7
    * 
    * @throws UnknownHostException
    */
@@ -851,7 +841,7 @@ public class InternalLocator extends Locator implements ConnectListener {
    *                The distributed system which the server location services
    *                should use. If null, the method will try to find an already
    *                connected distributed system.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public void startServerLocation(InternalDistributedSystem distributedSystem)
     throws IOException

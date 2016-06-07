@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -112,9 +113,9 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class RemoteTransactionDUnitTest extends JUnit4CacheTestCase {
 
-  final protected String CUSTOMER = "custRegion";
-  final protected String ORDER = "orderRegion";
-  final protected String D_REFERENCE = "distrReference";
+  protected final String CUSTOMER = "custRegion";
+  protected final String ORDER = "orderRegion";
+  protected final String D_REFERENCE = "distrReference";
   
   private final SerializableCallable getNumberOfTXInProgress = new SerializableCallable() {
     public Object call() throws Exception {
@@ -3170,7 +3171,7 @@ public class RemoteTransactionDUnitTest extends JUnit4CacheTestCase {
    * getAll catches all exceptions and logs a warning
    * message
    */
-  @Ignore("disabled because rather than throwing an exception, getAll catches all exceptions and logs a warning message")
+  @Ignore("TODO: disabled because rather than throwing an exception, getAll catches all exceptions and logs a warning message")
   @Test
   public void testNonColocatedGetAll() {
     doNonColocatedbulkOp(OP.GETALL);
@@ -3515,7 +3516,7 @@ public class RemoteTransactionDUnitTest extends JUnit4CacheTestCase {
         ClientCacheFactory ccf = new ClientCacheFactory();
         ccf.addPoolServer("localhost"/*getServerHostName(Host.getHost(0))*/, port);
         ccf.setPoolSubscriptionEnabled(true);
-        ccf.set("log-level", LogWriterUtils.getDUnitLogLevel());
+        ccf.set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
         ClientCache cCache = getClientCache(ccf);
         ClientRegionFactory<Integer, String> crf = cCache
             .createClientRegionFactory(isEmpty ? ClientRegionShortcut.PROXY
@@ -3729,7 +3730,7 @@ protected static class ClientListener extends CacheListenerAdapter {
         ClientCacheFactory ccf = new ClientCacheFactory();
         ccf.addPoolServer("localhost"/*getServerHostName(Host.getHost(0))*/, port);
         ccf.setPoolSubscriptionEnabled(true);
-        ccf.set("log-level", LogWriterUtils.getDUnitLogLevel());
+        ccf.set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
         ClientCache cCache = getClientCache(ccf);
         ClientRegionFactory<Integer, String> crf = cCache
             .createClientRegionFactory(ClientRegionShortcut.CACHING_PROXY);

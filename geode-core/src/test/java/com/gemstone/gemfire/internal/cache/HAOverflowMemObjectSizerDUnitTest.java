@@ -19,6 +19,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -52,7 +53,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Tests the size of clientUpdateMessageImpl with the size calculated by
  * {@link com.gemstone.gemfire.internal.cache.lru.MemLRUCapacityController} for HA overFlow
- * @since 5.7
+ * @since GemFire 5.7
  */
 @Category(DistributedTest.class)
 public class HAOverflowMemObjectSizerDUnitTest extends JUnit4DistributedTestCase {
@@ -67,7 +68,7 @@ public class HAOverflowMemObjectSizerDUnitTest extends JUnit4DistributedTestCase
   /** The distributedSystem instance */
   static DistributedSystem ds = null;
 
-  static String regionName = "HAOverflowMemObjectSizerDUnitTest-region";
+  static String regionName = HAOverflowMemObjectSizerDUnitTest.class.getSimpleName() + "-region";
 
   /* handler for LRU capacity controller */
   private static EnableLRU cc = null;
@@ -161,8 +162,8 @@ public class HAOverflowMemObjectSizerDUnitTest extends JUnit4DistributedTestCase
   public static void createCacheClient(Integer port1, String host)
       throws Exception {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAOverflowMemObjectSizerDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.logging;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -39,7 +40,6 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 /**
  * Creates Locator and tests logging behavior at a high level.
- * 
  */
 @Category(IntegrationTest.class)
 public class LocatorLogFileJUnitTest {
@@ -70,13 +70,13 @@ public class LocatorLogFileJUnitTest {
     final String locators = "localhost[" + port + "]";
 
     final Properties properties = new Properties();
-    properties.put("log-level", "config");
-    properties.put("mcast-port", "0");
-    properties.put("locators", locators);
-    properties.put("enable-network-partition-detection", "false");
-    properties.put("disable-auto-reconnect", "true");
-    properties.put("member-timeout", "2000");
-    properties.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    properties.put(LOG_LEVEL, "config");
+    properties.put(MCAST_PORT, "0");
+    properties.put(LOCATORS, locators);
+    properties.put(ENABLE_NETWORK_PARTITION_DETECTION, "false");
+    properties.put(DISABLE_AUTO_RECONNECT, "true");
+    properties.put(MEMBER_TIMEOUT, "2000");
+    properties.put(ENABLE_CLUSTER_CONFIGURATION, "false");
     
     final File logFile = new File(name.getMethodName() + "-locator-" + port + ".log");
     if (logFile.exists()) {

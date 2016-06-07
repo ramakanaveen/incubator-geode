@@ -33,6 +33,7 @@ import org.junit.After;
 import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.FileUtil;
 import com.gemstone.gemfire.internal.logging.LoggingPerformanceTestCase;
 import com.gemstone.gemfire.internal.util.IOUtils;
@@ -96,8 +97,8 @@ public class LogWriterLoggerPerformanceTest extends LoggingPerformanceTestCase {
     FileUtils.copyFileToDirectory(src, this.configDirectory);
     this.config = new File(this.configDirectory, "log4j2-test.xml");
     assertTrue(this.config.exists());
-    
-    this.logFile = new File(this.configDirectory, "gemfire.log");
+
+    this.logFile = new File(this.configDirectory, DistributionConfig.GEMFIRE_PREFIX + "log");
     final String logFilePath = IOUtils.tryGetCanonicalPathElseGetAbsolutePath(logFile);
     final String logFileName = FileUtil.stripOffExtension(logFilePath);
     setPropertySubstitutionValues(logFileName, DEFAULT_LOG_FILE_SIZE_LIMIT, DEFAULT_LOG_FILE_COUNT_LIMIT);

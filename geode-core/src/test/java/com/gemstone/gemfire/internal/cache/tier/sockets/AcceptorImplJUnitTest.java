@@ -16,23 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.net.BindException;
-import java.util.Collections;
-import java.util.Properties;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
@@ -40,6 +25,18 @@ import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.InternalCache;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.io.IOException;
+import java.net.BindException;
+import java.util.Collections;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.MCAST_PORT;
+import static org.junit.Assert.*;
 
 @Category(IntegrationTest.class)
 public class AcceptorImplJUnitTest
@@ -52,7 +49,7 @@ public class AcceptorImplJUnitTest
   public void setUp() throws Exception
   {
     Properties p = new Properties();
-    p.setProperty(DistributionConfig.MCAST_PORT_NAME ,"0");
+    p.setProperty(MCAST_PORT, "0");
     this.system = DistributedSystem.connect(p);
     this.cache = (InternalCache) CacheFactory.create(system);
   }
@@ -87,7 +84,7 @@ public class AcceptorImplJUnitTest
           AcceptorImpl.MINIMUM_MAX_CONNECTIONS - 1,
           CacheServer.DEFAULT_MAX_THREADS,
           CacheServer.DEFAULT_MAXIMUM_MESSAGE_COUNT,
-          CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null, false, false, Collections.EMPTY_LIST,
+          CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null, false, Collections.EMPTY_LIST,
           CacheServer.DEFAULT_TCP_NO_DELAY);
         fail("Expected an IllegalArgumentExcption due to max conns < min pool size");
       } catch (IllegalArgumentException expected) {
@@ -104,7 +101,7 @@ public class AcceptorImplJUnitTest
           0,
           CacheServer.DEFAULT_MAX_THREADS,
           CacheServer.DEFAULT_MAXIMUM_MESSAGE_COUNT,
-          CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null,false, false, Collections.EMPTY_LIST,
+          CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null,false, Collections.EMPTY_LIST,
           CacheServer.DEFAULT_TCP_NO_DELAY);
         fail("Expected an IllegalArgumentExcption due to max conns of zero");
       } catch (IllegalArgumentException expected) {
@@ -121,7 +118,7 @@ public class AcceptorImplJUnitTest
           AcceptorImpl.MINIMUM_MAX_CONNECTIONS,
           CacheServer.DEFAULT_MAX_THREADS,
           CacheServer.DEFAULT_MAXIMUM_MESSAGE_COUNT,
-          CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null,false, false, Collections.EMPTY_LIST,
+          CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null,false, Collections.EMPTY_LIST,
           CacheServer.DEFAULT_TCP_NO_DELAY);
         a2 = new AcceptorImpl(
           port1,
@@ -133,7 +130,7 @@ public class AcceptorImplJUnitTest
           AcceptorImpl.MINIMUM_MAX_CONNECTIONS,
           CacheServer.DEFAULT_MAX_THREADS,
           CacheServer.DEFAULT_MAXIMUM_MESSAGE_COUNT,
-          CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null,false, false, Collections.EMPTY_LIST,
+          CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null,false, Collections.EMPTY_LIST,
           CacheServer.DEFAULT_TCP_NO_DELAY);
         fail("Expecetd a BindException while attaching to the same port");
       } catch (BindException expected) {
@@ -149,7 +146,7 @@ public class AcceptorImplJUnitTest
         AcceptorImpl.MINIMUM_MAX_CONNECTIONS,
         CacheServer.DEFAULT_MAX_THREADS,
         CacheServer.DEFAULT_MAXIMUM_MESSAGE_COUNT,
-        CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null, false, false, Collections.EMPTY_LIST,
+        CacheServer.DEFAULT_MESSAGE_TIME_TO_LIVE,0,null,null, false, Collections.EMPTY_LIST,
         CacheServer.DEFAULT_TCP_NO_DELAY);
       assertEquals(port2, a3.getPort());
       InternalDistributedSystem isystem = (InternalDistributedSystem) this.cache.getDistributedSystem();

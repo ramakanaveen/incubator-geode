@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.DataInput;
@@ -55,7 +56,6 @@ import com.gemstone.gemfire.cache.util.CqListenerAdapter;
 import com.gemstone.gemfire.compression.Compressor;
 import com.gemstone.gemfire.compression.SnappyCompressor;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientProxy;
@@ -77,8 +77,6 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   
   private final static Compressor compressor = SnappyCompressor.getDefaultInstance();
-
-  private static final long serialVersionUID = 1L;
 
   protected static Cache cache = null;
 
@@ -117,7 +115,6 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   /*
    * cq 
    */
-  //private static final String CQ = "SELECT * FROM "+Region.SEPARATOR+REGION_NAME;
   private static final String CQ = "SELECT * FROM "+Region.SEPARATOR+REGION_NAME + " p where p.intVar < 9";
     
   private static int numValidCqEvents = 0;
@@ -125,10 +122,6 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   private static boolean queryUpdateExecuted = false;
   private static boolean queryDestroyExecuted = false;
   private static boolean notADeltaInstanceObj = false;
-
-  public PRDeltaPropagationDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -145,13 +138,12 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
 
   /**
-   *  1) Put delta objects on accessor node.
-   *  2) From accessor to primary delta gets propagated as part of <code>PutMessage</code> delta.
-   *  3) From primary to secondary delta gets propagated as part RR distribution.
-   * 
+   * 1) Put delta objects on accessor node.
+   * 2) From accessor to primary delta gets propagated as part of <code>PutMessage</code> delta.
+   * 3) From primary to secondary delta gets propagated as part RR distribution.
    */
   @Test
-  public void testDeltaPropagationForPR() throws Throwable {
+  public void testDeltaPropagationForPR() throws Exception {
     createCacheInAllPRVms();
     createDeltaPR(Boolean.FALSE);
     put();
@@ -161,11 +153,11 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
 
   /**
-   *  Monitor number of times constructor is called
-   *  Without copy or cloning, we should have 1 instance
+   * Monitor number of times constructor is called
+   * Without copy or cloning, we should have 1 instance
    */
   @Test
-  public void testConstructorCountWithoutCloning() throws Throwable {
+  public void testConstructorCountWithoutCloning() throws Exception {
 
     clearConstructorCounts();
     createCacheInAllPRVms();
@@ -182,12 +174,12 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
   
   /**
-   *  Monitor number of times constructor is called
-   *  With cloning, we should have more than 1 instance
-   *  on members receiving delta updates
+   * Monitor number of times constructor is called
+   * With cloning, we should have more than 1 instance
+   * on members receiving delta updates
    */
   @Test
-  public void testConstructorCountWithCloning() throws Throwable {
+  public void testConstructorCountWithCloning() throws Exception {
 
     clearConstructorCounts();
     createCacheInAllPRVms();
@@ -205,11 +197,11 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
 
   /**
-   *  Create partition with cloning disabled, then
-   *  enable cloning and verify proper operation 
+   * Create partition with cloning disabled, then
+   * enable cloning and verify proper operation
    */
   @Test
-  public void testConstructorCountWithMutator() throws Throwable {
+  public void testConstructorCountWithMutator() throws Exception {
 
     clearConstructorCounts();
     createCacheInAllPRVms();
@@ -266,7 +258,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     assertFalse(copy);
   }
   
-  private void clearConstructorCounts() throws Throwable {
+  private void clearConstructorCounts() throws Exception {
     setBuildCount(0);
     dataStore1.invoke(() -> PRDeltaPropagationDUnitTest.setBuildCount(0));
     dataStore2.invoke(() -> PRDeltaPropagationDUnitTest.setBuildCount(0));
@@ -283,9 +275,8 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   /**
    * Check delta propagation works properly with PR failover.    
    */
-
   @Test
-  public void testDeltaPropagationForPRFailover() throws Throwable {
+  public void testDeltaPropagationForPRFailover() throws Exception {
     Object args[] = new Object[] { REGION_NAME, new Integer(1), new Integer(50),
         new Integer(8), Boolean.FALSE, null };
     Integer port1 = (Integer)dataStore1.invoke(
@@ -320,7 +311,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
 
   @Test
-  public void testDeltaPropagationForPRFailoverWithCompression() throws Throwable {
+  public void testDeltaPropagationForPRFailoverWithCompression() throws Exception {
     Object args[] = new Object[] { REGION_NAME, new Integer(1), new Integer(50),
         new Integer(8), Boolean.FALSE, compressor };
     Integer port1 = (Integer)dataStore1.invoke(
@@ -362,9 +353,8 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   /**
    * Check full object gets resend if delta can not be applied    
    */
-
   @Test
-  public void testDeltaPropagationForPRWithExpiry() throws Throwable {
+  public void testDeltaPropagationForPRWithExpiry() throws Exception {
     createCacheInAllPRVms();
     createDeltaPR(Boolean.TRUE);
     putWithExpiry();
@@ -373,13 +363,12 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
 
   /**
-   *  1) Put delta objects on client feeder connected PR accessor bridge server.
-   *  2) From accessor to data store delta gets propagated as part of <code>PutMessage</code> delta.
-   *  3) From data store to client delta should get propagated.
-   * 
+   * 1) Put delta objects on client feeder connected PR accessor bridge server.
+   * 2) From accessor to data store delta gets propagated as part of <code>PutMessage</code> delta.
+   * 3) From data store to client delta should get propagated.
    */
   @Test
-  public void testDeltaPropagationPRAccessorAsBridgeServer() throws Throwable {
+  public void testDeltaPropagationPRAccessorAsBridgeServer() throws Exception {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0), new Integer(0),
         new Integer(8), Boolean.FALSE, null };
     Object args2[] = new Object[] { REGION_NAME, new Integer(0), new Integer(50),
@@ -404,10 +393,9 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
    * datastore node. This invalid delta exception propagated back to client
    * through accessor. 
    * 4) Client sends full object in response.
-   * 
    */
   @Test
-  public void testDeltaPropagationPRAccessorAsBridgeServerWithDeltaException() throws Throwable {
+  public void testDeltaPropagationPRAccessorAsBridgeServerWithDeltaException() throws Exception {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0), new Integer(0),
         new Integer(8), Boolean.FALSE, null };
     Object args2[] = new Object[] { REGION_NAME, new Integer(0), new Integer(50),
@@ -429,14 +417,11 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     // perform invalidate on accessor
     dataStore2.invoke(() -> PRDeltaPropagationDUnitTest.invalidateDeltaKey());
     
-    /*Thread.sleep(2000);*/
-
     test = new DeltaTestImpl();
     test.setStr("DELTA");
     deltaPR.put(DELTA_KEY, test);
 
-/*    putWithExpiry();*/    
-    deltaPR.put(LAST_KEY, "");    
+    deltaPR.put(LAST_KEY, "");
     client1.invoke(() -> PRDeltaPropagationDUnitTest.waitForLastKey());    
     client1.invoke(() -> PRDeltaPropagationDUnitTest.checkForFullObject());    
   }
@@ -449,11 +434,10 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
    * datastore node. This invalid delta exception propagated back to client
    * through accessor. 
    * 4) Client sends full object in response.
-   * 
    */
   @Test
   public void testDeltaPropagationClientEmptyPRAccessorAsBridgeServerWithDeltaException()
-      throws Throwable {
+      throws Exception {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0),
         new Integer(0), new Integer(8), Boolean.FALSE, null };
     Object args2[] = new Object[] { REGION_NAME, new Integer(0),
@@ -496,19 +480,17 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
    * datastore node. This invalid delta exception propagated back to client
    * through accessor. 
    * 4) Client sends full object in response.
-   * 
    */
   @Test
-  public void testDeltaPropagationReplicatedRegionPeerWithDeltaException() throws Throwable {
+  public void testDeltaPropagationReplicatedRegionPeerWithDeltaException() throws Exception {
     Object args1[] = new Object[] {Boolean.FALSE, Boolean.TRUE};
     Object args2[] = new Object[] {Boolean.TRUE, Boolean.FALSE};
-//  server 1 with empty data policy
+    //  server 1 with empty data policy
     Integer port1 = (Integer)dataStore1.invoke(
         PRDeltaPropagationDUnitTest.class, "createServerCache", args1);
     
     // server 2 with non empty data policy
-   dataStore2.invoke(
-        PRDeltaPropagationDUnitTest.class, "createServerCache", args2);
+    dataStore2.invoke(PRDeltaPropagationDUnitTest.class, "createServerCache", args2);
     
     createClientCache(port1, Boolean.FALSE, Boolean.FALSE,  Boolean.FALSE);
 
@@ -542,7 +524,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
    */
   @Test
   public void testCqClientConnectAccessorAndDataStore()
-      throws Throwable {
+      throws Exception {
     Object args1[] = new Object[] { REGION_NAME, new Integer(1),
         new Integer(0), new Integer(8), Boolean.FALSE, null };
     Object args2[] = new Object[] { REGION_NAME, new Integer(1),
@@ -591,15 +573,15 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
   
   /**
-   * Toplogy: PR: Accessor, dataStore.
+   * Topology: PR: Accessor, dataStore.
    * client and client1 connected to PR accessor; 
    * client puts delta objects on dataStore via accessor
-   * Accesor gets adjunctMessage about put
+   * Accessor gets adjunctMessage about put
    * Verify on client1 that queryUpdate and queryDestroy are executed properly
    */
   @Test
   public void testClientOnAccessorReceivesCqEvents()
-      throws Throwable {
+      throws Exception {
     Object args1[] = new Object[] { REGION_NAME, new Integer(1),
         new Integer(0), new Integer(8), Boolean.FALSE, null };
     Object args2[] = new Object[] { REGION_NAME, new Integer(1),
@@ -646,7 +628,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
    */  
   @Test
   public void testCQClientOnRedundantBucketReceivesCQEvents()
-      throws Throwable {
+      throws Exception {
     // args for accessor
     Object args1[] = new Object[] { REGION_NAME, new Integer(1),
         new Integer(0), new Integer(2), Boolean.FALSE, null };
@@ -705,7 +687,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
    */  
   @Test
   public void testCQRIClientOnRedundantBucketReceivesDeltaAndCQEvents()
-      throws Throwable {
+      throws Exception {
     // args for accessor
     Object args1[] = new Object[] { REGION_NAME, new Integer(1),
         new Integer(0), new Integer(2), Boolean.FALSE, null };
@@ -751,14 +733,13 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
 
   /**
-   *  1) Put delta objects on client feeder connected to PR accessor bridge server.
-   *  2) From accessor to data store delta gets propagated as part of <code>PutMessage</code> delta.
-   *  3) From data store to accessor delta + full value gets propagated as part of Adjunct Message.
-   *  4) From accessor to client delta should get propagated.
-   * 
+   * 1) Put delta objects on client feeder connected to PR accessor bridge server.
+   * 2) From accessor to data store delta gets propagated as part of <code>PutMessage</code> delta.
+   * 3) From data store to accessor delta + full value gets propagated as part of Adjunct Message.
+   * 4) From accessor to client delta should get propagated.
    */
   @Test
-  public void testDeltaPropagationWithAdjunctMessaging() throws Throwable {
+  public void testDeltaPropagationWithAdjunctMessaging() throws Exception {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0), new Integer(0),
         new Integer(8), Boolean.FALSE, null };
     Object args2[] = new Object[] { REGION_NAME, new Integer(0), new Integer(50),
@@ -776,14 +757,13 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
   
   /**
-   *  1) Accessor is a Feeder.From accessor to data store delta gets propagated as part of <code>PutMessage</code> delta.
-   *  2) From data store to accessor delta + full value gets propagted as part of Adjunct Message.
-   *  3) From accessor to a client with data policy normal delta should get propagated.
-   *  4) From accessor to client with data policy empty full value should get propagated.
-   * 
+   * 1) Accessor is a Feeder.From accessor to data store delta gets propagated as part of <code>PutMessage</code> delta.
+   * 2) From data store to accessor delta + full value gets propagted as part of Adjunct Message.
+   * 3) From accessor to a client with data policy normal delta should get propagated.
+   * 4) From accessor to client with data policy empty full value should get propagated.
    */
   @Test
-  public void testDeltaPropagationWithAdjunctMessagingForEmptyClient() throws Throwable {
+  public void testDeltaPropagationWithAdjunctMessagingForEmptyClient() throws Exception {
     Object args1[] = new Object[] { REGION_NAME, new Integer(0), new Integer(0),
         new Integer(8), Boolean.FALSE, null };
     Object args2[] = new Object[] { REGION_NAME, new Integer(0), new Integer(50),
@@ -807,15 +787,15 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
   
   /**
-   *  1) One accessor and one datastore is defined with a PR with zero redundant copies.
-   *  2) Client is connected only to the accessor.
-   *  3) One delta put is performed on datastore.
-   *  4) Flag to cause toDelta() throw an exception is set on datastore.
-   *  5) Another delta put is performed on datastore.
-   *  6) Verify that the second delta put fails and value on datastore is same as the one put by first delta update. 
+   * 1) One accessor and one datastore is defined with a PR with zero redundant copies.
+   * 2) Client is connected only to the accessor.
+   * 3) One delta put is performed on datastore.
+   * 4) Flag to cause toDelta() throw an exception is set on datastore.
+   * 5) Another delta put is performed on datastore.
+   * 6) Verify that the second delta put fails and value on datastore is same as the one put by first delta update.
    */
   @Test
-  public void testDeltaPropagationWithAdjunctMessagingAndBadDelta() throws Throwable {
+  public void testDeltaPropagationWithAdjunctMessagingAndBadDelta() throws Exception {
     Object accessor[] = new Object[] { REGION_NAME, 0, 0, 8, Boolean.FALSE, null };
     Object dataStore[] = new Object[] { REGION_NAME, 0, 50, 8, Boolean.FALSE, null };
 
@@ -849,8 +829,6 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     DeltaTestImpl.resetDeltaInvokationCounters();
   }
 
-  
-  
   // check and reset delta counters
   public static void fromDeltaCounter(Integer count) {
     assertTrue("FromDelta counters do not match, expected: " + count.intValue()
@@ -860,7 +838,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   }
   
   public static void checkIsFailed() {
-    assertFalse("Full value is not recieved by server", isFailed);
+    assertFalse("Full value is not reeived by server", isFailed);
   }
   
   public static Boolean isFailed() {
@@ -992,6 +970,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     AttributesMutator am = deltaPR.getAttributesMutator();
     if (isListAttach.booleanValue()) {
       am.addCacheListener(new CacheListenerAdapter() {
+        @Override
         public void afterCreate(EntryEvent event) {
           if (event.getNewValue() == null)
             isFailed = true;
@@ -1000,7 +979,8 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
             lastKeyReceived = true;
           }
         }
-        
+
+        @Override
         public void afterUpdate(EntryEvent event) {
           if (event.getNewValue() == null)
             isFailed = true;
@@ -1021,8 +1001,8 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
       Boolean subscriptionEnable, Boolean isEmpty, Boolean isCq) throws Exception {
     PRDeltaPropagationDUnitTest test = new PRDeltaPropagationDUnitTest();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     test.createCache(props);
 
     lastKeyReceived = false;
@@ -1050,21 +1030,25 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     
     factory.setPoolName(p.getName());
     factory.setCloningEnabled(false);
-    factory.addCacheListener(new CacheListenerAdapter(){
-    public void afterCreate(EntryEvent event) {
+    factory.addCacheListener(new CacheListenerAdapter() {
+      @Override
+      public void afterCreate(EntryEvent event) {
         if (LAST_KEY.equals(event.getKey())) {          
-        lastKeyReceived = true;
-      }}});
+          lastKeyReceived = true;
+        }
+      }
+    });
 
     RegionAttributes attrs = factory.create();
     deltaPR = cache.createRegion(REGION_NAME, attrs);
-    //deltaPR.create(DELTA_KEY, new PRDeltaTestImpl());
-    if(subscriptionEnable.booleanValue())
+    if (subscriptionEnable.booleanValue()) {
       deltaPR.registerInterest("ALL_KEYS");
+    }
     pool = p;
     if (isCq.booleanValue()) {
       CqAttributesFactory cqf = new CqAttributesFactory();
       CqListenerAdapter cqlist = new CqListenerAdapter() {
+        @Override
         @SuppressWarnings("synthetic-access")
         public void onEvent(CqEvent cqEvent) {
           if (LAST_KEY.equals(cqEvent.getKey().toString())) {
@@ -1109,8 +1093,8 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCache(Integer port1, Integer port2) throws Exception {
     PRDeltaPropagationDUnitTest test = new PRDeltaPropagationDUnitTest();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     test.createCache(props);
 
     lastKeyReceived = false;
@@ -1127,10 +1111,13 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     factory.setCloningEnabled(false);
     factory.setConcurrencyChecksEnabled(true);
     factory.addCacheListener(new CacheListenerAdapter(){
-    public void afterCreate(EntryEvent event) {
+      @Override
+      public void afterCreate(EntryEvent event) {
         if (LAST_KEY.equals(event.getKey())) {
-        lastKeyReceived = true;
-      }}});
+          lastKeyReceived = true;
+        }
+      }
+    });
 
     RegionAttributes attrs = factory.create();
     deltaPR = cache.createRegion(REGION_NAME, attrs);
@@ -1257,15 +1244,19 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
   public static Boolean verifyQueryUpdateExecuted() {
     return PRDeltaPropagationDUnitTest.queryUpdateExecuted;
   }
+
   public static Boolean verifyQueryDestroyExecuted() {
     return PRDeltaPropagationDUnitTest.queryDestroyExecuted;
   }
+
   public static Boolean checkVMRecievesDeltaObjectThrCQListner() {
     return PRDeltaPropagationDUnitTest.notADeltaInstanceObj;
   }
+
   public static boolean isLastKeyReceived() {
     return lastKeyReceived;
   }
+
   public static void verifyDeltaSent(Integer deltas) {
     CacheClientNotifier ccn = ((CacheServerImpl)cache
         .getCacheServers().toArray()[0]).getAcceptor()
@@ -1317,6 +1308,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     public PRDeltaTestImpl() {
     }
 
+    @Override
     public void toDelta(DataOutput out) throws IOException {
       super.toDelta(out);
       if (isBadToDelta) {
@@ -1325,6 +1317,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
       deltaSent++;
     }
 
+    @Override
     public void fromDelta(DataInput in) throws IOException {
       super.fromDelta(in);
       if (isBadFromDelta) {
@@ -1341,6 +1334,7 @@ public class PRDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
       return deltaApplied;
     }
 
+    @Override
     public String toString() {
       return "PRDeltaTestImpl[deltaApplied=" + deltaApplied + "]"
           + super.toString();

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.pdx;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -23,7 +24,6 @@ import java.util.Properties;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.DistributionManager;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
@@ -37,10 +37,6 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class DistributedSystemIdDUnitTest extends JUnit4DistributedTestCase {
   
-  public DistributedSystemIdDUnitTest() {
-    super();
-  }
-
   @Override
   public void preSetUp() {
     disconnectAllFromDS(); // GEODE-558 test fails due to infection from another test
@@ -60,7 +56,6 @@ public class DistributedSystemIdDUnitTest extends JUnit4DistributedTestCase {
     checkId(vm0, 1);
     checkId(vm1, 1);
     checkId(vm2, 1);
-    
   }
   
   @Test
@@ -104,24 +99,22 @@ public class DistributedSystemIdDUnitTest extends JUnit4DistributedTestCase {
       createLocator(vm0, "256");
       fail("Should have gotten an exception");
     } catch(Exception expected) {
-
     }
+
     try {
       createLocator(vm0, "aardvark");
       fail("Should have gotten an exception");
     } catch(Exception expected) {
-      
     }
   }
 
   private void createSystem(VM vm, final String dsId, final int locatorPort) {
-    
-    
+
     SerializableCallable createSystem = new SerializableCallable() {
       public Object call() throws Exception {
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.DISTRIBUTED_SYSTEM_ID_NAME, dsId);
-        props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locatorPort + "]");
+        props.setProperty(DISTRIBUTED_SYSTEM_ID, dsId);
+        props.setProperty(LOCATORS, "localhost[" + locatorPort + "]");
         getSystem(props);
         return null;
       }
@@ -134,13 +127,11 @@ public class DistributedSystemIdDUnitTest extends JUnit4DistributedTestCase {
       public Object call() throws Exception {
         int port = AvailablePortHelper.getRandomAvailableTCPPort();
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.DISTRIBUTED_SYSTEM_ID_NAME, dsId);
-        props.setProperty("mcast-port", "0");
-        props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + port + "]");
-        props.setProperty(DistributionConfig.START_LOCATOR_NAME, "localhost[" + port + "]");
+        props.setProperty(DISTRIBUTED_SYSTEM_ID, dsId);
+        props.setProperty(MCAST_PORT, "0");
+        props.setProperty(LOCATORS, "localhost[" + port + "]");
+        props.setProperty(START_LOCATOR, "localhost[" + port + "]");
         getSystem(props);
-//        Locator locator = Locator.startLocatorAndDS(port, File.createTempFile("locator", ""), props);
-//        system = (InternalDistributedSystem) locator.getDistributedSystem();
         return port;
       }
     };
@@ -148,7 +139,6 @@ public class DistributedSystemIdDUnitTest extends JUnit4DistributedTestCase {
   }
   
   private void checkId(VM vm, final int dsId) {
-    
     
     SerializableCallable createSystem = new SerializableCallable() {
       public Object call() throws Exception {
@@ -159,7 +149,4 @@ public class DistributedSystemIdDUnitTest extends JUnit4DistributedTestCase {
     };
     vm.invoke(createSystem);
   }
-  
-  
-
 }

@@ -23,21 +23,15 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.DiskStore;
 import com.gemstone.gemfire.cache.DiskStoreFactory;
 import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionExistsException;
 import com.gemstone.gemfire.cache.RegionFactory;
 import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.cache.TimeoutException;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.internal.FileUtil;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
-import com.gemstone.gemfire.internal.cache.InternalRegionArguments;
-import com.gemstone.gemfire.internal.cache.RegionFactoryImpl;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
@@ -158,7 +152,7 @@ public abstract class PersistentReplicatedTestBase extends JUnit4CacheTestCase {
     return vm0.invokeAsync(close);
   }
 
-  protected void createNonPersistentRegion(VM vm) throws Throwable {
+  protected void createNonPersistentRegion(VM vm) throws Exception {
     SerializableRunnable createRegion = new SerializableRunnable("Create non persistent region") {
       public void run() {
         Cache cache = getCache();
@@ -171,13 +165,13 @@ public abstract class PersistentReplicatedTestBase extends JUnit4CacheTestCase {
     vm.invoke(createRegion);
   }
 
-  protected AsyncInvocation createPersistentRegionWithWait(VM vm) throws Throwable {
+  protected AsyncInvocation createPersistentRegionWithWait(VM vm) throws Exception {
     return _createPersistentRegion(vm, true);
   }
-  protected void createPersistentRegion(VM vm) throws Throwable {
+  protected void createPersistentRegion(VM vm) throws Exception {
     _createPersistentRegion(vm, false);
   }
-  private AsyncInvocation _createPersistentRegion(VM vm, boolean wait) throws Throwable {
+  private AsyncInvocation _createPersistentRegion(VM vm, boolean wait) throws Exception {
     AsyncInvocation future = createPersistentRegionAsync(vm);
     long waitTime = wait ? 500 : MAX_WAIT;
     future.join(waitTime);

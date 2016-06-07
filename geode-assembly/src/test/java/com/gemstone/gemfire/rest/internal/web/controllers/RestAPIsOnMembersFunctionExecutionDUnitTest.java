@@ -30,14 +30,12 @@ import com.gemstone.gemfire.cache.CacheClosedException;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.execute.FunctionContext;
 import com.gemstone.gemfire.cache.execute.FunctionService;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.rest.internal.web.RestFunctionTemplate;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.VM;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.util.Properties;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 @Category(DistributedTest.class)
 public class RestAPIsOnMembersFunctionExecutionDUnitTest extends RestAPITestBase {
@@ -85,10 +83,10 @@ public class RestAPIsOnMembersFunctionExecutionDUnitTest extends RestAPITestBase
     final int servicePort = AvailablePortHelper.getRandomAvailableTCPPort();
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.NAME_NAME, memberName);
-    props.setProperty(DistributionConfig.START_DEV_REST_API_NAME, "true");
-    props.setProperty(DistributionConfig.HTTP_SERVICE_BIND_ADDRESS_NAME, hostName);
-    props.setProperty(DistributionConfig.HTTP_SERVICE_PORT_NAME, String.valueOf(servicePort));
+    props.setProperty(NAME, memberName);
+    props.setProperty(START_DEV_REST_API, "true");
+    props.setProperty(HTTP_SERVICE_BIND_ADDRESS, hostName);
+    props.setProperty(HTTP_SERVICE_PORT, String.valueOf(servicePort));
 
     Cache c = null;
     try {

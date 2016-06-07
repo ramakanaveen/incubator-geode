@@ -17,11 +17,6 @@
 
 package com.gemstone.gemfire.internal.security;
 
-import java.security.AccessController;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
 import com.gemstone.gemfire.cache.operations.OperationContext;
 import com.gemstone.gemfire.cache.operations.OperationContext.OperationCode;
 import com.gemstone.gemfire.cache.operations.OperationContext.Resource;
@@ -30,11 +25,10 @@ import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.internal.security.shiro.CustomAuthRealm;
 import com.gemstone.gemfire.internal.security.shiro.ShiroPrincipal;
 import com.gemstone.gemfire.management.internal.security.ResourceOperation;
-import com.gemstone.gemfire.management.internal.security.ResourceOperationContext;
+import com.gemstone.gemfire.cache.operations.internal.ResourceOperationContext;
 import com.gemstone.gemfire.security.AuthenticationFailedException;
 import com.gemstone.gemfire.security.GemFireSecurityException;
 import com.gemstone.gemfire.security.NotAuthorizedException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -48,6 +42,13 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+
+import java.security.AccessController;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class GeodeSecurityUtil {
 
@@ -105,7 +106,7 @@ public class GeodeSecurityUtil {
     UsernamePasswordToken token =
       new UsernamePasswordToken(username, password);
     try {
-      logger.info("Logging in "+username+"/"+password);
+      logger.info("Logging in "+username);
       currentUser.login(token);
     } catch (ShiroException e) {
       logger.info(e.getMessage(), e);
@@ -191,34 +192,29 @@ public class GeodeSecurityUtil {
 
   private static void authorize(String resource, String operation, String regionName){
     regionName = StringUtils.stripStart(regionName, "/");
-    authorize(new ResourceOperationContext(resource, operation, regionName));
+    authorize(new ResourceOperationContext(resource, operation, regionName, false));
   }
 
   public static void authorize(OperationContext context) {
-    if(context==null)
-      return;
+    if (context == null) return;
 
-    if(context.getResource()== Resource.NULL && context.getOperationCode()== OperationCode.NULL)
-      return;
+    if (context.getResource() == Resource.NULL && context.getOperationCode() == OperationCode.NULL) return;
 
     Subject currentUser = getSubject();
-    if(currentUser==null)
-      return;
+    if (currentUser == null) return;
 
     try {
       currentUser.checkPermission(context);
-    }
-    catch(ShiroException e){
+    } catch (ShiroException e) {
       logger.info(currentUser.getPrincipal() + " not authorized for " + context);
       throw new NotAuthorizedException(e.getMessage(), e);
     }
   }
 
-  private static boolean isSecured(){
-    try{
+  private static boolean isSecured() {
+    try {
       SecurityUtils.getSecurityManager();
-    }
-    catch(UnavailableSecurityManagerException e){
+    } catch (UnavailableSecurityManagerException e) {
       return false;
     }
     return true;
@@ -229,30 +225,27 @@ public class GeodeSecurityUtil {
    * @param securityProps
    */
   public static void initSecurity(Properties securityProps){
-    if(securityProps==null)
-      return;
+    if (securityProps == null) return;
 
-    String shiroConfig = securityProps.getProperty(DistributionConfig.SECURITY_SHIRO_INIT_NAME);
-    String customAuthenticator =securityProps.getProperty(DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME);
+    String shiroConfig = securityProps.getProperty(DistributionConfig.SECURITY_SHIRO_INIT);
+    String customAuthenticator =securityProps.getProperty(SECURITY_CLIENT_AUTHENTICATOR);
     if (!com.gemstone.gemfire.internal.lang.StringUtils.isBlank(shiroConfig)) {
-      IniSecurityManagerFactory factory = new IniSecurityManagerFactory("classpath:"+shiroConfig);
+      IniSecurityManagerFactory factory = new IniSecurityManagerFactory("classpath:" + shiroConfig);
 
       // we will need to make sure that shiro uses a case sensitive permission resolver
       Section main = factory.getIni().addSection("main");
       main.put("geodePermissionResolver", "com.gemstone.gemfire.internal.security.shiro.GeodePermissionResolver");
-      if(!main.containsKey("iniRealm.permissionResolver")) {
+      if (!main.containsKey("iniRealm.permissionResolver")) {
         main.put("iniRealm.permissionResolver", "$geodePermissionResolver");
       }
 
       SecurityManager securityManager = factory.getInstance();
       SecurityUtils.setSecurityManager(securityManager);
-    }
-    else if (!com.gemstone.gemfire.internal.lang.StringUtils.isBlank(customAuthenticator)) {
+    } else if (!com.gemstone.gemfire.internal.lang.StringUtils.isBlank(customAuthenticator)) {
       Realm realm = new CustomAuthRealm(securityProps);
       SecurityManager securityManager = new DefaultSecurityManager(realm);
       SecurityUtils.setSecurityManager(securityManager);
-    }
-    else{
+    } else {
       SecurityUtils.setSecurityManager(null);
     }
   }

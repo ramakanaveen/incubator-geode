@@ -16,20 +16,13 @@
  */
 package com.gemstone.gemfire.management;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.MBeanServer;
@@ -37,17 +30,18 @@ import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.OutOfOffHeapMemoryException;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache30.CacheTestCase;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
-import com.gemstone.gemfire.internal.offheap.OffHeapStoredObject;
 import com.gemstone.gemfire.internal.offheap.OffHeapMemoryStats;
 import com.gemstone.gemfire.internal.offheap.OffHeapStorage;
+import com.gemstone.gemfire.internal.offheap.OffHeapStoredObject;
 import com.gemstone.gemfire.management.internal.MBeanJMXAdapter;
 import com.gemstone.gemfire.management.internal.beans.MemberMBean;
 import com.gemstone.gemfire.test.dunit.Host;
@@ -56,6 +50,8 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests the off-heap additions to the RegionMXBean and MemberMXBean JMX interfaces.
@@ -143,14 +139,6 @@ public class OffHeapManagementDUnitTest extends JUnit4CacheTestCase {
    */
   private static MBeanServer mbeanServer = MBeanJMXAdapter.mbeanServer;
 
-  /**
-   * Creates a new OffHeapManagementDUnitTest.
-   * @param name the test name.
-   */
-  public OffHeapManagementDUnitTest() {
-    super();
-  }
-  
   @Override
   public final void postSetUp() throws Exception {
     Host.getHost(0).getVM(0).invoke(new SerializableRunnable() {
@@ -653,12 +641,12 @@ public class OffHeapManagementDUnitTest extends JUnit4CacheTestCase {
    * Returns off-heap system properties for enabling off-heap and the JMX system.
    */
   protected Properties getSystemProperties() {
-    Properties props = getDistributedSystemProperties();    
-    
-    props.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "1m");    
-    props.setProperty(DistributionConfig.JMX_MANAGER_NAME, "true");
-    props.setProperty(DistributionConfig.JMX_MANAGER_START_NAME, "true");
-    props.setProperty(DistributionConfig.JMX_MANAGER_PORT_NAME, "0");
+    Properties props = getDistributedSystemProperties();
+
+    props.setProperty(OFF_HEAP_MEMORY_SIZE, "1m");
+    props.setProperty(JMX_MANAGER, "true");
+    props.setProperty(JMX_MANAGER_START, "true");
+    props.setProperty(JMX_MANAGER_PORT, "0");
 
     return props;
   }

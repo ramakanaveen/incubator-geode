@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -39,7 +40,6 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverAdapter;
@@ -79,7 +79,7 @@ public class ConflationDUnitTest extends JUnit4DistributedTestCase {
   private int PORT ;
   private static final String REGION_NAME1 = "ConflationDUnitTest_region1" ;
   private static final String REGION_NAME2 = "ConflationDUnitTest_region2" ;
-  final static String MARKER = "markerKey";
+  static final String MARKER = "markerKey";
 
   private static HashMap statMap = new HashMap();
 
@@ -227,8 +227,8 @@ public class ConflationDUnitTest extends JUnit4DistributedTestCase {
    */
   private static Properties createProperties1(){
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     return props;
   }
 

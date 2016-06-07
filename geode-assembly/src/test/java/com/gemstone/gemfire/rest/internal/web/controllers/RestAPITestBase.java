@@ -17,36 +17,8 @@
  */
 package com.gemstone.gemfire.rest.internal.web.controllers;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.cache.execute.Function;
-import com.gemstone.gemfire.cache.execute.FunctionService;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
-import com.gemstone.gemfire.internal.AvailablePortHelper;
-import com.gemstone.gemfire.internal.GemFireVersion;
-import com.gemstone.gemfire.internal.lang.StringUtils;
-import com.gemstone.gemfire.management.internal.AgentUtil;
-import com.gemstone.gemfire.rest.internal.web.RestFunctionTemplate;
-import com.gemstone.gemfire.test.dunit.*;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.json.JSONArray;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,18 +29,41 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.json.JSONArray;
+import org.junit.experimental.categories.Category;
+
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.cache.execute.FunctionService;
+import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
+import com.gemstone.gemfire.internal.AvailablePortHelper;
+import com.gemstone.gemfire.internal.GemFireVersion;
+import com.gemstone.gemfire.internal.lang.StringUtils;
+import com.gemstone.gemfire.management.internal.AgentUtil;
+import com.gemstone.gemfire.rest.internal.web.RestFunctionTemplate;
+import com.gemstone.gemfire.test.dunit.Host;
+import com.gemstone.gemfire.test.dunit.Invoke;
+import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 @Category(DistributedTest.class)
 public class RestAPITestBase extends JUnit4DistributedTestCase {
+
   protected Cache cache = null;
   protected List<String> restURLs = new ArrayList();
   protected VM vm0 = null;
   protected VM vm1 = null;
   protected VM vm2 = null;
   protected VM vm3 = null;
-
-  public RestAPITestBase() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -120,12 +115,12 @@ public class RestAPITestBase extends JUnit4DistributedTestCase {
     Properties props = new Properties();
 
     if (groups != null) {
-      props.put("groups", groups);
+      props.put(GROUPS, groups);
     }
 
-    props.setProperty(DistributionConfig.START_DEV_REST_API_NAME, "true");
-    props.setProperty(DistributionConfig.HTTP_SERVICE_BIND_ADDRESS_NAME, hostName);
-    props.setProperty(DistributionConfig.HTTP_SERVICE_PORT_NAME, String.valueOf(servicePort));
+    props.setProperty(START_DEV_REST_API, "true");
+    props.setProperty(HTTP_SERVICE_BIND_ADDRESS, hostName);
+    props.setProperty(HTTP_SERVICE_PORT, String.valueOf(servicePort));
 
     InternalDistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -142,6 +137,7 @@ public class RestAPITestBase extends JUnit4DistributedTestCase {
   protected CloseableHttpResponse executeFunctionThroughRestCall(String function, String regionName, String filter, String jsonBody, String groups,
                                                                  String members) {
     System.out.println("Entering executeFunctionThroughRestCall");
+    CloseableHttpResponse value = null;
     try {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       Random randomGenerator = new Random();
@@ -150,10 +146,11 @@ public class RestAPITestBase extends JUnit4DistributedTestCase {
       HttpPost post = createHTTPPost(function, regionName, filter, restURLIndex, groups, members, jsonBody);
 
       System.out.println("Request: POST " + post.toString());
-      return httpclient.execute(post);
+      value = httpclient.execute(post);
     } catch (Exception e) {
-      throw new RuntimeException("unexpected exception", e);
+      fail("unexpected exception", e);
     }
+    return value;
   }
 
   private HttpPost createHTTPPost(String function, String regionName, String filter, int restUrlIndex, String groups, String members, String jsonBody) {
@@ -199,7 +196,7 @@ public class RestAPITestBase extends JUnit4DistributedTestCase {
       JSONArray resultArray = new JSONArray(httpResponseString);
       assertEquals(resultArray.length(), expectedServerResponses);
     } catch (Exception e) {
-      e.printStackTrace();
+      fail("exception", e);
     }
   }
 
@@ -216,7 +213,7 @@ public class RestAPITestBase extends JUnit4DistributedTestCase {
       }
       return sb.toString();
     } catch (IOException e) {
-      LogWriterUtils.getLogWriter().error("Error in processing Http Response", e);
+      fail("exception", e);
     }
     return "";
   }

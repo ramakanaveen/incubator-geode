@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.memcached;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.net.InetAddress;
@@ -29,21 +30,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
 @Category(IntegrationTest.class)
 public class DomainObjectsAsValuesJUnitTest {
 
-  private static final Logger logger = Logger.getLogger(DomainObjectsAsValuesJUnitTest.class.getCanonicalName());
-  
   private int PORT;
   
   private GemFireMemcachedServer server;
   
   @Before
   public void setUp() throws Exception {
-    System.setProperty("gemfire.mcast-port", "0");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + MCAST_PORT, "0");
     PORT = AvailablePortHelper.getRandomAvailableTCPPort();
     this.server = new GemFireMemcachedServer(PORT);
     server.start();
@@ -52,7 +52,7 @@ public class DomainObjectsAsValuesJUnitTest {
   @After
   public void tearDown() throws Exception {
     this.server.shutdown();
-    System.getProperties().remove("gemfire.mcast-port");
+    System.getProperties().remove(DistributionConfig.GEMFIRE_PREFIX + MCAST_PORT);
   }
 
   private static class Customer implements java.io.Serializable {

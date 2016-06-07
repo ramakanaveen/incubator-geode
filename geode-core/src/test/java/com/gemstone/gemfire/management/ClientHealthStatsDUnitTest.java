@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.management;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.Collection;
@@ -36,7 +37,6 @@ import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.distributed.DistributedMember;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientProxy;
@@ -244,11 +244,11 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
 
   private static void createClientCache(Host host, Integer port, int clientNum, boolean subscriptionEnabled, boolean durable) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME, "durable-"+clientNum);
-    props.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, "300000");
-    props.setProperty("log-level", "info");
-    props.setProperty("statistic-archive-file", getTestMethodName()+"_client_" + clientNum + ".gfs");
-    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(DURABLE_CLIENT_ID, "durable-"+clientNum);
+    props.setProperty(DURABLE_CLIENT_TIMEOUT, "300000");
+    props.setProperty(LOG_LEVEL, "info");
+    props.setProperty(STATISTIC_ARCHIVE_FILE, getTestMethodName() + "_client_" + clientNum + ".gfs");
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
 
     ClientCacheFactory ccf = new ClientCacheFactory(props);
     if(subscriptionEnabled){
@@ -258,8 +258,8 @@ public class ClientHealthStatsDUnitTest extends JUnit4DistributedTestCase {
     }
     
     if(durable){
-      ccf.set("durable-client-id", "DurableClientId_"+clientNum);
-      ccf.set("durable-client-timeout", "" + 300);
+      ccf.set(DURABLE_CLIENT_ID, "DurableClientId_" + clientNum);
+      ccf.set(DURABLE_CLIENT_TIMEOUT, "" + 300);
     }
 
     ccf.addPoolServer(host.getHostName(), port);

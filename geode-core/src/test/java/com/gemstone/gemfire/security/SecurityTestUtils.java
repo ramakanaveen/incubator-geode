@@ -78,6 +78,7 @@ import com.gemstone.gemfire.cache.query.SelectResults;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.Locator;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.pdx.PdxReader;
 import com.gemstone.gemfire.pdx.PdxSerializable;
 import com.gemstone.gemfire.pdx.PdxWriter;
@@ -88,11 +89,11 @@ import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
  * Contains utility methods for setting up servers/clients for authentication
  * and authorization tests.
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 public final class SecurityTestUtils {
 
-  private final JUnit4DistributedTestCase distributedTestCase = new JUnit4DistributedTestCase() {}; // TODO: delete
+  private final JUnit4DistributedTestCase distributedTestCase = new JUnit4DistributedTestCase() {};
 
   protected static final int NO_EXCEPTION = 0;
   protected static final int AUTHREQ_EXCEPTION = 1;
@@ -207,14 +208,14 @@ public final class SecurityTestUtils {
     if (authProps == null) {
       authProps = new Properties();
     }
-    authProps.setProperty(MCAST_PORT_NAME, "0");
+    authProps.setProperty(MCAST_PORT, "0");
     if (locatorString != null && locatorString.length() > 0) {
-      authProps.setProperty(LOCATORS_NAME, locatorString);
-      authProps.setProperty(START_LOCATOR_NAME, getIPLiteral() + "[" + locatorPort + ']');
+      authProps.setProperty(LOCATORS, locatorString);
+      authProps.setProperty(START_LOCATOR, getIPLiteral() + "[" + locatorPort + ']');
     } else {
-      authProps.setProperty("locators", "localhost["+getDUnitLocatorPort()+"]");
+      authProps.setProperty(LOCATORS, "localhost[" + getDUnitLocatorPort() + "]");
     }
-    authProps.setProperty(SECURITY_LOG_LEVEL_NAME, "finest");
+    authProps.setProperty(SECURITY_LOG_LEVEL, "finest");
 
     getLogWriter().info("Set the server properties to: " + authProps);
     getLogWriter().info("Set the java properties to: " + javaProps);
@@ -302,12 +303,12 @@ public final class SecurityTestUtils {
     if (authProps == null) {
       authProps = new Properties();
     }
-    authProps.setProperty(MCAST_PORT_NAME, "0");
-    authProps.setProperty(LOCATORS_NAME, "");
-    authProps.setProperty(SECURITY_LOG_LEVEL_NAME, "finest");
+    authProps.setProperty(MCAST_PORT, "0");
+    authProps.setProperty(LOCATORS, "");
+    authProps.setProperty(SECURITY_LOG_LEVEL, "finest");
     // TODO (ashetkar) Add " && (!multiUserAuthMode)" below.
     if (authInitModule != null) {
-      authProps.setProperty(SECURITY_CLIENT_AUTH_INIT_NAME, authInitModule);
+      authProps.setProperty(SECURITY_CLIENT_AUTH_INIT, authInitModule);
     }
 
     SecurityTestUtils tmpInstance = new SecurityTestUtils("temp");
@@ -412,20 +413,20 @@ public final class SecurityTestUtils {
     if (authProps[0] == null) {
       authProps[0] = new Properties();
     }
-    authProps[0].setProperty(MCAST_PORT_NAME, "0");
-    authProps[0].setProperty(LOCATORS_NAME, "");
-    authProps[0].setProperty(SECURITY_LOG_LEVEL_NAME, "finest");
+    authProps[0].setProperty(MCAST_PORT, "0");
+    authProps[0].setProperty(LOCATORS, "");
+    authProps[0].setProperty(SECURITY_LOG_LEVEL, "finest");
 
     Properties props = new Properties();
 
     if (authInitModule != null) {
-      authProps[0].setProperty(SECURITY_CLIENT_AUTH_INIT_NAME, authInitModule);
-      props.setProperty(SECURITY_CLIENT_AUTH_INIT_NAME, authInitModule);
+      authProps[0].setProperty(SECURITY_CLIENT_AUTH_INIT, authInitModule);
+      props.setProperty(SECURITY_CLIENT_AUTH_INIT, authInitModule);
     }
 
     if (durableClientId != null) {
-      props.setProperty(DURABLE_CLIENT_ID_NAME, durableClientId);
-      props.setProperty(DURABLE_CLIENT_TIMEOUT_NAME, String.valueOf(DEFAULT_DURABLE_CLIENT_TIMEOUT));
+      props.setProperty(DURABLE_CLIENT_ID, durableClientId);
+      props.setProperty(DURABLE_CLIENT_TIMEOUT, String.valueOf(DistributionConfig.DEFAULT_DURABLE_CLIENT_TIMEOUT));
     }
 
     SecurityTestUtils tmpInstance = new SecurityTestUtils("temp");
@@ -510,9 +511,9 @@ public final class SecurityTestUtils {
       if (extraProps != null) {
         authProps.putAll(extraProps);
       }
-      authProps.setProperty(MCAST_PORT_NAME, "0");
-      authProps.setProperty(LOCATORS_NAME, getIPLiteral() + "[" + port + "]");
-      authProps.setProperty(ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+      authProps.setProperty(MCAST_PORT, "0");
+      authProps.setProperty(LOCATORS, getIPLiteral() + "[" + port + "]");
+      authProps.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
 
       clearStaticSSLContext();
 

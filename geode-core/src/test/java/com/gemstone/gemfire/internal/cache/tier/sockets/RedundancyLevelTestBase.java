@@ -16,7 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,22 +63,19 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
 
+  protected static volatile boolean registerInterestCalled = false;
+  protected static volatile boolean makePrimaryCalled = false;
+
   static Cache cache = null;
 
   VM server0 = null;
-
   VM server1 = null;
-
   VM server2 = null;
-
   VM server3 = null;
 
   static int PORT1;
-
   static int PORT2;
-
   static int PORT3;
-
   static int PORT4;
 
   static String SERVER1;
@@ -86,7 +84,6 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
   static String SERVER4;
 
   static final String k1 = "k1";
-
   static final String k2 = "k2";
 
   static final String REGION_NAME = "RedundancyLevelTestBase_region";
@@ -128,9 +125,6 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
     CacheServerTestUtil.disableShufflingOfEndpoints();
   }
 
-  protected static volatile boolean registerInterestCalled = false;
-  protected static volatile boolean makePrimaryCalled = false;
-  
   public static void doPuts()
   {
     putEntriesK1andK2();
@@ -150,7 +144,7 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
       assertEquals(r1.getEntry(k2).getValue(), k2);
     }
     catch (Exception ex) {
-      //ignore
+      fail("putEntriesK1andK2 failed", ex);
     }
   }
 
@@ -258,8 +252,7 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
       Assert.fail("while setting verifyDispatcherIsNotAlive  ", ex);
     }
   }
-  
-  
+
   public static void verifyRedundantServersContain(final String server) {
     WaitCriterion wc = new WaitCriterion() {
       public boolean done() {
@@ -474,7 +467,7 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception ex) {
-      fail("while setting verifyInterestRegistration  " + ex);
+      fail("while setting verifyInterestRegistration", ex);
     }
   }
 
@@ -502,7 +495,7 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
       bs.start();
     }
     catch (Exception ex) {
-      Assert.fail("while startServer()  ", ex);
+      Assert.fail("while startServer()", ex);
     }
   }
 
@@ -517,19 +510,13 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
   }
 
   
-  public static void createClientCache(String host, int port1, int port2, int port3,
-                                       int port4, int redundancy)
-    throws Exception {
+  public static void createClientCache(String host, int port1, int port2, int port3, int port4, int redundancy) throws Exception {
     createClientCache(host, port1, port2, port3,
                       port4,  redundancy, 3000, /* defaul socket timeout of 250 millisec*/
                       10 /*default retry interval*/);
   }
-  public static void createClientCache(String host, int port1, int port2, int port3,
-                                       int port4, int redundancy,
-                                       int socketReadTimeout,
-                                       int retryInterval) throws Exception
-  {
-    
+
+  public static void createClientCache(String host, int port1, int port2, int port3, int port4, int redundancy, int socketReadTimeout, int retryInterval) throws Exception {
     if(!FailOverDetectionByCCU)
     {
         oldBo = ClientServerObserverHolder.setInstance(new ClientServerObserverAdapter() {
@@ -548,8 +535,8 @@ public class RedundancyLevelTestBase extends JUnit4DistributedTestCase {
     }
     
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new RedundancyLevelTestBase().createCache(props);
 
     PoolImpl p = (PoolImpl)PoolManager.createFactory()

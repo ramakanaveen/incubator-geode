@@ -16,45 +16,35 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.Properties;
 
+import org.apache.logging.log4j.Logger;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.distributed.DistributedMember;
+import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.internal.Assert;
+import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
 import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.security.AuthInitialize;
 import com.gemstone.gemfire.security.AuthenticationFailedException;
 import com.gemstone.gemfire.security.SecurityTestUtils;
 import com.gemstone.gemfire.security.generator.CredentialGenerator;
-
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.distributed.DistributedMember;
-import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.internal.Assert;
-import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
-
 import com.gemstone.gemfire.security.generator.DummyCredentialGenerator;
 import com.gemstone.gemfire.security.templates.UserPasswordAuthInit;
-
-import org.apache.logging.log4j.Logger;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class NewWanAuthenticationDUnitTest extends WANTestBase {
 
-  private static final long serialVersionUID = 1L;
-
   public static final Logger logger = LogService.getLogger();
 
-  public NewWanAuthenticationDUnitTest() {
-    super();
-  }
+  public static boolean isDifferentServerInGetCredentialCall = false;
 
   /**
    * Authentication test for new WAN with valid credentials. Although, nothing
@@ -118,7 +108,6 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
     vm2.invoke(() -> WANTestBase.startSender( "ln" ));
     vm2.invoke(() -> WANTestBase.waitForSenderRunningState( "ln" ));
     logger.info("Done successfully.");
-
   }
 
   /**
@@ -188,7 +177,7 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
       fail("Authentication Failed: While starting the sender, an exception should have been thrown");
     } catch (Exception e) {
       if (!(e.getCause().getCause() instanceof AuthenticationFailedException)) {
-        fail("Authentication is not working as expected");
+        fail("Authentication is not working as expected", e);
       }
     }
   }
@@ -196,20 +185,18 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
   private static Properties buildProperties(String clientauthenticator,
                                             String clientAuthInit, String accessor, Properties extraAuthProps,
                                             Properties extraAuthzProps) {
-
     Properties authProps = new Properties();
     if (clientauthenticator != null) {
       authProps.setProperty(
-        DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME,
+        SECURITY_CLIENT_AUTHENTICATOR,
         clientauthenticator);
     }
     if (accessor != null) {
-      authProps.setProperty(DistributionConfig.SECURITY_CLIENT_ACCESSOR_NAME,
+      authProps.setProperty(SECURITY_CLIENT_ACCESSOR,
         accessor);
     }
     if (clientAuthInit != null) {
-      authProps.setProperty(DistributionConfig.SECURITY_CLIENT_AUTH_INIT_NAME,
-        clientAuthInit);
+      authProps.setProperty(SECURITY_CLIENT_AUTH_INIT, clientAuthInit);
     }
     if (extraAuthProps != null) {
       authProps.putAll(extraAuthProps);
@@ -221,8 +208,8 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
   }
 
   public static void createSecuredCache(Properties authProps, Object javaProps, Integer locPort) {
-    authProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    authProps.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort + "]");
+    authProps.setProperty(MCAST_PORT, "0");
+    authProps.setProperty(LOCATORS, "localhost[" + locPort + "]");
 
     logger.info("Set the server properties to: " + authProps);
     logger.info("Set the java properties to: " + javaProps);
@@ -235,11 +222,12 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
     assertNotNull(cache);
   }
 
-  public static boolean isDifferentServerInGetCredentialCall = false;
   public static class UserPasswdAI extends UserPasswordAuthInit {
+
     public static AuthInitialize createAI() {
       return new UserPasswdAI();
     }
+
     @Override
     public Properties getCredentials(Properties props,
                                      DistributedMember server, boolean isPeer)
@@ -316,7 +304,6 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
 
       vm2.invoke(() -> verifyDifferentServerInGetCredentialCall());
       vm3.invoke(() -> verifyDifferentServerInGetCredentialCall());
-
     }
   }
 }

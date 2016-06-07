@@ -16,16 +16,9 @@
  */
 package com.gemstone.gemfire.internal.cache.persistence;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.internal.lang.ThrowableUtils.*;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -40,6 +33,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.DataSerializer;
 import com.gemstone.gemfire.admin.AdminDistributedSystem;
@@ -83,39 +78,37 @@ import com.gemstone.gemfire.internal.cache.versions.RegionVersionHolder;
 import com.gemstone.gemfire.internal.cache.versions.RegionVersionVector;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
+import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This is a test of how persistent distributed
  * regions recover. This test makes sure that when
  * multiple VMs are persisting the same region, they recover
  * with the latest data during recovery.
- * 
- *
  */
 @Category(DistributedTest.class)
 public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBase {
 
   public static void resetAckWaitThreshold() {
     if (SAVED_ACK_WAIT_THRESHOLD != null) {
-      System.setProperty("gemfire.ack_wait_threshold", SAVED_ACK_WAIT_THRESHOLD);
+      System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "ack_wait_threshold", SAVED_ACK_WAIT_THRESHOLD);
     }
   }
   
   /**
    * Tests to make sure that a persistent region will wait
    * for any members that were online when is crashed before starting up.
-   * @throws Throwable
    */
   @Test
-  public void testWaitForLatestMember() throws Throwable {
+  public void testWaitForLatestMember() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -165,10 +158,10 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   /**
    * Tests to make sure that we stop waiting for a member
    * that we revoke.
-   * @throws Throwable
+   * @throws Exception
    */
   @Test
-  public void testRevokeAMember() throws Throwable {
+  public void testRevokeAMember() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -301,10 +294,10 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   /**
    * Tests to make sure that we can revoke a member
    * before initialization, and that member will stay revoked
-   * @throws Throwable
+   * @throws Exception
    */
   @Test
-  public void testRevokeAHostBeforeInitialization() throws Throwable {
+  public void testRevokeAHostBeforeInitialization() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -394,10 +387,10 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
 
   /**
    * Test which members show up in the list of members we're waiting on.
-   * @throws Throwable
+   * @throws Exception
    */
   @Test
-  public void testWaitingMemberList() throws Throwable {
+  public void testWaitingMemberList() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -536,10 +529,10 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * A crashes.
    * B crashes.
    * B starts up. It should not wait for A.
-   * @throws Throwable
+   * @throws Exception
    */
   @Test
-  public void testDontWaitForOldMember() throws Throwable {
+  public void testDontWaitForOldMember() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -568,10 +561,10 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * Tests that if two members crash simultaneously, they
    * negotiate which member should initialize with what is
    * on disk and which member should copy data from that member.
-   * @throws Throwable
+   * @throws Exception
    */
   @Test
-  public void testSimultaneousCrash() throws Throwable {
+  public void testSimultaneousCrash() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -629,7 +622,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * has the latest data, without needing B. 
    */
   @Test
-  public void testTransmitCrashedMembers() throws Throwable {
+  public void testTransmitCrashedMembers() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -673,7 +666,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * a non persistent region.
    */
   @Test
-  public void testRecoverFromNonPeristentRegion() throws Throwable {
+  public void testRecoverFromNonPeristentRegion() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -705,7 +698,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   }
 
   @Test
-  public void testFinishIncompleteInitializationNoSend() throws Throwable {
+  public void testFinishIncompleteInitializationNoSend() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -837,12 +830,12 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   }
 
   @Test
-  public void testPersistConflictOperations() throws Throwable {
+  public void testPersistConflictOperations() throws Exception {
     doTestPersistConflictOperations(true);
   }
   
   @Test
-  public void testPersistConflictOperationsAsync() throws Throwable {
+  public void testPersistConflictOperationsAsync() throws Exception {
     doTestPersistConflictOperations(false);
   }
 
@@ -854,7 +847,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * tag, while another member will persist both of the 2 operations.
    * Overall, their RVV should match after the operations.  
    */
-  public void doTestPersistConflictOperations(boolean diskSync) throws Throwable {
+  public void doTestPersistConflictOperations(boolean diskSync) throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1006,7 +999,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * regions can negotiate who has the latest data during recovery.
    */
   @Test
-  public void testTransmitCrashedMembersWithNonPeristentRegion() throws Throwable {
+  public void testTransmitCrashedMembersWithNonPeristentRegion() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1049,7 +1042,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   }
   
   @Test
-  public void testSplitBrain() throws Throwable {
+  public void testSplitBrain() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1094,7 +1087,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * for the member to come back for starting.
    */
   @Test
-  public void testCrashDuringGII() throws Throwable { 
+  public void testCrashDuringGII() throws Exception { 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1197,7 +1190,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * while a distributed destroy is in progress
    */
   @Test
-  public void testGIIDuringDestroy() throws Throwable { 
+  public void testGIIDuringDestroy() throws Exception { 
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
     final VM vm1 = host.getVM(1);
@@ -1295,7 +1288,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   }
   
   @Test
-  public void testCrashDuringPreparePersistentId() throws Throwable { 
+  public void testCrashDuringPreparePersistentId() throws Exception { 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1357,7 +1350,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   }
   
   @Test
-  public void testSplitBrainWithNonPersistentRegion() throws Throwable {
+  public void testSplitBrainWithNonPersistentRegion() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1393,7 +1386,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   }
 
   @Test
-  public void testMissingEntryOnDisk() throws Throwable {
+  public void testMissingEntryOnDisk() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1452,10 +1445,10 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   /**
    * Tests to make sure that we stop waiting for a member
    * that we revoke.
-   * @throws Throwable
+   * @throws Exception
    */
   @Test
-  public void testCompactFromAdmin() throws Throwable {
+  public void testCompactFromAdmin() throws Exception {
     Host host = Host.getHost(0);
     final VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1533,7 +1526,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   }
   
   @Test
-  public void testCloseDuringRegionOperation() throws Throwable {
+  public void testCloseDuringRegionOperation() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1610,8 +1603,9 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
     checkConcurrentCloseValue(vm0, vm1, 1, lastSuccessfulInt1);
   }
   
-  @Ignore("Disabled due to bug #52240")
-  public void DISABLED_testCloseDuringRegionOperationWithTX() throws Throwable {
+  @Ignore("TODO: Disabled due to bug #52240")
+  @Test
+  public void testCloseDuringRegionOperationWithTX() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1697,7 +1691,7 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
    * This is bug XX.
    */
   @Test
-  public void testRecoverAfterConflict() throws Throwable {
+  public void testRecoverAfterConflict() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -1810,14 +1804,14 @@ public class PersistentRecoveryOrderDUnitTest extends PersistentReplicatedTestBa
   @Override
   public Properties getDistributedSystemProperties() {
     LogWriterUtils.getLogWriter().info("Looking for ack-wait-threshold");
-    String s = System.getProperty("gemfire.ack-wait-threshold");
+    String s = System.getProperty(DistributionConfig.GEMFIRE_PREFIX + "ack-wait-threshold");
     if (s != null) {
       SAVED_ACK_WAIT_THRESHOLD = s;
       LogWriterUtils.getLogWriter().info("removing system property gemfire.ack-wait-threshold");
-      System.getProperties().remove("gemfire.ack-wait-threshold");
+      System.getProperties().remove(DistributionConfig.GEMFIRE_PREFIX + "ack-wait-threshold");
     }
     Properties props = super.getDistributedSystemProperties();
-    props.put(DistributionConfig.ACK_WAIT_THRESHOLD_NAME, "5");
+    props.put(ACK_WAIT_THRESHOLD, "5");
     return props;
   }
 

@@ -82,7 +82,7 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  *
  * TODO:davidw: Test {@link CacheStatistics}
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 public abstract class RegionTestCase extends JUnit4CacheTestCase {
   

@@ -55,7 +55,7 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 /**
  * Test {@link RegionMembershipListener}
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 @Category(DistributedTest.class)
 public class RegionMembershipListenerDUnitTest extends JUnit4CacheTestCase {

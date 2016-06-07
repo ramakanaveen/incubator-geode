@@ -16,19 +16,18 @@
  */
 package com.gemstone.gemfire.distributed;
 
-import static org.junit.Assert.*;
+import com.gemstone.gemfire.internal.lang.StringUtils;
+import com.gemstone.gemfire.test.junit.categories.UnitTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.internal.lang.StringUtils;
-import com.gemstone.gemfire.test.junit.categories.UnitTest;
+import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * The AbstractLauncherTest class is a test suite of unit tests testing the contract and functionality
@@ -37,7 +36,7 @@ import com.gemstone.gemfire.test.junit.categories.UnitTest;
  * @see com.gemstone.gemfire.distributed.AbstractLauncher
  * @see org.junit.Assert
  * @see org.junit.Test
- * @since 7.0
+ * @since GemFire 7.0
  */
 @Category(UnitTest.class)
 public class AbstractLauncherTest {
@@ -72,22 +71,22 @@ public class AbstractLauncherTest {
   public void testIsSet() {
     final Properties properties = new Properties();
 
-    assertFalse(properties.containsKey(DistributionConfig.NAME_NAME));
-    assertFalse(AbstractLauncher.isSet(properties, DistributionConfig.NAME_NAME));
+    assertFalse(properties.containsKey(NAME));
+    assertFalse(AbstractLauncher.isSet(properties, NAME));
 
-    properties.setProperty(DistributionConfig.NAME_NAME, "");
+    properties.setProperty(NAME, "");
 
-    assertTrue(properties.containsKey(DistributionConfig.NAME_NAME));
-    assertFalse(AbstractLauncher.isSet(properties, DistributionConfig.NAME_NAME));
+    assertTrue(properties.containsKey(NAME));
+    assertFalse(AbstractLauncher.isSet(properties, NAME));
 
-    properties.setProperty(DistributionConfig.NAME_NAME, "  ");
+    properties.setProperty(NAME, "  ");
 
-    assertTrue(properties.containsKey(DistributionConfig.NAME_NAME));
-    assertFalse(AbstractLauncher.isSet(properties, DistributionConfig.NAME_NAME));
+    assertTrue(properties.containsKey(NAME));
+    assertFalse(AbstractLauncher.isSet(properties, NAME));
 
-    properties.setProperty(DistributionConfig.NAME_NAME, "memberOne");
+    properties.setProperty(NAME, "memberOne");
 
-    assertTrue(AbstractLauncher.isSet(properties, DistributionConfig.NAME_NAME));
+    assertTrue(AbstractLauncher.isSet(properties, NAME));
     assertFalse(AbstractLauncher.isSet(properties, "NaMe"));
   }
 
@@ -116,8 +115,8 @@ public class AbstractLauncherTest {
     Properties distributedSystemProperties = launcher.getDistributedSystemProperties();
 
     assertNotNull(distributedSystemProperties);
-    assertTrue(distributedSystemProperties.containsKey(DistributionConfig.NAME_NAME));
-    assertEquals("memberOne", distributedSystemProperties.getProperty(DistributionConfig.NAME_NAME));
+    assertTrue(distributedSystemProperties.containsKey(NAME));
+    assertEquals("memberOne", distributedSystemProperties.getProperty(NAME));
 
     launcher = createAbstractLauncher(null, "22");
 
@@ -128,7 +127,7 @@ public class AbstractLauncherTest {
     distributedSystemProperties = launcher.getDistributedSystemProperties();
 
     assertNotNull(distributedSystemProperties);
-    assertFalse(distributedSystemProperties.containsKey(DistributionConfig.NAME_NAME));
+    assertFalse(distributedSystemProperties.containsKey(NAME));
 
     launcher = createAbstractLauncher(StringUtils.EMPTY_STRING, "333");
 
@@ -139,7 +138,7 @@ public class AbstractLauncherTest {
     distributedSystemProperties = launcher.getDistributedSystemProperties();
 
     assertNotNull(distributedSystemProperties);
-    assertFalse(distributedSystemProperties.containsKey(DistributionConfig.NAME_NAME));
+    assertFalse(distributedSystemProperties.containsKey(NAME));
 
     launcher = createAbstractLauncher("  ", "4444");
 
@@ -150,7 +149,7 @@ public class AbstractLauncherTest {
     distributedSystemProperties = launcher.getDistributedSystemProperties();
 
     assertNotNull(distributedSystemProperties);
-    assertFalse(distributedSystemProperties.containsKey(DistributionConfig.NAME_NAME));
+    assertFalse(distributedSystemProperties.containsKey(NAME));
   }
 
   @Test
@@ -168,7 +167,7 @@ public class AbstractLauncherTest {
     Properties distributedSystemProperties = launcher.getDistributedSystemProperties(defaults);
 
     assertNotNull(distributedSystemProperties);
-    assertEquals(launcher.getMemberName(), distributedSystemProperties.getProperty(DistributionConfig.NAME_NAME));
+    assertEquals(launcher.getMemberName(), distributedSystemProperties.getProperty(NAME));
     assertEquals("testValue", distributedSystemProperties.getProperty("testKey"));
   }
 

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -80,7 +81,7 @@ public class HARegionJUnitTest {
    * create the cache
    */
   private Cache createCache() throws TimeoutException, CacheWriterException, GatewayException, CacheExistsException, RegionExistsException {
-    return new CacheFactory().set("mcast-port",  "0").create();
+    return new CacheFactory().set(MCAST_PORT, "0").create();
   }
 
   /**

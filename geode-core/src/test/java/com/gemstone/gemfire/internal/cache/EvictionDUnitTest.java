@@ -16,20 +16,14 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.EvictionAlgorithm;
@@ -38,15 +32,10 @@ import com.gemstone.gemfire.internal.cache.lru.MemLRUCapacityController;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-@Ignore("Test was disabled by renaming to DisabledTest")
 @Category(DistributedTest.class)
+@Ignore("TODO: Test was disabled by renaming to DisabledTest")
 public class EvictionDUnitTest extends EvictionTestBase {
-  private static final long serialVersionUID = 270073077723092256L;
 
-  public EvictionDUnitTest() {
-    super();
-  }
- 
   @Test
   public void testDummyInlineNCentralizedEviction() {
     prepareScenario1(EvictionAlgorithm.LRU_HEAP,0);
@@ -118,8 +107,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
      
     assertEquals(extraEntries,((AbstractLRURegionMap)pr.entries)._getLruList().stats().getEvictions());
   }
-  
-  
+
   @Test
   public void testEntryLru() {
     createCache();
@@ -185,8 +173,7 @@ public class EvictionDUnitTest extends EvictionTestBase {
     putData("PR1", 60, 1);
     validateNoOfEvictions("PR1", 20);
   }
-  
-  
+
   @Test
   public void testMemLruForPRAndDR() {
     createCache();
@@ -230,37 +217,5 @@ public class EvictionDUnitTest extends EvictionTestBase {
         assertEquals(8, size.intValue());
       }
     }
-
-    /*
-    final PartitionedRegion pr1 = (PartitionedRegion)cache.getRegion("PR1");
-    final PartitionedRegion pr2 = (PartitionedRegion)cache.getRegion("PR2");
-    final PartitionedRegion pr3 = (PartitionedRegion)cache.getRegion("PR3");
-    final DistributedRegion dr1 = (DistributedRegion)cache.getRegion("DR1");
-    
-    for (int counter = 1; counter <= 18; counter++) {
-      pr1.put(new Integer(counter), new byte[1 * 1024 * 1024]);
-    }
-    getLogWriter().info("Size of PR1 before eviction = "+ pr1.size());
-    
-    for (int counter = 1; counter <= 30; counter++) {
-      pr2.put(new Integer(counter), new byte[1 * 1024 * 1024]);
-    }
-    getLogWriter().info("Size of PR2 before eviction = "+ pr2.size());
-    
-    for (int counter = 1; counter <= 45; counter++) {
-      pr3.put(new Integer(counter), new byte[1 * 1024 * 1024]);
-    }
-    getLogWriter().info("Size of PR3 before eviction = "+ pr3.size());
-    
-    for (int counter = 1; counter <= 150; counter++) {
-      dr1.put(new Integer(counter), new byte[1 * 1024 * 1024]);
-    }
-    getLogWriter().info("Size of DR1 before eviction = "+ dr1.size());
-    
-    
-    getLogWriter().info("Size of PR1 after eviction = "+ pr1.size());
-    getLogWriter().info("Size of PR2 after eviction = "+ pr2.size());
-    getLogWriter().info("Size of PR3 after eviction = "+ pr3.size());
-    getLogWriter().info("Size of PR4 after eviction = "+ dr1.size());*/
   }
 }

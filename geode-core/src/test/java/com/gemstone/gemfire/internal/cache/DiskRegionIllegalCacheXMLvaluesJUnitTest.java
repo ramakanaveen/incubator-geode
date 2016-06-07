@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -47,8 +48,8 @@ public class DiskRegionIllegalCacheXMLvaluesJUnitTest {
       dir.mkdir();
       dir.deleteOnExit();
       Properties props = new Properties();
-      props.setProperty("mcast-port", "0");
-      props.setProperty("cache-xml-file", TestUtil.getResourcePath(getClass(), path));
+      props.setProperty(MCAST_PORT, "0");
+      props.setProperty(CACHE_XML_FILE, TestUtil.getResourcePath(getClass(), path));
       ds = DistributedSystem.connect(props);
       try {
        

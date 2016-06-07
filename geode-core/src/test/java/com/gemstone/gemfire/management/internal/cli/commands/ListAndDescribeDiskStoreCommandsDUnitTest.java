@@ -16,29 +16,26 @@
  */
 package com.gemstone.gemfire.management.internal.cli.commands;
 
-import static com.gemstone.gemfire.distributed.internal.DistributionConfig.*;
-import static com.gemstone.gemfire.test.dunit.Assert.*;
-import static com.gemstone.gemfire.test.dunit.Host.*;
-import static com.gemstone.gemfire.test.dunit.LogWriterUtils.*;
-
-import java.io.Serializable;
-import java.util.Properties;
-
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.DiskStore;
-import com.gemstone.gemfire.cache.DiskStoreFactory;
-import com.gemstone.gemfire.cache.RegionFactory;
-import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.*;
+import com.gemstone.gemfire.distributed.DistributedSystemConfigProperties;
 import com.gemstone.gemfire.management.cli.Result;
 import com.gemstone.gemfire.management.internal.cli.i18n.CliStrings;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnableIF;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.Serializable;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.test.dunit.Assert.assertEquals;
+import static com.gemstone.gemfire.test.dunit.Assert.assertNotNull;
+import static com.gemstone.gemfire.test.dunit.Host.getHost;
+import static com.gemstone.gemfire.test.dunit.LogWriterUtils.getDUnitLogLevel;
+import static com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * The ListAndDescribeDiskStoreCommandsDUnitTest class is a test suite of functional tests cases testing the proper
@@ -46,7 +43,7 @@ import org.junit.experimental.categories.Category;
  *
  * @see com.gemstone.gemfire.management.internal.cli.commands.CliCommandTestBase
  * @see com.gemstone.gemfire.management.internal.cli.commands.DiskStoreCommands
- * @since 7.0
+ * @since GemFire 7.0
  */
 @Category(DistributedTest.class)
 public class ListAndDescribeDiskStoreCommandsDUnitTest extends CliCommandTestBase {
@@ -126,8 +123,8 @@ public class ListAndDescribeDiskStoreCommandsDUnitTest extends CliCommandTestBas
   private Properties createDistributedSystemProperties(final String gemfireName) {
     final Properties distributedSystemProperties = new Properties();
 
-    distributedSystemProperties.setProperty(LOG_LEVEL_NAME, getDUnitLogLevel());
-    distributedSystemProperties.setProperty(NAME_NAME, gemfireName);
+    distributedSystemProperties.setProperty(DistributedSystemConfigProperties.LOG_LEVEL, getDUnitLogLevel());
+    distributedSystemProperties.setProperty(NAME, gemfireName);
 
     return distributedSystemProperties;
   }
@@ -174,7 +171,7 @@ public class ListAndDescribeDiskStoreCommandsDUnitTest extends CliCommandTestBas
     }
 
     public String getName() {
-      return getDistributedSystemConfiguration().getProperty(NAME_NAME);
+      return getDistributedSystemConfiguration().getProperty(NAME);
     }
 
     public VM getVm() {

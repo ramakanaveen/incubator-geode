@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -29,7 +30,6 @@ import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
@@ -39,7 +39,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Tests the performance of Regions when Roles are assigned.
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 @Category(DistributedTest.class)
 public class RolePerformanceDUnitTest extends JUnit4CacheTestCase {
@@ -125,7 +125,7 @@ public class RolePerformanceDUnitTest extends JUnit4CacheTestCase {
         public void run() {
           Properties config = new Properties();
           if (assignRoles) {
-            config.setProperty(DistributionConfig.ROLES_NAME, vmRoles[vm][0]);
+            config.setProperty(ROLES, vmRoles[vm][0]);
           }
           getSystem(config);
         }

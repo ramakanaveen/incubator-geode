@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.distributed.internal.tcpserver;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -28,7 +29,6 @@ import org.junit.experimental.categories.Category;
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.gms.locator.FindCoordinatorRequest;
@@ -100,10 +100,10 @@ public class TcpServerBackwardCompatDUnitTest extends JUnit4DistributedTestCase 
                             host.getHostName() + "[" + port1 + "]";
     
     final Properties props = new Properties();
-    props.setProperty(DistributionConfig.LOCATORS_NAME, locators);
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
-    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "finest");
+    props.setProperty(LOCATORS, locators);
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
+    props.setProperty(LOG_LEVEL, "finest");
     
     // Start locator0 with props.
     //props.setProperty(DistributionConfig.START_LOCATOR_NAME, host.getHostName() + "["+port0+"]");

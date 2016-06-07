@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -41,11 +42,16 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 @Category(IntegrationTest.class)
 public class MapInterfaceJUnitTest {
 
+  protected boolean hasBeenNotified = false;
+
+  protected Region region2 = null;
+  protected int counter = 0;
+
   @Test
   public void testLocalClear() {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     DistributedSystem ds = DistributedSystem.connect(props);
     Cache cache = null;
     Region region = null;
@@ -97,8 +103,8 @@ public class MapInterfaceJUnitTest {
   @Test
   public void testLocalPutAll() {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     DistributedSystem ds = DistributedSystem.connect(props);
     Cache cache = null;
     Region region = null;
@@ -150,14 +156,11 @@ public class MapInterfaceJUnitTest {
     ds.disconnect();
   }
  
-  protected boolean hasBeenNotified = false;
-
   @Test
   public void testBeforeRegionClearCallBack() {
-   
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     DistributedSystem ds = DistributedSystem.connect(props);
     Cache cache = null;
     Region region = null;
@@ -168,6 +171,7 @@ public class MapInterfaceJUnitTest {
       factory.setScope(Scope.LOCAL);
       factory.setCacheWriter(new CacheWriterAdapter() {
 
+        @Override
         public void beforeRegionClear(RegionEvent event) throws CacheWriterException {
           synchronized (this) {
             this.notify();
@@ -222,14 +226,11 @@ public class MapInterfaceJUnitTest {
     ds.disconnect();
   }
 
-  protected Region region2 = null; 
-  protected int counter = 0;
   @Test
   public void testSetValue() {
-
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     DistributedSystem ds = DistributedSystem.connect(props);
     Cache cache = null;
   
@@ -240,6 +241,7 @@ public class MapInterfaceJUnitTest {
       factory.setScope(Scope.LOCAL);
       factory.setCacheWriter(new CacheWriterAdapter() {
 
+        @Override
         public void beforeUpdate(EntryEvent event) throws CacheWriterException {
           synchronized (this) {
             this.notify();
@@ -269,7 +271,6 @@ public class MapInterfaceJUnitTest {
     catch (Exception e) {
       throw new AssertionError(" failed due to ", e);
     }
-   
   }
   
   class DoesClear implements Runnable {
@@ -280,6 +281,7 @@ public class MapInterfaceJUnitTest {
       this.region = reg;
     }
 
+    @Override
     public void run() {
       this.region.clear();
     }
@@ -287,10 +289,10 @@ public class MapInterfaceJUnitTest {
   
   class DoesPut implements Runnable {
 
-  
     DoesPut() {
     }
 
+    @Override
     public void run() {
      ((Map.Entry)(MapInterfaceJUnitTest.this.region2.entrySet().iterator().next())).setValue(new Integer(8));
     }

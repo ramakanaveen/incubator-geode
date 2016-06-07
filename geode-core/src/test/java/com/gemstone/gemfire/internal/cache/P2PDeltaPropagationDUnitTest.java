@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -37,7 +38,6 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.tcp.ConnectionTable;
 import com.gemstone.gemfire.test.dunit.Host;
@@ -455,7 +455,7 @@ public class P2PDeltaPropagationDUnitTest extends JUnit4DistributedTestCase {
     P2PDeltaPropagationDUnitTest test = new P2PDeltaPropagationDUnitTest();
     Properties props = new Properties();
     if (!flag) {
-      props.setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME, "false");
+      props.setProperty(DELTA_PROPAGATION, "false");
     }    
     cache = test.createCache(props);
     AttributesFactory factory = new AttributesFactory();

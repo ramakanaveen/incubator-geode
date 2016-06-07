@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -35,7 +36,6 @@ import com.gemstone.gemfire.cache.DiskStore;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 import com.gemstone.gemfire.util.test.TestUtil;
 
@@ -45,7 +45,7 @@ import com.gemstone.gemfire.util.test.TestUtil;
  * A cache and region are created using an xml. The regions are then verified to make sure
  * that all the attributes have been correctly set
  * 
- * @since 5.1
+ * @since GemFire 5.1
  */
 @Category(IntegrationTest.class)
 public class DiskRegCacheXmlJUnitTest {
@@ -72,10 +72,10 @@ public class DiskRegCacheXmlJUnitTest {
     dirs[2] = file3;
     // Connect to the GemFire distributed system
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.NAME_NAME, "test");
+    props.setProperty(NAME, "test");
     String path = TestUtil.getResourcePath(getClass(), "DiskRegCacheXmlJUnitTest.xml");
-    props.setProperty("mcast-port", "0");
-    props.setProperty("cache-xml-file", path);
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(CACHE_XML_FILE, path);
     ds = DistributedSystem.connect(props);
     // Create the cache which causes the cache-xml-file to be parsed
     cache = CacheFactory.create(ds);

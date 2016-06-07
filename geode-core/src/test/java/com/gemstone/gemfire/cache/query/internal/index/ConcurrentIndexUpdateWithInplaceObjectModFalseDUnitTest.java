@@ -41,6 +41,7 @@ import com.gemstone.gemfire.cache.query.internal.index.MemoryIndexStore.MemoryIn
 import com.gemstone.gemfire.cache.query.partitioned.PRQueryDUnitHelper;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.cache30.CacheTestCase;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.CachedDeserializable;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
@@ -98,7 +99,7 @@ public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends JUn
       try {
         Cache newCache = GemFireCacheImpl.getInstance();
         if(null == newCache) {
-          System.setProperty("gemfire.DISABLE_DISCONNECT_DS_ON_CACHE_CLOSE", "true");
+          System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "DISABLE_DISCONNECT_DS_ON_CACHE_CLOSE", "true");
           newCache = CacheFactory.create(getSystem());
         }
         PRQueryDUnitHelper.setCache(newCache);
@@ -109,16 +110,9 @@ public class ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest extends JUn
       } catch (Exception ex) {
         Assert.fail("Checked exception while initializing cache??", ex);
       } finally {
-        System.clearProperty("gemfire.DISABLE_DISCONNECT_DS_ON_CACHE_CLOSE");
+        System.clearProperty(DistributionConfig.GEMFIRE_PREFIX + "DISABLE_DISCONNECT_DS_ON_CACHE_CLOSE");
       }
     }
-  }
-
-  /**
-   * @param name
-   */
-  public ConcurrentIndexUpdateWithInplaceObjectModFalseDUnitTest() {
-    super();
   }
 
   @Override

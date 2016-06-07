@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -37,7 +38,6 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.client.internal.ServerRegionProxy;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.EventID;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
@@ -58,15 +58,13 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class VerifyUpdatesFromNonInterestEndPointDUnitTest extends JUnit4DistributedTestCase {
 
-  VM vm0 = null;
-
-  VM vm1 = null;
-
-  VM vm2 = null;
+  private VM vm0 = null;
+  private VM vm1 = null;
+  private VM vm2 = null;
 
   private int PORT1;
   private int PORT2;
-  private static final String REGION_NAME = "VerifyUpdatesFromNonInterestEndPointDUnitTest_region";
+  private static final String REGION_NAME = VerifyUpdatesFromNonInterestEndPointDUnitTest.class.getSimpleName() + "_region";
 
   private static Cache cache = null;
 
@@ -101,7 +99,6 @@ public class VerifyUpdatesFromNonInterestEndPointDUnitTest extends JUnit4Distrib
     return cache;
   }
 
-
   @Test
   public void testVerifyUpdatesFromNonInterestEndPoint()
   {
@@ -115,7 +112,6 @@ public class VerifyUpdatesFromNonInterestEndPointDUnitTest extends JUnit4Distrib
     Wait.pause(30000);
     vm2.invoke(() -> VerifyUpdatesFromNonInterestEndPointDUnitTest.verifyPut());
   }
-
 
   public static void acquireConnectionsAndPut(Integer port)
   {
@@ -165,8 +161,8 @@ public class VerifyUpdatesFromNonInterestEndPointDUnitTest extends JUnit4Distrib
   {
     VerifyUpdatesFromNonInterestEndPointDUnitTest test = new VerifyUpdatesFromNonInterestEndPointDUnitTest();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     cache = test.createCache(props);
     Pool p;
     try {
@@ -208,7 +204,6 @@ public class VerifyUpdatesFromNonInterestEndPointDUnitTest extends JUnit4Distrib
     server1.start();
     return new Integer(server1.getPort());
   }
-
 
   public static void registerKey()
   {

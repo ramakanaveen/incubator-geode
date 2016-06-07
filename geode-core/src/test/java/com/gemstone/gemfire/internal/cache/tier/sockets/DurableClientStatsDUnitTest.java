@@ -16,7 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -33,7 +34,6 @@ import com.gemstone.gemfire.cache.client.Pool;
 import com.gemstone.gemfire.cache.client.PoolFactory;
 import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.PoolFactoryImpl;
 import com.gemstone.gemfire.test.dunit.Assert;
@@ -70,10 +70,6 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
 
   private final String K1 = "Key1";
 
-  public DurableClientStatsDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     Host host = Host.getHost(0);
@@ -92,8 +88,6 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
   
   @Test
   public void testNonDurableClientStatistics() {
-
-
     // Step 1: Starting the servers
     PORT1 = ((Integer)this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServer( regionName, new Boolean(true)
              ))).intValue();
@@ -129,9 +123,8 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
 
     this.server1VM.invoke(() -> DurableClientStatsDUnitTest.checkStatisticsWithExpectedValues( new Integer(0),
             new Integer(0), new Integer(0) ));
-  
-    
   }
+
   @Test
   public void testDurableClientStatistics() {
 
@@ -171,9 +164,7 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
     this.server1VM.invoke(() -> DurableClientStatsDUnitTest.checkStatisticsWithExpectedValues( new Integer(3),
             new Integer(4), new Integer(2) ));
   }
-  
-  
-  
+
   public void startRegisterAndCloseDurableClientCache(int durableClientTimeout) {
     final String durableClientId = getName() + "_client";
 
@@ -280,7 +271,7 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
           + stats.get_eventEnqueuedWhileClientAwayCount());
     }
     catch (Exception e) {
-      fail("Exception thrown while executing checkStatistics()");
+      fail("Exception thrown while executing checkStatistics()", e);
     }
   }
 
@@ -304,7 +295,7 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
       assertEquals(enqueueCount, stats.get_eventEnqueuedWhileClientAwayCount());
     }
     catch (Exception e) {
-      fail("Exception thrown while executing checkStatisticsWithExpectedValues()");
+      fail("Exception thrown while executing checkStatisticsWithExpectedValues()", e);
     }
   }
 
@@ -350,9 +341,7 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
       assertEquals(value, r.getEntry(key).getValue());
     }
     catch (Exception e) {
-
-      fail("Put in Server has some fight");
-
+      fail("Put in Server has some fight", e);
     }
   }
 
@@ -368,11 +357,11 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
   private Properties getDurableClientDistributedSystemProperties(
       String durableClientId, int durableClientTimeout) {
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    properties.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME,
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
+    properties.setProperty(DURABLE_CLIENT_ID,
         durableClientId);
-    properties.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME,
+    properties.setProperty(DURABLE_CLIENT_TIMEOUT,
         String.valueOf(durableClientTimeout));
     return properties;
   }
@@ -380,8 +369,8 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
   private Properties getNonDurableClientDistributedSystemProperties(
       String durableClientId, int durableClientTimeout) {
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
     return properties;
   }
 }

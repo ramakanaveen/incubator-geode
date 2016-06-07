@@ -46,6 +46,8 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 import org.junit.Ignore;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 /**
  * Test for accessing query bind parameters from authorization callbacks
  * 
@@ -75,10 +77,10 @@ public class QueryParamsAuthorizationDUnitTest extends JUnit4CacheTestCase {
       @Override
       public Object call() throws Exception {
         CacheFactory cf = new CacheFactory()
-            .set("mcast-port", "0")
-            .set("security-client-accessor",
+            .set(MCAST_PORT, "0")
+            .set(SECURITY_CLIENT_ACCESSOR,
                 "com.gemstone.gemfire.cache.query.dunit.QueryAuthorization.create")
-            .set("security-client-authenticator", DummyAuthenticator.class.getName() + ".create");
+            .set(SECURITY_CLIENT_AUTHENTICATOR, DummyAuthenticator.class.getName() + ".create");
         Cache cache = getCache(cf);
         cache.createRegionFactory(RegionShortcut.REPLICATE).create(regName);
         CacheServer server = cache.addCacheServer();
@@ -95,9 +97,9 @@ public class QueryParamsAuthorizationDUnitTest extends JUnit4CacheTestCase {
       public Object call() throws Exception {
         ClientCacheFactory ccf = new ClientCacheFactory()
             .addPoolServer(NetworkUtils.getServerHostName(server1.getHost()), port)
-            .set("security-client-auth-init", UserPasswordAuthInit.class.getName() + ".create")
-            .set("security-username", "root")
-            .set("security-password", "root");
+            .set(SECURITY_CLIENT_AUTH_INIT, UserPasswordAuthInit.class.getName() + ".create")
+            .set(SECURITY_PREFIX+"username", "root")
+            .set(SECURITY_PREFIX+"password", "root");
 
         ClientCache cache = getClientCache(ccf);
         Region r1 = cache.createClientRegionFactory(

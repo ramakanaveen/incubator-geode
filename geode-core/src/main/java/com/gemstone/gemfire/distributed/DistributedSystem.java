@@ -17,18 +17,6 @@
 
 package com.gemstone.gemfire.distributed;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import com.gemstone.gemfire.CancelCriterion;
 import com.gemstone.gemfire.LogWriter;
 import com.gemstone.gemfire.StatisticsFactory;
@@ -47,6 +35,15 @@ import com.gemstone.gemfire.internal.util.IOUtils;
 import com.gemstone.gemfire.memcached.GemFireMemcachedServer;
 import com.gemstone.gemfire.redis.GemFireRedisServer;
 import com.gemstone.gemfire.security.GemFireSecurityException;
+
+import java.io.File;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * A "connection" to a GemFire distributed system.  A
@@ -1480,7 +1477,7 @@ import com.gemstone.gemfire.security.GemFireSecurityException;
  * </dl>
  * 
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 public abstract class DistributedSystem implements StatisticsFactory {
 
@@ -1577,12 +1574,6 @@ public abstract class DistributedSystem implements StatisticsFactory {
       // fix for bug 33992
       config = new Properties();
     }
-//     {
-//       LogWriterI18n logger =
-//         new LocalLogWriter(LocalLogWriter.ALL_LEVEL, System.out);
-//       logger.info("DistributedSystem: Connecting with " + config,
-//                   new Exception("Stack trace"));
-//     }
     synchronized (existingSystemsLock) {
       if (DistributionManager.isDedicatedAdminVM) {
         // For a dedicated admin VM, check to see if there is already
@@ -1686,7 +1677,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * @param conserveSockets If <code>true</code> then calling thread will share
    *   socket connections with other threads.
    *   If <code>false</code> then calling thread will have its own sockets.
-   * @since 4.1
+   * @since GemFire 4.1
    */
   public static void setThreadsSocketPolicy(boolean conserveSockets) {
     if (conserveSockets) {
@@ -1700,7 +1691,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
 
   /**
    * Frees up any socket resources owned by the calling thread.
-   * @since 4.1
+   * @since GemFire 4.1
    */
   public static void releaseThreadsSockets() {
     ConnectionTable.releaseThreadsSockets();
@@ -1710,7 +1701,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * Returns an existing connection to the distributed system
    * described by the given properties.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   private static DistributedSystem getConnection(Properties config) {
     // In an admin VM you can have a connection to more than one
@@ -1734,7 +1725,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * appropriate for administration.  This method is for internal use
    * only by the admin API.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   protected static DistributedSystem connectForAdmin(Properties props) {
     DistributedSystem existing = getConnection(props);
@@ -1747,7 +1738,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
       //  String prop=(String)en.nextElement();
       //  logger.info(prop + "=" + props.getProperty(prop));
       //}
-      props.setProperty(DistributionConfig.CONSERVE_SOCKETS_NAME, "true");
+      props.setProperty(CONSERVE_SOCKETS, "true");
       // LOG: no longer using the LogWriter that was passed in
       return connect(props);
     }
@@ -1755,7 +1746,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
 
   /**
    * see {@link com.gemstone.gemfire.admin.AdminDistributedSystemFactory}
-   * @since 5.7
+   * @since GemFire 5.7
    */
   protected static void setEnableAdministrationOnly(boolean adminOnly) {
     synchronized (existingSystemsLock) {
@@ -1783,7 +1774,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
 //    * @see #connect(Properties)
 //    * @see com.gemstone.gemfire.admin.SystemMembershipListener#memberJoined
 //    *
-//    * @since 4.0
+//    * @since GemFire 4.0
 //    */
 //   public static DistributedSystem connect(Properties config,
 //                                           Object callback) {
@@ -1820,7 +1811,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * @throws IllegalStateException
    *                 This VM has {@linkplain #disconnect() disconnected} from
    *                 the distributed system.
-   * @since 5.5
+   * @since GemFire 5.5
    */
   public abstract LogWriter getSecurityLogWriter();
 
@@ -1833,7 +1824,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
   /**
    * Returns the security specific configuration properties.
    * @return the configuration Properties
-   * @since 5.5
+   * @since GemFire 5.5
    */
   public abstract Properties getSecurityProperties();
 
@@ -1883,7 +1874,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    *
    * @see com.gemstone.gemfire.admin.SystemMembershipEvent#getMemberId
    *
-   * @since 4.0
+   * @since GemFire 4.0
    * @deprecated as of GemFire 5.0, use {@link #getDistributedMember} instead
    */
   @Deprecated
@@ -1893,14 +1884,14 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * Returns the {@link DistributedMember} that identifies this connection to
    * the distributed system.
    * @return the member that represents this distributed system connection.
-   * @since 5.0
+   * @since GemFire 5.0
    */
   public abstract DistributedMember getDistributedMember();
   
   /**
    * Returns a set of all the other members in this distributed system.
    * @return returns a set of all the other members in this distributed system.
-   * @since 7.0
+   * @since GemFire 7.0
    */
   public abstract Set<DistributedMember> getAllOtherMembers();
 
@@ -1908,7 +1899,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * Returns a set of all the members in the given group.
    * Members join a group be setting the "groups" gemfire property.
    * @return returns a set of all the member in a group.
-   * @since 7.0
+   * @since GemFire 7.0
    */
   public abstract Set<DistributedMember> getGroupMembers(String group);
   
@@ -1919,7 +1910,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * @return a set of all DistributedMembers that have any interfaces
    * that match the given IP address. May be empty if there are no members.
    * 
-   * @since 7.1
+   * @since GemFire 7.1
    */ 
    public abstract Set<DistributedMember> findDistributedMembers(InetAddress address);
 
@@ -1929,7 +1920,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * @return the distributed member that has the given name, or null if
    * no member is currently running with the given name.
    * 
-   * @since 7.1
+   * @since GemFire 7.1
    */
    public abstract DistributedMember findDistributedMember(String name);
 
@@ -1961,7 +1952,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * 
    * @see #PROPERTIES_FILE_DEFAULT
    * @see #getPropertiesFile()
-   * @since 9.0
+   * @since Geode 1.0
    */
   public static final String PROPERTIES_FILE_PROPERTY = "gemfirePropertyFile";
   
@@ -1972,9 +1963,9 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * 
    * @see #PROPERTIES_FILE_PROPERTY
    * @see #getPropertiesFile()
-   * @since 9.0
+   * @since Geode 1.0
    */
-  public static final String PROPERTIES_FILE_DEFAULT = "gemfire.properties";
+  public static final String PROPERTIES_FILE_DEFAULT = DistributionConfig.GEMFIRE_PREFIX + "properties";
 
   /**
    * Returns the current value of {@link #PROPERTIES_FILE_PROPERTY} system 
@@ -1982,7 +1973,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * 
    * @see #PROPERTIES_FILE_PROPERTY
    * @see #PROPERTIES_FILE_DEFAULT
-   * @since 9.0
+   * @since Geode 1.0
    */
   public static String getPropertiesFile() {
 	return System.getProperty(PROPERTIES_FILE_PROPERTY, PROPERTIES_FILE_DEFAULT);
@@ -2009,7 +2000,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * done.
    * 
    * @see #getPropertiesFile()
-   * @since 5.0
+   * @since GemFire 5.0
    * @deprecated As of 9.0, please use {@link #getPropertiesFile()} instead. 
    */
   public static String PROPERTY_FILE = getPropertiesFile();
@@ -2036,7 +2027,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * 
    * @see #SECURITY_PROPERTIES_FILE_DEFAULT
    * @see #getSecurityPropertiesFile()
-   * @since 9.0
+   * @since Geode 1.0
    */
   public static final String SECURITY_PROPERTIES_FILE_PROPERTY = "gemfireSecurityPropertyFile";
   
@@ -2047,7 +2038,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * 
    * @see #SECURITY_PROPERTIES_FILE_PROPERTY
    * @see #getSecurityPropertiesFile()
-   * @since 9.0
+   * @since Geode 1.0
    */
   public static final String SECURITY_PROPERTIES_FILE_DEFAULT = "gfsecurity.properties";
 
@@ -2057,7 +2048,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * 
    * @see #SECURITY_PROPERTIES_FILE_PROPERTY
    * @see #SECURITY_PROPERTIES_FILE_DEFAULT
-   * @since 9.0
+   * @since Geode 1.0
    */
   public static String getSecurityPropertiesFile() {
 	return System.getProperty(SECURITY_PROPERTIES_FILE_PROPERTY, SECURITY_PROPERTIES_FILE_DEFAULT);
@@ -2084,7 +2075,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * done.
    * 
    * @see #getSecurityPropertiesFile()
-   * @since 6.6.2
+   * @since GemFire 6.6.2
    * @deprecated As of 9.0, please use {@link #getSecurityPropertiesFile()} instead. 
    */
   public static String SECURITY_PROPERTY_FILE = getSecurityPropertiesFile();
@@ -2101,7 +2092,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * @see #PROPERTIES_FILE_PROPERTY
    * @see #PROPERTIES_FILE_DEFAULT
    * @see #getPropertiesFile()
-   * @since 9.0
+   * @since Geode 1.0
    */
   public static URL getPropertiesFileURL() {
     return getFileURL(getPropertiesFile());
@@ -2117,7 +2108,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * @return a <code>URL</code> that names the GemFire property file.
    *    Null is returned if no property file was found.
    * @see #getPropertiesFileURL()
-   * @since 5.0
+   * @since GemFire 5.0
    * @deprecated As of 9.0, please use {@link #getPropertiesFileURL()}
    */
   public static URL getPropertyFileURL() {
@@ -2136,7 +2127,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * @see #SECURITY_PROPERTIES_FILE_PROPERTY
    * @see #SECURITY_PROPERTIES_FILE_DEFAULT
    * @see #getSecurityPropertiesFile()
-   * @since 6.6.2
+   * @since GemFire 6.6.2
    */
   public static URL getSecurityPropertiesFileURL() {
     return getFileURL(getSecurityPropertiesFile());

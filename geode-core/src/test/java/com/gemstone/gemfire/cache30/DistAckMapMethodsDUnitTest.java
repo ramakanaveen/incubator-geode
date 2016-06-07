@@ -91,7 +91,7 @@ public class DistAckMapMethodsDUnitTest extends JUnit4DistributedTestCase { // T
     
     public static void createCache(){
         try{
-            //props.setProperty("mcast-port", "1234");
+            //props.setProperty(DistributionConfig.SystemConfigurationProperties.MCAST_PORT, "1234");
             //ds = DistributedSystem.connect(props);
             ds = (new DistAckMapMethodsDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);

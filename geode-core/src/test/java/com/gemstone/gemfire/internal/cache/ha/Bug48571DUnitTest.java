@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
@@ -36,7 +37,6 @@ import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.OSProcess;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
@@ -58,15 +58,11 @@ public class Bug48571DUnitTest extends JUnit4DistributedTestCase {
   private VM client = null;
   private static GemFireCacheImpl cache = null;
   
-  private static final String region = "Bug48571DUnitTest_region";
+  private static final String region = Bug48571DUnitTest.class.getSimpleName() + "_region";
   private static int numOfCreates = 0;
   private static int numOfUpdates = 0;
   private static int numOfInvalidates = 0;
   private static boolean lastKeyReceived = false;
-
-  public Bug48571DUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -112,7 +108,6 @@ public class Bug48571DUnitTest extends JUnit4DistributedTestCase {
       }
       @Override
       public String description() {
-        // TODO Auto-generated method stub
         return "Proxy has not paused yet";
       }
     };
@@ -142,15 +137,14 @@ public class Bug48571DUnitTest extends JUnit4DistributedTestCase {
     server.invoke(() -> Bug48571DUnitTest.verifyStats());
   }
 
-
   public static int createServerCache() throws Exception {
     Properties props = new Properties();
-    props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
-    props.setProperty("log-file", "server_" + OSProcess.getId() + ".log");
-    props.setProperty("log-level", "info");
-    props.setProperty("statistic-archive-file", "server_" + OSProcess.getId()
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
+    props.setProperty(LOG_FILE, "server_" + OSProcess.getId() + ".log");
+    props.setProperty(LOG_LEVEL, "info");
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "server_" + OSProcess.getId()
         + ".gfs");
-    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
     CacheFactory cf = new CacheFactory(props);
 
     DistributedSystem ds = new Bug48571DUnitTest().getSystem(props);
@@ -175,16 +169,16 @@ public class Bug48571DUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCache(Host host, Integer port) throws Exception {
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    props.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME, "durable-48571");
-    props.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, "300000");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
+    props.setProperty(DURABLE_CLIENT_ID, "durable-48571");
+    props.setProperty(DURABLE_CLIENT_TIMEOUT, "300000");
 
-    props.setProperty("log-file", "client_" + OSProcess.getId() + ".log");
-    props.setProperty("log-level", "info");
-    props.setProperty("statistic-archive-file", "client_" + OSProcess.getId()
+    props.setProperty(LOG_FILE, "client_" + OSProcess.getId() + ".log");
+    props.setProperty(LOG_LEVEL, "info");
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "client_" + OSProcess.getId()
         + ".gfs");
-    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
 
     ClientCacheFactory ccf = new ClientCacheFactory(props);
     ccf.setPoolSubscriptionEnabled(true);
@@ -280,7 +274,6 @@ public class Bug48571DUnitTest extends JUnit4DistributedTestCase {
     };
     Wait.waitForCriterion(wc, 60*1000, 500, true);
   }
-
 
   public static void verifyStats() throws Exception {
     CacheClientNotifier ccn = CacheClientNotifier.getInstance();

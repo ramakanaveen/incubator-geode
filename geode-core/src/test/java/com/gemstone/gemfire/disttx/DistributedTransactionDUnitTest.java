@@ -16,20 +16,16 @@
  */
 package com.gemstone.gemfire.disttx;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -45,20 +41,17 @@ import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache.SubscriptionAttributes;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.ReplyException;
 import com.gemstone.gemfire.i18n.LogWriterI18n;
 import com.gemstone.gemfire.internal.AvailablePort;
-import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.BucketRegion;
+import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.DistTXState;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
 import com.gemstone.gemfire.internal.cache.PartitionedRegion;
 import com.gemstone.gemfire.internal.cache.RegionEntry;
 import com.gemstone.gemfire.internal.cache.TXManagerImpl;
-import com.gemstone.gemfire.internal.cache.TXState;
 import com.gemstone.gemfire.internal.cache.TXStateInterface;
 import com.gemstone.gemfire.internal.cache.TXStateProxyImpl;
 import com.gemstone.gemfire.internal.cache.execute.CustomerIDPartitionResolver;
@@ -72,15 +65,16 @@ import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Port of GemFireXD's corresponding test for distributed transactions
- * 
- *
  */
 @SuppressWarnings("deprecation")
 @Category(DistributedTest.class)
 public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
+
   final protected String CUSTOMER_PR = "customerPRRegion";
   final protected String ORDER_PR = "orderPRRegion";
   final protected String D_REFERENCE = "distrReference";
@@ -93,7 +87,7 @@ public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
     Invoke.invokeInEveryVM(new SerializableCallable() {
       @Override
       public Object call() throws Exception {
-        System.setProperty("gemfire.sync-commits", "true");
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "sync-commits", "true");
         return null;
       }
     });
@@ -113,7 +107,7 @@ public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
     Invoke.invokeInEveryVM(new SerializableCallable() {
       @Override
       public Object call() throws Exception {
-        System.setProperty("gemfire.sync-commits", "false");
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "sync-commits", "false");
         return null;
       }
     });
@@ -188,8 +182,6 @@ public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    //props.put("distributed-transactions", "true");
-//    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
     return props;
   }
 

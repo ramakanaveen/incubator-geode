@@ -16,28 +16,23 @@
  */
 package com.gemstone.gemfire.internal.cache.xmlcache;
 
+import com.gemstone.gemfire.cache.CacheXmlException;
+import com.gemstone.gemfire.distributed.DistributedSystemConfigProperties;
+import com.gemstone.gemfire.internal.ClassPathLoader;
+import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
+import org.xml.sax.*;
+import org.xml.sax.ext.EntityResolver2;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ServiceLoader;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.ext.EntityResolver2;
-
-import com.gemstone.gemfire.cache.CacheXmlException;
-import com.gemstone.gemfire.internal.ClassPathLoader;
-import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 
 /**
  * The abstract superclass of classes that convert XML into a {@link
  * com.gemstone.gemfire.cache.Cache} and vice versa. It provides helper methods
  * and constants.
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 public abstract class CacheXml implements EntityResolver2, ErrorHandler {
 
@@ -48,7 +43,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * Whenever you upgrade the DTD, you will need to search for occurrences of
    * the previous version strings and upgrade them as well.
    *
-   * @since 5.5
+   * @since GemFire 5.5
    */
   public static final String VERSION_LATEST = CacheXml.VERSION_1_0;
   
@@ -67,28 +62,28 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
   /**
    * Namespace URI for older, GemFire {@link CacheXml} documents.
    *
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final String GEMFIRE_NAMESPACE = "http://schema.pivotal.io/gemfire/cache";
 
   /**
    * Namespace URI for {@link CacheXml} documents.
    * 
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final String GEODE_NAMESPACE = "http://geode.apache.org/schema/cache";
 
   /**
    * Namespace prefix for {@link CacheXml} documents.
    * 
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final String PREFIX = "cache";
 
   /**
    * Latest schema location for {@link #GEODE_NAMESPACE}.
    * 
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final String LATEST_SCHEMA_LOCATION = CacheXml.SCHEMA_1_0_LOCATION;
   
@@ -103,27 +98,27 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
   /**
    * Version string for GemFire 8.1
    * 
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final String VERSION_8_1 = "8.1";
   
   /**
    * Version string for Geode 1.0
    * 
-   * @since 1.0
+   * @since Geode 1.0
    */
   public static final String VERSION_1_0 = "1.0";
   
   /**
    * The location of the GemFire 8.1 schema file.
    * 
-   * @since 8.1
+   * @since GemFire 8.1
    */
   protected static final String SCHEMA_8_1_LOCATION = "http://schema.pivotal.io/gemfire/cache/cache-8.1.xsd";
   /**
-   * The location of the Geeode 1.0 schema file.
+   * The location of the Geode 1.0 schema file.
    * 
-   * @since 1.0
+   * @since Geode 1.0
    */
   protected static final String SCHEMA_1_0_LOCATION = "http://geode.apache.org/schema/cache/cache-1.0.xsd";
 
@@ -696,7 +691,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
   /** The name of the <code>overflow-directory</code> attribute */
   protected static final String OVERFLOW_DIRECTORY = "overflow-directory";
   /** The name of the <code>socket-buffer-size</code> attribute */
-  protected static final String SOCKET_BUFFER_SIZE = "socket-buffer-size";
+  protected static final String SOCKET_BUFFER_SIZE = DistributedSystemConfigProperties.SOCKET_BUFFER_SIZE;
   /** The name of the <code>socket-read-timeout</code> attribute */
   protected static final String SOCKET_READ_TIMEOUT = "socket-read-timeout";
   /** The name of the <code>maximum-queue-memory</code> attribute */
@@ -767,7 +762,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
   /** The name of the <code>compressor</code> attribute */
   protected static final String COMPRESSOR = "compressor";
   /** The name of the <code>off-heap</code> attribute
-   * @since 9.0
+   * @since Geode 1.0
    */
   protected static final String OFF_HEAP = "off-heap";
  
@@ -886,7 +881,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @return {@link InputSource} for resolved entity if found, otherwise null.
    * @throws IOException 
    * @throws SAXException 
-   * @since 8.1
+   * @since GemFire 8.1
    */
   private InputSource resolveEntityByEntityResolvers(String name, String publicId, String baseURI, String systemId) throws SAXException, IOException {
     final ServiceLoader<EntityResolver2> entityResolvers = ServiceLoader.load(EntityResolver2.class, ClassPathLoader.getLatest().asClassLoader());
@@ -924,7 +919,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @param attributes
    * @param name
    * @return String value for named attribute or null if attribute not defined.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final String getString(final Attributes attributes, final String name) {
     return getString(attributes, name, null);
@@ -936,7 +931,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @param name
    * @param defaultValue
    * @return String value for named attribute or <code>defaultValue</code> if attribute not defined.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final String getString(final Attributes attributes, final String name, final String defaultValue) {
     final String value = attributes.getValue(name);
@@ -951,7 +946,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @param attributes
    * @param name
    * @return Integer value for named attribute or null if attribute not defined.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final Integer getInteger(final Attributes attributes, final String name) {
     return getInteger(attributes, name, null);
@@ -963,7 +958,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @param name
    * @param defaultValue
    * @return Integer value for named attribute or <code>defaultValue</code> if attribute not defined.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final Integer getInteger(final Attributes attributes, final String name, final Integer defaultValue) {
     final String value = attributes.getValue(name);
@@ -978,7 +973,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @param attributes
    * @param name
    * @return Boolean value for named attribute or null if attribute not defined.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final Boolean getBoolean(final Attributes attributes, final String name) {
     return getBoolean(attributes, name, null);
@@ -990,7 +985,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @param name
    * @param defaultValue
    * @return Boolean value for named attribute or <code>defaultValue</code> if attribute not defined.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final Boolean getBoolean(final Attributes attributes, final String name, final Boolean defaultValue) {
     final String value = attributes.getValue(name);
@@ -1006,7 +1001,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @param name
    * @param clazz
    * @return Enum value for named attribute or null if attribute not defined.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final <E extends Enum<E>> E getEnum(final Attributes attributes, final String name, final Class<E> clazz) {
     return getEnum(attributes, name, clazz, null);
@@ -1019,7 +1014,7 @@ public abstract class CacheXml implements EntityResolver2, ErrorHandler {
    * @param clazz
    * @param defaultValue
    * @return Enum value for named attribute or <code>defaultValue</code> if attribute not defined.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public static final <E extends Enum<E>> E getEnum(final Attributes attributes, final String name, final Class<E> clazz, E defaultValue) {
     String value = attributes.getValue(name);

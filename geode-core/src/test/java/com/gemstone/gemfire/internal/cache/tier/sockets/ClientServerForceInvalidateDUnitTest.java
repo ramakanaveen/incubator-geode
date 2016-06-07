@@ -16,22 +16,17 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.jayway.awaitility.Awaitility.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
-import static com.jayway.awaitility.Awaitility.with;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheListener;
@@ -49,7 +44,6 @@ import com.gemstone.gemfire.cache.client.internal.Connection;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.AbstractRegionMap;
@@ -60,14 +54,14 @@ import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests client server FORCE_INVALIDATE
  */
 @Category(DistributedTest.class)
-public class ClientServerForceInvalidateDUnitTest extends JUnit4CacheTestCase
-{
-  private static final long serialVersionUID = 1L;
+public class ClientServerForceInvalidateDUnitTest extends JUnit4CacheTestCase {
 
   private static final Logger logger = LogService.getLogger();
 
@@ -80,14 +74,8 @@ public class ClientServerForceInvalidateDUnitTest extends JUnit4CacheTestCase
   private static VM server1;
   private static VM server2;
 
-  /** constructor */
-  public ClientServerForceInvalidateDUnitTest() {
-    super();
-  }
-
   @Override
-  public final void postSetUp() throws Exception
-  {
+  public final void postSetUp() throws Exception {
     host = Host.getHost(0);
     server1 = host.getVM(0);
     server2 = host.getVM(1);
@@ -257,7 +245,6 @@ public class ClientServerForceInvalidateDUnitTest extends JUnit4CacheTestCase
       }
     }
     return false;
-    
   }
 
   private boolean hasClientListenerAfterInvalidateBeenInvoked() {
@@ -273,8 +260,8 @@ public class ClientServerForceInvalidateDUnitTest extends JUnit4CacheTestCase
     }
     return false;
   }
-  private static Integer createServerCache(Boolean concurrencyChecksEnabled, Boolean partitioned, Integer maxThreads)
-  throws Exception {
+
+  private static Integer createServerCache(Boolean concurrencyChecksEnabled, Boolean partitioned, Integer maxThreads) throws Exception {
     AbstractRegionMap.FORCE_INVALIDATE_EVENT = true;
     Properties props = new Properties();
     Cache cache = new ClientServerForceInvalidateDUnitTest().createCacheV(props);
@@ -304,12 +291,11 @@ public class ClientServerForceInvalidateDUnitTest extends JUnit4CacheTestCase
 
   }
   
-  public static void createClientCache(String h, int port1, int port2, boolean empty, boolean concurrenctChecksEnabled)
-  throws Exception  {
+  public static void createClientCache(String h, int port1, int port2, boolean empty, boolean concurrenctChecksEnabled) throws Exception  {
     AbstractRegionMap.FORCE_INVALIDATE_EVENT = true;
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     Cache cache = new ClientServerForceInvalidateDUnitTest().createCacheV(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(h, port1)
@@ -369,27 +355,27 @@ public class ClientServerForceInvalidateDUnitTest extends JUnit4CacheTestCase
   static class ClientListener extends CacheListenerAdapter<String, String> {
     public boolean afterInvalidateInvoked;
     @Override
-      public void afterCreate(EntryEvent<String, String> event) {
-        super.afterCreate(event);
-        logger.info("afterCreate: {" + event.getOldValue() + " -> " + event.getNewValue() + "} at=" + System.currentTimeMillis());
+    public void afterCreate(EntryEvent<String, String> event) {
+      super.afterCreate(event);
+      logger.info("afterCreate: {" + event.getOldValue() + " -> " + event.getNewValue() + "} at=" + System.currentTimeMillis());
+    }
+    @Override
+    public void afterUpdate(EntryEvent<String, String> event) {
+      super.afterUpdate(event);
+      logger.info("afterUpdate: {" + event.getOldValue() + " -> " + event.getNewValue() + "} at=" + System.currentTimeMillis());
+    }
+    @Override
+    public void afterInvalidate(final EntryEvent<String, String> event) {
+      super.afterInvalidate(event);
+      afterInvalidateInvoked = true;
+      String prefix = "";
+      if (!event.isOriginRemote()) {
+        prefix = "    ";
       }
-      @Override
-      public void afterUpdate(EntryEvent<String, String> event) {
-        super.afterUpdate(event);
-        logger.info("afterUpdate: {" + event.getOldValue() + " -> " + event.getNewValue() + "} at=" + System.currentTimeMillis());
-      }
-      @Override
-      public void afterInvalidate(final EntryEvent<String, String> event) {
-        super.afterInvalidate(event);
-        afterInvalidateInvoked = true;
-        String prefix = "";
-        if (!event.isOriginRemote()) {
-          prefix = "    ";
-        }
-        logger.info(prefix + "afterInvalidate: {" + event.getOldValue() + " -> " + event.getNewValue() + "} at=" + System.currentTimeMillis());
-
-      }
+      logger.info(prefix + "afterInvalidate: {" + event.getOldValue() + " -> " + event.getNewValue() + "} at=" + System.currentTimeMillis());
+    }
   }
+
   static class ServerListener extends CacheListenerAdapter<String, String> {
     boolean afterInvalidateInvoked;
     @Override

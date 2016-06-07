@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -87,10 +88,6 @@ public class HADuplicateDUnitTest extends JUnit4DistributedTestCase {
 
   static Map storeEvents = new HashMap();
 
-  public HADuplicateDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     final Host host = Host.getHost(0);
@@ -154,11 +151,9 @@ public class HADuplicateDUnitTest extends JUnit4DistributedTestCase {
     server1.invoke(() -> HADuplicateDUnitTest.reSetQRMslow());
   }
 
-
   @Test
   public void testSample() throws Exception
   {
-
     IgnoredException.addIgnoredException("IOException");
     IgnoredException.addIgnoredException("Connection reset");
     createClientServerConfiguration();
@@ -172,9 +167,7 @@ public class HADuplicateDUnitTest extends JUnit4DistributedTestCase {
 
     }
     });
-
   }
-
 
   // function to perform put operations for the known set of keys.
   private CacheSerializableRunnable putForKnownKeys()
@@ -212,8 +205,6 @@ public class HADuplicateDUnitTest extends JUnit4DistributedTestCase {
 
     return stopserver;
   }
-
-
 
   // function to create 2servers and 1 clients
   private void createClientServerConfiguration()
@@ -270,8 +261,8 @@ public class HADuplicateDUnitTest extends JUnit4DistributedTestCase {
     int PORT1 = port1.intValue();
     int PORT2 = port2.intValue();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HADuplicateDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     ClientServerTestCase.configureConnectionPool(factory, hostName, new int[] {PORT1,PORT2}, true, -1, 2, null);
@@ -295,8 +286,9 @@ public class HADuplicateDUnitTest extends JUnit4DistributedTestCase {
       cache.getDistributedSystem().disconnect();
     }
   }
-
 }
+
+// TODO: move these classes to be inner static classes
 
 // Listener class for the validation purpose
 class HAValidateDuplicateListener extends CacheListenerAdapter
@@ -305,7 +297,6 @@ class HAValidateDuplicateListener extends CacheListenerAdapter
   {
     System.out.println("After Create");
     HADuplicateDUnitTest.storeEvents.put(event.getKey(), event.getNewValue());
-
   }
 
   public void afterUpdate(EntryEvent event)

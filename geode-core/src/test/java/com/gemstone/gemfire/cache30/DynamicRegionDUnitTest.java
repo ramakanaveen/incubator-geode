@@ -47,7 +47,7 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  * Test to make sure dynamic regions work
  *
- * @since 4.3
+ * @since GemFire 4.3
  */
 @Category(DistributedTest.class)
 public class DynamicRegionDUnitTest extends JUnit4CacheTestCase {

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -63,7 +64,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * Tests the declarative caching functionality introduced in GemFire
  * 5.0 (i.e. congo1). Don't be confused by the 45 in my name :-)
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 @Category(DistributedTest.class)
 public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
@@ -180,7 +181,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
       // make our system play the roles used by this test so the create regions
       // will not think the a required role is missing
       Properties config = new Properties();
-      config.setProperty("roles", MY_ROLES);
+      config.setProperty(ROLES, MY_ROLES);
       this.xmlProps = config;
     }
     DistributedRegion.ignoreReconnect = true;
@@ -198,7 +199,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
 
   /**
    * Tests multiple cache listeners on one region
-   * @since 5.0
+   * @since GemFire 5.0
    */
   @Test
   public void testMultipleCacheListener() throws CacheException {
@@ -270,7 +271,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
 
   /**
    * Tests multiple transaction listeners
-   * @since 5.0
+   * @since GemFire 5.0
    */
   @Test
   public void testMultipleTXListener() throws CacheException {

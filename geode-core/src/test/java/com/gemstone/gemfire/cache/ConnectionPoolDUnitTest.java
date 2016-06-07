@@ -153,7 +153,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Create a bridge server on the given port without starting it.
    *
-   * @since 5.0.2
+   * @since GemFire 5.0.2
    */
   protected void createBridgeServer(int port) throws IOException {
     CacheServer bridge = getCache().addCacheServer();
@@ -167,7 +167,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
    * deserializeValues and notifyBySubscription to serve up the
    * given region.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   protected void startBridgeServer(int port)
     throws IOException {
@@ -196,7 +196,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * By default return 0 which turns off selector and gives thread per cnx.
    * Test subclasses can override to run with selector.
-   * @since 5.1
+   * @since GemFire 5.1
    */
   protected int getMaxThreads() {
     return 0;
@@ -205,7 +205,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Stops the bridge server that serves up the given cache.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   void stopBridgeServer(Cache cache) {
     CacheServer bridge =
@@ -866,7 +866,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Tests the basic operations of the {@link Pool}
    *
-   * @since 3.5
+   * @since GemFire 3.5
    */
   @Test
   public void test006Pool() throws CacheException {
@@ -1465,7 +1465,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Tests the create operation of the {@link Pool}
    *
-   * @since 3.5
+   * @since GemFire 3.5
    */
   @Test
   public void test011PoolCreate() throws CacheException {
@@ -1548,7 +1548,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Tests the put operation of the {@link Pool}
    *
-   * @since 3.5
+   * @since GemFire 3.5
    */
   @Test
   public void test012PoolPut() throws CacheException {
@@ -1669,7 +1669,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Tests the put operation of the {@link Pool}
    *
-   * @since 3.5
+   * @since GemFire 3.5
    */
   @Test
   public void test013PoolPutNoDeserialize() throws CacheException {
@@ -1790,7 +1790,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Tests that invalidates and destroys are propagated to {@link Pool}s.
    *
-   * @since 3.5
+   * @since GemFire 3.5
    */
   @Test
   public void test014InvalidateAndDestroyPropagation() throws CacheException {
@@ -1989,7 +1989,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
    * Tests that invalidates and destroys are propagated to {@link Pool}s
    * correctly to DataPolicy.EMPTY + InterestPolicy.ALL
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   @Test
   public void test015InvalidateAndDestroyToEmptyAllPropagation() throws CacheException {
@@ -2219,7 +2219,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
    * Tests that invalidates and destroys are propagated to {@link Pool}s
    * correctly to DataPolicy.EMPTY + InterestPolicy.CACHE_CONTENT
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   @Test
   public void test016InvalidateAndDestroyToEmptyCCPropagation() throws CacheException {
@@ -3209,7 +3209,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Creates a "loner" distributed system that has dynamic region creation
    * enabled.
-   * @since 4.3
+   * @since GemFire 4.3
    */
   protected Cache createDynamicRegionCache(String testName, String connectionPoolName) {
     // note that clients use non-persistent dr factories.
@@ -3510,7 +3510,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Tests the containsKeyOnServer operation of the {@link Pool}
    *
-   * @since 5.0.2
+   * @since GemFire 5.0.2
    */
   @Test
   public void test023ContainsKeyOnServer() throws CacheException {
@@ -3607,7 +3607,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
    * <code>null</code> value does the right thing with the {@link
    * Pool}.
    *
-   * @since 3.5
+   * @since GemFire 3.5
    */
   @Test
   public void test024CreateNullValue() throws CacheException {
@@ -4911,7 +4911,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
   /**
    * Tests the keySetOnServer operation of the {@link Pool}
    *
-   * @since 5.0.2
+   * @since GemFire 5.0.2
    */
   @Test
   public void test031KeySetOnServer() throws CacheException {

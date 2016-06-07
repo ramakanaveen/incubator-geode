@@ -54,13 +54,15 @@ import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 /**
  * Class <code>CacheClientNotifier</code> works on the server and manages
  * client socket connections to clients requesting notification of updates and
  * notifies them when updates occur.
  *
  *
- * @since 3.2
+ * @since GemFire 3.2
  */
 @SuppressWarnings({"synthetic-access", "deprecation"})
 public class CacheClientNotifier {
@@ -312,7 +314,7 @@ public class CacheClientNotifier {
       DistributedSystem system = this.getCache().getDistributedSystem();
       Properties sysProps = system.getProperties();
       String authenticator = sysProps
-          .getProperty(DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME);
+          .getProperty(SECURITY_CLIENT_AUTHENTICATOR);
       //TODO;hitesh for conflation
       if (clientVersion.compareTo(Version.GFE_603) >= 0) {
         byte[] overrides = HandShake.extractOverrides(new byte[] { (byte) dis.read() });
@@ -349,10 +351,13 @@ public class CacheClientNotifier {
           securityLogWriter.fine("CacheClientNotifier: successfully verified credentials for proxyID: " + proxyID + " having principal: " + principal.getName());
         }
         String postAuthzFactoryName = sysProps
-            .getProperty(DistributionConfig.SECURITY_CLIENT_ACCESSOR_PP_NAME);
+            .getProperty(SECURITY_CLIENT_ACCESSOR_PP);
         if (postAuthzFactoryName != null && postAuthzFactoryName.length() > 0) {
           if (principal == null) {
-            securityLogWriter.warning(LocalizedStrings.CacheClientNotifier_CACHECLIENTNOTIFIER_POST_PROCESS_AUTHORIZATION_CALLBACK_ENABLED_BUT_AUTHENTICATION_CALLBACK_0_RETURNED_WITH_NULL_CREDENTIALS_FOR_PROXYID_1, new Object[] {DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME, proxyID});
+            securityLogWriter.warning(
+                LocalizedStrings.CacheClientNotifier_CACHECLIENTNOTIFIER_POST_PROCESS_AUTHORIZATION_CALLBACK_ENABLED_BUT_AUTHENTICATION_CALLBACK_0_RETURNED_WITH_NULL_CREDENTIALS_FOR_PROXYID_1,
+                new Object[] {
+                    SECURITY_CLIENT_AUTHENTICATOR, proxyID });
           }
           Method authzMethod = ClassLoadUtil
               .methodFromName(postAuthzFactoryName);
@@ -682,7 +687,7 @@ public class CacheClientNotifier {
    *
    * @param membershipID
    *          Uniquely identifies the client pool
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public void setKeepAlive(ClientProxyMembershipID membershipID, boolean keepAlive)
   {
@@ -1323,7 +1328,7 @@ public class CacheClientNotifier {
    * @param regionsWithEmptyDataPolicy
    * @param regionName
    * @param regionDataPolicy (0==empty)
-   * @since 6.1
+   * @since GemFire 6.1
    */
   public void updateMapOfEmptyRegions(Map regionsWithEmptyDataPolicy,
       String regionName, int regionDataPolicy) {
@@ -1430,9 +1435,12 @@ public class CacheClientNotifier {
    * haContainer.
    * 
    * @param conflatable
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private void checkAndRemoveFromClientMsgsRegion(Conflatable conflatable) {
+    if (haContainer == null) {
+      return;
+    }
     if (conflatable instanceof HAEventWrapper) {
       HAEventWrapper wrapper = (HAEventWrapper)conflatable;
       if (!wrapper.getIsRefFromHAContainer()) {
@@ -1731,7 +1739,7 @@ public class CacheClientNotifier {
    *                id for the durable-client
    * @return - true if a proxy is present for the given durable client
    * 
-   * @since 5.6
+   * @since GemFire 5.6
    */
   public boolean hasDurableClient(String durableId)
   {
@@ -1752,7 +1760,7 @@ public class CacheClientNotifier {
    *                id for the durable-client
    * @return - true if a primary proxy is present for the given durable client
    * 
-   * @since 5.6
+   * @since GemFire 5.6
    */
   public boolean hasPrimaryForDurableClient(String durableId)
   {
@@ -1951,7 +1959,7 @@ public class CacheClientNotifier {
    * @param listener
    *                The <code>InterestRegistrationListener</code> to register
    * 
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   public void registerInterestRegistrationListener(
       InterestRegistrationListener listener) {
@@ -1966,7 +1974,7 @@ public class CacheClientNotifier {
    *                The <code>InterestRegistrationListener</code> to
    *                unregister
    * 
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   public void unregisterInterestRegistrationListener(
       InterestRegistrationListener listener) {
@@ -1980,7 +1988,7 @@ public class CacheClientNotifier {
    * @return a read-only collection of <code>InterestRegistrationListener</code>s
    *         registered with this notifier
    * 
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   public Set getInterestRegistrationListeners() {
     return this.readableInterestRegistrationListeners;
@@ -1988,7 +1996,7 @@ public class CacheClientNotifier {
 
   /**
    * 
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   protected boolean containsInterestRegistrationListeners() {
     return !this.writableInterestRegistrationListeners.isEmpty();
@@ -1996,7 +2004,7 @@ public class CacheClientNotifier {
 
   /**
    * 
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   protected void notifyInterestRegistrationListeners(
       InterestRegistrationEvent event) {
@@ -2536,7 +2544,7 @@ public class CacheClientNotifier {
    * (in case of eviction policy "none"). In both the cases, it'll store
    * HAEventWrapper as its key and ClientUpdateMessage as its value.
    */
-  private HAContainerWrapper haContainer;
+  private volatile HAContainerWrapper haContainer;
 
   //   /**
   //    * The singleton <code>CacheClientNotifier</code> instance
@@ -2572,11 +2580,11 @@ public class CacheClientNotifier {
    * System property name for indicating how much frequently the "Queue full"
    * message should be logged.
    */
-  public static final String MAX_QUEUE_LOG_FREQUENCY = "gemfire.logFrequency.clientQueueReachedMaxLimit";
+  public static final String MAX_QUEUE_LOG_FREQUENCY = DistributionConfig.GEMFIRE_PREFIX + "logFrequency.clientQueueReachedMaxLimit";
 
   public static final long DEFAULT_LOG_FREQUENCY = 1000;
 
-  public static final String EVENT_ENQUEUE_WAIT_TIME_NAME = "gemfire.subscription.EVENT_ENQUEUE_WAIT_TIME";
+  public static final String EVENT_ENQUEUE_WAIT_TIME_NAME = DistributionConfig.GEMFIRE_PREFIX + "subscription.EVENT_ENQUEUE_WAIT_TIME";
 
   public static final int DEFAULT_EVENT_ENQUEUE_WAIT_TIME = 100;
 
@@ -2604,10 +2612,10 @@ public class CacheClientNotifier {
   private final SocketCloser socketCloser;
   
   private static final long CLIENT_PING_TASK_PERIOD =
-    Long.getLong("gemfire.serverToClientPingPeriod", 60000);
+      Long.getLong(DistributionConfig.GEMFIRE_PREFIX + "serverToClientPingPeriod", 60000);
 
   private static final long CLIENT_PING_TASK_COUNTER =
-    Long.getLong("gemfire.serverToClientPingCounter", 3);
+      Long.getLong(DistributionConfig.GEMFIRE_PREFIX + "serverToClientPingCounter", 3);
 
   public long getLogFrequency() {
     return this.logFrequency;

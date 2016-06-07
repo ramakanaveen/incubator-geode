@@ -16,17 +16,14 @@
  */
 package com.gemstone.gemfire.management.internal.cli;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -38,9 +35,7 @@ import com.gemstone.gemfire.cache.execute.FunctionAdapter;
 import com.gemstone.gemfire.cache.execute.FunctionContext;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.cache.execute.ResultCollector;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.management.DistributedRegionMXBean;
 import com.gemstone.gemfire.management.ManagementService;
@@ -54,11 +49,9 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- * 
- *
- */
 @Category(DistributedTest.class)
 public class CliUtilDUnitTest extends JUnit4CacheTestCase {
 
@@ -227,12 +220,12 @@ public class CliUtilDUnitTest extends JUnit4CacheTestCase {
   
   public void createCacheWithMemberIdAndGroup(String memberName, String groupName){
     Properties localProps = new Properties();
-    localProps.setProperty(DistributionConfig.NAME_NAME, memberName);
-    localProps.setProperty(DistributionConfig.GROUPS_NAME, groupName);
-    localProps.setProperty(DistributionConfig.JMX_MANAGER_NAME, "true");
-    localProps.setProperty(DistributionConfig.JMX_MANAGER_START_NAME, "false");    
+    localProps.setProperty(NAME, memberName);
+    localProps.setProperty(GROUPS, groupName);
+    localProps.setProperty(JMX_MANAGER, "true");
+    localProps.setProperty(JMX_MANAGER_START, "false");
     int jmxPort = AvailablePortHelper.getRandomAvailableTCPPort();
-    localProps.setProperty(DistributionConfig.JMX_MANAGER_PORT_NAME, ""+jmxPort);
+    localProps.setProperty(JMX_MANAGER_PORT, ""+jmxPort);
     LogWriterUtils.getLogWriter().info("Set jmx-port="+ jmxPort);
     getSystem(localProps);
     getCache();

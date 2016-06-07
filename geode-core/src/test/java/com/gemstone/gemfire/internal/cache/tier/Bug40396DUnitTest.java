@@ -44,7 +44,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Test delta propagation for faulty delta implementation
- * @since 6.1
+ * @since GemFire 6.1
  */
 @Category(DistributedTest.class)
 public class Bug40396DUnitTest extends JUnit4DistributedTestCase {

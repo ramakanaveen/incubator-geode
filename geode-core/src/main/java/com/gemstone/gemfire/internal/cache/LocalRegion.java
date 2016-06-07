@@ -17,95 +17,10 @@
 
 package com.gemstone.gemfire.internal.cache;
 
-import static com.gemstone.gemfire.internal.offheap.annotations.OffHeapIdentifier.*;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Pattern;
-
-import org.apache.logging.log4j.Logger;
-
-import com.gemstone.gemfire.CancelCriterion;
-import com.gemstone.gemfire.CancelException;
-import com.gemstone.gemfire.CopyHelper;
-import com.gemstone.gemfire.DataSerializable;
-import com.gemstone.gemfire.DataSerializer;
-import com.gemstone.gemfire.DeltaSerializationException;
-import com.gemstone.gemfire.InternalGemFireError;
-import com.gemstone.gemfire.InternalGemFireException;
-import com.gemstone.gemfire.LogWriter;
-import com.gemstone.gemfire.SystemFailure;
+import com.gemstone.gemfire.*;
 import com.gemstone.gemfire.admin.internal.SystemMemberCacheEventProcessor;
-import com.gemstone.gemfire.cache.AttributesMutator;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheClosedException;
-import com.gemstone.gemfire.cache.CacheEvent;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.CacheListener;
-import com.gemstone.gemfire.cache.CacheLoader;
-import com.gemstone.gemfire.cache.CacheLoaderException;
-import com.gemstone.gemfire.cache.CacheRuntimeException;
-import com.gemstone.gemfire.cache.CacheStatistics;
-import com.gemstone.gemfire.cache.CacheWriter;
-import com.gemstone.gemfire.cache.CacheWriterException;
-import com.gemstone.gemfire.cache.CustomExpiry;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.DiskAccessException;
-import com.gemstone.gemfire.cache.DiskStoreFactory;
-import com.gemstone.gemfire.cache.DiskWriteAttributes;
-import com.gemstone.gemfire.cache.DiskWriteAttributesFactory;
-import com.gemstone.gemfire.cache.EntryDestroyedException;
-import com.gemstone.gemfire.cache.EntryExistsException;
-import com.gemstone.gemfire.cache.EntryNotFoundException;
-import com.gemstone.gemfire.cache.EvictionAttributes;
-import com.gemstone.gemfire.cache.ExpirationAttributes;
-import com.gemstone.gemfire.cache.FailedSynchronizationException;
-import com.gemstone.gemfire.cache.InterestRegistrationEvent;
-import com.gemstone.gemfire.cache.InterestResultPolicy;
-import com.gemstone.gemfire.cache.LoaderHelper;
-import com.gemstone.gemfire.cache.LowMemoryException;
-import com.gemstone.gemfire.cache.Operation;
-import com.gemstone.gemfire.cache.PartitionedRegionStorageException;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.RegionDestroyedException;
-import com.gemstone.gemfire.cache.RegionEvent;
-import com.gemstone.gemfire.cache.RegionExistsException;
-import com.gemstone.gemfire.cache.RegionMembershipListener;
-import com.gemstone.gemfire.cache.RegionReinitializedException;
-import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.cache.StatisticsDisabledException;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.TimeoutException;
-import com.gemstone.gemfire.cache.TransactionException;
-import com.gemstone.gemfire.cache.TransactionId;
 import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.client.ServerOperationException;
 import com.gemstone.gemfire.cache.client.SubscriptionNotEnabledException;
@@ -117,17 +32,7 @@ import com.gemstone.gemfire.cache.control.ResourceManager;
 import com.gemstone.gemfire.cache.execute.Function;
 import com.gemstone.gemfire.cache.execute.ResultCollector;
 import com.gemstone.gemfire.cache.partition.PartitionRegionHelper;
-import com.gemstone.gemfire.cache.query.FunctionDomainException;
-import com.gemstone.gemfire.cache.query.Index;
-import com.gemstone.gemfire.cache.query.IndexMaintenanceException;
-import com.gemstone.gemfire.cache.query.IndexType;
-import com.gemstone.gemfire.cache.query.MultiIndexCreationException;
-import com.gemstone.gemfire.cache.query.NameResolutionException;
-import com.gemstone.gemfire.cache.query.QueryException;
-import com.gemstone.gemfire.cache.query.QueryInvocationTargetException;
-import com.gemstone.gemfire.cache.query.QueryService;
-import com.gemstone.gemfire.cache.query.SelectResults;
-import com.gemstone.gemfire.cache.query.TypeMismatchException;
+import com.gemstone.gemfire.cache.query.*;
 import com.gemstone.gemfire.cache.query.internal.DefaultQuery;
 import com.gemstone.gemfire.cache.query.internal.DefaultQueryService;
 import com.gemstone.gemfire.cache.query.internal.ExecutionContext;
@@ -141,19 +46,11 @@ import com.gemstone.gemfire.cache.util.ObjectSizer;
 import com.gemstone.gemfire.cache.wan.GatewaySender;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DM;
-import com.gemstone.gemfire.distributed.internal.DistributionAdvisor;
+import com.gemstone.gemfire.distributed.internal.*;
 import com.gemstone.gemfire.distributed.internal.DistributionAdvisor.Profile;
-import com.gemstone.gemfire.distributed.internal.DistributionStats;
-import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
-import com.gemstone.gemfire.distributed.internal.ResourceEvent;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
-import com.gemstone.gemfire.internal.Assert;
-import com.gemstone.gemfire.internal.ClassLoadUtil;
-import com.gemstone.gemfire.internal.HeapDataOutputStream;
-import com.gemstone.gemfire.internal.InternalStatisticsDisabledException;
-import com.gemstone.gemfire.internal.NanoTimer;
-import com.gemstone.gemfire.internal.Version;
+import com.gemstone.gemfire.i18n.StringId;
+import com.gemstone.gemfire.internal.*;
 import com.gemstone.gemfire.internal.cache.CacheDistributionAdvisor.CacheProfile;
 import com.gemstone.gemfire.internal.cache.DiskInitFile.DiskRegionFlag;
 import com.gemstone.gemfire.internal.cache.FilterRoutingInfo.FilterInfo;
@@ -164,11 +61,7 @@ import com.gemstone.gemfire.internal.cache.control.InternalResourceManager.Resou
 import com.gemstone.gemfire.internal.cache.control.MemoryEvent;
 import com.gemstone.gemfire.internal.cache.control.MemoryThresholds;
 import com.gemstone.gemfire.internal.cache.control.ResourceListener;
-import com.gemstone.gemfire.internal.cache.execute.DistributedRegionFunctionExecutor;
-import com.gemstone.gemfire.internal.cache.execute.DistributedRegionFunctionResultSender;
-import com.gemstone.gemfire.internal.cache.execute.LocalResultCollector;
-import com.gemstone.gemfire.internal.cache.execute.RegionFunctionContextImpl;
-import com.gemstone.gemfire.internal.cache.execute.ServerToClientFunctionResultSender;
+import com.gemstone.gemfire.internal.cache.execute.*;
 import com.gemstone.gemfire.internal.cache.ha.ThreadIdentifier;
 import com.gemstone.gemfire.internal.cache.lru.LRUEntry;
 import com.gemstone.gemfire.internal.cache.partitioned.RedundancyAlreadyMetException;
@@ -179,19 +72,8 @@ import com.gemstone.gemfire.internal.cache.persistence.PersistentMemberID;
 import com.gemstone.gemfire.internal.cache.persistence.query.IndexMap;
 import com.gemstone.gemfire.internal.cache.persistence.query.mock.IndexMapImpl;
 import com.gemstone.gemfire.internal.cache.tier.InterestType;
-import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
-import com.gemstone.gemfire.internal.cache.tier.sockets.ClientHealthMonitor;
-import com.gemstone.gemfire.internal.cache.tier.sockets.ClientProxyMembershipID;
-import com.gemstone.gemfire.internal.cache.tier.sockets.ClientTombstoneMessage;
-import com.gemstone.gemfire.internal.cache.tier.sockets.ClientUpdateMessage;
-import com.gemstone.gemfire.internal.cache.tier.sockets.HandShake;
-import com.gemstone.gemfire.internal.cache.tier.sockets.VersionedObjectList;
-import com.gemstone.gemfire.internal.cache.versions.ConcurrentCacheModificationException;
-import com.gemstone.gemfire.internal.cache.versions.RegionVersionHolder;
-import com.gemstone.gemfire.internal.cache.versions.RegionVersionVector;
-import com.gemstone.gemfire.internal.cache.versions.VersionSource;
-import com.gemstone.gemfire.internal.cache.versions.VersionStamp;
-import com.gemstone.gemfire.internal.cache.versions.VersionTag;
+import com.gemstone.gemfire.internal.cache.tier.sockets.*;
+import com.gemstone.gemfire.internal.cache.versions.*;
 import com.gemstone.gemfire.internal.cache.wan.AbstractGatewaySender;
 import com.gemstone.gemfire.internal.cache.wan.GatewaySenderEventCallbackArgument;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
@@ -208,7 +90,18 @@ import com.gemstone.gemfire.internal.sequencelog.EntryLogger;
 import com.gemstone.gemfire.internal.util.concurrent.FutureResult;
 import com.gemstone.gemfire.internal.util.concurrent.StoppableCountDownLatch;
 import com.gemstone.gemfire.internal.util.concurrent.StoppableReadWriteLock;
-import com.gemstone.gemfire.i18n.StringId;
+import org.apache.logging.log4j.Logger;
+
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Pattern;
+
+import static com.gemstone.gemfire.internal.offheap.annotations.OffHeapIdentifier.ENTRY_EVENT_NEW_VALUE;
 
 /**
  * Implementation of a local scoped-region. Note that this class has a different
@@ -227,7 +120,7 @@ public class LocalRegion extends AbstractRegion
   
   /**
    * Internal interface used to simulate failures when performing entry operations
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public interface TestCallable {
     public void call(LocalRegion r, Operation op, RegionEntry re);
@@ -324,14 +217,13 @@ public class LocalRegion extends AbstractRegion
       Pattern.compile("^import .*", Pattern.CASE_INSENSITIVE
           | Pattern.UNICODE_CASE | Pattern.DOTALL) };
 
-
-  public static final String EXPIRY_MS_PROPERTY = "gemfire.EXPIRY_UNITS_MS";
+  public static final String EXPIRY_MS_PROPERTY = DistributionConfig.GEMFIRE_PREFIX + "EXPIRY_UNITS_MS";
   
   /**
    * Used by unit tests to set expiry to milliseconds instead of the default
    * seconds. Used in ExpiryTask.
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   final boolean EXPIRY_UNITS_MS;
 
@@ -366,7 +258,7 @@ public class LocalRegion extends AbstractRegion
    * Used to hold off cache listener events until the afterRegionCreate is
    * called
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   private final StoppableCountDownLatch afterRegionCreateEventLatch;
 
@@ -822,7 +714,7 @@ public class LocalRegion extends AbstractRegion
   }
 
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   protected final ServerRegionProxy srp;
 
@@ -897,7 +789,7 @@ public class LocalRegion extends AbstractRegion
   /**
    * Returns the member id of my distributed system
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   @Override
   protected InternalDistributedMember getMyId()
@@ -1600,7 +1492,7 @@ public class LocalRegion extends AbstractRegion
   /**
    * Returns true if get should give a copy; false if a reference.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   protected boolean isCopyOnRead()
   {
@@ -1615,7 +1507,7 @@ public class LocalRegion extends AbstractRegion
   /**
    * Makes a copy, if copy-on-get is enabled, of the specified object.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   protected Object conditionalCopy(Object o)
   {
@@ -2006,15 +1898,13 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * Flavor of keys that will not do repeatable read
-   * @since 5.5
+   * @since GemFire 5.5
    */
   public Set testHookKeys()
   {
     checkReadiness();
     checkForNoAccess();
-    return new EntriesSet(this, false, IteratorType.KEYS,
-        false /* dontRememberReads */, false /* skipTxCheckInIteration */,
-        false /* allowTombstones */);
+    return new EntriesSet(this, false, IteratorType.KEYS, false /* allowTombstones */);
   }
 
   public Set keys()
@@ -2211,7 +2101,7 @@ public class LocalRegion extends AbstractRegion
    *
    * @return <code>null</code> if disk regions are not being used
    *
-   * @since 3.2
+   * @since GemFire 3.2
    */
   public DiskRegion getDiskRegion()
   {
@@ -2235,7 +2125,7 @@ public class LocalRegion extends AbstractRegion
    *
    * Initially called by EvictorThread.run
    *
-   * @since 3.5.1
+   * @since GemFire 3.5.1
    */
   public void checkLRU()
   {
@@ -2688,7 +2578,7 @@ public class LocalRegion extends AbstractRegion
   /**
    * Called after we have delivered our REGION_CREATE event.
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   private void releaseAfterRegionCreateEventLatch()
   {
@@ -2699,7 +2589,7 @@ public class LocalRegion extends AbstractRegion
    * Used to cause cache listener events to wait until the after region create
    * event is delivered.
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   private void waitForRegionCreateEvent()
   {
@@ -3148,7 +3038,7 @@ public class LocalRegion extends AbstractRegion
   }
 
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   protected void serverRegionDestroy(RegionEventImpl regionEvent) {
     if (regionEvent.getOperation().isDistributed()) {
@@ -3162,7 +3052,7 @@ public class LocalRegion extends AbstractRegion
   }
 
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   protected void serverRegionClear(RegionEventImpl regionEvent) {
     if (regionEvent.getOperation().isDistributed()) {
@@ -3175,7 +3065,7 @@ public class LocalRegion extends AbstractRegion
     }
   }
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   protected void serverRegionInvalidate(RegionEventImpl regionEvent) {
     if (regionEvent.getOperation().isDistributed()) {
@@ -3187,7 +3077,7 @@ public class LocalRegion extends AbstractRegion
   }
 
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   void serverInvalidate(EntryEventImpl event) {
     if (event.getOperation().isDistributed() && !event.isOriginRemote()) {
@@ -3199,7 +3089,7 @@ public class LocalRegion extends AbstractRegion
   }
 
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   protected void serverPut(EntryEventImpl event,
       boolean requireOldValue, Object expectedOldValue) {
@@ -3248,7 +3138,7 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * Destroy an entry on the server given its event.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   protected void serverDestroy(EntryEventImpl event, Object expectedOldValue) {
     if (event.getOperation().isDistributed()) {
@@ -3385,9 +3275,9 @@ public class LocalRegion extends AbstractRegion
   }
 
   /**
-   * @since 5.0.2
+   * @since GemFire 5.0.2
    */
-  private final boolean DO_EXPENSIVE_VALIDATIONS = Boolean.getBoolean("gemfire.DO_EXPENSIVE_VALIDATIONS");
+  private final boolean DO_EXPENSIVE_VALIDATIONS = Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "DO_EXPENSIVE_VALIDATIONS");
 
   /**
    * the number of tombstone entries in the RegionMap
@@ -3616,7 +3506,7 @@ public class LocalRegion extends AbstractRegion
    *
    * @see RegionMap#getEntry
    *
-   * @since 3.2
+   * @since GemFire 3.2
    */
   public Object getValueInVM(Object key) throws EntryNotFoundException
   {
@@ -3630,7 +3520,7 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * @param rememberRead true if read should be remembered in a transaction
-   * @since 5.5
+   * @since GemFire 5.5
    */
   private Object basicGetValueInVM(Object key, boolean rememberRead)
     throws EntryNotFoundException
@@ -3664,7 +3554,7 @@ public class LocalRegion extends AbstractRegion
      * @return an unmodifiable set of keys that have been read or written
      * by the transaction on this thread.
      * @throws IllegalStateException if not tx in progress
-     * @since 5.5
+     * @since GemFire 5.5
      */
     public Set testHookTXKeys() {
       if (!isTX()) throw new IllegalStateException(LocalizedStrings.LocalRegion_TX_NOT_IN_PROGRESS.toLocalizedString());
@@ -3694,7 +3584,7 @@ public class LocalRegion extends AbstractRegion
    *
    * @see RegionEntry#getValueOnDisk
    *
-   * @since 3.2
+   * @since GemFire 3.2
    */
   public Object getValueOnDisk(Object key) throws EntryNotFoundException
   {
@@ -3732,7 +3622,7 @@ public class LocalRegion extends AbstractRegion
    * or null if the entry exists but no value data exists.
    * @throws IllegalStateException when the region is not persistent
    * @throws EntryNotFoundException if there is no entry for the given key
-   * @since gemfire5.7_hotfix
+   * @since GemFire 5.7
    */
   public Object getSerializedValueOnDisk(Object key) throws EntryNotFoundException
   {
@@ -3765,7 +3655,7 @@ public class LocalRegion extends AbstractRegion
    *
    * @see RegionEntry#getValueOnDisk
    *
-   * @since 5.1
+   * @since GemFire 5.1
    */
   public Object getValueOnDiskOrBuffer(Object key)
   throws EntryNotFoundException {
@@ -3939,7 +3829,7 @@ public class LocalRegion extends AbstractRegion
   }
 
   public void finishRegisterInterest() {
-    if (Boolean.getBoolean("gemfire.testing.slow-interest-recovery")) {
+    if (Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "testing.slow-interest-recovery")) {
       if(logger.isDebugEnabled()) {
         logger.debug("slowing interest recovery...");
       }
@@ -4722,7 +4612,7 @@ public class LocalRegion extends AbstractRegion
    * <p>
    * Acquires and releases the DestroyLock.
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   void reinitialize(InputStream inputStream, RegionEventImpl event)
       throws TimeoutException, IOException, ClassNotFoundException
@@ -5567,7 +5457,7 @@ public class LocalRegion extends AbstractRegion
 
   public boolean basicBridgePut(Object key, Object value, byte[] deltaBytes,
       boolean isObject, Object p_callbackArg, ClientProxyMembershipID memberId,
-      boolean fromClient, EntryEventImpl clientEvent, boolean isSqlFabricSystem)
+      boolean fromClient, EntryEventImpl clientEvent)
       throws TimeoutException, CacheWriterException {
     EventID eventID = clientEvent.getEventId();
     Object callbackArg = p_callbackArg;
@@ -5599,14 +5489,7 @@ public class LocalRegion extends AbstractRegion
     // serialized in a CachedDeserializable; otherwise store it directly
     // as a byte[].
     if (isObject && value instanceof byte[]) {
-      //Asif: If the system is SqlFabric, then the value byte[] corresponds to
-      //Delta , so we need to deserialize it & appropriately set the EntryEventImpl's.delta
-      //field to this value
-      if (isSqlFabricSystem) {
-        event.setNewValue(EntryEventImpl.deserialize((byte[])value));  
-      } else  {
-        event.setSerializedNewValue((byte[])value);
-      }
+      event.setSerializedNewValue((byte[])value);
     }
     else {
       event.setNewValue(value);
@@ -5614,9 +5497,7 @@ public class LocalRegion extends AbstractRegion
 
     boolean ifNew = false; // can overwrite an existing key
     
-    //Asif: If the system is SqlFabric, then update will always have value of type
-    //SerializableDelta (i.e Delta) which requires that the old value should be present    
-    boolean ifOld = isSqlFabricSystem ; //false; // can create a new key
+    boolean ifOld = false; // can create a new key
     long lastModified = 0L; // use now
     boolean overwriteDestroyed = false; // not okay to overwrite the DESTROYED token
     boolean success = false;
@@ -6547,7 +6428,7 @@ public class LocalRegion extends AbstractRegion
    * @param r - a Runnable to wrap the processing of the bulk op
    * @param eventID - the base event ID of the bulk op
    *
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public void syncBulkOp(Runnable r, EventID eventID) {
     if (this.eventTracker != null && !isTX()) {
@@ -6884,7 +6765,7 @@ public class LocalRegion extends AbstractRegion
   /**
    * Called after this region has been completely created
    *
-   * @since 5.0
+   * @since GemFire 5.0
    *
    * @see DistributedRegion#postDestroyRegion(boolean, RegionEventImpl)
    */
@@ -7041,7 +6922,7 @@ public class LocalRegion extends AbstractRegion
   /**
    * Do the expensive work of discovering an existing JTA transaction
    * Only needs to be called at Region.Entry entry points e.g. Region.put, Region.invalidate, etc.
-   * @since tx
+   * @since GemFire tx
    */
   final public void discoverJTA() {
     if (!isSecret() && !isUsedForPartitionedRegionAdmin()
@@ -7052,7 +6933,7 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * @return true if a transaction is in process
-   * @since tx 
+   * @since GemFire tx
    */
   public final boolean isTX() {
     return getTXState() != null;
@@ -7245,7 +7126,7 @@ public class LocalRegion extends AbstractRegion
    * @param entry the Region entry being destroyed
    * @param event
    *          the event describing the destroy operation
-   * @since 5.1
+   * @since GemFire 5.1
    */
   protected void basicDestroyBeforeRemoval(RegionEntry entry, EntryEventImpl event)
   {
@@ -7592,7 +7473,7 @@ public class LocalRegion extends AbstractRegion
           }
           catch (RejectedExecutionException rex) {
             ed.release();
-            logger.warn(LocalizedMessage.create(LocalizedStrings.LocalRegion_0_EVENT_NOT_DISPATCHED_DUE_TO_REJECTED_EXECUTION), rex);
+            dispatchEvent(this, event, op);
           }
         }
       }
@@ -7878,7 +7759,7 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * Release the client connection pool if we have one
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private void detachPool() {
     ServerRegionProxy mySRP = getServerProxy();
@@ -8031,7 +7912,7 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * For each region entry in this region call the callback
-   * @since prPersistSprint2
+   * @since GemFire prPersistSprint2
    */
   public void foreachRegionEntry(RegionEntryCallback callback) {
     Iterator it = this.entries.regionEntriesInVM().iterator();
@@ -8042,7 +7923,7 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * Used by {@link #foreachRegionEntry}.
-   * @since prPersistSprint2
+   * @since GemFire prPersistSprint2
    */
   public interface RegionEntryCallback {
     public void handleRegionEntry(RegionEntry re);
@@ -8214,7 +8095,7 @@ public class LocalRegion extends AbstractRegion
    *
    * @return <code>null</code> is a disk region is not desired
    *
-   * @since 3.2
+   * @since GemFire 3.2
    */
   protected DiskRegion createDiskRegion(InternalRegionArguments internalRegionArgs)
       throws DiskAccessException {
@@ -8250,7 +8131,7 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * Returns the object sizer on this region or null if it has no sizer.
-   * @since 6.1.2.9
+   * @since GemFire 6.1.2.9
    */
   public ObjectSizer getObjectSizer() {
     ObjectSizer result = null;
@@ -9508,7 +9389,7 @@ public class LocalRegion extends AbstractRegion
     // /////////////////////////////////////////
 
     /**
-     * @since 5.0
+     * @since GemFire 5.0
      */
     public Object setValue(Object arg0)
     {
@@ -9540,7 +9421,7 @@ public class LocalRegion extends AbstractRegion
   /**
    * Methods for java.util.Map compliance
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
 
   /**
@@ -10876,7 +10757,7 @@ public class LocalRegion extends AbstractRegion
    * @param topSerial the remote serialNumber for the top region (maybe root)
    * @param subregionSerialNumbers map of remote subregions to serialNumbers
    * @param regionDestroyed true if the region was destroyed on the remote host (as opposed to closed)
-   * @since 5.0
+   * @since GemFire 5.0
    */
   final void handleRemoteLocalRegionDestroyOrClose(
       InternalDistributedMember sender,
@@ -10904,7 +10785,7 @@ public class LocalRegion extends AbstractRegion
    * @param topSerial the remote serialNumber for the top region (maybe root)
    * @param subregionSerialNumbers remote map of subregions to serialNumbers
    * @param regionDestroyed 
-   * @since 5.0
+   * @since GemFire 5.0
    */
   private final void basicHandleRemoteLocalRegionDestroyOrClose(
       InternalDistributedMember sender,
@@ -10946,7 +10827,7 @@ public class LocalRegion extends AbstractRegion
    * Remove the specified sender from this regions advisor.
    * @param regionDestroyed 
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   protected void removeSenderFromAdvisor(InternalDistributedMember sender, int serial, boolean regionDestroyed)
   {
@@ -10977,7 +10858,7 @@ public class LocalRegion extends AbstractRegion
 
  /**
    * forces the diskRegion to switch the oplog
-   * @since 5.1
+   * @since GemFire 5.1
    */
   public void forceRolling() throws DiskAccessException {
     if(this.diskRegion!=null){
@@ -11005,7 +10886,7 @@ public class LocalRegion extends AbstractRegion
    * get rolled else null if no oplogs were available at the time of signal or region
    * is not having disk persistence. Pls note that the actual number of oplogs 
    * rolled may be more than what is indicated
-   * @since prPersistSprint1
+   * @since GemFire prPersistSprint1
    */
   @Override
   public boolean forceCompaction()
@@ -11225,7 +11106,7 @@ public class LocalRegion extends AbstractRegion
 
   /**
    * Called by ccn when a client goes away
-   * @since 5.7
+   * @since GemFire 5.7
    */
   void cleanupForClient(CacheClientNotifier ccn,
                         ClientProxyMembershipID client) {
@@ -11377,7 +11258,7 @@ public class LocalRegion extends AbstractRegion
    * @param function
    * @param args
    * @param filter
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   public ResultCollector executeFunction(final DistributedRegionFunctionExecutor execution, final Function function, final Object args,
       final ResultCollector rc,final Set filter, final ServerToClientFunctionResultSender sender) {   
@@ -11492,7 +11373,7 @@ public class LocalRegion extends AbstractRegion
    * @param localMemoryIsCritical true if the local memory is in a critical state
    * @param critialMembers set of members whose memory is in a critical state
    * @see ResourceManager#setCriticalHeapPercentage(float) and ResourceManager#setCriticalOffHeapPercentage(float)
-   * @since 6.0
+   * @since GemFire 6.0
    */
   public void initialCriticalMembers(boolean localMemoryIsCritical,
       Set<InternalDistributedMember> critialMembers) {
@@ -11597,7 +11478,7 @@ public class LocalRegion extends AbstractRegion
   }
   
   /**
-   * @since SqlFabric
+   * @since GemFire SqlFabric
    *
    */
   void distributeUpdatedProfileOnHubCreation()
@@ -11766,7 +11647,7 @@ public class LocalRegion extends AbstractRegion
     
     /**
      * @return the timestamp that marks the start of the operation
-     * @since 3.5
+     * @since GemFire 3.5
      */
     @Override
     public long startCacheListenerCall() {
@@ -11776,7 +11657,7 @@ public class LocalRegion extends AbstractRegion
     }
     /**
      * @param start the timestamp taken when the operation started 
-     * @since 3.5
+     * @since GemFire 3.5
      */
     @Override
     public void endCacheListenerCall(long start) {

@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -32,7 +34,7 @@ public class LDM {
   
   public static void main(String[] args) throws Exception {
     Properties props = new Properties();
-    props.setProperty("locators", "localhost[31576]");
+    props.setProperty(LOCATORS, "localhost[31576]");
     props.setProperty("mcastPort", "0");
     props.setProperty("logLevel", "config");
     InternalDistributedSystem system = (InternalDistributedSystem)

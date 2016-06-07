@@ -16,7 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.Iterator;
 
@@ -76,6 +76,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -83,6 +84,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Have the durable client register interest in all keys
     this.durableClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -99,6 +101,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Publish some entries
     final int numberOfEntries = 10;
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -114,6 +117,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable client received the updates
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -156,6 +160,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         assertEquals(2, PoolManager.getAll().size());
         CacheServerTestUtil.getCache().readyForEvents();
@@ -164,6 +169,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable clients on server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {       
         // Get the CacheClientNotifier
         CacheClientNotifier notifier = getBridgeServer().getAcceptor()
@@ -193,6 +199,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable client is no longer on the server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(0);
@@ -208,7 +215,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * while the first VM is connected. Also, verify that the first client is not
    * affected by the second one attempting to connect.
    */
-  @Ignore("TODO")
+  @Ignore("TODO: test is disabled")
   @Test
   public void testMultipleVMsWithSameDurableId() {
     // Start a server
@@ -222,6 +229,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -229,6 +237,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Have the durable client register interest in all keys
     this.durableClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -241,6 +250,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Attempt to start another durable client VM with the same id.
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Create another durable client") {
+      @Override
       public void run2() throws CacheException {
         getSystem(getClientDistributedSystemProperties(durableClientId));
         PoolFactoryImpl pf = (PoolFactoryImpl)PoolManager.createFactory();
@@ -248,7 +258,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
         try {
           pf.create("uncreatablePool");
           fail("Should not have been able to create the pool");
-        } catch (ServerRefusedConnectionException e) {
+        } catch (ServerRefusedConnectionException expected) {
           // expected exception
           disconnectFromDS();
         } catch (Exception e) {
@@ -259,6 +269,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -278,6 +289,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Publish some entries
     final int numberOfEntries = 10;
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -293,6 +305,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
     // Verify the durable client received the updates
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -332,6 +345,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -345,6 +359,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Send clientReady message
     durableClient2VM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -352,6 +367,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable clients on server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Get the CacheClientNotifier
         CacheClientNotifier notifier = getBridgeServer().getAcceptor()
@@ -388,7 +404,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
    * Test that starting a durable client on multiple servers (one live and one
    * not live) is processed correctly.
    */
-  @Ignore("TODO: Disabled for bug 52043")
+  @Ignore("TODO: test is disabled for bug 52043")
   @Test
   public void testDurableClientMultipleServersOneLive() {
     // Start server 1
@@ -411,6 +427,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -418,6 +435,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Have the durable client register interest in all keys
     this.durableClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -430,6 +448,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server1
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -449,6 +468,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Publish some entries
     final int numberOfEntries = 10;
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -464,6 +484,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable client received the updates
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -478,10 +499,10 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     });
     
     try {
-      java.lang.Thread.sleep(10000);
+      Thread.sleep(10000);
     }
     catch (InterruptedException ex) {
-      fail("interrupted");
+      fail("interrupted", ex);
     }
     
     // Stop the durable client
@@ -489,6 +510,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable client still exists on the server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         CacheClientProxy proxy = getClientProxy();
@@ -498,6 +520,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Publish some more entries
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -516,6 +539,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -523,6 +547,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -537,6 +562,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
         
     // Verify the durable client received the updates held for it on the server
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -578,6 +604,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -585,6 +612,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Have the durable client register interest in all keys
     this.durableClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -603,6 +631,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Send clientReady message
     durableClient2VM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -610,6 +639,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Have the durable client register interest in all keys
     durableClient2VM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -622,6 +652,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify durable clients on server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Get the CacheClientNotifier
         CacheClientNotifier notifier = getBridgeServer().getAcceptor()
@@ -652,6 +683,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Publish some entries
     final int numberOfEntries = 10;
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -667,6 +699,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify durable client 1 received the updates
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -682,6 +715,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify durable client 2 received the updates
     durableClient2VM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -699,7 +733,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     try {
       Thread.sleep(1000);
     } catch (InterruptedException ex) {
-      fail("interrupted");
+      fail("interrupted", ex);
     }
     
     // Stop the durable clients
@@ -708,6 +742,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable clients still exist on the server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Get the CacheClientNotifier
         CacheClientNotifier notifier = getBridgeServer().getAcceptor()
@@ -734,6 +769,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Publish some more entries
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -748,14 +784,15 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     });
     
     try {
-      java.lang.Thread.sleep(1000);
+      Thread.sleep(1000);
     }
-    catch (java.lang.InterruptedException ex) {
-      fail("interrupted");
+    catch (InterruptedException ex) {
+      fail("interrupted", ex);
     }
 
     // Verify the durable clients' queues contain the entries
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Get the CacheClientNotifier
         CacheClientNotifier notifier = getBridgeServer().getAcceptor()
@@ -763,7 +800,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
         
         // Iterate the CacheClientProxies and verify the queue sizes
         checkNumberOfClientProxies(2);
-//        boolean durableClient1Found=false, durableClient2Found=false;
         for (Iterator i = notifier.getClientProxies().iterator(); i.hasNext();) {
           CacheClientProxy proxy = (CacheClientProxy) i.next();
           assertEquals(numberOfEntries, proxy.getQueueSize());
@@ -776,6 +812,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -786,6 +823,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     durableClient2VM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -793,6 +831,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client 1 received the updates held for it on the server
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -808,6 +847,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify durable client 2 received the updates held for it on the server
     durableClient2VM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -863,6 +903,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -870,6 +911,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Have the durable client register interest in all keys
     this.durableClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -882,6 +924,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify durable client on server 1
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -904,6 +947,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify durable client on server 1
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -922,6 +966,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Publish some entries
     final int numberOfEntries = 10;
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -936,14 +981,15 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     });
 
     try {
-      java.lang.Thread.sleep(1000);
+      Thread.sleep(1000);
     }
-    catch (java.lang.InterruptedException ex) {
-      fail("interrupted");
+    catch (InterruptedException ex) {
+      fail("interrupted", ex);
     }
 
     // Verify the durable client's queue contains the entries
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         CacheClientProxy proxy = getClientProxy();
@@ -960,6 +1006,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -967,6 +1014,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server 1
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -982,6 +1030,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server 2
     this.server2VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -1002,6 +1051,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable client received the updates
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1045,6 +1095,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // verify that readyForEvents has not yet been called on the client's default pool
     this.durableClientVM.invoke(new CacheSerializableRunnable("check readyForEvents not called") {
+      @Override
       public void run2() throws CacheException {
         for (Pool p: PoolManager.getAll().values()) {
           assertEquals(false, ((PoolImpl)p).getReadyForEventsCalled());
@@ -1054,6 +1105,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -1061,6 +1113,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable clients on server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Get the CacheClientNotifier
         CacheClientNotifier notifier = getBridgeServer().getAcceptor()
@@ -1110,6 +1163,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   
       // verify that readyForEvents has not yet been called on all the client's pools
       this.durableClientVM.invoke(new CacheSerializableRunnable("check readyForEvents not called") {
+        @Override
         public void run2() throws CacheException {
           for (Pool p: PoolManager.getAll().values()) {
             assertEquals(false, ((PoolImpl)p).getReadyForEventsCalled());
@@ -1119,6 +1173,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
       // Send clientReady message
       this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+        @Override
         public void run2() throws CacheException {
           CacheServerTestUtil.getCache().readyForEvents();
         }
@@ -1126,6 +1181,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
       //Durable client registers durable cq on server
       this.durableClientVM.invoke(new CacheSerializableRunnable("Register Cq") {
+        @Override
         public void run2() throws CacheException {
           // Get the region
           Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1148,19 +1204,20 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
             query.execute();
           }
           catch (CqExistsException e) {
-            fail("Failed due to " + e);
+            fail("Failed due to ", e);
           }
           catch (CqException e) {
-            fail("Failed due to " + e);
+            fail("Failed due to ", e);
           }
           catch (RegionNotFoundException e) {
-            fail("Could not find specified region:" + regionName + ":" + e);
+            fail("Could not find specified region:" + regionName + ":", e);
           }
         }
       });
   
       // Verify durable client on server1
       this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+        @Override
         public void run2() throws CacheException {
           // Find the proxy
           checkNumberOfClientProxies(1);
@@ -1179,6 +1236,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       // Publish some entries
       final int numberOfEntries = 10;
       this.publisherClientVM.invoke(new CacheSerializableRunnable("publish updates") {
+        @Override
         public void run2() throws CacheException {
           // Get the region
           Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1194,6 +1252,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
       // Verify the durable client received the updates
       this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+        @Override
         public void run2() throws CacheException {
           // Get the region
           Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1212,7 +1271,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
         Thread.sleep(10000);
       }
       catch (InterruptedException e) {
-        fail("interrupted" + e);
+        fail("interrupted", e);
       }
       
       // Stop the durable client
@@ -1220,6 +1279,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
       // Verify the durable client still exists on the server
       this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+        @Override
         public void run2() throws CacheException {
           // Find the proxy
           CacheClientProxy proxy = getClientProxy();
@@ -1229,6 +1289,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   
       // Publish some more entries
       this.publisherClientVM.invoke(new CacheSerializableRunnable("Publish additional updates") {
+        @Override
         public void run2() throws CacheException {
           // Get the region
           Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1250,6 +1311,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
       //Durable client registers durable cq on server
       this.durableClientVM.invoke(new CacheSerializableRunnable("Register cq") {
+        @Override
         public void run2() throws CacheException {
           // Get the region
           Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1272,13 +1334,13 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
             query.execute();
           }
           catch (CqExistsException e) {
-            fail("Failed due to " + e);
+            fail("Failed due to ", e);
           }
           catch (CqException e) {
-            fail("Failed due to " + e);
+            fail("Failed due to ", e);
           }
           catch (RegionNotFoundException e) {
-            fail("Could not find specified region:" + regionName + ":" + e);
+            fail("Could not find specified region:" + regionName + ":", e);
           }
          
         }
@@ -1286,6 +1348,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
       // Send clientReady message
       this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+        @Override
         public void run2() throws CacheException {
           CacheServerTestUtil.getCache().readyForEvents();
         }
@@ -1293,6 +1356,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   
       // Verify durable client on server
       this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+        @Override
         public void run2() throws CacheException {
           // Find the proxy
           checkNumberOfClientProxies(1);
@@ -1307,6 +1371,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
           
       // Verify the durable client received the updates held for it on the server
       this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+        @Override
         public void run2() throws CacheException {
           // Get the region
           Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1338,6 +1403,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       public void run2() throws CacheException {
         PoolImpl.BEFORE_SENDING_CLIENT_ACK_CALLBACK_FLAG = true;
         ClientServerObserver origObserver = ClientServerObserverHolder.setInstance(new ClientServerObserverAdapter() {
+          @Override
           public void beforeSendingClientAck()
           {
             LogWriterUtils.getLogWriter().info("beforeSendingClientAck invoked");
@@ -1376,6 +1442,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // verify that readyForEvents has not yet been called on all the client's pools
     this.durableClientVM.invoke(new CacheSerializableRunnable("check readyForEvents not called") {
+      @Override
       public void run2() throws CacheException {
         for (Pool p: PoolManager.getAll().values()) {
           assertEquals(false, ((PoolImpl)p).getReadyForEventsCalled());
@@ -1385,6 +1452,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -1392,6 +1460,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     //Durable client registers durable cq on server
     this.durableClientVM.invoke(new CacheSerializableRunnable("Register Interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1404,6 +1473,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server1
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -1422,6 +1492,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Publish some entries
     final int numberOfEntries = 10;
     this.publisherClientVM.invoke(new CacheSerializableRunnable("publish updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1437,6 +1508,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable client received the updates
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1453,13 +1525,14 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       Thread.sleep(10000);
     }
     catch (InterruptedException e) {
-      fail("interrupted" + e);
+      fail("interrupted", e);
     }
     // Stop the durable client
     this.durableClientVM.invoke(() -> CacheServerTestUtil.closeCache(new Boolean(true)));
     
     // Verify the durable client still exists on the server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         CacheClientProxy proxy = getClientProxy();
@@ -1469,6 +1542,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Publish some more entries
     this.publisherClientVM.invoke(new CacheSerializableRunnable("Publish additional updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1489,6 +1563,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     //Durable client registers durable cq on server
     this.durableClientVM.invoke(new CacheSerializableRunnable("Register interest") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1501,6 +1576,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -1508,6 +1584,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -1522,6 +1599,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
         
     // Verify the durable client received the updates held for it on the server
     this.durableClientVM.invoke(new CacheSerializableRunnable("Verify updates") {
+      @Override
       public void run2() throws CacheException {
         // Get the region
         Region region = CacheServerTestUtil.getCache().getRegion(regionName);
@@ -1635,7 +1713,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Start server 1
     Integer[] ports = ((Integer[]) this.server1VM.invoke(() -> CacheServerTestUtil.createCacheServerReturnPorts(regionName, new Boolean(true))));
     final int serverPort = ports[0].intValue();
-    final int mcastPort = ports[1].intValue();
     
     final String durableClientId = getName() + "_client";
   
@@ -1668,7 +1745,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       Thread.sleep((timeoutInSeconds + 2) * 1000);
     }
     catch (InterruptedException ie) {
-      Thread.currentThread().interrupt();
+      fail("interrupted", ie);
     }
     //Restart the durable client
     startDurableClient(durableClientVM, durableClientId, serverPort, regionName);
@@ -2400,7 +2477,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       Thread.sleep((timeoutInSeconds + 5) * 1000);
     }
     catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
+      fail("interrupted", e);
     }
     
     //Restart the durable client
@@ -2477,6 +2554,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     this.server1VM.invoke(new CacheSerializableRunnable(
         "Close cq for durable client") {
+      @Override
       public void run2() throws CacheException {
 
         final CacheClientNotifier ccnInstance = CacheClientNotifier
@@ -2489,7 +2567,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
           ccnInstance.closeClientCq(durableClientId, "All");
         }
         catch (CqException e) {
-          throw new CacheException(e){};
+          fail("failed", e);
         }
       }
     });
@@ -2561,6 +2639,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     this.server1VM.invoke(new CacheSerializableRunnable(
         "Close cq for durable client") {
+      @Override
       public void run2() throws CacheException {
 
         final CacheClientNotifier ccnInstance = CacheClientNotifier
@@ -2575,7 +2654,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
           ccnInstance.closeClientCq(durableClientId, "LessThan5");
         }
         catch (CqException e) {
-          throw new CacheException(e){};
+          fail("failed", e);
         }
       }
     });
@@ -2646,6 +2725,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     this.server1VM.invoke(new CacheSerializableRunnable(
         "Close cq for durable client") {
+      @Override
       public void run2() throws CacheException {
 
         final CacheClientNotifier ccnInstance = CacheClientNotifier
@@ -2660,7 +2740,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
           ccnInstance.closeClientCq(durableClientId, "LessThan5");
         }
         catch (CqException e) {
-          throw new CacheException(e){};
+          fail("failed", e);
         }
       }
     });
@@ -2757,6 +2837,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Verify 2nd durable client on server
     this.server1VM
         .invoke(new CacheSerializableRunnable("Verify 2nd durable client") {
+          @Override
           public void run2() throws CacheException {
             // Find the proxy
             checkNumberOfClientProxies(2);
@@ -2774,6 +2855,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     this.server1VM.invoke(new CacheSerializableRunnable(
         "Close cq for durable client 1") {
+      @Override
       public void run2() throws CacheException {
 
         final CacheClientNotifier ccnInstance = CacheClientNotifier
@@ -2786,7 +2868,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
           ccnInstance.closeClientCq(durableClientId, "All");
         }
         catch (CqException e) {
-          throw new CacheException(e){};
+          fail("failed", e);
         }
       }
     });
@@ -2877,6 +2959,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
       this.server1VM.invoke(new CacheSerializableRunnable(
           "Set test hook") {
+        @Override
         public void run2() throws CacheException {
           //Set the Test Hook!
           //This test hook will pause during the drain process
@@ -2886,6 +2969,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
               
       this.server1VM.invokeAsync(new CacheSerializableRunnable(
           "Close cq for durable client") {
+        @Override
         public void run2() throws CacheException {
   
           final CacheClientNotifier ccnInstance = CacheClientNotifier
@@ -2898,7 +2982,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
             ccnInstance.closeClientCq(durableClientId, "All");
           }
           catch (CqException e) {
-            throw new CacheException(e){};
+            fail("failed", e);
           }
         }
       });
@@ -2908,11 +2992,14 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
   
       this.server1VM.invoke(new CacheSerializableRunnable(
           "verify was rejected at least once") {
+        @Override
         public void run2() throws CacheException {
           WaitCriterion ev = new WaitCriterion() {
+            @Override
             public boolean done() {
               return  CacheClientProxy.testHook != null && (((RejectClientReconnectTestHook) CacheClientProxy.testHook).wasClientRejected());
             }
+            @Override
             public String description() {
               return null;
             }
@@ -2949,6 +3036,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     }finally{
       this.server1VM.invoke(new CacheSerializableRunnable(
           "unset test hook") {
+        @Override
         public void run2() throws CacheException {
           CacheClientProxy.testHook = null;
         }
@@ -2998,6 +3086,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
       
       AsyncInvocation async = this.server1VM.invokeAsync(new CacheSerializableRunnable(
           "Close cq for durable client") {
+        @Override
         public void run2() throws CacheException {
   
           //Set the Test Hook!
@@ -3052,6 +3141,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     }finally {
       this.server1VM.invoke(new CacheSerializableRunnable(
           "unset test hook") {
+        @Override
         public void run2() throws CacheException {
           CacheClientProxy.testHook = null;
         }
@@ -3094,6 +3184,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     //Attempt to close a cq even though the client is running
     this.server1VM.invoke(new CacheSerializableRunnable(
         "Close cq for durable client") {
+      @Override
       public void run2() throws CacheException {
         
         final CacheClientNotifier ccnInstance = CacheClientNotifier
@@ -3110,7 +3201,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
           //expected exception;
           String expected = LocalizedStrings.CacheClientProxy_COULD_NOT_DRAIN_CQ_DUE_TO_ACTIVE_DURABLE_CLIENT.toLocalizedString("All", proxyId.getDurableId());
           if (!e.getMessage().equals(expected)) {
-            fail("Not the expected exception, was expecting " + (LocalizedStrings.CacheClientProxy_COULD_NOT_DRAIN_CQ_DUE_TO_ACTIVE_DURABLE_CLIENT.toLocalizedString("All", proxyId.getDurableId()) + " instead of exception: " + e.getMessage()));
+            fail("Not the expected exception, was expecting " + (LocalizedStrings.CacheClientProxy_COULD_NOT_DRAIN_CQ_DUE_TO_ACTIVE_DURABLE_CLIENT.toLocalizedString("All", proxyId.getDurableId()) + " instead of exception: " + e.getMessage()), e);
           }
         }
       }
@@ -3120,7 +3211,6 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     checkCqListenerEvents(durableClientVM, "GreaterThan5", 4 /*numEventsExpected*/, 4/*numEventsToWaitFor*/, 15/*secondsToWait*/);
     checkCqListenerEvents(durableClientVM, "LessThan5", 5 /*numEventsExpected*/, 5/*numEventsToWaitFor*/, 15/*secondsToWait*/);
     checkCqListenerEvents(durableClientVM, "All", 10 /*numEventsExpected*/, 10/*numEventsToWaitFor*/, 15/*secondsToWait*/);
-    
 
     // Stop the durable client
     this.durableClientVM.invoke(() -> CacheServerTestUtil.closeCache());
@@ -3178,6 +3268,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     //drop client proxy
     this.server1VM.invoke(new CacheSerializableRunnable(
         "Close client proxy on server for client" + durableClientId) {
+      @Override
       public void run2() throws CacheException {
 
         final CacheClientNotifier ccnInstance = CacheClientNotifier
@@ -3248,6 +3339,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -3255,6 +3347,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server 1
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -3270,6 +3363,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify durable client on server 2
     this.server2VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -3288,6 +3382,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable client is still on server 1
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -3298,6 +3393,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify the durable client is still on server 2
     this.server2VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -3312,6 +3408,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Send clientReady message
     this.durableClientVM.invoke(new CacheSerializableRunnable("Send clientReady") {
+      @Override
       public void run2() throws CacheException {
         CacheServerTestUtil.getCache().readyForEvents();
       }
@@ -3319,6 +3416,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
 
     // Verify durable client on server1
     this.server1VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -3334,6 +3432,7 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     
     // Verify durable client on server2
     this.server2VM.invoke(new CacheSerializableRunnable("Verify durable client") {
+      @Override
       public void run2() throws CacheException {
         // Find the proxy
         checkNumberOfClientProxies(1);
@@ -3360,7 +3459,5 @@ public class DurableClientSimpleDUnitTest extends DurableClientTestCase {
     // Stop server 2
     this.server2VM.invoke(() -> CacheServerTestUtil.closeCache());
   }
-
-  
   
 }

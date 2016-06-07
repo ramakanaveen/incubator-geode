@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -43,12 +44,9 @@ import com.gemstone.gemfire.cache.query.internal.DefaultQuery.TestHook;
 import com.gemstone.gemfire.internal.cache.persistence.query.CloseableIterator;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
-/**
- * 
- *
- */
 @Category(IntegrationTest.class)
 public class CompactRangeIndexJUnitTest  {
+
   private QueryTestUtils utils;
   private Index index;
 
@@ -57,7 +55,7 @@ public class CompactRangeIndexJUnitTest  {
     System.setProperty("index_elemarray_threshold", "3");
     utils = new QueryTestUtils();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
+    props.setProperty(MCAST_PORT, "0");
     utils.initializeQueryMap();
     utils.createCache(props);
     utils.createReplicateRegion("exampleRegion");
@@ -80,7 +78,7 @@ public class CompactRangeIndexJUnitTest  {
     executeRangeQueryWithoutDistinct(9);
   }
   
-  /*
+  /**
    * Tests adding entries to compact range index where the key is null
    * fixes bug 47151 where null keyed entries would be removed after being added
    */
@@ -101,10 +99,12 @@ public class CompactRangeIndexJUnitTest  {
     SelectResults results = (SelectResults) qs.newQuery("Select * from /exampleRegion r where r.status = null").execute();
     assertEquals("Null matched Results expected", numObjects, results.size());
   }
-  
-  //Tests race condition where we possibly were missing remove calls due to transitioning
-  //to an empty index elem before adding the entries
-  //the fix is to add the entries to the elem and then transition to that elem
+
+  /**
+   * Tests race condition where we possibly were missing remove calls due to transitioning
+   * to an empty index elem before adding the entries
+   * the fix is to add the entries to the elem and then transition to that elem
+   */
   @Test
   public void testCompactRangeIndexMemoryIndexStoreMaintenance() throws Exception {
     try {
@@ -159,9 +159,11 @@ public class CompactRangeIndexJUnitTest  {
     }
   }
 
-  //Tests race condition when we are transitioning index collection from elem array to concurrent hash set
-  //The other thread could remove from the empty concurrent hash set.
-  //Instead we now set a token, do all the puts into a collection and then unsets the token to the new collection
+  /**
+   * Tests race condition when we are transitioning index collection from elem array to concurrent hash set
+   * The other thread could remove from the empty concurrent hash set.
+   * Instead we now set a token, do all the puts into a collection and then unsets the token to the new collection
+   */
   @Test
   public void testMemoryIndexStoreMaintenanceTransitionFromElemArrayToTokenToConcurrentHashSet() throws Exception {
     try {
@@ -274,7 +276,7 @@ public class CompactRangeIndexJUnitTest  {
     }
   }
 
-  private class MemoryIndexStoreREToIndexElemTestHook implements TestHook {
+  private static class MemoryIndexStoreREToIndexElemTestHook implements TestHook {
 
     private CountDownLatch readyToStartRemoveLatch;
     private CountDownLatch waitForRemoveLatch;
@@ -319,12 +321,13 @@ public class CompactRangeIndexJUnitTest  {
       }
     }
   }
-  
-  
-  //Test hook that waits for another thread to begin removing
-  //The current thread should then continue to set the token
-  //then continue and convert to chs while holding the lock to the elem array still
-  //After the conversion of chs, the lock is released and then remove can proceed
+
+  /**
+   * Test hook that waits for another thread to begin removing
+   * The current thread should then continue to set the token
+   * then continue and convert to chs while holding the lock to the elem array still
+   * After the conversion of chs, the lock is released and then remove can proceed
+   */
   private class MemoryIndexStoreIndexElemToTokenToConcurrentHashSetTestHook implements TestHook {
 
     private CountDownLatch waitForRemoveLatch;
@@ -338,10 +341,12 @@ public class CompactRangeIndexJUnitTest  {
       waitForRetry = new CountDownLatch(1);
       readyToStartRemoveLatch = new CountDownLatch(1);
     }
+
+    @Override
     public void doTestHook(int spot) {
-      
     }
 
+    @Override
     public void doTestHook(String description) {
       try {
         if (description.equals("ATTEMPT_REMOVE")) {
@@ -371,8 +376,6 @@ public class CompactRangeIndexJUnitTest  {
     }
   }
 
-  
- 
   private void putValues(int num) {
     Region region = utils.getRegion("exampleRegion");
     for (int i = 1; i <= num; i++) {

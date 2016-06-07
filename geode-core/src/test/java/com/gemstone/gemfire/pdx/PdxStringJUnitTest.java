@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.pdx;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Date;
@@ -44,7 +45,7 @@ public class PdxStringJUnitTest {
   public void setUp() {
     // make it a loner
     this.c = (GemFireCacheImpl) new CacheFactory()
-        .set("mcast-port", "0")
+        .set(MCAST_PORT, "0")
         .setPdxReadSerialized(true)
         .create();
   }

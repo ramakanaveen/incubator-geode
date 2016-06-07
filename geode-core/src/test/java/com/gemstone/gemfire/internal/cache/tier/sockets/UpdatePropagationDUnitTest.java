@@ -16,7 +16,9 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -230,12 +232,12 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
   private void createClientCache(String host, Integer port1 , Integer port2 ) throws Exception {
     ClientCache cache;
     try {
-      System.setProperty("gemfire.PoolImpl.DISABLE_RANDOM", "true");
+      System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "PoolImpl.DISABLE_RANDOM", "true");
       int PORT1 = port1.intValue() ;
       int PORT2 = port2.intValue();
       Properties props = new Properties();
-      props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-      props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+      props.setProperty(MCAST_PORT, "0");
+      props.setProperty(LOCATORS, "");
       ClientCacheFactory cf = new ClientCacheFactory();
       cf.addPoolServer(host, PORT1)
       .addPoolServer(host, PORT2)
@@ -247,7 +249,7 @@ public class UpdatePropagationDUnitTest extends JUnit4CacheTestCase {
       .setPoolPingInterval(300);
        cache = getClientCache(cf);
     } finally {
-      System.setProperty("gemfire.PoolImpl.DISABLE_RANDOM", "false");
+      System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "PoolImpl.DISABLE_RANDOM", "false");
       CacheServerTestUtil.enableShufflingOfEndpoints();
     }
     cache.createClientRegionFactory(ClientRegionShortcut.CACHING_PROXY)

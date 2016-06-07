@@ -28,11 +28,14 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.EvictionAlgorithm;
+import com.gemstone.gemfire.cache.EvictionAttributes;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.cache.lucene.LuceneIndex;
 import com.gemstone.gemfire.cache.lucene.LuceneQueryFactory;
+import com.gemstone.gemfire.cache.lucene.internal.directory.DumpDirectoryFiles;
 import com.gemstone.gemfire.cache.lucene.internal.distributed.EntryScore;
 import com.gemstone.gemfire.cache.lucene.internal.distributed.LuceneFunction;
 import com.gemstone.gemfire.cache.lucene.internal.distributed.LuceneFunctionContext;
@@ -58,7 +61,7 @@ import com.gemstone.gemfire.internal.logging.LogService;
  * Implementation of LuceneService to create lucene index and query.
  * 
  * 
- * @since 8.5
+ * @since GemFire 8.5
  */
 public class LuceneServiceImpl implements InternalLuceneService {
   private static final Logger logger = LogService.getLogger();
@@ -80,6 +83,7 @@ public class LuceneServiceImpl implements InternalLuceneService {
     this.cache = gfc;
 
     FunctionService.registerFunction(new LuceneFunction());
+    FunctionService.registerFunction(new DumpDirectoryFiles());
     registerDataSerializables();
   }
   
@@ -179,6 +183,15 @@ public class LuceneServiceImpl implements InternalLuceneService {
     
     regionPath = dataregion.getFullPath();
     LuceneIndexImpl index = null;
+
+    //For now we cannot support eviction with local destroy.
+    //Eviction with overflow to disk still needs to be supported
+    EvictionAttributes evictionAttributes = dataregion.getAttributes().getEvictionAttributes();
+    EvictionAlgorithm evictionAlgorithm = evictionAttributes.getAlgorithm();
+    if (evictionAlgorithm != EvictionAlgorithm.NONE && evictionAttributes.getAction().isLocalDestroy()) {
+      throw new UnsupportedOperationException("Lucene indexes on regions with eviction and action local destroy are not supported");
+    }
+
     if (dataregion instanceof PartitionedRegion) {
       // partitioned region
       index = new LuceneIndexForPartitionedRegion(indexName, regionPath, cache);

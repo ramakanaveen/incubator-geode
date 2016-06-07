@@ -16,21 +16,7 @@
  */
 package com.gemstone.gemfire.test.dunit.internal;
 
-import static org.junit.Assert.*;
-
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import com.gemstone.gemfire.admin.internal.AdminDistributedSystemImpl;
 import com.gemstone.gemfire.cache.Cache;
@@ -47,11 +33,7 @@ import com.gemstone.gemfire.distributed.internal.DistributionMessageObserver;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.SocketCreator;
 import com.gemstone.gemfire.internal.admin.ClientStatsManager;
-import com.gemstone.gemfire.internal.cache.DiskStoreObserver;
-import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
-import com.gemstone.gemfire.internal.cache.HARegion;
-import com.gemstone.gemfire.internal.cache.InitialImageOperation;
-import com.gemstone.gemfire.internal.cache.PartitionedRegion;
+import com.gemstone.gemfire.internal.cache.*;
 import com.gemstone.gemfire.internal.cache.tier.InternalClientMembership;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheServerTestUtil;
 import com.gemstone.gemfire.internal.cache.tier.sockets.ClientProxyMembershipID;
@@ -59,13 +41,22 @@ import com.gemstone.gemfire.internal.cache.tier.sockets.Message;
 import com.gemstone.gemfire.internal.cache.xmlcache.CacheCreation;
 import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.management.internal.cli.LogWrapper;
-import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.Invoke;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
+import com.gemstone.gemfire.test.dunit.*;
 import com.gemstone.gemfire.test.dunit.standalone.DUnitLauncher;
 import com.gemstone.gemfire.test.junit.rules.serializable.SerializableTestName;
+import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.*;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.MCAST_PORT;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class is the base class for all distributed tests using JUnit 4.
@@ -153,7 +144,7 @@ public abstract class JUnit4DistributedTestCase implements DistributedTestFixtur
    * <p>Note: "final" was removed so that WANTestBase can override this method.
    * This was part of the xd offheap merge.
    *
-   * @since 3.0
+   * @since GemFire 3.0
    */
   public final InternalDistributedSystem getSystem(final Properties props) {
     // Setting the default disk store name is now done in setUp
@@ -167,11 +158,11 @@ public abstract class JUnit4DistributedTestCase implements DistributedTestFixtur
       if (logPerTest) {
         String testMethod = getTestMethodName();
         String testName = lastSystemCreatedInTest.getName() + '-' + testMethod;
-        String oldLogFile = p.getProperty(DistributionConfig.LOG_FILE_NAME);
-        p.put(DistributionConfig.LOG_FILE_NAME,
+        String oldLogFile = p.getProperty(LOG_FILE);
+        p.put(LOG_FILE,
                 oldLogFile.replace("system.log", testName+".log"));
-        String oldStatFile = p.getProperty(DistributionConfig.STATISTIC_ARCHIVE_FILE_NAME);
-        p.put(DistributionConfig.STATISTIC_ARCHIVE_FILE_NAME,
+        String oldStatFile = p.getProperty(STATISTIC_ARCHIVE_FILE);
+        p.put(STATISTIC_ARCHIVE_FILE,
                 oldStatFile.replace("statArchive.gfs", testName+".gfs"));
       }
       system = (InternalDistributedSystem)DistributedSystem.connect(p);
@@ -224,7 +215,7 @@ public abstract class JUnit4DistributedTestCase implements DistributedTestFixtur
    *
    * @see #getSystem(Properties)
    *
-   * @since 3.0
+   * @since GemFire 3.0
    */
   public final InternalDistributedSystem getSystem() {
     return getSystem(getDistributedSystemProperties());
@@ -245,12 +236,12 @@ public abstract class JUnit4DistributedTestCase implements DistributedTestFixtur
   /**
    * Returns a loner distributed system that isn't connected to other vms.
    *
-   * @since 6.5
+   * @since GemFire 6.5
    */
   public final InternalDistributedSystem getLonerSystem() {
     Properties props = getDistributedSystemProperties();
-    props.put(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.put(DistributionConfig.LOCATORS_NAME, "");
+    props.put(MCAST_PORT, "0");
+    props.put(LOCATORS, "");
     return getSystem(props);
   }
 
@@ -268,7 +259,7 @@ public abstract class JUnit4DistributedTestCase implements DistributedTestFixtur
    *
    * <p>Override this as needed. Default implementation returns empty {@code Properties}.
    *
-   * @since 3.0
+   * @since GemFire 3.0
    */
   @Override
   public Properties getDistributedSystemProperties() {
@@ -566,7 +557,7 @@ public abstract class JUnit4DistributedTestCase implements DistributedTestFixtur
     Message.MAX_MESSAGE_SIZE = Message.DEFAULT_MAX_MESSAGE_SIZE;
 
     // clear system properties -- keep alphabetized
-    System.clearProperty("gemfire.log-level");
+    System.clearProperty(DistributionConfig.GEMFIRE_PREFIX + "log-level");
     System.clearProperty("jgroups.resolve_dns");
 
     if (InternalDistributedSystem.systemAttemptingReconnect != null) {

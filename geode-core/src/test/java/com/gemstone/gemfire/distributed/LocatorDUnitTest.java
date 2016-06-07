@@ -58,11 +58,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 /**
  * Tests the ability of the {@link Locator} API to start and stop
  * locators running in remote VMs.
  *
- * @since 4.0
+ * @since GemFire 4.0
  */
 @Category(DistributedTest.class)
 public class LocatorDUnitTest extends JUnit4DistributedTestCase {
@@ -143,21 +145,21 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
 
     final String locators = NetworkUtils.getServerHostName(host) + "[" + port1 + "]";
     final Properties properties = new Properties();
-    properties.put("mcast-port", "0");
-    properties.put("start-locator", locators);
-    properties.put("log-level", LogWriterUtils.getDUnitLogLevel());
-    properties.put("security-peer-auth-init", "com.gemstone.gemfire.distributed.AuthInitializer.create");
-    properties.put("security-peer-authenticator", "com.gemstone.gemfire.distributed.MyAuthenticator.create");
-    properties.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
-    properties.put(DistributionConfig.USE_CLUSTER_CONFIGURATION_NAME, "false");
+    properties.put(MCAST_PORT, "0");
+    properties.put(START_LOCATOR, locators);
+    properties.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+    properties.put(SECURITY_PEER_AUTH_INIT, "com.gemstone.gemfire.distributed.AuthInitializer.create");
+    properties.put(SECURITY_PEER_AUTHENTICATOR, "com.gemstone.gemfire.distributed.MyAuthenticator.create");
+    properties.put(ENABLE_CLUSTER_CONFIGURATION, "false");
+    properties.put(USE_CLUSTER_CONFIGURATION, "false");
     system = (InternalDistributedSystem) DistributedSystem.connect(properties);
     InternalDistributedMember mbr = system.getDistributedMember();
     assertEquals("expected the VM to have NORMAL vmKind",
         DistributionManager.NORMAL_DM_TYPE, system.getDistributedMember().getVmKind());
 
-    properties.remove("start-locator");
-    properties.put("log-level", LogWriterUtils.getDUnitLogLevel());
-    properties.put("locators", locators);
+    properties.remove(START_LOCATOR);
+    properties.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+    properties.put(LOCATORS, locators);
     SerializableRunnable startSystem = new SerializableRunnable("start system") {
       public void run() {
         system = (InternalDistributedSystem) DistributedSystem.connect(properties);
@@ -214,8 +216,8 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
         }
       });
 
-      properties.put("start-locator", locators);
-      properties.put("log-level", LogWriterUtils.getDUnitLogLevel());
+      properties.put(START_LOCATOR, locators);
+      properties.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
       system = (InternalDistributedSystem) DistributedSystem.connect(properties);
       System.out.println("done connecting distributed system.  Membership view is " +
           MembershipManagerHelper.getMembershipManager(system).getView());
@@ -238,7 +240,7 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
       assertFalse("should not have become lock grantor", service.isLockGrantor());
 
       // Now demonstrate that a new member can join and use the lock service
-      properties.remove("start-locator");
+      properties.remove(START_LOCATOR);
       vm3.invoke(startSystem);
       vm3.invoke(new SerializableRunnable("get the lock service and lock something(2)") {
         public void run() {
@@ -278,13 +280,13 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     final String locators = host0 + "[" + port1 + "]," +
         host0 + "[" + port2 + "]";
     final Properties properties = new Properties();
-    properties.put("mcast-port", "0");
-    properties.put("locators", locators);
-    properties.put("enable-network-partition-detection", "false");
-    properties.put("disable-auto-reconnect", "true");
-    properties.put("member-timeout", "2000");
-    properties.put("log-level", LogWriterUtils.getDUnitLogLevel());
-    properties.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    properties.put(MCAST_PORT, "0");
+    properties.put(LOCATORS, locators);
+    properties.put(ENABLE_NETWORK_PARTITION_DETECTION, "false");
+    properties.put(DISABLE_AUTO_RECONNECT, "true");
+    properties.put(MEMBER_TIMEOUT, "2000");
+    properties.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+    properties.put(ENABLE_CLUSTER_CONFIGURATION, "false");
 
     SerializableCallable startLocator1 = new SerializableCallable("start locator1") {
       @Override
@@ -386,10 +388,10 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     DistributedTestUtils.deleteLocatorStateFile(port1);
     final String locators = NetworkUtils.getServerHostName(host) + "[" + port1 + "]";
     final Properties properties = new Properties();
-    properties.put("mcast-port", "0");
-    properties.put("locators", locators);
-    properties.put("enable-network-partition-detection", "true");
-    properties.put("disable-auto-reconnect", "true");
+    properties.put(MCAST_PORT, "0");
+    properties.put(LOCATORS, locators);
+    properties.put(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+    properties.put(DISABLE_AUTO_RECONNECT, "true");
 
     File logFile = new File("");
     if (logFile.exists()) {
@@ -503,14 +505,14 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     final String locators = host0 + "[" + port1 + "]," +
         host0 + "[" + port2 + "]";
     final Properties properties = new Properties();
-    properties.put("mcast-port", "0");
-    properties.put("locators", locators);
-    properties.put("enable-network-partition-detection", "true");
-    properties.put("disable-auto-reconnect", "true");
-    properties.put("member-timeout", "2000");
-    properties.put("log-level", LogWriterUtils.getDUnitLogLevel());
+    properties.put(MCAST_PORT, "0");
+    properties.put(LOCATORS, locators);
+    properties.put(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+    properties.put(DISABLE_AUTO_RECONNECT, "true");
+    properties.put(MEMBER_TIMEOUT, "2000");
+    properties.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
     //    properties.put("log-level", "fine");
-    properties.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    properties.put(ENABLE_CLUSTER_CONFIGURATION, "false");
 
     try {
       final String uname = getUniqueName();
@@ -637,12 +639,12 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     final String locators = host0 + "[" + port1 + "],"
         + host0 + "[" + port2 + "]";
     final Properties properties = new Properties();
-    properties.put("mcast-port", "0");
-    properties.put("locators", locators);
-    properties.put("enable-network-partition-detection", "true");
-    properties.put("disable-auto-reconnect", "true");
-    properties.put("member-timeout", "2000");
-    properties.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    properties.put(MCAST_PORT, "0");
+    properties.put(LOCATORS, locators);
+    properties.put(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+    properties.put(DISABLE_AUTO_RECONNECT, "true");
+    properties.put(MEMBER_TIMEOUT, "2000");
+    properties.put(ENABLE_CLUSTER_CONFIGURATION, "false");
 
     SerializableRunnable stopLocator = getStopLocatorRunnable();
 
@@ -783,13 +785,13 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     final String locators = host0 + "[" + port1 + "]," + host0 + "[" + port2 + "]";
 
     final Properties properties = new Properties();
-    properties.put("mcast-port", "0");
-    properties.put("locators", locators);
-    properties.put("enable-network-partition-detection", "true");
-    properties.put("disable-auto-reconnect", "true");
-    properties.put("member-timeout", "2000");
-    properties.put("log-level", LogWriterUtils.getDUnitLogLevel());
-    properties.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    properties.put(MCAST_PORT, "0");
+    properties.put(LOCATORS, locators);
+    properties.put(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+    properties.put(DISABLE_AUTO_RECONNECT, "true");
+    properties.put(MEMBER_TIMEOUT, "2000");
+    properties.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+    properties.put(ENABLE_CLUSTER_CONFIGURATION, "false");
 
     SerializableRunnable stopLocator = getStopLocatorRunnable();
 
@@ -921,12 +923,12 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     final String locators = host0 + "[" + port1 + "],"
         + host0 + "[" + port2 + "]";
     final Properties properties = new Properties();
-    properties.put("mcast-port", "0");
-    properties.put("locators", locators);
-    properties.put("enable-network-partition-detection", "true");
-    properties.put("disable-auto-reconnect", "true");
-    properties.put("member-timeout", "2000");
-    properties.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    properties.put(MCAST_PORT, "0");
+    properties.put(LOCATORS, locators);
+    properties.put(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+    properties.put(DISABLE_AUTO_RECONNECT, "true");
+    properties.put(MEMBER_TIMEOUT, "2000");
+    properties.put(ENABLE_CLUSTER_CONFIGURATION, "false");
 
     SerializableRunnable disconnect =
         new SerializableRunnable("Disconnect from " + locators) {
@@ -1038,8 +1040,8 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     DistributedTestUtils.deleteLocatorStateFile(port1);
     String locators = NetworkUtils.getServerHostName(host) + "[" + port + "]";
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", locators);
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, locators);
 
     final String expected = "java.net.ConnectException";
     final String addExpected =
@@ -1109,9 +1111,9 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
         File logFile = new File("");
         try {
           Properties locProps = new Properties();
-          locProps.setProperty("mcast-port", "0");
-          locProps.setProperty("member-timeout", "1000");
-          locProps.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+          locProps.setProperty(MCAST_PORT, "0");
+          locProps.setProperty(MEMBER_TIMEOUT, "1000");
+          locProps.put(ENABLE_CLUSTER_CONFIGURATION, "false");
 
           Locator.startLocatorAndDS(port, logFile, locProps);
         } catch (IOException ex) {
@@ -1126,9 +1128,9 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
             public void run() {
               //System.setProperty("p2p.joinTimeout", "5000");
               Properties props = new Properties();
-              props.setProperty("mcast-port", "0");
-              props.setProperty("locators", locators);
-              props.setProperty("member-timeout", "1000");
+              props.setProperty(MCAST_PORT, "0");
+              props.setProperty(LOCATORS, locators);
+              props.setProperty(MEMBER_TIMEOUT, "1000");
               DistributedSystem.connect(props);
             }
           };
@@ -1136,9 +1138,9 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
       vm2.invoke(connect);
 
       Properties props = new Properties();
-      props.setProperty("mcast-port", "0");
-      props.setProperty("locators", locators);
-      props.setProperty("member-timeout", "1000");
+      props.setProperty(MCAST_PORT, "0");
+      props.setProperty(LOCATORS, locators);
+      props.setProperty(MEMBER_TIMEOUT, "1000");
 
       system = (InternalDistributedSystem) DistributedSystem.connect(props);
 
@@ -1206,9 +1208,9 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     try {
 
       final Properties props = new Properties();
-      props.setProperty(DistributionConfig.LOCATORS_NAME, locators);
-      props.setProperty(DistributionConfig.ENABLE_NETWORK_PARTITION_DETECTION_NAME, "true");
-      props.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+      props.setProperty(LOCATORS, locators);
+      props.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+      props.put(ENABLE_CLUSTER_CONFIGURATION, "false");
 
       SerializableRunnable connect =
           new SerializableRunnable("Connect to " + locators) {
@@ -1341,9 +1343,9 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
         host0 + "[" + port2 + "]";
 
     final Properties dsProps = new Properties();
-    dsProps.setProperty("locators", locators);
-    dsProps.setProperty("mcast-port", "0");
-    dsProps.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    dsProps.setProperty(LOCATORS, locators);
+    dsProps.setProperty(MCAST_PORT, "0");
+    dsProps.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
 
     vm0.invoke(new SerializableRunnable("Start locator on " + port1) {
       public void run() {
@@ -1376,8 +1378,8 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
             new SerializableRunnable("Connect to " + locators) {
               public void run() {
                 Properties props = new Properties();
-                props.setProperty("mcast-port", "0");
-                props.setProperty("locators", locators);
+                props.setProperty(MCAST_PORT, "0");
+                props.setProperty(LOCATORS, locators);
                 DistributedSystem.connect(props);
               }
             };
@@ -1385,8 +1387,8 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
         vm2.invoke(connect);
 
         Properties props = new Properties();
-        props.setProperty("mcast-port", "0");
-        props.setProperty("locators", locators);
+        props.setProperty(MCAST_PORT, "0");
+        props.setProperty(LOCATORS, locators);
 
         system = (InternalDistributedSystem) DistributedSystem.connect(props);
 
@@ -1460,10 +1462,10 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
         host0 + "[" + port3 + "]";
 
     final Properties dsProps = new Properties();
-    dsProps.setProperty(DistributionConfig.LOCATORS_NAME, locators);
-    dsProps.setProperty(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel());
-    dsProps.setProperty(DistributionConfig.ENABLE_NETWORK_PARTITION_DETECTION_NAME, "true");
-    dsProps.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    dsProps.setProperty(LOCATORS, locators);
+    dsProps.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+    dsProps.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+    dsProps.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
 
     startLocatorSync(vm0, new Object[] { port1, dsProps });
     startLocatorSync(vm1, new Object[] { port2, dsProps });
@@ -1525,7 +1527,7 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
 
         final String newLocators = host0 + "[" + port2 + "]," +
             host0 + "[" + port3 + "]";
-        dsProps.setProperty("locators", newLocators);
+        dsProps.setProperty(LOCATORS, newLocators);
 
         final InternalDistributedMember currentCoordinator = GMSJoinLeaveTestHelper.getCurrentCoordinator();
         DistributedMember vm3ID = vm3.invoke(() -> GMSJoinLeaveTestHelper.getInternalDistributedSystem().getDM().getDistributionManagerId());
@@ -1670,12 +1672,12 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
         File logFile = new File("");
         try {
           Properties props = new Properties();
-          props.setProperty("mcast-port", String.valueOf(mcastport));
-          props.setProperty("locators", locators);
-          props.setProperty("log-level", LogWriterUtils.getDUnitLogLevel());
-          props.setProperty("mcast-ttl", "0");
-          props.setProperty("enable-network-partition-detection", "true");
-          props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+          props.setProperty(MCAST_PORT, String.valueOf(mcastport));
+          props.setProperty(LOCATORS, locators);
+          props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+          props.setProperty(MCAST_TTL, "0");
+          props.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+          props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
 
           Locator.startLocatorAndDS(port1, logFile, null, props);
         } catch (IOException ex) {
@@ -1688,12 +1690,12 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
         File logFile = new File("");
         try {
           Properties props = new Properties();
-          props.setProperty("mcast-port", String.valueOf(mcastport));
-          props.setProperty("locators", locators);
-          props.setProperty("log-level", LogWriterUtils.getDUnitLogLevel());
-          props.setProperty("mcast-ttl", "0");
-          props.setProperty("enable-network-partition-detection", "true");
-          props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+          props.setProperty(MCAST_PORT, String.valueOf(mcastport));
+          props.setProperty(LOCATORS, locators);
+          props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+          props.setProperty(MCAST_TTL, "0");
+          props.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+          props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
           Locator.startLocatorAndDS(port2, logFile, null, props);
         } catch (IOException ex) {
           com.gemstone.gemfire.test.dunit.Assert.fail("While starting locator on port " + port2, ex);
@@ -1705,11 +1707,11 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
         new SerializableRunnable("Connect to " + locators) {
           public void run() {
             Properties props = new Properties();
-            props.setProperty("mcast-port", String.valueOf(mcastport));
-            props.setProperty("locators", locators);
-            props.setProperty("log-level", LogWriterUtils.getDUnitLogLevel());
-            props.setProperty("mcast-ttl", "0");
-            props.setProperty("enable-network-partition-detection", "true");
+            props.setProperty(MCAST_PORT, String.valueOf(mcastport));
+            props.setProperty(LOCATORS, locators);
+            props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+            props.setProperty(MCAST_TTL, "0");
+            props.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
             DistributedSystem.connect(props);
           }
         };
@@ -1718,11 +1720,11 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
       vm2.invoke(connect);
 
       Properties props = new Properties();
-      props.setProperty("mcast-port", String.valueOf(mcastport));
-      props.setProperty("locators", locators);
-      props.setProperty("log-level", LogWriterUtils.getDUnitLogLevel());
-      props.setProperty("mcast-ttl", "0");
-      props.setProperty("enable-network-partition-detection", "true");
+      props.setProperty(MCAST_PORT, String.valueOf(mcastport));
+      props.setProperty(LOCATORS, locators);
+      props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+      props.setProperty(MCAST_TTL, "0");
+      props.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
 
       system = (InternalDistributedSystem) DistributedSystem.connect(props);
       WaitCriterion ev = new WaitCriterion() {
@@ -1773,9 +1775,9 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
       final String locators = NetworkUtils.getServerHostName(host) + "[" + port1 + "]";
 
       Properties props = new Properties();
-      props.setProperty("mcast-port", "0");
-      props.setProperty("locators", locators);
-      props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+      props.setProperty(MCAST_PORT, "0");
+      props.setProperty(LOCATORS, locators);
+      props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
       system = (InternalDistributedSystem) DistributedSystem.connect(props);
       system.disconnect();
     } finally {
@@ -1819,9 +1821,9 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
           new SerializableRunnable("Connect to " + locators) {
             public void run() {
               Properties props = new Properties();
-              props.setProperty("mcast-port", "0");
-              props.setProperty("locators", locators);
-              props.setProperty("log-level", LogWriterUtils.getDUnitLogLevel());
+              props.setProperty(MCAST_PORT, "0");
+              props.setProperty(LOCATORS, locators);
+              props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
               DistributedSystem.connect(props);
             }
           };
@@ -1842,7 +1844,7 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
    * Tests starting, stopping, and restarting a locator.  See bug
    * 32856.
    *
-   * @since 4.1
+   * @since GemFire 4.1
    */
   @Test
   public void testRestartLocator() throws Exception {
@@ -1854,9 +1856,9 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
     File stateFile = new File("locator" + port1 + "state.dat");
     VM vm0 = Host.getHost(0).getVM(0);
     final Properties p = new Properties();
-    p.setProperty(DistributionConfig.LOCATORS_NAME, Host.getHost(0).getHostName() + "[" + port1 + "]");
-    p.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    p.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    p.setProperty(LOCATORS, Host.getHost(0).getHostName() + "[" + port1 + "]");
+    p.setProperty(MCAST_PORT, "0");
+    p.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
     if (stateFile.exists()) {
       stateFile.delete();
     }
@@ -1940,8 +1942,8 @@ public class LocatorDUnitTest extends JUnit4DistributedTestCase {
           System.setProperty(InternalLocator.LOCATORS_PREFERRED_AS_COORDINATORS, "true");
           System.setProperty("p2p.joinTimeout", "1000");
           Properties locProps = new Properties();
-          locProps.put("mcast-port", "0");
-          locProps.put("log-level", LogWriterUtils.getDUnitLogLevel());
+          locProps.put(MCAST_PORT, "0");
+          locProps.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
           Locator.startLocatorAndDS(port, logFile, locProps);
         } catch (IOException ex) {
           com.gemstone.gemfire.test.dunit.Assert.fail("While starting locator on port " + port, ex);

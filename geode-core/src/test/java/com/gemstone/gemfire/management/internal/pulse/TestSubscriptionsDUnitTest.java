@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.management.internal.pulse;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -35,7 +36,6 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.management.DistributedSystemMXBean;
@@ -64,16 +64,15 @@ public class TestSubscriptionsDUnitTest extends JUnit4DistributedTestCase {
   private static final String client_k1 = "client-k1";
 
   private static final String client_k2 = "client-k2";
-  /** name of the test region */
-  private static final String REGION_NAME = "TestSubscriptionsDUnitTest_Region";
+  private static final String REGION_NAME = TestSubscriptionsDUnitTest.class.getSimpleName() + "_Region";
   private static VM server = null;
   private static VM client = null;
   private static VM client2 = null;
   private static VM managingNode = null;
   private ManagementTestBase helper;
 
-  public TestSubscriptionsDUnitTest() {
-    super();
+  @Override
+  public final void preSetUp() throws Exception {
     this.helper = new ManagementTestBase(){};
   }
 
@@ -94,8 +93,6 @@ public class TestSubscriptionsDUnitTest extends JUnit4DistributedTestCase {
     helper.closeCache(client2);
     disconnectFromDS();
   }
-
-  private static final long serialVersionUID = 1L;
 
   @Test
   public void testNoOfSubscription() throws Exception {
@@ -181,8 +178,8 @@ public class TestSubscriptionsDUnitTest extends JUnit4DistributedTestCase {
   public Cache createClientCache(String host, Integer port1) throws Exception {
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     Cache cache = createCache(props);
     PoolImpl p = (PoolImpl) PoolManager.createFactory()
         .addServer(host, port1.intValue()).setSubscriptionEnabled(true)

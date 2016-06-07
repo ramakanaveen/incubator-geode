@@ -16,7 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.Iterator;
 import java.util.Properties;
@@ -33,7 +34,6 @@ import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
@@ -57,12 +57,7 @@ public class Bug36995DUnitTest extends JUnit4DistributedTestCase {
 
   protected static PoolImpl pool = null;
 
-  private static final String regionName = "Bug36995DUnitTest_Region";
-
-  /** constructor */
-  public Bug36995DUnitTest() {
-    super();
-  }
+  private static final String regionName = Bug36995DUnitTest.class.getSimpleName() + "_Region";
 
   @Override
   public final void postSetUp() throws Exception {
@@ -86,8 +81,8 @@ public class Bug36995DUnitTest extends JUnit4DistributedTestCase {
   {
     try {
       Properties props = new Properties();
-      props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-      props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+      props.setProperty(MCAST_PORT, "0");
+      props.setProperty(LOCATORS, "");
       new Bug36995DUnitTest().createCache(props);
       PoolImpl p = (PoolImpl)PoolManager.createFactory()
         .addServer(host, port1)
@@ -106,7 +101,7 @@ public class Bug36995DUnitTest extends JUnit4DistributedTestCase {
       pool = p;
     }
     catch (Exception e) {
-      fail("Test failed due to " + e);
+      fail("Test failed due to ", e);
     }
   }
 
@@ -115,8 +110,8 @@ public class Bug36995DUnitTest extends JUnit4DistributedTestCase {
   {
     try {
       Properties props = new Properties();
-      props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-      props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+      props.setProperty(MCAST_PORT, "0");
+      props.setProperty(LOCATORS, "");
       new Bug36995DUnitTest().createCache(props);
       PoolImpl p = (PoolImpl)PoolManager.createFactory()
         .addServer(host, port1)
@@ -130,7 +125,7 @@ public class Bug36995DUnitTest extends JUnit4DistributedTestCase {
       pool = p;
     }
     catch (Exception e) {
-      fail("Test failed due to " + e);
+      fail("Test failed due to ", e);
     }
   }
 
@@ -219,7 +214,7 @@ public class Bug36995DUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception e) {
-      fail("failed while stopServer()" + e);
+      fail("failed while stopServer()", e);
     }
   }
 
@@ -236,30 +231,5 @@ public class Bug36995DUnitTest extends JUnit4DistributedTestCase {
       }
     };
     Wait.waitForCriterion(wc, 3 * 60 * 1000, 1000, true);
-    
-    // we no longer verify dead servers; just live
-//     while (proxy.getDeadServers().size() != expectedDeadServers) { // wait
-//       // until
-//       // condition
-//       // is
-//       // met
-//       assertTrue(
-//           "Waited over "
-//               + maxWaitTime
-//               + "for dead servers to become : "
-//               + expectedDeadServers
-//               + " This issue can occur on Solaris as DSM thread get stuck in connectForServer() call, and hence not recovering any newly started server This may be beacuase of tcp_ip_abort_cinterval kernal level property on solaris which has 3 minutes as a default value",
-//           (System.currentTimeMillis() - start) < maxWaitTime);
-//       try {
-//         Thread.yield();
-//         synchronized (delayLock) {
-//           delayLock.wait(2000);
-//         }
-//       }
-//       catch (InterruptedException ie) {
-//         fail("Interrupted while waiting ", ie);
-//       }
-//     }
-//     start = System.currentTimeMillis();
   }
 }

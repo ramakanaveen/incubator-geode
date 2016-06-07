@@ -27,10 +27,10 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.server.CacheServer;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.membership.gms.MembershipManagerHelper;
 import com.gemstone.gemfire.distributed.internal.membership.gms.mgr.GMSMembershipManager;
-import com.gemstone.gemfire.internal.cache.CacheServerLauncher;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 
 
@@ -69,7 +69,7 @@ public class ReconnectedCacheServerDUnitTest extends JUnit4CacheTestCase {
   @Test
   public void testCacheServerConfigRetained() {
     // make sure the environment isn't polluted
-    assertFalse(Boolean.getBoolean("gemfire.autoReconnect-useCacheXMLFile"));
+    assertFalse(Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "autoReconnect-useCacheXMLFile"));
 
     GemFireCacheImpl gc = (GemFireCacheImpl)this.cache;
     
@@ -85,8 +85,8 @@ public class ReconnectedCacheServerDUnitTest extends JUnit4CacheTestCase {
 
   @Test
   public void testDefaultCacheServerNotCreatedOnReconnect() {
-    
-    assertFalse(Boolean.getBoolean("gemfire.autoReconnect-useCacheXMLFile"));
+
+    assertFalse(Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "autoReconnect-useCacheXMLFile"));
     
     GemFireCacheImpl gc = (GemFireCacheImpl)this.cache;
 

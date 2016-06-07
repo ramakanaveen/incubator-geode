@@ -16,10 +16,12 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -80,13 +82,9 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends JUnit4Distrib
   /** Server2 port **/
   public static int PORT2;
   /** Region name **/
-  private static final String REGION_NAME = "RegisterInterestBeforeRegionCreationDUnitTest_Region";
+  private static final String REGION_NAME = RegisterInterestBeforeRegionCreationDUnitTest.class.getSimpleName() + "_Region";
   /** Server2 VM **/
   protected static Cache cache = null;
-
-  public RegisterInterestBeforeRegionCreationDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -100,7 +98,6 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends JUnit4Distrib
 
   /**
    * close the cache on all the vms
-   * @throws Exception
    */
   @Override
   public final void preTearDown() throws Exception {
@@ -110,7 +107,6 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends JUnit4Distrib
     server2.invoke(() -> RegisterInterestBeforeRegionCreationDUnitTest.closeCache());
   }
 
-  
   /**
    * - Creates the client-server configuration (which also registers interest)
    * - put on server1
@@ -118,21 +114,16 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends JUnit4Distrib
    * - create region on server2
    * - verify puts received on server2 via GII
    * - verify puts received on client2 via server2
-   * 
-   * @throws Exception
    */
-  public void YOGESH_testRegisterInterestHappeningBeforeRegionCreation() throws Exception
-  {
+  @Ignore("TODO:YOGESH: test is disabled")
+  @Test
+  public void testRegisterInterestHappeningBeforeRegionCreation() throws Exception {
     createClientServerConfigurationForClearTest();
     server1.invoke(putFromServer());
     client1.invoke(verifyIfAllPutsGot());
     server2.invoke(createRegionOnServer());
     server2.invoke(verifyIfAllPutsGot());
     client2.invoke(verifyIfAllPutsGot());
-  }
-  @Test
-  public void testDummyAsThereIsNoOtherTestInThisClass(){
-    //DO NOTHING
   }
 
   private CacheSerializableRunnable putFromServer()
@@ -241,8 +232,8 @@ public class RegisterInterestBeforeRegionCreationDUnitTest extends JUnit4Distrib
   {
     PORT1 = port1.intValue();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new RegisterInterestBeforeRegionCreationDUnitTest().createCache(props);
     Pool p = PoolManager.createFactory()
       .addServer(host, PORT1)

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.DataInput;
@@ -48,7 +49,6 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.cache.util.CqListenerAdapter;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.i18n.LogWriterI18n;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
@@ -65,7 +65,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Test client to server flow for delta propogation
  * 
- * @since 6.1
+ * @since GemFire 6.1
  */
 @Category(DistributedTest.class)
 public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
@@ -77,11 +77,8 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
   private static LogWriterI18n logger = null;
 
   VM server = null;
-
   VM server2 = null;
-
   VM client = null;
-
   VM client2 = null;
 
   private static final String KEY1 = "DELTA_KEY_1";
@@ -124,11 +121,6 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
 
   public static String LAST_KEY = "LAST_KEY";
   
-  /** constructor */
-  public ClientToServerDeltaDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     disconnectAllFromDS();
@@ -323,7 +315,6 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
 
   /*
    * put delta ; not previous deltas
-   * 
    */
   private static void putDelta(String key) {
     Region r = cache.getRegion(REGION_NAME);
@@ -364,7 +355,6 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
 
   /*
    * put delta full cycle
-   * 
    */
   private static void put(String key) {
     Region r = cache.getRegion(REGION_NAME);
@@ -464,7 +454,7 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
     secondUpdate = null;
     error = false;
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME,
+    props.setProperty(DELTA_PROPAGATION,
         enableDelta.toString());
     new ClientToServerDeltaDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
@@ -486,10 +476,12 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
     AttributesMutator am = region.getAttributesMutator();
     if (attachListener) {
       am.addCacheListener(new CacheListenerAdapter() {
+        @Override
         public void afterCreate(EntryEvent event) {
           create++;
         }
 
+        @Override
         public void afterUpdate(EntryEvent event) {
           switch (updates) {
             case 0:
@@ -510,6 +502,7 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
       });
     } else if (!isEmpty){
       am.addCacheListener(new CacheListenerAdapter() {
+        @Override
         public void afterCreate(EntryEvent event) {
           switch (create) {
             case 1:
@@ -572,8 +565,8 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
     error = false;
     lastKeyReceived = false;
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new ClientToServerDeltaDUnitTest().createCache(props);
     pool = (PoolImpl)PoolManager.createFactory().addServer(host, port.intValue())
         .setThreadLocalConnections(true).setMinConnections(2)
@@ -599,6 +592,7 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
     region = cache.createRegion(REGION_NAME, attrs);
     if (attachListener) {
       region.getAttributesMutator().addCacheListener(new CacheListenerAdapter() {
+        @Override
         public void afterCreate(EntryEvent event) {
           create++;
           if (LAST_KEY.equals(event.getKey())) {          
@@ -606,6 +600,7 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
           };
         }
 
+        @Override
         public void afterUpdate(EntryEvent event) {
           switch (updates) {
             case 0:
@@ -631,6 +626,7 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
     if (isCq) {
       CqAttributesFactory cqf = new CqAttributesFactory();
       CqListenerAdapter cqlist = new CqListenerAdapter() {
+        @Override
         public void onEvent(CqEvent cqEvent) {
           Object key = cqEvent.getKey();
           if (LAST_KEY.equals(key)) {
@@ -640,6 +636,7 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
               + cqEvent.getNewValue() + ")");
         }
         
+        @Override
         public void onError(CqEvent cqEvent) {
           logger.fine("CQ error received for key: " + cqEvent.getKey());
         }
@@ -686,6 +683,7 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
       lastKeyReceived = false;
     }
   }
+
   /**
    * This test does the following for single key:<br>
    * 1)Verifies that cacheless client calls toDelta <br>
@@ -734,14 +732,12 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
     
     server2.invoke(() -> ClientToServerDeltaDUnitTest.checkTodeltaCounter( new Integer(0)));
     server2.invoke(() -> ClientToServerDeltaDUnitTest.checkFromdeltaCounter());
-    
   }
   
   /**
    * This test does verifies that server with empty data policy sends deltas to 
    * the client which can handle deltas. Server sends full values which can not
    * handle deltas.
-   * 
    */
   @Test
   public void testClientsConnectedToEmptyServer() {
@@ -763,7 +759,6 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
     
     client2.invoke(() -> ClientToServerDeltaDUnitTest.waitForLastKey());    
     client2.invoke(() -> ClientToServerDeltaDUnitTest.checkDeltaInvoked(new Integer(deltaSent)));
-    
   }
   
   /**
@@ -788,7 +783,6 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
     
     server2.invoke(() -> ClientToServerDeltaDUnitTest.checkTodeltaCounter( new Integer(0)));
     server2.invoke(() -> ClientToServerDeltaDUnitTest.checkFromdeltaCounter());
-    
   }
 
   /**
@@ -799,8 +793,6 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
    * test ensures that the client2 gets the update event. This implies that
    * server2 clones the old value prior to applying delta received from server1
    * and then processes the CQ.
-   * 
-   * @throws Exception
    */
   @Test
   public void testC2CDeltaPropagationWithCQ() throws Exception {
@@ -823,8 +815,6 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
    * client is not interested in that event but is getting the event only
    * because the event satisfies a CQ which the client has registered with the
    * server.
-   * 
-   * @throws Exception
    */
   @Test
   public void testC2CDeltaPropagationWithCQWithoutRI() throws Exception {
@@ -957,9 +947,11 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
 
   public static void waitForLastKey() {
     WaitCriterion wc = new WaitCriterion() {
+      @Override
       public boolean done() {
         return ClientToServerDeltaDUnitTest.lastKeyReceived;
       }
+      @Override
       public String description() {
         return "Last key NOT received.";
       }
@@ -968,17 +960,20 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
   }
   
   static class CSDeltaTestImpl extends DeltaTestImpl {
+
     int deltaSent = 0;
     int deltaApplied = 0;
 
     public CSDeltaTestImpl() {
     }
 
+    @Override
     public void toDelta(DataOutput out) throws IOException {
       super.toDelta(out);
       deltaSent++;
     }
 
+    @Override
     public void fromDelta(DataInput in) throws IOException {
       super.fromDelta(in);      
       deltaApplied++;
@@ -992,6 +987,7 @@ public class ClientToServerDeltaDUnitTest extends JUnit4DistributedTestCase {
       return deltaApplied;
     }
 
+    @Override
     public String toString() {
       return "CSDeltaTestImpl[deltaApplied=" + deltaApplied + "]"
           + super.toString();

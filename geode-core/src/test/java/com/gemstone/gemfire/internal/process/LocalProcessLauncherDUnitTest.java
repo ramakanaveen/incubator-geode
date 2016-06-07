@@ -35,7 +35,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Multi-process tests for ProcessLauncher.
  * 
- * @since 7.0
+ * @since GemFire 7.0
  */
 @Category(DistributedTest.class)
 @SuppressWarnings("serial")

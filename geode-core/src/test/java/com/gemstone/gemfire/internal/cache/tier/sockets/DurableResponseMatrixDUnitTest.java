@@ -16,10 +16,12 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -36,7 +38,6 @@ import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverAdapter;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverHolder;
@@ -54,7 +55,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * Tests that the Matris defined in <code>ServerResponseMatrix</code> is
  * applied or not
  * 
- * @since 5.1
+ * @since GemFire 5.1
  */
 @Category(DistributedTest.class)
 public class DurableResponseMatrixDUnitTest extends JUnit4DistributedTestCase {
@@ -68,11 +69,6 @@ public class DurableResponseMatrixDUnitTest extends JUnit4DistributedTestCase {
   private static final String REGION_NAME = "DurableResponseMatrixDUnitTest_region";
   
   public static final String KEY = "KeyMatrix1" ;
-
-  /** constructor */
-  public DurableResponseMatrixDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -105,7 +101,9 @@ public class DurableResponseMatrixDUnitTest extends JUnit4DistributedTestCase {
     assertEquals("ValueMatrix1", r.getEntry(KEY).getValue());
   }
 
-  public void BROKEN_testRegisterInterestResponse_Valid_Invalid() throws Exception
+  @Ignore("TODO: test is broken and disabled")
+  @Test
+  public void testRegisterInterestResponse_Valid_Invalid() throws Exception
   {
     Region r = cache.getRegion(Region.SEPARATOR + REGION_NAME);
     r.put(KEY, "ValueMatrix1");
@@ -133,7 +131,9 @@ public class DurableResponseMatrixDUnitTest extends JUnit4DistributedTestCase {
     assertEquals(null, r.getEntry(KEY).getValue());
   }
 
-  public void BROKEN_testRegisterInterestResponse_Invalid_Valid()
+  @Ignore("TODO: test is broken and disabled")
+  @Test
+  public void testRegisterInterestResponse_Invalid_Valid()
       throws Exception
   {
     Region r = cache.getRegion(Region.SEPARATOR + REGION_NAME);
@@ -271,7 +271,9 @@ public class DurableResponseMatrixDUnitTest extends JUnit4DistributedTestCase {
     waitForValue(r, KEY, "ValueMatrix2");
   }
 
-  public void BROKEN_testNotification_Valid_Invalid() throws Exception
+  @Ignore("TODO: test is broken and disabled")
+  @Test
+  public void testNotification_Valid_Invalid() throws Exception
   {
     Region r = cache.getRegion(Region.SEPARATOR + REGION_NAME);
     r.put(KEY, "DummyValue");
@@ -310,7 +312,9 @@ public class DurableResponseMatrixDUnitTest extends JUnit4DistributedTestCase {
     waitForValue(r, KEY, "ValueMatrix1");
   }
 
-  public void BROKEN_testNotification_Invalid_Invalid() throws Exception
+  @Ignore("TODO: test is broken and disabled")
+  @Test
+  public void testNotification_Invalid_Invalid() throws Exception
   {
     Region r = cache.getRegion(Region.SEPARATOR + REGION_NAME);
     invalidateEntry(KEY);
@@ -349,7 +353,9 @@ public class DurableResponseMatrixDUnitTest extends JUnit4DistributedTestCase {
     waitForValue(r, KEY, "ValueMatrix1");
   }
 
-  public void BROKEN_testNotification_LocalInvalid_Invalid() throws Exception
+  @Ignore("TODO: test is broken and disabled")
+  @Test
+  public void testNotification_LocalInvalid_Invalid() throws Exception
   {
     Region r = cache.getRegion(Region.SEPARATOR + REGION_NAME);
     localInvalidateEntry(KEY);
@@ -501,11 +507,11 @@ public class DurableResponseMatrixDUnitTest extends JUnit4DistributedTestCase {
       String durableClientId, int durableClientTimeout)
   {
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    properties.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME,
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
+    properties.setProperty(DURABLE_CLIENT_ID,
         durableClientId);
-    properties.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME,
+    properties.setProperty(DURABLE_CLIENT_TIMEOUT,
         String.valueOf(durableClientTimeout));
     return properties;
   }

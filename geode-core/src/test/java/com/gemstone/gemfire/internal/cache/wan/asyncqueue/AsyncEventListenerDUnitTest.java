@@ -16,25 +16,16 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.asyncqueue;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.gemstone.gemfire.cache.Declarable;
-import com.gemstone.gemfire.cache.EntryEvent;
-import com.gemstone.gemfire.cache.wan.GatewayEventSubstitutionFilter;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -42,19 +33,17 @@ import com.gemstone.gemfire.cache.asyncqueue.AsyncEventQueueFactory;
 import com.gemstone.gemfire.cache.asyncqueue.internal.AsyncEventQueueFactoryImpl;
 import com.gemstone.gemfire.cache.asyncqueue.internal.AsyncEventQueueImpl;
 import com.gemstone.gemfire.cache.wan.GatewaySender.OrderPolicy;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.wan.AsyncEventQueueTestBase;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnableIF;
 import com.gemstone.gemfire.test.dunit.Wait;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 @Category(DistributedTest.class)
 public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
-
-  private static final long serialVersionUID = 1L;
 
   public AsyncEventListenerDUnitTest() {
     super();
@@ -68,7 +57,7 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
   public void testCreateAsyncEventQueueWithNullListener() {
     AsyncEventQueueTestBase test = new AsyncEventQueueTestBase();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
+    props.setProperty(MCAST_PORT, "0");
     InternalDistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
 
@@ -157,37 +146,37 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    */
   @Test
   public void testConcurrentSerialAsyncEventQueueSize() {
-	Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
+    Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
-	vm1.invoke(createCacheRunnable(lnPort));
-	vm2.invoke(createCacheRunnable(lnPort));
-	vm3.invoke(createCacheRunnable(lnPort));
-	vm4.invoke(createCacheRunnable(lnPort));
+    vm1.invoke(createCacheRunnable(lnPort));
+    vm2.invoke(createCacheRunnable(lnPort));
+    vm3.invoke(createCacheRunnable(lnPort));
+    vm4.invoke(createCacheRunnable(lnPort));
 
     vm1.invoke(() -> AsyncEventQueueTestBase.createConcurrentAsyncEventQueue( "ln",
         false, 100, 150, true, false, null, false, 2, OrderPolicy.KEY ));
     vm2.invoke(() -> AsyncEventQueueTestBase.createConcurrentAsyncEventQueue( "ln",
         false, 100, 150, true, false, null, false, 2, OrderPolicy.KEY ));
 
-	vm1.invoke(createReplicatedRegionRunnable());
-	vm2.invoke(createReplicatedRegionRunnable());
-	vm3.invoke(createReplicatedRegionRunnable());
-	vm4.invoke(createReplicatedRegionRunnable());
+    vm1.invoke(createReplicatedRegionRunnable());
+    vm2.invoke(createReplicatedRegionRunnable());
+    vm3.invoke(createReplicatedRegionRunnable());
+    vm4.invoke(createReplicatedRegionRunnable());
 
-	vm1
-	  .invoke(pauseAsyncEventQueueRunnable());
-	vm2
-	  .invoke(pauseAsyncEventQueueRunnable());
+    vm1
+      .invoke(pauseAsyncEventQueueRunnable());
+    vm2
+      .invoke(pauseAsyncEventQueueRunnable());
 
-	Wait.pause(1000);// pause at least for the batchTimeInterval
+    Wait.pause(1000);// pause at least for the batchTimeInterval
 
-	vm1.invoke(() -> AsyncEventQueueTestBase.doPuts( getTestMethodName() + "_RR",
-		1000 ));
+    vm1.invoke(() -> AsyncEventQueueTestBase.doPuts( getTestMethodName() + "_RR",
+      1000 ));
 
-	int vm1size = (Integer)vm1.invoke(() -> AsyncEventQueueTestBase.getAsyncEventQueueSize( "ln" ));
-	int vm2size = (Integer)vm2.invoke(() -> AsyncEventQueueTestBase.getAsyncEventQueueSize( "ln" ));
-	assertEquals("Size of AsyncEventQueue is incorrect", 1000, vm1size);
-	assertEquals("Size of AsyncEventQueue is incorrect", 1000, vm2size);
+    int vm1size = (Integer)vm1.invoke(() -> AsyncEventQueueTestBase.getAsyncEventQueueSize( "ln" ));
+    int vm2size = (Integer)vm2.invoke(() -> AsyncEventQueueTestBase.getAsyncEventQueueSize( "ln" ));
+    assertEquals("Size of AsyncEventQueue is incorrect", 1000, vm1size);
+    assertEquals("Size of AsyncEventQueue is incorrect", 1000, vm2size);
   }
   
   /**
@@ -196,7 +185,6 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Region: Replicated WAN: Serial Region persistence enabled: false Async
    * channel persistence enabled: false
    */
-
   @Test
   public void testReplicatedSerialAsyncEventQueue() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
@@ -272,7 +260,6 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * Error is thrown from AsyncEventListener implementation while processing the batch.
    * Added to test the fix done for defect #45152.
    */
-
   @Test
   public void testReplicatedSerialAsyncEventQueue_ExceptionScenario() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
@@ -403,8 +390,6 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     vm4.invoke(() -> AsyncEventQueueTestBase.validateAsyncEventListener( "ln", 0 ));// secondary
   }
 
-  
-
   /**
    * Test configuration::
    * 
@@ -413,8 +398,9 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * 
    * Note: The test doesn't create a locator but uses MCAST port instead.
    */
-  @Ignore("Disabled until I can sort out the hydra dependencies - see bug 52214")
-  public void DISABLED_testReplicatedSerialAsyncEventQueueWithoutLocator() {
+  @Ignore("TODO: Disabled until I can sort out the hydra dependencies - see bug 52214")
+  @Test
+  public void testReplicatedSerialAsyncEventQueueWithoutLocator() {
     int mPort = AvailablePortHelper.getRandomAvailablePortForDUnitSite();
     vm1.invoke(() -> AsyncEventQueueTestBase.createCacheWithoutLocator( mPort ));
     vm2.invoke(() -> AsyncEventQueueTestBase.createCacheWithoutLocator( mPort ));
@@ -488,9 +474,9 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * 
    * There is only one vm in the site and that vm is restarted
    */
-
-  @Ignore("Disabled for 52351")
-  public void DISABLED_testReplicatedSerialAsyncEventQueueWithPeristenceEnabled_Restart() {
+  @Ignore("TODO: Disabled for 52351")
+  @Test
+  public void testReplicatedSerialAsyncEventQueueWithPeristenceEnabled_Restart() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
     vm1.invoke(createCacheRunnable(lnPort));
@@ -529,8 +515,9 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
    * 
    * There are 3 VMs in the site and the VM with primary sender is shut down.
    */
-  @Ignore("Disabled for 52351")
-  public void DISABLED_testReplicatedSerialAsyncEventQueueWithPeristenceEnabled_Restart2() {
+  @Ignore("TODO: Disabled for 52351")
+  @Test
+  public void testReplicatedSerialAsyncEventQueueWithPeristenceEnabled_Restart2() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
 
     vm1.invoke(createCacheRunnable(lnPort));
@@ -1361,12 +1348,13 @@ public class AsyncEventListenerDUnitTest extends AsyncEventQueueTestBase {
     assertEquals(vm1size + vm2size + vm3size + vm4size, 256);
   }
   
-/**
- * Test case to test possibleDuplicates. vm1 & vm2 are hosting the PR. vm2 is
- * killed so the buckets hosted by it are shifted to vm1.
- */
-  @Ignore("Disabled for 52349")
-  public void DISABLED_testParallelAsyncEventQueueHA_Scenario1() {
+  /**
+   * Test case to test possibleDuplicates. vm1 & vm2 are hosting the PR. vm2 is
+   * killed so the buckets hosted by it are shifted to vm1.
+   */
+  @Ignore("TODO: Disabled for 52349")
+  @Test
+  public void testParallelAsyncEventQueueHA_Scenario1() {
     Integer lnPort = (Integer)vm0.invoke(() -> AsyncEventQueueTestBase.createFirstLocatorWithDSId( 1 ));
     vm1.invoke(createCacheRunnable(lnPort));
     vm2.invoke(createCacheRunnable(lnPort));

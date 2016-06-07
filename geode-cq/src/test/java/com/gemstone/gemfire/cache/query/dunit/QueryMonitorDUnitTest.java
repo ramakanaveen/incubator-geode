@@ -16,19 +16,14 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -54,10 +49,10 @@ import com.gemstone.gemfire.cache.query.data.Portfolio;
 import com.gemstone.gemfire.cache.query.internal.DefaultQuery;
 import com.gemstone.gemfire.cache.query.internal.QueryMonitor;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.ClientServerTestCase;
-import com.gemstone.gemfire.distributed.internal.DistributionConfigImpl;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.cache30.CacheTestCase;
+import com.gemstone.gemfire.cache30.ClientServerTestCase;
+import com.gemstone.gemfire.distributed.internal.DistributionConfigImpl;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
@@ -69,11 +64,14 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
  * Tests for QueryMonitoring service.
- * @since 6.0
+ *
+ * @since GemFire 6.0
  */
 @Category(DistributedTest.class)
 public class QueryMonitorDUnitTest extends JUnit4CacheTestCase {
@@ -83,8 +81,7 @@ public class QueryMonitorDUnitTest extends JUnit4CacheTestCase {
   private final String exampleRegionName = "exampleRegion";
   private final String exampleRegionName2 = "exampleRegion2";
   private final String poolName = "serverConnectionPool";
-  
-  
+
   /* Some of the queries are commented out as they were taking less time */
   String[]  queryStr = {
       "SELECT ID FROM /root/exampleRegion p WHERE  p.ID > 100",
@@ -147,42 +144,6 @@ public class QueryMonitorDUnitTest extends JUnit4CacheTestCase {
   
   private int numServers;
 
-  public QueryMonitorDUnitTest() {
-    super();
-  }
-
-  public void setup(int numServers) throws Exception {
-    super.setUp();
-    Host host = Host.getHost(0);
-    this.numServers = numServers;
-    
-    // avoid IllegalStateException from HandShake by connecting all vms tor
-    // system before creating connection pools
-    getSystem();
-    
-    SerializableRunnable r = new SerializableRunnable("getSystem") {
-      public void run() {
-        getSystem();
-      }
-    };
-    
-    for (int i=0; i<numServers; i++) {
-      host.getVM(i).invoke(r);
-    }
-    
-    r = new SerializableRunnable("getClientSystem") {
-      public void run() {
-        Properties props = DistributedTestUtils.getAllDistributedSystemProperties(new Properties());
-        props.put(DistributionConfigImpl.LOCATORS_NAME, "");
-        getSystem(props);
-      }
-    };
-    
-    for (int i=numServers; i<4; i++) {
-      host.getVM(i).invoke(r);
-    }
-  }
-  
   @Override
   public final void preTearDownCacheTestCase() throws Exception {
     Host host = Host.getHost(0);
@@ -192,7 +153,38 @@ public class QueryMonitorDUnitTest extends JUnit4CacheTestCase {
       host.getVM(i).invoke(() -> CacheTestCase.disconnectFromDS());
     }
   }
-  
+
+  public void setup(int numServers) throws Exception {
+    Host host = Host.getHost(0);
+    this.numServers = numServers;
+
+    // avoid IllegalStateException from HandShake by connecting all vms tor
+    // system before creating connection pools
+    getSystem();
+
+    SerializableRunnable r = new SerializableRunnable("getSystem") {
+      public void run() {
+        getSystem();
+      }
+    };
+
+    for (int i=0; i<numServers; i++) {
+      host.getVM(i).invoke(r);
+    }
+
+    r = new SerializableRunnable("getClientSystem") {
+      public void run() {
+        Properties props = DistributedTestUtils.getAllDistributedSystemProperties(new Properties());
+        props.put(DistributionConfigImpl.LOCATORS, "");
+        getSystem(props);
+      }
+    };
+
+    for (int i=numServers; i<4; i++) {
+      host.getVM(i).invoke(r);
+    }
+  }
+
   public void createRegion(VM vm){
     createRegion(vm, false, null);
   }
@@ -812,7 +804,9 @@ public class QueryMonitorDUnitTest extends JUnit4CacheTestCase {
   /**
    * Tests query execution from client to server (multiple server) with eviction to disk.
    */
-  public void BUG46770WORKAROUNDtestQueryMonitorRegionWithEviction() throws CacheException {
+  @Ignore("TODO:BUG46770WORKAROUND: test is disabled")
+  @Test
+  public void testQueryMonitorRegionWithEviction() throws CacheException {
 
     final Host host = Host.getHost(0);
     

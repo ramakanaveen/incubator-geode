@@ -22,7 +22,7 @@ package com.gemstone.gemfire.cache.operations;
  * Encapsulates a {@link com.gemstone.gemfire.cache.operations.OperationContext.OperationCode#REGION_DESTROY} operation for both the
  * pre-operation and post-operation cases.
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 public class RegionDestroyOperationContext extends RegionOperationContext {
 
@@ -33,18 +33,7 @@ public class RegionDestroyOperationContext extends RegionOperationContext {
    *                true to set the post-operation flag
    */
   public RegionDestroyOperationContext(boolean postOperation) {
-    super(postOperation);
-  }
-
-  /**
-   * Return the operation associated with the <code>OperationContext</code>
-   * object.
-   * 
-   * @return <code>OperationCode.REGION_DESTROY</code>.
-   */
-  @Override
-  public OperationCode getOperationCode() {
-    return OperationCode.REGION_DESTROY;
+    super(OperationCode.REGION_DESTROY, postOperation);
   }
 
 }

@@ -26,6 +26,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.util.StopWatch;
 
 /**
@@ -33,7 +34,7 @@ import com.gemstone.gemfire.internal.util.StopWatch;
  */
 public abstract class LoggingPerformanceTestCase {
 
-  protected static final boolean TIME_BASED = Boolean.getBoolean("gemfire.test.LoggingPerformanceTestCase.TIME_BASED");
+  protected static final boolean TIME_BASED = Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "test.LoggingPerformanceTestCase.TIME_BASED");
   protected static final long TIME_TO_RUN = 1000 * 60 * 10; // ten minutes
   protected static final int LOG_SETS = 1000;
   protected static final int LOG_REPETITIONS_PER_SET = 1000;

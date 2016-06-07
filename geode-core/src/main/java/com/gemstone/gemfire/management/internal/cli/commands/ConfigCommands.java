@@ -16,12 +16,13 @@
  */
 package com.gemstone.gemfire.management.internal.cli.commands;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import com.gemstone.gemfire.SystemFailure;
 import com.gemstone.gemfire.cache.CacheClosedException;
 import com.gemstone.gemfire.cache.execute.FunctionInvocationTargetException;
 import com.gemstone.gemfire.cache.execute.ResultCollector;
 import com.gemstone.gemfire.distributed.DistributedMember;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.xmlcache.CacheXml;
 import com.gemstone.gemfire.management.cli.CliMetaData;
 import com.gemstone.gemfire.management.cli.ConverterHint;
@@ -35,13 +36,8 @@ import com.gemstone.gemfire.management.internal.cli.functions.CliFunctionResult;
 import com.gemstone.gemfire.management.internal.cli.functions.ExportConfigFunction;
 import com.gemstone.gemfire.management.internal.cli.functions.GetMemberConfigInformationFunction;
 import com.gemstone.gemfire.management.internal.cli.i18n.CliStrings;
-import com.gemstone.gemfire.management.internal.cli.result.CommandResultException;
-import com.gemstone.gemfire.management.internal.cli.result.CompositeResultData;
+import com.gemstone.gemfire.management.internal.cli.result.*;
 import com.gemstone.gemfire.management.internal.cli.result.CompositeResultData.SectionResultData;
-import com.gemstone.gemfire.management.internal.cli.result.ErrorResultData;
-import com.gemstone.gemfire.management.internal.cli.result.InfoResultData;
-import com.gemstone.gemfire.management.internal.cli.result.ResultBuilder;
-import com.gemstone.gemfire.management.internal.cli.result.TabularResultData;
 import com.gemstone.gemfire.management.internal.cli.shell.Gfsh;
 import com.gemstone.gemfire.management.internal.configuration.SharedConfigurationWriter;
 import com.gemstone.gemfire.management.internal.configuration.domain.XmlEntity;
@@ -53,21 +49,13 @@ import org.springframework.shell.core.annotation.CliOption;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import static com.gemstone.gemfire.cache.operations.OperationContext.OperationCode;
 import static com.gemstone.gemfire.cache.operations.OperationContext.Resource;
 
 /****
- * @since 7.0
+ * @since GemFire 7.0
  *
  */
 public class ConfigCommands implements CommandMarker {
@@ -337,7 +325,7 @@ public class ConfigCommands implements CommandMarker {
       }
 
       if (statisticSamplingEnabled != null) {
-        runTimeDistributionConfigAttributes.put(DistributionConfig.STATISTIC_SAMPLING_ENABLED_NAME, statisticSamplingEnabled.toString());
+        runTimeDistributionConfigAttributes.put(STATISTIC_SAMPLING_ENABLED, statisticSamplingEnabled.toString());
       }
       
       

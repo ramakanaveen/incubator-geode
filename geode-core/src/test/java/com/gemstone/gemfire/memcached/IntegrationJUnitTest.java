@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.memcached;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.net.InetAddress;
@@ -29,7 +30,6 @@ import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
@@ -40,8 +40,8 @@ public class IntegrationJUnitTest {
   public void testGemFireProperty() throws Exception {
     Properties props = new Properties();
     final int port = AvailablePortHelper.getRandomAvailableTCPPort();
-    props.setProperty("memcached-port", port+"");
-    props.setProperty("mcast-port", "0");
+    props.setProperty(MEMCACHED_PORT, port + "");
+    props.setProperty(MCAST_PORT, "0");
     CacheFactory cf = new CacheFactory(props);
     Cache cache = cf.create();
     
@@ -62,9 +62,9 @@ public class IntegrationJUnitTest {
   public void testMemcachedBindAddress() throws Exception {
     Properties props = new Properties();
     final int port = AvailablePortHelper.getRandomAvailableTCPPort();
-    props.setProperty("memcached-port", port+"");
-    props.setProperty("memcached-bind-address", "127.0.0.1");
-    props.put(DistributionConfig.MCAST_PORT_NAME, "0");
+    props.setProperty(MEMCACHED_PORT, port + "");
+    props.setProperty(MEMCACHED_BIND_ADDRESS, "127.0.0.1");
+    props.put(MCAST_PORT, "0");
     CacheFactory cf = new CacheFactory(props);
     Cache cache = cf.create();
 

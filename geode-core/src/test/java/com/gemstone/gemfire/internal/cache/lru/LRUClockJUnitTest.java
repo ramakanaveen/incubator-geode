@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.lru;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -49,7 +50,9 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 @Category(IntegrationTest.class)
 public class LRUClockJUnitTest {
   
-  private Properties sysProps;
+  private String myTestName;
+
+  static Properties sysProps = new Properties();
 
   @Rule
   public TestName testName = new TestName();
@@ -57,8 +60,8 @@ public class LRUClockJUnitTest {
   @Before
   public void setUp() throws Exception {
     sysProps = new Properties();
-    sysProps.setProperty("mcast-port", "0");
-    sysProps.setProperty("locators", "");
+    sysProps.setProperty(MCAST_PORT, "0");
+    sysProps.setProperty(LOCATORS, "");
   }
 
   @Test

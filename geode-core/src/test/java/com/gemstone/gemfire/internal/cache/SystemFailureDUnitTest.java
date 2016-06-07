@@ -49,7 +49,7 @@ import org.junit.experimental.categories.Category;
  * This class tests the response of GemFire to various
  * occurrences of {@link VirtualMachineError}
  * 
- * @since 5.1
+ * @since GemFire 5.1
  */
 @Category(DistributedTest.class)
 public class SystemFailureDUnitTest extends DistributedCacheTestCase {

@@ -16,21 +16,17 @@
  */
 package com.gemstone.gemfire.disttx;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import java.util.Properties;
 
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache30.TXOrderDUnitTest;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Same tests as that of {@link TXOrderDUnitTest} after setting
@@ -39,25 +35,22 @@ import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 @Category(DistributedTest.class)
 public class DistTXOrderDUnitTest extends TXOrderDUnitTest {
 
-  public DistTXOrderDUnitTest() {
-    super();
-  }
-  
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty(DistributionConfig.DISTRIBUTED_TRANSACTIONS_NAME, "true");
-//    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
+    props.setProperty(DISTRIBUTED_TRANSACTIONS, "true");
     return props;
   }
-  
+
+  @Ignore("TODO: test is disabled for Dist TX")
   @Override
   @Test
   public void testFarSideOrder() throws CacheException {
     // [DISTTX] TODO test overridden intentionally and left blank as it fails
     // fix this 
   }
-  
+
+  @Ignore("TODO: test is disabled for Dist TX")
   @Override
   @Test
   public void testInternalRegionNotExposed() {

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -35,7 +36,6 @@ import com.gemstone.gemfire.cache.client.internal.ConnectionFactoryImpl;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.tier.ConnectionProxy;
 import com.gemstone.gemfire.test.dunit.Assert;
@@ -94,10 +94,9 @@ public class BackwardCompatibilityHigherVersionClientDUnitTest extends JUnit4Dis
       throws Exception {
     new BackwardCompatibilityHigherVersionClientDUnitTest();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    new BackwardCompatibilityHigherVersionClientDUnitTest()
-        .createCache(props);
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
+    new BackwardCompatibilityHigherVersionClientDUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory().addServer(host,
         port1.intValue()).setSubscriptionEnabled(true)
         .setSubscriptionRedundancy(1).setThreadLocalConnections(true)

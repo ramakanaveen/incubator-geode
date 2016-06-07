@@ -16,14 +16,8 @@
  */
 package com.gemstone.gemfire.internal.statistics;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -41,6 +35,9 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.StatisticDescriptor;
 import com.gemstone.gemfire.Statistics;
 import com.gemstone.gemfire.StatisticsFactory;
@@ -57,18 +54,16 @@ import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.cache.util.RegionMembershipListenerAdapter;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.GemFireStatSampler;
 import com.gemstone.gemfire.internal.NanoTimer;
 import com.gemstone.gemfire.internal.StatArchiveReader;
 import com.gemstone.gemfire.internal.StatArchiveReader.StatSpec;
+import com.gemstone.gemfire.internal.StatArchiveReader.StatValue;
 import com.gemstone.gemfire.internal.StatSamplerStats;
 import com.gemstone.gemfire.internal.StatisticsTypeFactoryImpl;
-import com.gemstone.gemfire.internal.StatArchiveReader.StatValue;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
 import com.gemstone.gemfire.test.dunit.Host;
@@ -77,6 +72,8 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Integration tests for Statistics. VM0 performs puts and VM1 receives
@@ -88,7 +85,7 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * This test mimics hydratest/locators/cacheDS.conf in an attempt to reproduce
  * bug #45478. So far this test passes consistently.
  *
- * @since 7.0
+ * @since GemFire 7.0
  */
 @SuppressWarnings("serial")
 @Category(DistributedTest.class)
@@ -163,9 +160,9 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
         public void run2() throws CacheException {
           new File(dir).mkdir();
           final Properties props = new Properties();
-          props.setProperty(DistributionConfig.STATISTIC_SAMPLING_ENABLED_NAME, "true");
-          props.setProperty(DistributionConfig.STATISTIC_SAMPLE_RATE_NAME, "1000");
-          props.setProperty(DistributionConfig.STATISTIC_ARCHIVE_FILE_NAME, pubArchives[pubVM]);
+          props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
+          props.setProperty(STATISTIC_SAMPLE_RATE, "1000");
+          props.setProperty(STATISTIC_ARCHIVE_FILE, pubArchives[pubVM]);
           final InternalDistributedSystem system = getSystem(props);
   
           // assert that sampler is working as expected
@@ -217,9 +214,9 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
       public Object call() throws Exception {
         new File(dir).mkdir();
         final Properties props = new Properties();
-        props.setProperty(DistributionConfig.STATISTIC_SAMPLING_ENABLED_NAME, "true");
-        props.setProperty(DistributionConfig.STATISTIC_SAMPLE_RATE_NAME, "1000");
-        props.setProperty(DistributionConfig.STATISTIC_ARCHIVE_FILE_NAME, subArchive);
+        props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
+        props.setProperty(STATISTIC_SAMPLE_RATE, "1000");
+        props.setProperty(STATISTIC_ARCHIVE_FILE, subArchive);
         final InternalDistributedSystem system = getSystem(props);
         
         final PubSubStats statistics = new PubSubStats(system, "sub-1", 1);
@@ -617,7 +614,7 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
   }
   
   /**
-   * @since 7.0
+   * @since GemFire 7.0
    */
   static class PubSubStats {
     
@@ -734,7 +731,7 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
   }
   
   /**
-   * @since 7.0
+   * @since GemFire 7.0
    */
   static class UpdateListener extends CacheListenerAdapter<String, Number> {
     
@@ -751,7 +748,7 @@ public class StatisticsDUnitTest extends JUnit4CacheTestCase {
   }
   
   /**
-   * @since 7.0
+   * @since GemFire 7.0
    */
   static class RegionMembershipListener extends RegionMembershipListenerAdapter<String, Number> {
     

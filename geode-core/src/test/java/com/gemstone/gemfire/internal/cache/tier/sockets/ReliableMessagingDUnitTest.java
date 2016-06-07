@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -37,7 +38,6 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.client.internal.QueueStateImpl.SequenceIdAndExpirationObject;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.ClientServerObserver;
 import com.gemstone.gemfire.internal.cache.ClientServerObserverAdapter;
@@ -87,15 +87,8 @@ public class ReliableMessagingDUnitTest extends JUnit4DistributedTestCase {
   static int CLIENT_ACK_INTERVAL = 5000;
 
   /** name of the test region */
-  private static final String REGION_NAME = "ReliableMessagingDUnitTest_Region";
+  private static final String REGION_NAME = ReliableMessagingDUnitTest.class.getSimpleName() + "_Region";
 
-  /**
-   * Constructor
-   */
-  public ReliableMessagingDUnitTest() {
-    super();
-  }
-  
   /*
    * Test verifies that client is sending periodic ack to the primary 
    * server for messages received.
@@ -387,8 +380,8 @@ public class ReliableMessagingDUnitTest extends JUnit4DistributedTestCase {
   {
     ReliableMessagingDUnitTest test = new ReliableMessagingDUnitTest();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     cache = test.createCache(props);
     String host = NetworkUtils.getServerHostName(Host.getHost(0));
     PoolImpl p = (PoolImpl)PoolManager.createFactory()

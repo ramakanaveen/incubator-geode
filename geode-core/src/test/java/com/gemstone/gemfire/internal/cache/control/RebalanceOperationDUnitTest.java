@@ -16,21 +16,13 @@
  */
 package com.gemstone.gemfire.internal.cache.control;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -47,6 +39,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -74,7 +69,6 @@ import com.gemstone.gemfire.cache.partition.PartitionRebalanceInfo;
 import com.gemstone.gemfire.cache.partition.PartitionRegionHelper;
 import com.gemstone.gemfire.cache.partition.PartitionRegionInfo;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
@@ -99,10 +93,9 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- *
- */
 @SuppressWarnings("synthetic-access")
 @Category(DistributedTest.class)
 public class RebalanceOperationDUnitTest extends JUnit4CacheTestCase {
@@ -114,20 +107,13 @@ public class RebalanceOperationDUnitTest extends JUnit4CacheTestCase {
     Invoke.invokeInEveryVM(new SerializableRunnable() {
       public void run() {
         InternalResourceManager.setResourceObserver(null);
-        System.clearProperty("gemfire.resource.manager.threads");
+        System.clearProperty(DistributionConfig.GEMFIRE_PREFIX + "resource.manager.threads");
       }
     });
     InternalResourceManager.setResourceObserver(null);
-    System.clearProperty("gemfire.resource.manager.threads");
+    System.clearProperty(DistributionConfig.GEMFIRE_PREFIX + "resource.manager.threads");
   }
 
-  /**
-   * @param name
-   */
-  public RebalanceOperationDUnitTest() {
-    super();
-  }
-  
   @Test
   public void testRecoverRedundancySimulation() {
     recoverRedundancy(true);
@@ -353,7 +339,7 @@ public class RebalanceOperationDUnitTest extends JUnit4CacheTestCase {
     Invoke.invokeInEveryVM(new SerializableRunnable() {
       public void run() {
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.ENFORCE_UNIQUE_HOST_NAME, "true");
+        props.setProperty(ENFORCE_UNIQUE_HOST, "true");
         getSystem(props); 
       }
     });
@@ -813,9 +799,9 @@ public class RebalanceOperationDUnitTest extends JUnit4CacheTestCase {
   private DistributedMember setRedundancyZone(VM vm, final String zone) {
     return (DistributedMember) vm.invoke(new SerializableCallable("set redundancy zone") {
       public Object call() {
-        System.setProperty("gemfire.resource.manager.threads", "2");
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "resource.manager.threads", "2");
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.REDUNDANCY_ZONE_NAME, zone);
+        props.setProperty(REDUNDANCY_ZONE, zone);
         DistributedSystem system = getSystem(props);
         return system.getDistributedMember();
         
@@ -1270,13 +1256,13 @@ public class RebalanceOperationDUnitTest extends JUnit4CacheTestCase {
 
       @Override
       public void run () {
-        System.setProperty("gemfire.LOG_REBALANCE", "true");
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "LOG_REBALANCE", "true");
       }
     });
     try {
       recoverRedundancyParallelAsyncEventQueue(true);
     } finally {
-      System.setProperty("gemfire.LOG_REBALANCE", "false");
+      System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "LOG_REBALANCE", "false");
     }
   }
   

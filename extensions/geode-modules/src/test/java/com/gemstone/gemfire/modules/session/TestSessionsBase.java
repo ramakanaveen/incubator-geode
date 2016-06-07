@@ -16,6 +16,7 @@
 */
 package com.gemstone.gemfire.modules.session;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.beans.PropertyChangeEvent;
@@ -57,8 +58,8 @@ public abstract class TestSessionsBase {
     server = new EmbeddedTomcat("/test", port, "JVM-1");
 
     PeerToPeerCacheLifecycleListener p2pListener = new PeerToPeerCacheLifecycleListener();
-    p2pListener.setProperty("mcast-port", "0");
-    p2pListener.setProperty("log-level", "config");
+    p2pListener.setProperty(MCAST_PORT, "0");
+    p2pListener.setProperty(LOG_LEVEL, "config");
     server.getEmbedded().addLifecycleListener(p2pListener);
     sessionManager = manager;
     sessionManager.setEnableCommitValve(true);
@@ -183,36 +184,6 @@ public abstract class TestSessionsBase {
 
     assertEquals(value, response.getText());
   }
-
-  /**
-   * Check that our session persists beyond the container restarting.
-   */
-//    public void testSessionPersists2() throws Exception {
-//        String key = "value_testSessionPersists2";
-//        String value = "Foo";
-//
-//        WebConversation wc = new WebConversation();
-//        WebRequest req = new GetMethodWebRequest("http://localhost:7890/test");
-//        req.setParameter("cmd", QueryCommand.SET.name());
-//        req.setParameter("param", key);
-//        req.setParameter("value", value);
-//        WebResponse response = wc.getResponse(req);
-//        String sessionId = response.getNewCookieValue("JSESSIONID");
-//
-//        assertNotNull("No apparent session cookie", sessionId);
-//
-//        // Restart the container
-//        AllTests.teardownClass();
-//        AllTests.setupClass();
-//
-//        // The request retains the cookie from the prior response...
-//        req.setParameter("cmd", QueryCommand.GET.name());
-//        req.setParameter("param", key);
-//        req.removeParameter("value");
-//        response = wc.getResponse(req);
-//
-//        assertIndexDetailsEquals(value, response.getText());
-//    }
 
   /**
    * Test that invalidating a session makes it's attributes inaccessible.

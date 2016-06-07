@@ -40,7 +40,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * though this test is a dunit test, it does
  * not perform any distribution.
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 @Category(DistributedTest.class)
 public class LocalRegionDUnitTest extends CacheListenerTestCase {

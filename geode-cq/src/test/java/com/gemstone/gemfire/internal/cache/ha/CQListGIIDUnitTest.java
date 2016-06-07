@@ -16,7 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,6 @@ import com.gemstone.gemfire.cache.query.data.Portfolio;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CertifiableTestCacheListener;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.InternalRegionArguments;
@@ -71,36 +71,27 @@ import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
- * @since 5.7
+ * @since GemFire 5.7
  */
 @Category(DistributedTest.class)
 public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
+
   private final static int CREATE = 0;
-
   private final static int UPDATE = 1;
-
   private final static int DESTROY = 2;
-
   private final static int INVALIDATE = 3;
-
   private final static int CLOSE = 4;
-
   private final static int REGION_CLEAR = 5;
-
   private final static int REGION_INVALIDATE = 6;
 
   protected static Cache cache = null;
 
   protected static VM serverVM0 = null;
-
   private static VM serverVM1 = null;
-
   protected static VM clientVM1 = null;
-
   protected static VM clientVM2 = null;
 
   private int PORT1;
-
   private int PORT2;
 
   private static final String regionName = "CQListGIIDUnitTest";
@@ -148,9 +139,6 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       "SELECT ALL * FROM /root/" + regions[0]
           + " p where p.ID > 0 and p.status='active'", };
 
-  /**
-   * Sets up the test.
-   */
   @Override
   public final void postSetUp() throws Exception {
     final Host host = Host.getHost(0);
@@ -163,9 +151,6 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
     PORT2 = ((Integer)serverVM1.invoke(() -> CQListGIIDUnitTest.createServerCache( HARegionQueue.HA_EVICTION_POLICY_ENTRY ))).intValue();
   }
 
-  /**
-   * Tears down the test.
-   */
   @Override
   public final void preTearDown() throws Exception {
     serverVM0.invoke(() -> ConflationDUnitTest.unsetIsSlowStart());
@@ -279,25 +264,21 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
    * @see Region#createSubregion(String, RegionAttributes)
    * @see LocalRegion#createSubregion(String, RegionAttributes, InternalRegionArguments)
    */
-  public static Region createSubregion(Region root, String name,
-      RegionAttributes attrs, final InternalRegionArguments internalArgs) throws CacheException
-  {
+  public static Region createSubregion(Region root, String name, RegionAttributes attrs, final InternalRegionArguments internalArgs) throws CacheException {
+    Region value = null;
     if (internalArgs == null) {
-      return root.createSubregion(name, attrs);
+      value = root.createSubregion(name, attrs);
     } else {
       try {
         LocalRegion lr = (LocalRegion) root;
-        return lr.createSubregion(name, attrs, internalArgs);
-      } catch (IOException ioe) {
-        AssertionError assErr = new AssertionError("unexpected exception");
-        assErr.initCause(ioe);
-        throw assErr;
-      } catch (ClassNotFoundException cnfe) {
-        AssertionError assErr = new AssertionError("unexpected exception");
-        assErr.initCause(cnfe);
-        throw assErr;
+        value = lr.createSubregion(name, attrs, internalArgs);
+      } catch (IOException e) {
+        fail("unexpected exception", e);
+      } catch (ClassNotFoundException e) {
+        fail("unexpected exception", e);
       } 
     }
+    return value;
   }
   
   public static void createClientCache(Integer port1, Integer port2,
@@ -327,8 +308,8 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
     String host = NetworkUtils.getIPLiteral();
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new CQListGIIDUnitTest().createCache(props);
 
     PoolFactory pf = PoolManager.createFactory();
@@ -392,12 +373,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       assertTrue("newCq() state mismatch", cq1.getState().isStopped());
     }
     catch (Exception ex) {
-      com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("CqService is :" + cqService);
-      ex.printStackTrace();
-      AssertionError err = new AssertionError("Failed to create CQ " + cqName
-          + " . ");
-      err.initCause(ex);
-      throw err;
+      fail("Failed to create CQ " + cqName + " . ", ex);
     }
   }
 
@@ -423,11 +399,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception ex) {
-      com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("CqService is :" + cqService);
-      com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().error(ex);
-      AssertionError err = new AssertionError("Failed to execute  CQ " + cqName);
-      err.initCause(ex);
-      throw err;
+      fail("Failed to execute  CQ " + cqName, ex);
     }
 
     if (initialResults.booleanValue()) {
@@ -437,20 +409,11 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
         cqResults = cq1.executeWithInitialResults();
       }
       catch (Exception ex) {
-        com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("CqService is :" + cqService);
-        ex.printStackTrace();
-        AssertionError err = new AssertionError("Failed to execute  CQ "
-            + cqName);
-        err.initCause(ex);
-        throw err;
+        fail("Failed to execute  CQ " + cqName, ex);
       }
       com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("initial result size = " + cqResults.size());
       assertTrue("executeWithInitialResults() state mismatch", cq1.getState()
           .isRunning());
-      // if (expectedResultsSize >= 0) {
-      // assertIndexDetailsEquals("unexpected results size", expectedResultsSize, cqResults
-      // .size());
-      // }
     }
     else {
 
@@ -458,12 +421,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
         cq1.execute();
       }
       catch (Exception ex) {
-        com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("CqService is :" + cqService);
-        ex.printStackTrace();
-        AssertionError err = new AssertionError("Failed to execute  CQ "
-            + cqName);
-        err.initCause(ex);
-        throw err;
+        fail("Failed to execute  CQ " + cqName, ex);
       }
       assertTrue("execute() state mismatch", cq1.getState().isRunning());
     }
@@ -477,10 +435,8 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       region.getAttributesMutator().setCacheListener(
           new CertifiableTestCacheListener(com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter()));
     }
-    catch (Exception cqe) {
-      AssertionError err = new AssertionError("Failed to get Region.");
-      err.initCause(cqe);
-      throw err;
+    catch (Exception e) {
+      fail("Failed to get Region.", e);
     }
 
     try {
@@ -491,9 +447,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       region.registerInterest(list);
     }
     catch (Exception ex) {
-      AssertionError err = new AssertionError("Failed to Register InterestList");
-      err.initCause(ex);
-      throw err;
+      fail("Failed to Register InterestList", ex);
     }
   }
 
@@ -508,7 +462,6 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       cqService = cache.getQueryService();
     }
     catch (Exception cqe) {
-      cqe.printStackTrace();
       Assert.fail("Failed to getCQService.", cqe);
     }
 
@@ -550,7 +503,6 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       case REGION_INVALIDATE:
         listener.waitForRegionInvalidate();
         break;
-
     }
   }
 
@@ -593,7 +545,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
     }
   }
 
-  @Ignore("TODO")
+  @Ignore("TODO: test is disabled")
   @Test
   public void testSpecificClientCQIsGIIedPart1() throws Exception {
     Integer size = Integer.valueOf(10);
@@ -634,8 +586,6 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
    * This test asserts that cq list of a client for an event is not lost if that
    * client's queue has been GII'ed to a server where that event already
    * existed.
-   *
-   * @throws Exception
    */
   @Test
   public void testClientCQNotLostAtGIIReceiver() throws Exception {
@@ -651,32 +601,32 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
     createClientCache(Integer.valueOf(PORT1), Integer.valueOf(PORT2),
         Integer.valueOf(port3), "1");
     try {
-    clientVM1.invoke(() -> CQListGIIDUnitTest.createClientCache( Integer.valueOf(PORT1), Integer.valueOf(port3),
-            Integer.valueOf(PORT2), "1" ));
-    try {
-    createCQ("testSpecificClientCQIsGIIed_0", cqs[0]);
-    executeCQ("testSpecificClientCQIsGIIed_0", Boolean.FALSE);
-    clientVM1.invoke(() -> CQListGIIDUnitTest.createCQ(
-        "testSpecificClientCQIsGIIed_0", cqs[0] ));
-    clientVM1.invoke(() -> CQListGIIDUnitTest.executeCQ(
-        "testSpecificClientCQIsGIIed_0", Boolean.FALSE ));
+      clientVM1.invoke(() -> CQListGIIDUnitTest.createClientCache( Integer.valueOf(PORT1), Integer.valueOf(port3),
+              Integer.valueOf(PORT2), "1" ));
+      try {
+        createCQ("testSpecificClientCQIsGIIed_0", cqs[0]);
+        executeCQ("testSpecificClientCQIsGIIed_0", Boolean.FALSE);
+        clientVM1.invoke(() -> CQListGIIDUnitTest.createCQ(
+            "testSpecificClientCQIsGIIed_0", cqs[0] ));
+        clientVM1.invoke(() -> CQListGIIDUnitTest.executeCQ(
+            "testSpecificClientCQIsGIIed_0", Boolean.FALSE ));
 
-    serverVM0.invoke(() -> CQListGIIDUnitTest.putEntries(
-        regions[0], size ));
+        serverVM0.invoke(() -> CQListGIIDUnitTest.putEntries(
+            regions[0], size ));
 
-    serverVM1.invoke(() -> CQListGIIDUnitTest.VerifyCUMCQList(
-        size, Integer.valueOf(1) ));
+        serverVM1.invoke(() -> CQListGIIDUnitTest.VerifyCUMCQList(
+            size, Integer.valueOf(1) ));
 
-    serverVM2.invoke(() -> CQListGIIDUnitTest.stopServer());
-    Thread.sleep(3000); // TODO: Find a better 'n reliable alternative
+        serverVM2.invoke(() -> CQListGIIDUnitTest.stopServer());
+        Thread.sleep(3000); // TODO: Find a better 'n reliable alternative
 
-    serverVM0.invoke(() -> CQListGIIDUnitTest.VerifyCUMCQList(
-      size, Integer.valueOf(2) ));
-    serverVM1.invoke(() -> CQListGIIDUnitTest.VerifyCUMCQList(
-        size, Integer.valueOf(2) ));
-    } finally {
-      clientVM1.invoke(() -> CQListGIIDUnitTest.destroyClientPool());
-    }
+        serverVM0.invoke(() -> CQListGIIDUnitTest.VerifyCUMCQList(
+          size, Integer.valueOf(2) ));
+        serverVM1.invoke(() -> CQListGIIDUnitTest.VerifyCUMCQList(
+            size, Integer.valueOf(2) ));
+      } finally {
+        clientVM1.invoke(() -> CQListGIIDUnitTest.destroyClientPool());
+      }
 
     } finally {
       destroyClientPool();
@@ -721,7 +671,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception e) {
-      fail("failed in stopOneBridgeServer()" + e);
+      fail("failed in stopOneBridgeServer()", e);
     }
   }
 
@@ -734,7 +684,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception e) {
-      fail("failed in stopServer()" + e);
+      fail("failed in stopServer()", e);
     }
   }
 
@@ -747,7 +697,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception e) {
-      fail("failed in startServer()" + e);
+      fail("failed in startServer()", e);
     }
   }
 
@@ -777,7 +727,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
           Thread.sleep(50);
         }
         catch (InterruptedException ie) {
-          fail("interrupted");
+          fail("interrupted", ie);
         }
       }
       logger.fine("Exiting sleep, time elapsed was: "
@@ -788,7 +738,7 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception e) {
-      fail("failed in waitTillMessagesAreDispatched()" + e);
+      fail("failed in waitTillMessagesAreDispatched()", e);
     }
   }
 
@@ -798,5 +748,4 @@ public class CQListGIIDUnitTest extends JUnit4DistributedTestCase {
       cache.getDistributedSystem().disconnect();
     }
   }
-
 }

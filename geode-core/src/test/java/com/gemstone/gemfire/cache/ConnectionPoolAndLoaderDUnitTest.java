@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -397,8 +398,8 @@ public class ConnectionPoolAndLoaderDUnitTest extends JUnit4CacheTestCase {
   public Properties getDistributedSystemProperties() {
     Properties p = new Properties();
     if(!useLocator) {
-      p.setProperty("locators", "");
-      p.setProperty("mcast-port", "0");
+      p.setProperty(LOCATORS, "");
+      p.setProperty(MCAST_PORT, "0");
     }
     return p;
   }

@@ -49,7 +49,7 @@ import com.gemstone.gemfire.internal.size.WellKnownClassSizer;
  * and its statistics.
  * 
  * 
- * @since 3.2
+ * @since GemFire 3.2
  */
 @Category(DistributedTest.class)
 public class MemLRUEvictionControllerDUnitTest extends JUnit4CacheTestCase
@@ -221,7 +221,7 @@ public class MemLRUEvictionControllerDUnitTest extends JUnit4CacheTestCase
 
   /** Class used in testCustomObjectSizer
    * 
-   * @since 5.0
+   * @since GemFire 5.0
    */
   class CustomObjectSizer implements ObjectSizer
   {

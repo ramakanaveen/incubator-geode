@@ -50,7 +50,6 @@ import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.DurableClientAttributes;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.cache.tier.InternalClientMembership;
 import com.gemstone.gemfire.internal.cache.tier.sockets.AcceptorImpl;
@@ -70,10 +69,13 @@ import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.MCAST_PORT;
+
 /**
  * Tests the ClientMembership API including ClientMembershipListener.
  *
- * @since 4.2.1
+ * @since GemFire 4.2.1
  */
 @Category(DistributedTest.class)
 public class ClientMembershipDUnitTest extends ClientServerTestCase {
@@ -848,8 +850,8 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
     // create bridge client in controller vm...
     System.out.println("[testClientMembershipEventsInClient] create bridge client");
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    config.setProperty(MCAST_PORT, "0");
+    config.setProperty(LOCATORS, "");
     getSystem(config);
 
     try {
@@ -1051,8 +1053,8 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
           public Object call() {
             System.out.println("[testClientMembershipEventsInServer] create bridge client");
             Properties config = new Properties();
-            config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-            config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+            config.setProperty(MCAST_PORT, "0");
+            config.setProperty(LOCATORS, "");
             properties = config;
             DistributedSystem s = getSystem(config);
             AttributesFactory factory = new AttributesFactory();
@@ -1235,8 +1237,8 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
 
     // create loner in controller vm...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    config.setProperty(MCAST_PORT, "0");
+    config.setProperty(LOCATORS, "");
     properties = config;
     getSystem(config);
 
@@ -1318,8 +1320,8 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
           public Object call() {
             System.out.println("[testGetConnectedClients] create bridge client");
             properties = new Properties();
-            properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-            properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
+            properties.setProperty(MCAST_PORT, "0");
+            properties.setProperty(LOCATORS, "");
             getSystem(properties);
             AttributesFactory factory = new AttributesFactory();
             factory.setScope(Scope.LOCAL);
@@ -1416,8 +1418,8 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
 
     System.out.println("[testGetConnectedServers] create bridge client");
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    config.setProperty(MCAST_PORT, "0");
+    config.setProperty(LOCATORS, "");
     properties = config;
     getSystem(config);
     getCache();
@@ -1522,8 +1524,8 @@ public class ClientMembershipDUnitTest extends ClientServerTestCase {
 
     System.out.println("[testGetNotifiedClients] create bridge client");
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    config.setProperty(MCAST_PORT, "0");
+    config.setProperty(LOCATORS, "");
     properties = config;
     getSystem();
     getCache();

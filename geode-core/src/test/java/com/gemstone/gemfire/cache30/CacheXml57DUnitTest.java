@@ -68,7 +68,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Tests 5.7 cache.xml features.
  * 
- * @since 5.7
+ * @since GemFire 5.7
  */
 @Category(DistributedTest.class)
 public class CacheXml57DUnitTest extends CacheXml55DUnitTest {
@@ -404,7 +404,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest {
    * client subscription config in gemfire cache-server framework
    *
    * @throws CacheException
-   * @since 5.7
+   * @since GemFire 5.7
    */
   @Test
   public void testBridgeAttributesRelatedToHAOverFlow() throws CacheException {
@@ -647,7 +647,7 @@ public class CacheXml57DUnitTest extends CacheXml55DUnitTest {
 
   /**
    * Test EnableSubscriptionConflation region attribute
-   * @since 5.7
+   * @since GemFire 5.7
    */
   @Test
   public void testEnableSubscriptionConflationAttribute() throws CacheException {

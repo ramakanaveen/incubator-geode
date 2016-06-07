@@ -23,7 +23,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Same as parent but uses selector in server
  *
- * @since 5.1
+ * @since GemFire 5.1
  */
 @Category(DistributedTest.class)
 public class ClientRegisterInterestSelectorDUnitTest extends ClientRegisterInterestDUnitTest {

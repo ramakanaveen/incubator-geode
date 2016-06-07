@@ -16,31 +16,27 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Properties;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.DataPolicy;
 import com.gemstone.gemfire.cache.PartitionAttributes;
 import com.gemstone.gemfire.cache.PartitionAttributesFactory;
 import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class PartitionedRegionRedundancyZoneDUnitTest extends JUnit4CacheTestCase {
@@ -54,16 +50,12 @@ public class PartitionedRegionRedundancyZoneDUnitTest extends JUnit4CacheTestCas
     disconnectAllFromDS();
   }
   
-  public PartitionedRegionRedundancyZoneDUnitTest() {
-    super();
-  }
-
   /**
    * Test that we don't try to put buckets in the same
    * zone when we don't have enough zones.
    */
   @Test
-  public void testNotEnoughZones() throws Throwable {
+  public void testNotEnoughZones() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     VM vm1 = host.getVM(1);
@@ -95,10 +87,6 @@ public class PartitionedRegionRedundancyZoneDUnitTest extends JUnit4CacheTestCas
     //buckets on vm0 or vm1. At that point we will add another bucket to that
     //member to bring it's primary count up to two.
     assertTrue(counts, vm0Count >= 2 && vm1Count >=2);
-    
-//    assertIndexDetailsEquals(counts, 3, vm0Count);
-//    assertIndexDetailsEquals(counts, 3, vm1Count);
-//    assertIndexDetailsEquals(counts, 6, vm2Count);
   }
   
   protected void checkBucketCount(VM vm0, final int numLocalBuckets) {
@@ -123,7 +111,7 @@ public class PartitionedRegionRedundancyZoneDUnitTest extends JUnit4CacheTestCas
     });
   }
   
-  protected DistributedMember createPR(VM vm, int redundancy) throws Throwable {
+  protected DistributedMember createPR(VM vm, int redundancy) throws Exception {
     SerializableCallable createPrRegion = new SerializableCallable("createRegion") {
       public Object call()
       {
@@ -144,33 +132,30 @@ public class PartitionedRegionRedundancyZoneDUnitTest extends JUnit4CacheTestCas
     return (DistributedMember) vm.invoke(new SerializableCallable("set redundancy zone") {
       public Object call() {
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.REDUNDANCY_ZONE_NAME, zone);
+        props.setProperty(REDUNDANCY_ZONE, zone);
         DistributedSystem system = getSystem(props);
         return system.getDistributedMember();
         
       }
     });
-    
   }
   
-  protected void createData(VM vm, final int startKey, final int endKey,
-      final String value) {
-        createData(vm, startKey, endKey,value, "region1");
-      }
+  protected void createData(VM vm, final int startKey, final int endKey, final String value) {
+    createData(vm, startKey, endKey,value, "region1");
+  }
 
-  protected void createData(VM vm, final int startKey, final int endKey,
-      final String value, final String regionName) {
-        SerializableRunnable createData = new SerializableRunnable("createData") {
-          
-          public void run() {
-            Cache cache = getCache();
-            Region region = cache.getRegion(regionName);
-            
-            for(int i =startKey; i < endKey; i++) {
-              region.put(i, value);
-            }
-          }
-        };
-        vm.invoke(createData);
+  protected void createData(VM vm, final int startKey, final int endKey, final String value, final String regionName) {
+    SerializableRunnable createData = new SerializableRunnable("createData") {
+
+      public void run() {
+        Cache cache = getCache();
+        Region region = cache.getRegion(regionName);
+
+        for(int i =startKey; i < endKey; i++) {
+          region.put(i, value);
+        }
       }
+    };
+    vm.invoke(createData);
+  }
 }

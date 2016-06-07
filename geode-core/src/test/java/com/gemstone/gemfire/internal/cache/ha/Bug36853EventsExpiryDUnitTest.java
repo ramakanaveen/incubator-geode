@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -69,7 +70,7 @@ public class Bug36853EventsExpiryDUnitTest extends JUnit4CacheTestCase {
   private VM client = null;
 
   /** Name of the test region */
-  private static final String REGION_NAME = "Bug36853EventsExpiryDUnitTest_region";
+  private static final String REGION_NAME = Bug36853EventsExpiryDUnitTest.class.getSimpleName() + "_region";
 
   /** The cache instance for test cases */
   private static Cache cache = null;
@@ -156,8 +157,8 @@ public class Bug36853EventsExpiryDUnitTest extends JUnit4CacheTestCase {
   private static void createClientCache(String hostName, Integer port)
     throws Exception {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new Bug36853EventsExpiryDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);

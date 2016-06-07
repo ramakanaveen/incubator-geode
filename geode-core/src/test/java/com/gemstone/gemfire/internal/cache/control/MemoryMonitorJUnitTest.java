@@ -16,14 +16,13 @@
  */
 package com.gemstone.gemfire.internal.cache.control;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static org.junit.Assert.*;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.util.Properties;
 import java.util.Set;
-
 import javax.management.ListenerNotFoundException;
 import javax.management.NotificationEmitter;
 
@@ -49,20 +48,19 @@ import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
-/**
- *
- */
 @Category(IntegrationTest.class)
 public class MemoryMonitorJUnitTest {
   private static Logger logger = LogService.getLogger();
   
   public static final int SYSTEM_LISTENERS = 1;
+
   DistributedSystem ds;
   GemFireCacheImpl cache;
+
   @Before
   public void setUp() throws Exception {
     Properties p = new Properties();
-    p.setProperty("mcast-port", "0");
+    p.setProperty(MCAST_PORT, "0");
     this.ds = DistributedSystem.connect(p);
     this.cache = (GemFireCacheImpl)CacheFactory.create(this.ds);
     HeapMemoryMonitor.setTestDisableMemoryUpdates(true);
@@ -101,7 +99,6 @@ public class MemoryMonitorJUnitTest {
    * 2. listeners are invoked
    * 3. duplicate safe and critical events are not delivered
    * 4. stats are updated
-   * @throws Exception
    */
   @Test
   public void testInvokeListeners() throws Exception{

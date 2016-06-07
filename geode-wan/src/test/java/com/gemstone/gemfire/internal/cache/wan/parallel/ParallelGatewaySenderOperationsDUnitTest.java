@@ -16,18 +16,13 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.parallel;
 
-import org.junit.experimental.categories.Category;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.GemFireIOException;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.tier.sockets.Message;
 import com.gemstone.gemfire.internal.cache.tier.sockets.MessageTooLargeException;
 import com.gemstone.gemfire.internal.cache.wan.AbstractGatewaySender;
@@ -38,6 +33,7 @@ import com.gemstone.gemfire.test.dunit.IgnoredException;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.RMIException;
 import com.gemstone.gemfire.test.dunit.Wait;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
@@ -45,11 +41,6 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
  */
 @Category(DistributedTest.class)
 public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
-  private static final long serialVersionUID = 1L;
-  
-  public ParallelGatewaySenderOperationsDUnitTest() {
-    super();
-  }
 
   @Override
   protected final void postSetUpWANTestBase() throws Exception {
@@ -98,10 +89,8 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
     validateRegionSizes(getTestMethodName() + "_PR", 10, vm2, vm3);
   }
 
-  
   /**
    * Normal scenario in which the sender is paused in between.
-   * @throws Exception
    */
   @Test
   public void testParallelPropagationSenderPause() throws Exception {
@@ -132,7 +121,6 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
 
   /**
    * Normal scenario in which a paused sender is resumed.
-   * @throws Exception
    */
   @Test
   public void testParallelPropagationSenderResume() throws Exception {
@@ -169,15 +157,12 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
     
     //find the region size on remote vm
     vm2.invoke(() -> WANTestBase.validateRegionSize(getTestMethodName() + "_PR", 1000 ));
- 
   }
 
   /**
    * Negative scenario in which a sender that is stopped (and not paused) is resumed.
    * Expected: resume is only valid for pause. If a sender which is stopped is resumed,
    * it will not be started again.
-   * 
-   * @throws Exception
    */
   @Test
   public void testParallelPropagationSenderResumeNegativeScenario() throws Exception {
@@ -235,7 +220,6 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
 
   /**
    * Normal scenario in which a sender is stopped.
-   * @throws Exception
    */
   @Test
   public void testParallelPropagationSenderStop() throws Exception {
@@ -264,7 +248,6 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
 
   /**
    * Normal scenario in which a sender is stopped and then started again.
-   * @throws Exception
    */
   @Category(FlakyTest.class) // GEODE-933: thread sleeps, random ports, async actions, time sensitive
   @Test
@@ -321,7 +304,6 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
    * Normal scenario in which a sender is stopped and then started again.
    * Differs from above test case in the way that when the sender is starting from
    * stopped state, puts are simultaneously happening on the region by another thread.
-   * @throws Exception
    */
   @Test
   public void testParallelPropagationSenderStartAfterStop_Scenario2() throws Exception {
@@ -346,7 +328,8 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
     stopSenders();
     
     LogWriterUtils.getLogWriter().info("All the senders are stopped");
-    Wait.pause(2000);
+    vm2.invoke(() -> WANTestBase.validateRegionSize(getTestMethodName() + "_PR", 200, 120000));
+    vm3.invoke(() -> WANTestBase.validateRegionSize(getTestMethodName() + "_PR", 200, 120000));
     
     //SECOND RUN: do some of the puts after the senders are stopped
     vm4.invoke(() -> WANTestBase.doPuts( getTestMethodName() + "_PR", 1000 ));
@@ -366,8 +349,9 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
     LogWriterUtils.getLogWriter().info("All the senders are started");
     
     async.join();
-        
-    Wait.pause(2000);
+
+    vm2.invoke(() -> WANTestBase.validateRegionSize(getTestMethodName() + "_PR", 5000, 120000));
+    vm3.invoke(() -> WANTestBase.validateRegionSize(getTestMethodName() + "_PR", 5000, 120000));
     
     //verify all the buckets on all the sender nodes are drained
     validateParallelSenderQueueAllBucketsDrained();
@@ -378,7 +362,6 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
   
   /**
    * Normal scenario in which a sender is stopped and then started again on accessor node.
-   * @throws Exception
    */
   @Test
   public void testParallelPropagationSenderStartAfterStopOnAccessorNode() throws Exception {
@@ -483,8 +466,7 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
     try {
       inv1.join();
     } catch (InterruptedException e) {
-      e.printStackTrace();
-      fail("Interrupted the async invocation.");
+      fail("Interrupted the async invocation.", e);
     }
     
     //verify all buckets drained on all sender nodes.
@@ -607,7 +589,8 @@ public class ParallelGatewaySenderOperationsDUnitTest extends WANTestBase {
 
   private void setMaximumMessageSize(int maximumMessageSizeBytes) {
     Message.MAX_MESSAGE_SIZE = maximumMessageSizeBytes;
-    LogWriterUtils.getLogWriter().info("Set gemfire.client.max-message-size: " + System.getProperty("gemfire.client.max-message-size"));
+    LogWriterUtils.getLogWriter()
+        .info("Set gemfire.client.max-message-size: " + System.getProperty(DistributionConfig.GEMFIRE_PREFIX + "client.max-message-size"));
   }
 
   private void createSendersReceiversAndPartitionedRegion(Integer lnPort, Integer nyPort, boolean createAccessors,

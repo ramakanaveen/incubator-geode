@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.redis;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Random;
@@ -25,6 +26,7 @@ import org.junit.experimental.categories.Category;
 import redis.clients.jedis.Jedis;
 
 import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.distributed.DistributedSystemConfigProperties;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.SocketCreator;
 import com.gemstone.gemfire.test.dunit.AsyncInvocation;
@@ -53,26 +55,25 @@ public class RedisDistDUnitTest extends JUnit4DistributedTestCase {
   private int server1Port;
   private int server2Port;
   
-  private String localHost = SocketCreator.getLocalHost().getHostName();
+  private String localHost;
   
   private static final int JEDIS_TIMEOUT = 20 * 1000;
 
   private abstract class ClientTestBase extends SerializableCallable {
 
     int port;
+
     protected ClientTestBase (int port) {
       this.port = port;
     }
-
-  }
-
-  public RedisDistDUnitTest() throws Throwable {
-    super();
   }
 
   @Override
   public final void postSetUp() throws Exception {
     disconnectAllFromDS();
+
+    localHost = SocketCreator.getLocalHost().getHostName();
+
     host = Host.getHost(0);
     server1 = host.getVM(0);
     server2 = host.getVM(1);
@@ -82,29 +83,23 @@ public class RedisDistDUnitTest extends JUnit4DistributedTestCase {
     final int locatorPort = DistributedTestUtils.getDUnitLocatorPort();
     final SerializableCallable<Object> startRedisAdapter = new SerializableCallable<Object>() {
 
-      private static final long serialVersionUID = 1978017907725504294L;
-
       @Override
       public Object call() throws Exception {
         int port = ports[VM.getCurrentVMNum()];
         CacheFactory cF = new CacheFactory();
         String locator = SocketCreator.getLocalHost().getHostName() + "[" + locatorPort + "]";
-        cF.set("log-level", LogWriterUtils.getDUnitLogLevel());
-        cF.set("redis-bind-address", localHost);
-        cF.set("redis-port", ""+port);
-        cF.set("mcast-port", "0");
-        cF.set("locators", locator);
+        cF.set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+        cF.set(DistributedSystemConfigProperties.REDIS_BIND_ADDRESS, localHost);
+        cF.set(DistributedSystemConfigProperties.REDIS_PORT, "" + port);
+        cF.set(MCAST_PORT, "0");
+        cF.set(LOCATORS, locator);
         cF.create();
         return Integer.valueOf(port);
       }
     };
     AsyncInvocation i = server1.invokeAsync(startRedisAdapter);
     server2Port = (Integer) server2.invoke(startRedisAdapter);
-    try {
-      server1Port = (Integer) i.getResult();
-    } catch (Throwable e) {
-      throw new Exception(e);
-    }
+    server1Port = (Integer) i.getResult();
   }
 
   @Override
@@ -114,7 +109,7 @@ public class RedisDistDUnitTest extends JUnit4DistributedTestCase {
 
   @Category(FlakyTest.class) // GEODE-1092: random ports, failure stack involves TCPTransport ConnectionHandler (are we eating BindExceptions somewhere?), uses Random, async actions
   @Test
-  public void testConcListOps() throws Throwable {
+  public void testConcListOps() throws Exception {
     final Jedis jedis1 = new Jedis(localHost, server1Port, JEDIS_TIMEOUT);
     final Jedis jedis2 = new Jedis(localHost, server2Port, JEDIS_TIMEOUT);
     final int pushes = 20;
@@ -150,7 +145,7 @@ public class RedisDistDUnitTest extends JUnit4DistributedTestCase {
 
   @Category(FlakyTest.class) // GEODE-717: random ports, BindException in failure stack, async actions
   @Test
-  public void testConcCreateDestroy() throws Throwable {
+  public void testConcCreateDestroy() throws Exception {
     IgnoredException.addIgnoredException("RegionDestroyedException");
     IgnoredException.addIgnoredException("IndexInvalidException");
     final int ops = 40;
@@ -208,10 +203,9 @@ public class RedisDistDUnitTest extends JUnit4DistributedTestCase {
 
   /**
    * Just make sure there are no unexpected server crashes
-   * @throws Throwable 
    */
   @Test
-  public void testConcOps() throws Throwable {
+  public void testConcOps() throws Exception {
 
     final int ops = 100;
     final String hKey = TEST_KEY+"hash";

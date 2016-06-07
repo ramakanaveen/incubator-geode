@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.locks;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -125,12 +127,16 @@ public class TXLockServiceDUnitTest extends JUnit4DistributedTestCase {
                     "destroyServices"); 
     forEachVMInvoke("checkGetAndDestroy", new Object[] {});*/
   }
-  
-  public void _ttestGetAndDestroyAgain() {
+
+  @Ignore("TODO: test is disabled")
+  @Test
+  public void testGetAndDestroyAgain() {
     testGetAndDestroy();
   }
-  
-  public void disable_testTXRecoverGrantorMessageProcessor() throws Exception {
+
+  @Ignore("TODO: test is disabled")
+  @Test
+  public void testTXRecoverGrantorMessageProcessor() throws Exception {
     LogWriterUtils.getLogWriter().info("[testTXOriginatorRecoveryProcessor]");
     TXLockService.createDTLS();
     checkDLockRecoverGrantorMessageProcessor();
@@ -189,6 +195,7 @@ public class TXLockServiceDUnitTest extends JUnit4DistributedTestCase {
   }
   
   protected static volatile TXLockId testTXLock_TXLockId;
+
   @Test
   public void testTXLock() {
     LogWriterUtils.getLogWriter().info("[testTXLock]");
@@ -301,6 +308,7 @@ public class TXLockServiceDUnitTest extends JUnit4DistributedTestCase {
   }
   
   protected static volatile TXLockId testTXOriginatorRecoveryProcessor_TXLockId;
+
   @Test
   public void testTXOriginatorRecoveryProcessor() {
     LogWriterUtils.getLogWriter().info("[testTXOriginatorRecoveryProcessor]");
@@ -675,7 +683,7 @@ public class TXLockServiceDUnitTest extends JUnit4DistributedTestCase {
   
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty("log-level", LogWriterUtils.getDUnitLogLevel());
+    props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
     return props;
   }
 

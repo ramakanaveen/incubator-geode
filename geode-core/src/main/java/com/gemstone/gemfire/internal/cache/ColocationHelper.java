@@ -17,41 +17,31 @@
 
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.logging.log4j.Logger;
-
 import com.gemstone.gemfire.cache.EntryDestroyedException;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionDestroyedException;
 import com.gemstone.gemfire.cache.execute.Function;
 import com.gemstone.gemfire.cache.execute.FunctionService;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.Assert;
 import com.gemstone.gemfire.internal.cache.execute.InternalRegionFunctionContext;
 import com.gemstone.gemfire.internal.cache.partitioned.PRLocallyDestroyedException;
 import com.gemstone.gemfire.internal.cache.persistence.PRPersistentConfig;
 import com.gemstone.gemfire.internal.cache.wan.parallel.ParallelGatewaySenderQueue;
-import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.internal.logging.LogService;
-import com.gemstone.gemfire.internal.logging.log4j.LocalizedMessage;
+import org.apache.logging.log4j.Logger;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * An utility class to retrieve colocated regions in a colocation hierarchy in
  * various scenarios
  * 
  * 
- * @since 6.0
+ * @since GemFire 6.0
  */
 public class ColocationHelper {
 
@@ -63,7 +53,7 @@ public class ColocationHelper {
     *
     * @param partitionedRegion
     * @return colocated PartitionedRegion
-    * @since cheetah
+    * @since GemFire cheetah
     */
   public static PartitionedRegion getColocatedRegionName(
       final PartitionedRegion partitionedRegion) {
@@ -116,7 +106,7 @@ public class ColocationHelper {
    * if they are not attached to the region. See bug 50120. Mutable
    * for tests.
    */
-  public static boolean IGNORE_UNRECOVERED_QUEUE = Boolean.getBoolean("gemfire.IGNORE_UNRECOVERED_QUEUE");
+  public static boolean IGNORE_UNRECOVERED_QUEUE = Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "IGNORE_UNRECOVERED_QUEUE");
 
   /**
    * An utility method to retrieve colocated region of a given partitioned
@@ -124,7 +114,7 @@ public class ColocationHelper {
    * 
    * @param partitionedRegion
    * @return colocated PartitionedRegion
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   public static PartitionedRegion getColocatedRegion(
       final PartitionedRegion partitionedRegion) {
@@ -339,7 +329,7 @@ public class ColocationHelper {
    * @param partitionedRegion
    * @return List of all partitioned regions (excluding self) in a colocated
    *         chain
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   public static Map<String, PartitionedRegion> getAllColocationRegions(
       PartitionedRegion partitionedRegion) {
@@ -375,7 +365,7 @@ public class ColocationHelper {
    * 
    * @param partitionedRegion
    * @return map of region name to local colocated regions
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   public static Map<String, Region> getAllColocatedLocalDataSets(
       PartitionedRegion partitionedRegion, InternalRegionFunctionContext context) {
@@ -432,7 +422,7 @@ public class ColocationHelper {
    * 
    * @param partitionedRegion
    * @return list of all child partitioned regions colocated with the region
-   * @since 5.8Beta
+   * @since GemFire 5.8Beta
    */
   public static List<PartitionedRegion> getColocatedChildRegions(
       PartitionedRegion partitionedRegion) {

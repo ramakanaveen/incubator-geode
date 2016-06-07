@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.util.concurrent;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -37,11 +38,10 @@ public class ConcurrentHashMapIteratorJUnitTest {
 
   @Test
   public void test() throws InterruptedException {
-    
     //Apparently, we need a distributed system to create
     //this CHM, because it's locks use DS properties.
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
+    props.setProperty(MCAST_PORT, "0");
     DistributedSystem.connect(props);
     java.util.concurrent.ConcurrentHashMap baselineMap = new java.util.concurrent.ConcurrentHashMap();
     CustomEntryConcurrentHashMap testMap = new CustomEntryConcurrentHashMap();
@@ -52,13 +52,8 @@ public class ConcurrentHashMapIteratorJUnitTest {
     assertEquals(baselineMap, testMap);
     initialSet = new HashMap(baselineMap);
     
-//    putter = new Putter(baselineMap, testMap, 1000, 2000);
-//    putter.run();
-    
-    
     RandomMutations randomer = new RandomMutations(baselineMap, testMap, 1001, 50000);
     randomer.start();
-    
     
     for(int i = 0; i < 1000; i++) {
       checkForInitialSet(i, testMap, initialSet);
@@ -92,8 +87,7 @@ public class ConcurrentHashMapIteratorJUnitTest {
     private int start;
     private int end;
     private volatile boolean done;
-    
-    
+
     public RandomMutations(ConcurrentMap baselineMap, ConcurrentMap testMap, int start, int end) {
       this.baselineMap = baselineMap;
       this.testMap = testMap;
@@ -101,6 +95,7 @@ public class ConcurrentHashMapIteratorJUnitTest {
       this.end = end;
     }
 
+    @Override
     public void run() {
       Random random = new Random();
       while(!done) {
@@ -121,6 +116,4 @@ public class ConcurrentHashMapIteratorJUnitTest {
       this.join();
     }
   }
-     
-
 }

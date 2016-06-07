@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.DataInput;
@@ -39,7 +40,6 @@ import com.gemstone.gemfire.cache.PartitionAttributesFactory;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.NanoTimer;
 import com.gemstone.gemfire.internal.cache.BucketRegion;
 import com.gemstone.gemfire.internal.cache.BucketRegion.RawValue;
@@ -64,11 +64,10 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
- * @since bugfix5.7
+ * @since GemFire bugfix5.7
  */
 @Category(DistributedTest.class)
 public class Bug38741DUnitTest extends ClientServerTestCase {
-  private static final long serialVersionUID = 1L;
 
   protected RegionAttributes getRegionAttributes() {
     AttributesFactory factory = new AttributesFactory();
@@ -80,7 +79,7 @@ public class Bug38741DUnitTest extends ClientServerTestCase {
    * Test that CopyOnRead doesn't cause {@link HARegionQueue#peek()} to create a copy,
    * assuming that creating copies performs a serialize and de-serialize operation.
    * @throws Exception when there is a failure
-   * @since bugfix5.7
+   * @since GemFire bugfix5.7
    */
   @Test
   public void testCopyOnReadWithBridgeServer() throws Exception {
@@ -359,7 +358,7 @@ public class Bug38741DUnitTest extends ClientServerTestCase {
 
   public Properties getDistributedSystemProperties() {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME, "false");
+    props.setProperty(DELTA_PROPAGATION, "false");
     return props;
   }
 

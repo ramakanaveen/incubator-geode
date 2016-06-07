@@ -16,20 +16,16 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import java.util.Properties;
 
+import org.junit.experimental.categories.Category;
+
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+
 @Category(DistributedTest.class)
-public class InterruptsConserveSocketsFalseDUnitTest extends
-    InterruptsDUnitTest {
+public class InterruptsConserveSocketsFalseDUnitTest extends InterruptsDUnitTest {
 
   public InterruptsConserveSocketsFalseDUnitTest() {
     super();
@@ -38,10 +34,7 @@ public class InterruptsConserveSocketsFalseDUnitTest extends
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty("conserve-sockets", "false");
+    props.setProperty(CONSERVE_SOCKETS, "false");
     return props;
   }
-  
-  
-
 }

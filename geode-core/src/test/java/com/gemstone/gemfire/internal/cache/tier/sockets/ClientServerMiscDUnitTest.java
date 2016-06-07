@@ -16,18 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.GemFireIOException;
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -47,10 +44,8 @@ import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.client.internal.RegisterInterestTracker;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.DistributedSystemDisconnectedException;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
@@ -63,16 +58,14 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests client server corner cases between Region and Pool
- *
- *
  */
 @Category(DistributedTest.class)
-public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
-{
-//  private static Cache cache = null;
+public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase {
 
   protected static PoolImpl pool = null;
 
@@ -104,7 +97,6 @@ public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
 
   private static RegionAttributes attrs;
 
-
   // variables for concurrent map API test
   Properties props = new Properties();
   final int putRange_1Start = 1;
@@ -119,13 +111,6 @@ public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
   final int removeRange_1End = 4;
   final int removeRange_2Start = 7;
   final int removeRange_2End = 9;
-
-  
-  
-  /** constructor */
-  public ClientServerMiscDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -588,8 +573,6 @@ public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
    * populate some entries on region both on client and server.
    * Update the entries on server the client.
    * The client should not have entry invalidate.
-   *
-   * @throws Exception
    */
   @Test
   public void testInvalidatesPropagateOnRegionHavingNoPool()
@@ -598,8 +581,8 @@ public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
     // start server first
     PORT1 = initServerCache(false);
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new ClientServerMiscDUnitTest().createCache(props);
     String host = NetworkUtils.getServerHostName(server1.getHost());
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
@@ -698,8 +681,8 @@ public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
   public void testProxyCreationBeforeCacheCreation() throws Exception
   {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     DistributedSystem ds = getSystem(props);
     assertNotNull(ds);
     ds.disconnect();
@@ -751,8 +734,8 @@ public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
     //work around GEODE-477
     IgnoredException.addIgnoredException("Connection reset");
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     DistributedSystem ds = getSystem(props);
     assertNotNull(ds);
     
@@ -781,8 +764,8 @@ public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
     
     ds.disconnect();
     Properties prop = new Properties();
-    prop.setProperty("mcast-port", "0");
-    prop.setProperty("locators", "");
+    prop.setProperty(MCAST_PORT, "0");
+    prop.setProperty(LOCATORS, "");
     ds = getSystem(prop);
     
     cache = getCache();
@@ -837,8 +820,8 @@ public class ClientServerMiscDUnitTest extends JUnit4CacheTestCase
   public static Pool _createClientCache(String h, int port, boolean empty)
   throws Exception  {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     Cache cache = new ClientServerMiscDUnitTest().createCacheV(props);
     ClientServerMiscDUnitTest.static_cache = cache;
     PoolImpl p = (PoolImpl)PoolManager.createFactory()

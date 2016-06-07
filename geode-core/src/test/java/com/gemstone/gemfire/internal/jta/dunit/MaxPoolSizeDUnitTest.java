@@ -16,7 +16,8 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,6 +34,7 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
@@ -58,7 +60,6 @@ public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
   private static String tblName;
 
   private static String readFile(String filename) throws IOException {
-//    String lineSep = System.getProperty("\n");
     BufferedReader br = new BufferedReader(new FileReader(filename));
     String nextLine = "";
     StringBuffer sb = new StringBuffer();
@@ -72,10 +73,6 @@ public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
     }
     LogWriterUtils.getLogWriter().fine("***********\n " + sb);
     return sb.toString();
-  }
-
-  public MaxPoolSizeDUnitTest() {
-    super();
   }
 
   private static String modifyFile(String str) throws IOException {
@@ -143,22 +140,14 @@ public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
     wr.write(modified_file_str);
     wr.flush();
     wr.close();
-    props.setProperty("cache-xml-file", path);
+    props.setProperty(CACHE_XML_FILE, path);
     String tableName = "";
-    //	        props.setProperty("mcast-port", "10339");
-    try {
-      //	  	      ds = DistributedSystem.connect(props);
-      ds = (new MaxPoolSizeDUnitTest()).getSystem(props);
-      cache = CacheFactory.create(ds);
-      if (className != null && !className.equals("")) {
-        String time = new Long(System.currentTimeMillis()).toString();
-        tableName = className + time;
-        createTable(tableName);
-      }
-    }
-    catch (Exception e) {
-      e.printStackTrace(System.err);
-      throw new Exception("" + e);
+    ds = (new MaxPoolSizeDUnitTest()).getSystem(props);
+    cache = CacheFactory.create(ds);
+    if (className != null && !className.equals("")) {
+      String time = new Long(System.currentTimeMillis()).toString();
+      tableName = className + time;
+      createTable(tableName);
     }
     tblName = tableName;
     return tableName;
@@ -202,10 +191,6 @@ public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
       sm.execute(sql);
       conn.close();
     }
-    catch (NamingException ne) {
-      LogWriterUtils.getLogWriter().fine("destroy table naming exception: " + ne);
-      throw ne;
-    }
     catch (SQLException se) {
       if (!se.getMessage().contains("A lock could not be obtained within the time requested")) {
         LogWriterUtils.getLogWriter().fine("destroy table sql exception: " + se);
@@ -229,7 +214,7 @@ public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception e) {
-      e.printStackTrace();
+      fail("startCache failed", e);
     }
   }
 
@@ -240,7 +225,7 @@ public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception e) {
-      e.printStackTrace();
+      fail("closeCache failed", e);
     }
     try {
       ds.disconnect();
@@ -271,7 +256,8 @@ public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
     }
   }
 
-  public static void testMaxPoolSize()  throws Throwable{
+  @Test
+  public void testMaxPoolSize() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     AsyncInvocation asyncObj = vm0.invokeAsync(() -> MaxPoolSizeDUnitTest.runTest1());
@@ -291,12 +277,12 @@ public class MaxPoolSizeDUnitTest extends JUnit4DistributedTestCase {
     }
     catch (NamingException e) {
       LogWriterUtils.getLogWriter().fine("Naming Exception caught in lookup: " + e);
-      fail("failed in naming lookup: " + e);
+      fail("failed in naming lookup: ", e);
       return;
     }
     catch (Exception e) {
       LogWriterUtils.getLogWriter().fine("Exception caught during naming lookup: " + e);
-      fail("failed in naming lookup: " + e);
+      fail("failed in naming lookup: ", e);
       return;
     }
     try {

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache.management;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.ArrayList;
@@ -52,7 +53,6 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.cache.DistributedRegion;
@@ -91,7 +91,7 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 /**
  * Tests the Off-Heap Memory thresholds of {@link ResourceManager}
  * 
- * @since 9.0
+ * @since Geode 1.0
  */
 @Category(DistributedTest.class)
 public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
@@ -133,9 +133,8 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
 
   /**
    * Make sure appropriate events are delivered when moving between states.
-   * 
-   * @throws Exception
    */
+  @Test
   public void testEventDelivery() throws Exception {
     final Host host = Host.getHost(0);
     final VM server1 = host.getVM(0);
@@ -231,8 +230,8 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
   /**
    * test that disabling threshold does not cause remote event and
    * remote DISABLED events are delivered
-   * @throws Exception
    */
+  @Test
   public void testDisabledThresholds() throws Exception {
     final Host host = Host.getHost(0);
     final VM server1 = host.getVM(0);
@@ -344,8 +343,8 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
   /**
    * test that puts in a client are rejected when a remote VM crosses
    * critical threshold
-   * @throws Exception
    */
+  @Test
   public void testDistributedRegionRemoteClientPutRejection() throws Exception {
     final Host host = Host.getHost(0);
     final VM server1 = host.getVM(0);
@@ -384,18 +383,22 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
     setUsageBelowEviction(server2, regionName);
   }
 
+  @Test
   public void testDistributedRegionRemotePutRejectionLocalDestroy() throws Exception {
     doDistributedRegionRemotePutRejection(true, false);
   }
-  
+
+  @Test
   public void testDistributedRegionRemotePutRejectionCacheClose() throws Exception {
     doDistributedRegionRemotePutRejection(false, true);
   }
-  
+
+  @Test
   public void testDistributedRegionRemotePutRejectionBelowThreshold() throws Exception {
     doDistributedRegionRemotePutRejection(false, false);
   }
-  
+
+  @Test
   public void testGettersAndSetters() {
     getSystem(getOffHeapProperties());
     ResourceManager rm = getCache().getResourceManager();
@@ -504,9 +507,9 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
    * Test that DistributedRegion cacheLoade and netLoad are passed through to the 
    * calling thread if the local VM is in a critical state.  Once the VM has moved
    * to a safe state then test that they are allowed.
-   * @throws Exception
    */
   @Category(FlakyTest.class) // GEODE-438: test pollution, async actions, time sensitive, waitForCriterion, TODO: consider disconnect DS in setup
+  @Test
   public void testDRLoadRejection() throws Exception {
     final Host host = Host.getHost(0);
     final VM replicate1 = host.getVM(1);
@@ -715,28 +718,34 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
       getCache().getLoggerI18n().fine(removeExpectedBelow);
     };
   };
-  
+
+  @Test
   public void testPR_RemotePutRejectionLocalDestroy() throws Exception {
     prRemotePutRejection(false, true, false);
   }
 
+  @Test
   public void testPR_RemotePutRejectionCacheClose() throws Exception {
     prRemotePutRejection(true, false, false);
   }
 
+  @Test
   public void testPR_RemotePutRejection() throws Exception {
     prRemotePutRejection(false, false, false);
   }
 
+  @Test
   public void testPR_RemotePutRejectionLocalDestroyWithTx() throws Exception {
     prRemotePutRejection(false, true, true);
   }
 
+  @Test
   public void testPR_RemotePutRejectionCacheCloseWithTx() throws Exception {
     prRemotePutRejection(true, false, true);
   }
 
   @Category(FlakyTest.class) // GEODE-500: time sensitive, memory sensitive and GC dependent, waitForCriterions
+  @Test
   public void testPR_RemotePutRejectionWithTx() throws Exception {
     prRemotePutRejection(false, false, true);
   }
@@ -909,9 +918,9 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
   /**
    * Test that a Partitioned Region loader invocation is rejected
    * if the VM with the bucket is in a critical state.
-   * @throws Exception
    */
   @Category(FlakyTest.class) // GEODE-551: waitForCriterion, memory sensitive
+  @Test
   public void testPRLoadRejection() throws Exception {
     final Host host = Host.getHost(0);
     final VM accessor = host.getVM(1);
@@ -1136,8 +1145,8 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
    * Test that LocalRegion cache Loads are not stored in the Region
    * if the VM is in a critical state, then test that they are allowed
    * once the VM is no longer critical
-   * @throws Exception
    */
+  @Test
   public void testLRLoadRejection() throws Exception {
     final Host host = Host.getHost(0);
     final VM vm = host.getVM(2);
@@ -1287,11 +1296,13 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
     verifyProfiles(server1, 2);
     verifyProfiles(server3, 2);
   }
-  
+
+  @Test
   public void testPRClientPutRejection() throws Exception {
     doClientServerTest("parRegReject", true/*createPR*/);
   }
 
+  @Test
   public void testDistributedRegionClientPutRejection() throws Exception {
     doClientServerTest("distrReject", false/*createPR*/);
   }
@@ -1799,15 +1810,15 @@ public class MemoryThresholdsOffHeapDUnitTest extends ClientServerTestCase {
   
   private Properties getOffHeapProperties() {
     Properties p = new Properties();
-    p.setProperty(DistributionConfig.LOCATORS_NAME, "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
-    p.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "1m");
+    p.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
+    p.setProperty(OFF_HEAP_MEMORY_SIZE, "1m");
     return p;
   }
   
   protected Properties getClientProps() {
     Properties p = new Properties();
-    p.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    p.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    p.setProperty(MCAST_PORT, "0");
+    p.setProperty(LOCATORS, "");
     return p;
   }
 }

@@ -16,22 +16,14 @@
  */
 package com.gemstone.gemfire.disttx;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import java.util.Properties;
 
-import org.junit.Ignore;
+import org.junit.experimental.categories.Category;
 
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.partitioned.PersistentPartitionedRegionWithTransactionDUnitTest;
-
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Same tests as that of
@@ -39,18 +31,12 @@ import com.gemstone.gemfire.internal.cache.partitioned.PersistentPartitionedRegi
  * "distributed-transactions" property to true
  */
 @Category(DistributedTest.class)
-public class PersistentPartitionedRegionWithDistTXDUnitTest extends
-    PersistentPartitionedRegionWithTransactionDUnitTest {
+public class PersistentPartitionedRegionWithDistTXDUnitTest extends PersistentPartitionedRegionWithTransactionDUnitTest {
 
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty(DistributionConfig.DISTRIBUTED_TRANSACTIONS_NAME, "true");
-//    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
+    props.setProperty(DISTRIBUTED_TRANSACTIONS, "true");
     return props;
-  }
-  
-  public PersistentPartitionedRegionWithDistTXDUnitTest() {
-    super();
   }
 }

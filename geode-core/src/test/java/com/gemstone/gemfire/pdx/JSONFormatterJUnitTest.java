@@ -16,10 +16,14 @@
  */
 package com.gemstone.gemfire.pdx;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.text.SimpleDateFormat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -27,9 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -49,7 +50,7 @@ public class JSONFormatterJUnitTest {
     
   @Before
   public void setUp() throws Exception {
-    this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0").setPdxReadSerialized(true).create();
+    this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0").setPdxReadSerialized(true).create();
     
     //start cache-server
     CacheServer server = c.addCacheServer();
@@ -190,7 +191,7 @@ public class JSONFormatterJUnitTest {
           jsonObject.getString(testObject.getDayFN()));
 
     } catch (JSONException e) {
-      fail("Error in VerifyPdxInstanceToJson, Malformed json, can not create JSONArray from it");
+      throw new AssertionError("Error in VerifyPdxInstanceToJson, Malformed json, can not create JSONArray from it", e);
     }
   }
 

@@ -20,22 +20,18 @@
  * <code>MultiVMRegionTestCase</code>.
  * 
  *
- * @since 4.0
+ * @since GemFire 4.0
  * @see MultiVMRegionTestCase
  *
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import java.io.File;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheException;
@@ -48,12 +44,11 @@ import com.gemstone.gemfire.internal.OSProcess;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class TXRestrictionsDUnitTest extends JUnit4CacheTestCase {
-  public TXRestrictionsDUnitTest() {
-    super();
-  }
 
   protected RegionAttributes getRegionAttributes() {
     AttributesFactory factory = new AttributesFactory();

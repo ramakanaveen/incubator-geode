@@ -17,55 +17,29 @@
 
 package com.gemstone.gemfire.internal.cache;
 
-
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.gemstone.gemfire.internal.cache.region.entry.RegionEntryFactoryBuilder;
-import org.apache.logging.log4j.Logger;
-
 import com.gemstone.gemfire.GemFireIOException;
 import com.gemstone.gemfire.InvalidDeltaException;
-import com.gemstone.gemfire.cache.CacheRuntimeException;
-import com.gemstone.gemfire.cache.CacheWriter;
-import com.gemstone.gemfire.cache.CacheWriterException;
-import com.gemstone.gemfire.cache.DiskAccessException;
-import com.gemstone.gemfire.cache.EntryExistsException;
-import com.gemstone.gemfire.cache.EntryNotFoundException;
-import com.gemstone.gemfire.cache.Operation;
-import com.gemstone.gemfire.cache.RegionDestroyedException;
-import com.gemstone.gemfire.cache.TimeoutException;
-import com.gemstone.gemfire.cache.TransactionId;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.query.IndexMaintenanceException;
 import com.gemstone.gemfire.cache.query.QueryException;
 import com.gemstone.gemfire.cache.query.internal.IndexUpdater;
 import com.gemstone.gemfire.cache.query.internal.index.IndexManager;
 import com.gemstone.gemfire.cache.query.internal.index.IndexProtocol;
 import com.gemstone.gemfire.distributed.DistributedMember;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.Assert;
-import com.gemstone.gemfire.internal.ClassPathLoader;
 import com.gemstone.gemfire.internal.cache.DiskInitFile.DiskRegionFlag;
 import com.gemstone.gemfire.internal.cache.FilterRoutingInfo.FilterInfo;
 import com.gemstone.gemfire.internal.cache.delta.Delta;
 import com.gemstone.gemfire.internal.cache.ha.HAContainerWrapper;
 import com.gemstone.gemfire.internal.cache.ha.HARegionQueue;
 import com.gemstone.gemfire.internal.cache.lru.LRUEntry;
+import com.gemstone.gemfire.internal.cache.region.entry.RegionEntryFactoryBuilder;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
 import com.gemstone.gemfire.internal.cache.tier.sockets.ClientProxyMembershipID;
 import com.gemstone.gemfire.internal.cache.tier.sockets.HAEventWrapper;
-import com.gemstone.gemfire.internal.cache.versions.ConcurrentCacheModificationException;
-import com.gemstone.gemfire.internal.cache.versions.RegionVersionVector;
-import com.gemstone.gemfire.internal.cache.versions.VersionHolder;
-import com.gemstone.gemfire.internal.cache.versions.VersionSource;
-import com.gemstone.gemfire.internal.cache.versions.VersionStamp;
-import com.gemstone.gemfire.internal.cache.versions.VersionTag;
+import com.gemstone.gemfire.internal.cache.versions.*;
 import com.gemstone.gemfire.internal.cache.wan.GatewaySenderEventImpl;
 import com.gemstone.gemfire.internal.concurrent.MapCallbackAdapter;
 import com.gemstone.gemfire.internal.concurrent.MapResult;
@@ -81,12 +55,16 @@ import com.gemstone.gemfire.internal.offheap.annotations.Retained;
 import com.gemstone.gemfire.internal.offheap.annotations.Unretained;
 import com.gemstone.gemfire.internal.sequencelog.EntryLogger;
 import com.gemstone.gemfire.internal.util.concurrent.CustomEntryConcurrentHashMap;
+import org.apache.logging.log4j.Logger;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Abstract implementation of {@link RegionMap}that has all the common
  * behavior.
  *
- * @since 3.5.1
+ * @since GemFire 3.5.1
  *
  *
  */
@@ -163,32 +141,7 @@ public abstract class AbstractRegionMap implements RegionMap {
           "expected LocalRegion or PlaceHolderDiskRegion");
     }
 
-    if (cache != null && cache.isSqlfSystem()) {
-      String provider = GemFireCacheImpl.SQLF_ENTRY_FACTORY_PROVIDER;
-      try {
-        Class<?> factoryProvider = ClassPathLoader.getLatest().forName(provider);
-        Method method = factoryProvider.getDeclaredMethod(
-            "getRegionEntryFactory", new Class[] { Boolean.TYPE, Boolean.TYPE,
-                Boolean.TYPE, Object.class, InternalRegionArguments.class });
-        RegionEntryFactory ref = (RegionEntryFactory)method.invoke(null,
-            new Object[] { Boolean.valueOf(attr.statisticsEnabled),
-                Boolean.valueOf(isLRU), Boolean.valueOf(isDisk), owner,
-                internalRegionArgs });
-
-        // TODO need to have the SQLF entry factory support version stamp storage
-        setEntryFactory(ref);
-
-      }
-      catch (Exception e) {
-        throw new CacheRuntimeException(
-            "Exception in obtaining RegionEntry Factory" + " provider class ",
-            e) {
-        };
-      }
-    }
-    else {
-      setEntryFactory(new RegionEntryFactoryBuilder().getRegionEntryFactoryOrNull(attr.statisticsEnabled,isLRU,isDisk,withVersioning,offHeap));
-    }
+    setEntryFactory(new RegionEntryFactoryBuilder().getRegionEntryFactoryOrNull(attr.statisticsEnabled,isLRU,isDisk,withVersioning,offHeap));
   }
 
   protected CustomEntryConcurrentHashMap<Object, Object> createConcurrentMap(
@@ -829,6 +782,9 @@ public abstract class AbstractRegionMap implements RegionMap {
         // server in the VM
         HAContainerWrapper haContainer = (HAContainerWrapper)CacheClientNotifier
             .getInstance().getHaContainer();
+        if (haContainer == null) {
+          return false;
+        }
         Map.Entry entry = null;
         HAEventWrapper original = null;
         synchronized (haContainer) {
@@ -1863,7 +1819,7 @@ public abstract class AbstractRegionMap implements RegionMap {
    * on that client to be notified of the invalidate.
    * A non-empty "caching-proxy" will receive invalidates from the server.
    */
-  public static boolean FORCE_INVALIDATE_EVENT = Boolean.getBoolean("gemfire.FORCE_INVALIDATE_EVENT");
+  public static boolean FORCE_INVALIDATE_EVENT = Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "FORCE_INVALIDATE_EVENT");
 
   /**
    * If the FORCE_INVALIDATE_EVENT flag is true
@@ -2835,7 +2791,6 @@ public abstract class AbstractRegionMap implements RegionMap {
 		re = getOrCreateRegionEntry(owner, event, 
 		    Token.REMOVED_PHASE1, null, onlyExisting, false);
         if (re == null) {
-          throwExceptionForSqlFire(event);
           return null;
         }
         while (true) {
@@ -2849,7 +2804,6 @@ public abstract class AbstractRegionMap implements RegionMap {
                 _getOwner().getCachePerfStats().incRetries();
               if (re == null) {
                 // this will happen when onlyExisting is true
-                throwExceptionForSqlFire(event);
                 return null;
               }
               continue;
@@ -3047,15 +3001,13 @@ public abstract class AbstractRegionMap implements RegionMap {
   private void setOldValueInEvent(EntryEventImpl event, RegionEntry re, boolean cacheWrite, boolean requireOldValue) {
     boolean needToSetOldValue = getIndexUpdater() != null || cacheWrite || requireOldValue || event.getOperation().guaranteesOldValue();
     if (needToSetOldValue) {
-      if (event.hasDelta() || event.getOperation().guaranteesOldValue()
-          || GemFireCacheImpl.sqlfSystem()) {
+      if (event.hasDelta() || event.getOperation().guaranteesOldValue()) {
         // In these cases we want to even get the old value from disk if it is not in memory
         ReferenceCountHelper.skipRefCountTracking();
         @Released Object oldValueInVMOrDisk = re.getValueOffHeapOrDiskWithoutFaultIn(event.getLocalRegion());
         ReferenceCountHelper.unskipRefCountTracking();
         try {
-          event.setOldValue(oldValueInVMOrDisk, requireOldValue
-              || GemFireCacheImpl.sqlfSystem());
+          event.setOldValue(oldValueInVMOrDisk, requireOldValue);
         } finally {
           OffHeapHelper.releaseWithNoTracking(oldValueInVMOrDisk);
         }
@@ -3067,8 +3019,7 @@ public abstract class AbstractRegionMap implements RegionMap {
         
         ReferenceCountHelper.unskipRefCountTracking();
         try {
-          event.setOldValue(oldValueInVM,
-              requireOldValue || GemFireCacheImpl.sqlfSystem());
+          event.setOldValue(oldValueInVM, requireOldValue);
         } finally {
           OffHeapHelper.releaseWithNoTracking(oldValueInVM);
         }
@@ -3081,18 +3032,6 @@ public abstract class AbstractRegionMap implements RegionMap {
       if (ov instanceof GatewaySenderEventImpl) {
         event.setOldValue(ov, true);
       }
-    }
-  }
-
-  /**
-   * Asif: If the system is sqlfabric and the event has delta, then re == null 
-   * implies update on non existent row . Throwing ENFE in that case 
-   * As  returning a boolean etc has other complications in terms of PR reattempt etc  
-   */
-  private void throwExceptionForSqlFire(EntryEventImpl event) {
-    if (event.hasDelta() && _getOwner().getGemFireCache().isSqlfSystem()) {
-      throw new EntryNotFoundException(
-          "SqlFabric::No row found for update");
     }
   }
 

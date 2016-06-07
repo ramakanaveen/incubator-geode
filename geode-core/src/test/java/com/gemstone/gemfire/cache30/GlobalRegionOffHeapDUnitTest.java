@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import java.util.Properties;
 
 import org.junit.Ignore;
@@ -24,7 +26,6 @@ import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.OffHeapTestUtil;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
@@ -33,7 +34,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Tests Global Region with OffHeap memory.
  * 
- * @since 9.0
+ * @since Geode 1.0
  */
 @Category(DistributedTest.class)
 @SuppressWarnings({ "deprecation", "serial", "rawtypes", "unchecked" })
@@ -54,8 +55,8 @@ public class GlobalRegionOffHeapDUnitTest extends GlobalRegionDUnitTest {
     checkOrphans.run();
   }
 
-  @Override
   @Ignore("TODO: DISABLED due to bug 47951")
+  @Override
   @Test
   public void testNBRegionInvalidationDuringGetInitialImage() throws Exception {
     //DISABLED - bug 47951
@@ -64,7 +65,7 @@ public class GlobalRegionOffHeapDUnitTest extends GlobalRegionDUnitTest {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "10m");
+    props.setProperty(OFF_HEAP_MEMORY_SIZE, "10m");
     return props;
   }
   

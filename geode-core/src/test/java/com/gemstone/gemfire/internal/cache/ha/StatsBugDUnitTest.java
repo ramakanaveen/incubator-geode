@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -78,7 +79,7 @@ public class StatsBugDUnitTest extends JUnit4DistributedTestCase {
   private static int PORT2;
 
   /** name of the test region */
-  private static final String REGION_NAME = "StatsBugDUnitTest_Region";
+  private static final String REGION_NAME = StatsBugDUnitTest.class.getSimpleName() + "_Region";
 
   /** brige-writer instance( used to get connection proxy handle) */
   private static PoolImpl pool = null;
@@ -95,16 +96,6 @@ public class StatsBugDUnitTest extends JUnit4DistributedTestCase {
   /** prefix added to the keys of events generated on secondary */
   private static final String secondaryPrefix = "secondary_";
 
-  public StatsBugDUnitTest() {
-    super();
-  }
-
-  /**
-   * Creates the primary and the secondary cache servers
-   * 
-   * @throws Exception -
-   *           thrown if any problem occurs in initializing the test
-   */
   @Override
   public final void postSetUp() throws Exception {
     disconnectAllFromDS();
@@ -138,12 +129,6 @@ public class StatsBugDUnitTest extends JUnit4DistributedTestCase {
     return cache;
   }
 
-  /**
-   * close the cache instances in server and client during tearDown
-   * 
-   * @throws Exception
-   *           thrown if any problem occurs in closing cache
-   */
   @Override
   public final void preTearDown() throws Exception {
     // close client
@@ -163,9 +148,6 @@ public class StatsBugDUnitTest extends JUnit4DistributedTestCase {
    * operations from secondary<br>
    * 5)Verify that the invalidates stats at the client accounts for the
    * operations done by both, primary and secondary.
-   * 
-   * @throws Exception -
-   *           thrown if any problem occurs in test execution
    */
   @Test
   public void testBug36109() throws Exception
@@ -318,8 +300,8 @@ public class StatsBugDUnitTest extends JUnit4DistributedTestCase {
   private static Properties createProperties1()
   {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     return props;
   }
 

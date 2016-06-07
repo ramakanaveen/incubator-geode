@@ -63,7 +63,7 @@ import com.gemstone.gemfire.util.test.TestUtil;
  * Tests the functionality of loading a declarative caching file when
  * a <code>Cache</code> is {@link CacheFactory#create created}.  The
  * fact that it is a subclass of {@link RegionTestCase} allows us to
- * take advantage of methods like {@link #getCache}.
+ * take advantage of methods like getCache().
  *
  * <P>
  *
@@ -71,7 +71,7 @@ import com.gemstone.gemfire.util.test.TestUtil;
  * 3.X (3.0, 3.2, 3.5).  Tests for syntax added in subsequent releases
  * is tested by subclasses of this class.
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 @Category(DistributedTest.class)
 public class CacheXml30DUnitTest extends CacheXmlTestCase {
@@ -590,7 +590,7 @@ public class CacheXml30DUnitTest extends CacheXmlTestCase {
    * Tests to make sure that the example cache.xml file in the API
    * documentation conforms to the DTD.
    *
-   * @since 3.2.1
+   * @since GemFire 3.2.1
    */
   @Test
   public void testExampleCacheXmlFile() throws Exception {

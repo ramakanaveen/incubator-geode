@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.IOException;
@@ -27,11 +28,11 @@ import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheException;
+import com.gemstone.gemfire.cache.CacheLoaderException;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.cache.client.SubscriptionNotEnabledException;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.NetworkUtils;
@@ -43,10 +44,12 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Tests the client register interest
  *
- * @since 4.2.3
+ * @since GemFire 4.2.3
  */
 @Category(DistributedTest.class)
 public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
+
+  protected static int bridgeServerPort;
 
   @Override
   public final void postTearDownCacheTestCase() throws Exception {
@@ -81,7 +84,7 @@ public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
         }
         catch (IOException e) {
           LogWriterUtils.getLogWriter().error("startBridgeServer threw IOException", e);
-          fail("startBridgeServer threw IOException " + e.getMessage());
+          fail("startBridgeServer threw IOException ", e);
         }
         
         assertTrue(bridgeServerPort != 0);
@@ -95,8 +98,8 @@ public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
     
     LogWriterUtils.getLogWriter().info("[testBug35381] create bridge client");
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    config.setProperty(MCAST_PORT, "0");
+    config.setProperty(LOCATORS, "");
     getSystem(config);
     getCache();
     
@@ -115,7 +118,7 @@ public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
     catch (SubscriptionNotEnabledException expected) {
     }
   }
-  protected static int bridgeServerPort;
+
   private static int getBridgeServerPort() {
     return bridgeServerPort;
   }
@@ -169,7 +172,7 @@ public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
         }
         catch (IOException e) {
           LogWriterUtils.getLogWriter().error("startBridgeServer threw IOException", e);
-          fail("startBridgeServer threw IOException " + e.getMessage());
+          fail("startBridgeServer threw IOException ", e);
         }
         
         assertTrue(bridgeServerPort != 0);
@@ -200,7 +203,7 @@ public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
         }
         catch (IOException e) {
           LogWriterUtils.getLogWriter().error("startBridgeServer threw IOException", e);
-          fail("startBridgeServer threw IOException " + e.getMessage());
+          fail("startBridgeServer threw IOException ", e);
         }
         
         assertTrue(bridgeServerPort != 0);
@@ -229,8 +232,8 @@ public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
     // create the bridge client
     LogWriterUtils.getLogWriter().info("[testBug35654] create bridge client");
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    config.setProperty(MCAST_PORT, "0");
+    config.setProperty(LOCATORS, "");
     getSystem(config);
     getCache();
     
@@ -315,7 +318,7 @@ public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
         }
         catch (IOException e) {
           LogWriterUtils.getLogWriter().error("startBridgeServer threw IOException", e);
-          fail("startBridgeServer threw IOException " + e.getMessage());
+          fail("startBridgeServer threw IOException ", e);
         }
       }
     });
@@ -341,7 +344,7 @@ public class ClientRegisterInterestDUnitTest extends ClientServerTestCase {
       assertEquals(null, region2.get(key2));
       fail("CacheLoaderException expected");
     }
-    catch (com.gemstone.gemfire.cache.CacheLoaderException e) {
+    catch (CacheLoaderException e) {
     }
   
     // region2 registration should be gone now

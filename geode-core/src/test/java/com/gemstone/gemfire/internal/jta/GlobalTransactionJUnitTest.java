@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.jta;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.sql.Connection;
@@ -37,7 +38,6 @@ import org.junit.experimental.categories.Category;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.datasource.GemFireBasicDataSource;
 import com.gemstone.gemfire.internal.datasource.GemFireTransactionDataSource;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
@@ -55,9 +55,9 @@ public class GlobalTransactionJUnitTest {
   @Before
   public void setUp() throws Exception {
     props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
+    props.setProperty(MCAST_PORT, "0");
     String path = TestUtil.getResourcePath(GlobalTransactionJUnitTest.class, "/jta/cachejta.xml");
-    props.setProperty("cache-xml-file", path);
+    props.setProperty(CACHE_XML_FILE, path);
     ds1 = DistributedSystem.connect(props);
     cache = CacheFactory.create(ds1);
     utx = new UserTransactionImpl();
@@ -71,40 +71,28 @@ public class GlobalTransactionJUnitTest {
 
   @Test
   public void testGetSimpleDataSource() throws Exception {
-    try {
-      Context ctx = cache.getJNDIContext();
-      GemFireBasicDataSource ds = (GemFireBasicDataSource) ctx
-          .lookup("java:/SimpleDataSource");
-      Connection conn = ds.getConnection();
-      if (conn == null)
-        fail("DataSourceFactoryTest-testGetSimpleDataSource() Error in creating the GemFireBasicDataSource");
-    }
-    catch (Exception e) {
-      fail("Exception occured in testGetSimpleDataSource due to " + e);
-      e.printStackTrace();
-    }
+    Context ctx = cache.getJNDIContext();
+    GemFireBasicDataSource ds = (GemFireBasicDataSource) ctx
+        .lookup("java:/SimpleDataSource");
+    Connection conn = ds.getConnection();
+    if (conn == null)
+      fail("DataSourceFactoryTest-testGetSimpleDataSource() Error in creating the GemFireBasicDataSource");
   }
 
   @Test
-  public void testSetRollbackOnly() {
-    try {
-      utx.begin();
-      utx.setRollbackOnly();
-      Transaction txn = tm.getTransaction();
-      if (txn.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
-        utx.rollback();
-        fail("testSetRollbackonly failed");
-      }
+  public void testSetRollbackOnly() throws Exception {
+    utx.begin();
+    utx.setRollbackOnly();
+    Transaction txn = tm.getTransaction();
+    if (txn.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
       utx.rollback();
+      fail("testSetRollbackonly failed");
     }
-    catch (Exception e) {
-      fail("exception in testSetRollbackonly due to " + e);
-      e.printStackTrace();
-    }
+    utx.rollback();
   }
 
   @Test
-  public void testEnlistResource() {
+  public void testEnlistResource() throws Exception {
     try {
       boolean exceptionoccured = false;
       utx.begin();
@@ -134,7 +122,7 @@ public class GlobalTransactionJUnitTest {
   }
 
   @Test
-  public void testRegisterSynchronization() {
+  public void testRegisterSynchronization() throws Exception {
     try {
       boolean exceptionoccured = false;
       utx.begin();
@@ -163,7 +151,7 @@ public class GlobalTransactionJUnitTest {
   }
 
   @Test
-  public void testEnlistResourceAfterRollBack() {
+  public void testEnlistResourceAfterRollBack() throws Exception {
     try {
       boolean exceptionoccured = false;
       utx.begin();
@@ -194,7 +182,7 @@ public class GlobalTransactionJUnitTest {
   }
 
   @Test
-  public void testRegisterSynchronizationAfterRollBack() {
+  public void testRegisterSynchronizationAfterRollBack() throws Exception {
     try {
       boolean exceptionoccured = false;
       utx.begin();
@@ -225,35 +213,22 @@ public class GlobalTransactionJUnitTest {
   }
 
   @Test
-  public void testSuspend() {
-    try {
-      utx.begin();
-//      Transaction txn = tm.getTransaction();
-      tm.suspend();
-      Transaction txn1 = tm.getTransaction();
-      if (txn1 != null)
-        fail("suspend failed to suspend the transaction");
-    }
-    catch (Exception e) {
-      fail("exception in testSuspend due to " + e);
-      e.printStackTrace();
-    }
+  public void testSuspend() throws Exception {
+    utx.begin();
+    tm.suspend();
+    Transaction txn1 = tm.getTransaction();
+    if (txn1 != null)
+      fail("suspend failed to suspend the transaction");
   }
 
   @Test
-  public void testResume() {
-    try {
-      utx.begin();
-      Transaction txn = tm.getTransaction();
-      Transaction txn1 = tm.suspend();
-      tm.resume(txn1);
-      if (txn != tm.getTransaction())
-        fail("resume failed ");
-      utx.commit();
-    }
-    catch (Exception e) {
-      fail("exception in testSuspend due to " + e);
-      e.printStackTrace();
-    }
+  public void testResume() throws Exception {
+    utx.begin();
+    Transaction txn = tm.getTransaction();
+    Transaction txn1 = tm.suspend();
+    tm.resume(txn1);
+    if (txn != tm.getTransaction())
+      fail("resume failed ");
+    utx.commit();
   }
 }

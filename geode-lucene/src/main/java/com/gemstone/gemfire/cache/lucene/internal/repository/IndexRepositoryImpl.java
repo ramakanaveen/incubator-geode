@@ -19,20 +19,19 @@
 
 package com.gemstone.gemfire.cache.lucene.internal.repository;
 
-import java.io.IOException;
-
+import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.cache.lucene.internal.LuceneIndexStats;
+import com.gemstone.gemfire.cache.lucene.internal.repository.serializer.LuceneSerializer;
+import com.gemstone.gemfire.cache.lucene.internal.repository.serializer.SerializerUtil;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import com.gemstone.gemfire.internal.logging.LogService;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.SearcherManager;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.lucene.internal.repository.serializer.LuceneSerializer;
-import com.gemstone.gemfire.cache.lucene.internal.repository.serializer.SerializerUtil;
+import java.io.IOException;
 
 /**
  * A repository that writes to a single lucene index writer
@@ -40,66 +39,102 @@ import com.gemstone.gemfire.cache.lucene.internal.repository.serializer.Serializ
 public class IndexRepositoryImpl implements IndexRepository {
   
   private static final boolean APPLY_ALL_DELETES = System
-      .getProperty("gemfire.IndexRepository.APPLY_ALL_DELETES", "true")
+      .getProperty(DistributionConfig.GEMFIRE_PREFIX + "IndexRepository.APPLY_ALL_DELETES", "true")
       .equalsIgnoreCase("true");
   
   private final IndexWriter writer;
   private final LuceneSerializer serializer;
   private final SearcherManager searcherManager;
   private Region<?,?> region;
+  private LuceneIndexStats stats;
+
+  private static final Logger logger = LogService.getLogger();
   
-  public IndexRepositoryImpl(Region<?,?> region, IndexWriter writer, LuceneSerializer serializer) throws IOException {
+  public IndexRepositoryImpl(Region<?,?> region, IndexWriter writer, LuceneSerializer serializer, LuceneIndexStats stats) throws IOException {
     this.region = region;
     this.writer = writer;
     searcherManager = new SearcherManager(writer, APPLY_ALL_DELETES, true, null);
     this.serializer = serializer;
+    this.stats = stats;
   }
 
   @Override
   public void create(Object key, Object value) throws IOException {
+    long start = stats.startUpdate();
+    try {
       Document doc = new Document();
       SerializerUtil.addKey(key, doc);
       serializer.toDocument(value, doc);
       writer.addDocument(doc);
+    } finally {
+      stats.endUpdate(start);
+    }
   }
 
   @Override
   public void update(Object key, Object value) throws IOException {
-    Document doc = new Document();
-    SerializerUtil.addKey(key, doc);
-    serializer.toDocument(value, doc);
-    writer.updateDocument(SerializerUtil.getKeyTerm(doc), doc);
+    long start = stats.startUpdate();
+    try {
+      Document doc = new Document();
+      SerializerUtil.addKey(key, doc);
+      serializer.toDocument(value, doc);
+      writer.updateDocument(SerializerUtil.getKeyTerm(doc), doc);
+    } finally {
+      stats.endUpdate(start);
+    }
   }
 
   @Override
   public void delete(Object key) throws IOException {
-    Term keyTerm = SerializerUtil.toKeyTerm(key);
-    writer.deleteDocuments(keyTerm);
+    long start = stats.startUpdate();
+    try {
+      Term keyTerm = SerializerUtil.toKeyTerm(key);
+      writer.deleteDocuments(keyTerm);
+    } finally {
+      stats.endUpdate(start);
+    }
   }
 
   @Override
   public void query(Query query, int limit, IndexResultCollector collector) throws IOException {
+    long start = stats.startQuery();
+    int totalHits = 0;
     IndexSearcher searcher = searcherManager.acquire();
     try {
       TopDocs docs = searcher.search(query, limit);
+      totalHits = docs.totalHits;
       for(ScoreDoc scoreDoc : docs.scoreDocs) {
         Document doc = searcher.doc(scoreDoc.doc);
         Object key = SerializerUtil.getKey(doc);
+        if (logger.isDebugEnabled()) {
+          logger.debug("query found doc:"+doc+":"+scoreDoc);
+        }
         collector.collect(key, scoreDoc.score);
       }
     } finally {
       searcherManager.release(searcher);
+      stats.endQuery(start, totalHits);
     }
   }
 
   @Override
   public synchronized void commit() throws IOException {
-    writer.commit();
-    searcherManager.maybeRefresh();
+    long start = stats.startCommit();
+    try {
+      writer.commit();
+      searcherManager.maybeRefresh();
+    } finally {
+      stats.endCommit(start);
+    }
   }
 
   public IndexWriter getWriter() {
     return writer;
+  }
+
+  @Override
+  public Region<?, ?> getRegion() {
+    return region;
   }
 
   public LuceneSerializer getSerializer() {

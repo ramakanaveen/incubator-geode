@@ -16,14 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -36,7 +30,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.gemstone.gemfire.cache.CacheClosedException;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.execute.Execution;
 import com.gemstone.gemfire.cache.execute.Function;
@@ -46,7 +42,6 @@ import com.gemstone.gemfire.cache.execute.FunctionException;
 import com.gemstone.gemfire.cache.execute.FunctionInvocationTargetException;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.cache.execute.ResultCollector;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DM;
@@ -63,9 +58,12 @@ import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class MemberFunctionExecutionDUnitTest extends JUnit4CacheTestCase {
+
   private static final String TEST_FUNCTION6 = TestFunction.TEST_FUNCTION6;
   private static final String TEST_FUNCTION5 = TestFunction.TEST_FUNCTION5;
 
@@ -78,10 +76,6 @@ public class MemberFunctionExecutionDUnitTest extends JUnit4CacheTestCase {
   
   static InternalDistributedSystem ds = null;
 
-  public MemberFunctionExecutionDUnitTest() {
-    super();
-  }
-  
   @Override
   public final void postSetUp() throws Exception {
     Host host = Host.getHost(0);
@@ -375,7 +369,7 @@ public class MemberFunctionExecutionDUnitTest extends JUnit4CacheTestCase {
     assertNotNull(ds);
     ds.disconnect();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
+    props.setProperty(MCAST_PORT, "0");
     ds = (InternalDistributedSystem)DistributedSystem.connect(props);
     
     DM dm = ds.getDistributionManager();

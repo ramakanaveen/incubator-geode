@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
@@ -34,6 +35,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -64,10 +66,6 @@ public class LoginTimeOutDUnitTest extends JUnit4DistributedTestCase {
   
   private static Cache cache;
   private static String tblName;
-
-  public LoginTimeOutDUnitTest() {
-    super();
-  }
 
   private static String readFile(String filename) throws IOException {
     BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -150,8 +148,8 @@ public class LoginTimeOutDUnitTest extends JUnit4DistributedTestCase {
     wr.write(modified_file_str);
     wr.flush();
     wr.close();
-    props.setProperty("cache-xml-file", path);
-    props.setProperty("mcast-port", "0");
+    props.setProperty(CACHE_XML_FILE, path);
+    props.setProperty(MCAST_PORT, "0");
     String tableName = "";
     cache = new CacheFactory(props).create();
     if (className != null && !className.equals("")) {
@@ -223,8 +221,8 @@ public class LoginTimeOutDUnitTest extends JUnit4DistributedTestCase {
     }
   }
 
-  public void disabledsetUp() throws Exception {
-    super.setUp();
+  @Override
+  public final void postSetUp() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     Object o[] = new Object[1];
@@ -232,7 +230,8 @@ public class LoginTimeOutDUnitTest extends JUnit4DistributedTestCase {
     vm0.invoke(LoginTimeOutDUnitTest.class, "init", o);
   }
 
-  public void disabledtearDown2() throws Exception {
+  @Override
+  public final void preTearDown() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     try {
@@ -246,14 +245,11 @@ public class LoginTimeOutDUnitTest extends JUnit4DistributedTestCase {
     }
   }
   
-  @Test
-  public void testBug52206() {
-    // reenable setUp and testLoginTimeout to work on bug 52206
-  }
-  
   // this test and the setUp and teardown2 methods are disabled due to frequent
   // failures in CI runs.  See bug #52206
-  public void disabledtestLoginTimeOut() throws Exception {
+  @Ignore("TODO: test is disabled due to #52206")
+  @Test
+  public void testLoginTimeOut() throws Exception {
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
     AsyncInvocation test1 = vm0.invokeAsync(() -> LoginTimeOutDUnitTest.runTest1());

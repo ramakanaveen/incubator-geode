@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @SuppressWarnings("serial")
 public class Bug43684DUnitTest extends JUnit4DistributedTestCase {
 
-  private static final String REGION_NAME = "Bug43684DUnitTest";
+  private static final String REGION_NAME = Bug43684DUnitTest.class.getSimpleName();
 
   private static GemFireCacheImpl cache;
 
@@ -70,10 +71,6 @@ public class Bug43684DUnitTest extends JUnit4DistributedTestCase {
   private static VM client1;
 
   private static int numBuckets = 11;
-
-  public Bug43684DUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -256,12 +253,10 @@ public class Bug43684DUnitTest extends JUnit4DistributedTestCase {
   public static Integer createServerCache(Boolean isReplicated, Boolean isPrimaryEmpty) throws Exception {
     disconnectFromDS();
     Properties props = new Properties();
-    props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
-//    props.setProperty("log-file", "server_" + OSProcess.getId() + ".log");
-//    props.setProperty("log-level", "fine");
-    props.setProperty("statistic-archive-file", "server_" + OSProcess.getId()
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "server_" + OSProcess.getId()
         + ".gfs");
-    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
     CacheFactory cf = new CacheFactory(props);
     cache = (GemFireCacheImpl)cf.create();
 
@@ -285,11 +280,9 @@ public class Bug43684DUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCache(Host host, Integer port) {
     disconnectFromDS();
     Properties props = new Properties();
-//    props.setProperty("log-file", "client_" + OSProcess.getId() + ".log");
-//    props.setProperty("log-level", "fine");
-    props.setProperty("statistic-archive-file", "client_" + OSProcess.getId()
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "client_" + OSProcess.getId()
         + ".gfs");
-    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
     ClientCacheFactory ccf = new ClientCacheFactory(props);
     ccf.addPoolServer(host.getHostName(), port).setPoolSubscriptionEnabled(true);
     cache = (GemFireCacheImpl)ccf.create();

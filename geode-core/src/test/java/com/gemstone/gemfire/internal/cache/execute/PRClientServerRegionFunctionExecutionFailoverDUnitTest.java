@@ -16,20 +16,17 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -47,7 +44,6 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
@@ -63,19 +59,15 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
-public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
-    PRClientServerTestBase {
+public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends PRClientServerTestBase {
 
   private static Locator locator = null;
   
   private static Region region = null;
   
-  public PRClientServerRegionFunctionExecutionFailoverDUnitTest() {
-    super();
-  }
-
   @Override
   protected void postSetUpPRClientServerTestBase() throws Exception {
     IgnoredException.addIgnoredException("Connection reset");
@@ -400,7 +392,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
 
     Properties props = new Properties();
     props = DistributedTestUtils.getAllDistributedSystemProperties(props);
-    props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
     
     try {
       locator = Locator.startLocatorAndDS(locatorPort, logFile, null, props);
@@ -417,7 +409,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
   public int createServerWithLocator(String locator, boolean isAccessor, ArrayList commonAttrs) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("locators", locator);
+    props.setProperty(LOCATORS, locator);
     DistributedSystem ds = getSystem(props);
     cache = new CacheFactory(props).create(ds);
     
@@ -451,8 +443,8 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
   public void createClientWithLocator(String host, int port0) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     DistributedSystem ds = getSystem(props);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);

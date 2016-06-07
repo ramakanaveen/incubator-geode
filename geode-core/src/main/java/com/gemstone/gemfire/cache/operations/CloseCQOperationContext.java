@@ -23,7 +23,7 @@ import java.util.Set;
  * Encapsulates a {@link com.gemstone.gemfire.cache.operations.OperationContext.OperationCode#CLOSE_CQ} operation for the pre-operation
  * case.
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 public class CloseCQOperationContext extends ExecuteCQOperationContext {
 
@@ -37,28 +37,8 @@ public class CloseCQOperationContext extends ExecuteCQOperationContext {
    * @param regionNames
    *                names of regions that are part of the query string
    */
-  public CloseCQOperationContext(String cqName, String queryString,
-      Set regionNames) {
-    super(cqName, queryString, regionNames, false);
-  }
-
-  /**
-   * Return the operation associated with the <code>OperationContext</code>
-   * object.
-   * 
-   * @return <code>OperationCode.CLOSE_CQ</code>.
-   */
-  @Override
-  public OperationCode getOperationCode() {
-    return OperationCode.CLOSE_CQ;
-  }
-
-  /**
-   * True if the context is for post-operation.
-   */
-  @Override
-  public boolean isPostOperation() {
-    return false;
+  public CloseCQOperationContext(String cqName, String queryString, Set regionNames) {
+    super(OperationCode.CLOSE_CQ, cqName, queryString, regionNames, false);
   }
 
 }

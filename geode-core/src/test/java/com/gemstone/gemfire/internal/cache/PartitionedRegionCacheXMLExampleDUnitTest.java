@@ -16,37 +16,30 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Properties;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheException;
+import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.util.test.TestUtil;
 
 /**
  * This class tests regions created by xml files
  */
 @Category(DistributedTest.class)
-public class PartitionedRegionCacheXMLExampleDUnitTest extends
-		PartitionedRegionDUnitTestCase {
+public class PartitionedRegionCacheXMLExampleDUnitTest extends PartitionedRegionDUnitTestCase {
 
 	protected static Cache cache;
-
-	public PartitionedRegionCacheXMLExampleDUnitTest() {
-		super();
-	}
 
   @Test
   public void testExampleWithBothRootRegion() {
@@ -60,8 +53,8 @@ public class PartitionedRegionCacheXMLExampleDUnitTest extends
 
 				Properties props = new Properties();
 				String xmlfilepath = TestUtil.getResourcePath(getClass(), "PartitionRegionCacheExample1.xml");
-				props.setProperty("cache-xml-file", xmlfilepath);
-                                
+				props.setProperty(CACHE_XML_FILE, xmlfilepath);
+
 				getSystem(props);
 				cache = getCache();
 			}
@@ -116,7 +109,7 @@ public class PartitionedRegionCacheXMLExampleDUnitTest extends
 
 				Properties props = new Properties();
 				String xmlfilepath = TestUtil.getResourcePath(getClass(), "PartitionRegionCacheExample2.xml");
-				props.setProperty("cache-xml-file", xmlfilepath);
+				props.setProperty(CACHE_XML_FILE, xmlfilepath);
 				getSystem(props);
 				cache = getCache();
 			}

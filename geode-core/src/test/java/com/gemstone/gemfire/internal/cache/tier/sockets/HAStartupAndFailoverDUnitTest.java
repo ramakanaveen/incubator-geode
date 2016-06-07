@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
@@ -40,7 +41,6 @@ import com.gemstone.gemfire.cache.client.internal.Connection;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.ServerLocation;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
@@ -82,11 +82,6 @@ public class HAStartupAndFailoverDUnitTest extends JUnit4DistributedTestCase {
   //To verify the primary identification on client side toggeled after notification on client side
   protected static boolean identifiedPrimary = false;
 
-  /** constructor */
-  public HAStartupAndFailoverDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     final Host host = Host.getHost(0);
@@ -106,7 +101,6 @@ public class HAStartupAndFailoverDUnitTest extends JUnit4DistributedTestCase {
 
     /**
      * Stops primary server one by one to ensure new primary is selected
-     *
      */
   @Test
   public void testPrimaryFailover() throws Exception
@@ -564,8 +558,8 @@ public class HAStartupAndFailoverDUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCache(String testName, String host) throws Exception
   {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAStartupAndFailoverDUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(host, PORT1.intValue())
@@ -593,8 +587,8 @@ public class HAStartupAndFailoverDUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCacheWithLargeRetryInterval(String testName, String host) throws Exception
   {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAStartupAndFailoverDUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(host, PORT1.intValue())
@@ -624,8 +618,8 @@ public class HAStartupAndFailoverDUnitTest extends JUnit4DistributedTestCase {
       String testName, String host) throws Exception
   {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAStartupAndFailoverDUnitTest().createCache(props);
 
     CacheServerTestUtil.disableShufflingOfEndpoints();
@@ -662,8 +656,8 @@ public class HAStartupAndFailoverDUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCacheWithIncorrectPrimary(String testName, String host) throws Exception
   {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAStartupAndFailoverDUnitTest().createCache(props);
     final int INCORRECT_PORT = 1;
     PoolImpl p = (PoolImpl)PoolManager.createFactory()

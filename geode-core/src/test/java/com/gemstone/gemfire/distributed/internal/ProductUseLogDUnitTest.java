@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
@@ -55,7 +56,7 @@ public class ProductUseLogDUnitTest extends JUnit4CacheTestCase {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties p = super.getDistributedSystemProperties();
-    p.put(DistributionConfig.USE_CLUSTER_CONFIGURATION_NAME, "false");
+    p.put(USE_CLUSTER_CONFIGURATION, "false");
     return p;
   }
   
@@ -68,8 +69,8 @@ public class ProductUseLogDUnitTest extends JUnit4CacheTestCase {
     // use a locator so we will monitor server load and record member->server mappings
     int locatorPort = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
     Properties p = new Properties();
-    p.put(DistributionConfig.START_LOCATOR_NAME, "localhost["+locatorPort+"],peer=false");
-    p.put(DistributionConfig.USE_CLUSTER_CONFIGURATION_NAME, "false");
+    p.put(START_LOCATOR, "localhost[" + locatorPort + "],peer=false");
+    p.put(USE_CLUSTER_CONFIGURATION, "false");
     InternalDistributedSystem system = getSystem(p);
     
     InternalLocator locator = (InternalLocator)Locator.getLocator();

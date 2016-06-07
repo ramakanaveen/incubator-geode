@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -42,7 +43,6 @@ import com.gemstone.gemfire.cache.client.internal.RegisterInterestTracker;
 import com.gemstone.gemfire.cache.client.internal.ServerRegionProxy;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.ServerLocation;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
@@ -145,7 +145,7 @@ public class HAInterestTestCase extends JUnit4DistributedTestCase {
   /**
    * Return the current primary waiting for a primary to exist.
    * 
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public static VM getPrimaryVM() {
     return getPrimaryVM(null);
@@ -155,7 +155,7 @@ public class HAInterestTestCase extends JUnit4DistributedTestCase {
    * Return the current primary waiting for a primary to exist and for it not to
    * be the oldPrimary (if oldPrimary is NOT null).
    * 
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public static VM getPrimaryVM(final VM oldPrimary) {
     WaitCriterion wc = new WaitCriterion() {
@@ -207,7 +207,7 @@ public class HAInterestTestCase extends JUnit4DistributedTestCase {
   /**
    * Given a server vm (server1, server2, or server3) return its port.
    * 
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public static int getServerPort(VM vm) {
     if (vm == server1) {
@@ -225,7 +225,7 @@ public class HAInterestTestCase extends JUnit4DistributedTestCase {
   /**
    * Given a server port (PORT1, PORT2, or PORT3) return its vm.
    * 
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public static VM getServerVM(int port) {
     if (port == PORT1) {
@@ -889,8 +889,8 @@ public class HAInterestTestCase extends JUnit4DistributedTestCase {
 
   public static void createClientPoolCache(String testName, String host) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAInterestTestCase().createCache(props);
     CacheServerTestUtil.disableShufflingOfEndpoints();
     PoolImpl p;
@@ -923,8 +923,8 @@ public class HAInterestTestCase extends JUnit4DistributedTestCase {
 
   public static void createClientPoolCacheWithSmallRetryInterval(String testName, String host) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAInterestTestCase().createCache(props);
     CacheServerTestUtil.disableShufflingOfEndpoints();
     PoolImpl p;
@@ -958,8 +958,8 @@ public class HAInterestTestCase extends JUnit4DistributedTestCase {
 
   public static void createClientPoolCacheConnectionToSingleServer(String testName, String hostName) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAInterestTestCase().createCache(props);
     PoolImpl p = (PoolImpl) PoolManager.createFactory()
         .addServer(hostName, PORT1)

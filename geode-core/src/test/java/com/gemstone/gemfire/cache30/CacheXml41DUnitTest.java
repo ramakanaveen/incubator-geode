@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.xml.sax.SAXException;
 
 import com.gemstone.gemfire.cache.Cache;
@@ -53,11 +48,12 @@ import com.gemstone.gemfire.internal.cache.xmlcache.RegionAttributesCreation;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.IgnoredException;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests the declarative caching functionality introduced in GemFire 4.1.
  * 
- * @since 4.1
+ * @since GemFire 4.1
  */
 
 @Category(DistributedTest.class)
@@ -551,7 +547,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   //}
   /**
    * Test Publisher region attribute
-   * @since 4.2.3
+   * @since GemFire 4.2.3
    * @deprecated as of GemFire 6.5.
    */
   @Test
@@ -567,7 +563,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
 
   /**
    * Test EnableBridgeConflation region attribute
-   * @since 4.2
+   * @since GemFire 4.2
    */
   @Test
   public void testEnableBridgeConflationAttribute() throws CacheException {
@@ -582,7 +578,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
 
   /**
    * Test EnableAsyncConflation region attribute
-   * @since 4.2
+   * @since GemFire 4.2
    */
   @Test
   public void testEnableAsyncConflationAttribute() throws CacheException {
@@ -595,7 +591,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
     assertEquals(true, cache.getRegion("root").getAttributes().getEnableAsyncConflation());
   }
   /**
-   * @since 4.3
+   * @since GemFire 4.3
    */
   @Test
   public void testDynamicRegionFactoryDefault() throws CacheException {
@@ -637,7 +633,7 @@ public class CacheXml41DUnitTest extends CacheXml40DUnitTest
   }
 
   /**
-   * @since 4.3
+   * @since GemFire 4.3
    */
   @Test
   public void testDynamicRegionFactoryDiskDir() throws CacheException {

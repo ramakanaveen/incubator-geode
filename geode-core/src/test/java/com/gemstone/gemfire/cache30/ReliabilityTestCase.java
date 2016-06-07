@@ -16,29 +16,22 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import java.util.Iterator;
+import java.util.Set;
 
-import com.gemstone.gemfire.cache.*;
-import com.gemstone.gemfire.distributed.*;
-import java.util.*;
+import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.cache.RequiredRoles;
+import com.gemstone.gemfire.distributed.Role;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
 
 /**
  * Provides functionality helpful to testing Reliability and RequiredRoles.
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 public abstract class ReliabilityTestCase extends JUnit4CacheTestCase {
-
-  public ReliabilityTestCase() {
-    super();
-  }
 
   /** Asserts that the specified roles are missing */
   protected void assertMissingRoles(String regionName, String[] roles) {
@@ -58,10 +51,7 @@ public abstract class ReliabilityTestCase extends JUnit4CacheTestCase {
       assertTrue("Unexpected missing role: " + role.getName(), found);
     }
   }
-  
-  protected void waitForMemberTimeout() {
-    // TODO implement me
-  }
-  
-}
 
+  protected void waitForMemberTimeout() {
+  }
+}

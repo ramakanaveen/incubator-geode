@@ -19,14 +19,18 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -39,9 +43,7 @@ import com.gemstone.gemfire.cache.client.Pool;
 import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.client.internal.ClientMetadataService;
 import com.gemstone.gemfire.cache.client.internal.ClientPartitionAdvisor;
-import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.Locator;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
@@ -61,22 +63,11 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
-/**
- *
- */
 @Category(DistributedTest.class)
-public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4CacheTestCase{
-
-  private static final long serialVersionUID = 1L;
+public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4CacheTestCase {
 
   protected static final String PR_NAME = "single_hop_pr";
   protected static final String PR_NAME2 = "single_hop_pr_2";
@@ -88,40 +79,24 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   private static final String CUSTOMER2 = "CUSTOMER2";
   private static final String ORDER2 = "ORDER2";
   private static final String SHIPMENT2 = "SHIPMENT2";
-  
-  protected VM member0 = null;
-
-  protected VM member1 = null;
-
-  protected VM member2 = null;
-
-  protected VM member3 = null;
-
-  protected static Region region = null;
-
-  protected static Region customerRegion = null;
-
-  protected static Region orderRegion = null;
-
-  protected static Region shipmentRegion = null;
-
-  protected static Region region2 = null;
-
-  protected static Region customerRegion2 = null;
-
-  protected static Region orderRegion2 = null;
-
-  protected static Region shipmentRegion2 = null;
-  
-  protected static Cache cache = null;
 
   protected static final int locatorPort = 12345;
 
+  protected VM member0 = null;
+  protected VM member1 = null;
+  protected VM member2 = null;
+  protected VM member3 = null;
+
+  protected static Region region = null;
+  protected static Region customerRegion = null;
+  protected static Region orderRegion = null;
+  protected static Region shipmentRegion = null;
+  protected static Region region2 = null;
+  protected static Region customerRegion2 = null;
+  protected static Region orderRegion2 = null;
+  protected static Region shipmentRegion2 = null;
+  protected static Cache cache = null;
   protected static Locator locator = null;
-  
-  public PartitionedRegionSingleHopWithServerGroupDUnitTest() {
-    super();
-  }
   
   @Override
   public final void postSetUp() throws Exception {
@@ -332,8 +307,6 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     } finally {
       member3.invoke(() -> PartitionedRegionSingleHopWithServerGroupDUnitTest.stopLocator());  
     }
-    
-    
   }
   
   @Test
@@ -564,7 +537,6 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     }
   }
 
-  
   public static void verifyMetadata(final int numRegions, final int numBucketLocations) {
     ClientMetadataService cms = ((GemFireCacheImpl)cache).getClientMetadataService();
     final Map<String, ClientPartitionAdvisor> regionMetaData = cms
@@ -822,10 +794,12 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
       int localMaxMemory,int redundantCopies, int totalNoofBuckets, String group) {
 
     Properties props = new Properties();
-    props.setProperty("locators", locator);
-    
-    System.setProperty("gemfire.PoolImpl.honourServerGroupsInPRSingleHop", "true");
+    props = new Properties();
+    props.setProperty(LOCATORS, locator);
+
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "PoolImpl.honourServerGroupsInPRSingleHop", "true");
     PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
+
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
 
@@ -906,9 +880,10 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
       int localMaxMemory,int redundantCopies, int totalNoofBuckets, String group) {
 
     Properties props = new Properties();
-    props.setProperty("locators", locator);
-    
-    System.setProperty("gemfire.PoolImpl.honourServerGroupsInPRSingleHop", "true");
+    props = new Properties();
+    props.setProperty(LOCATORS, locator);
+
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "PoolImpl.honourServerGroupsInPRSingleHop", "true");
     PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -983,9 +958,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     LogWriterUtils.getLogWriter().info(
         "Partitioned Region SHIPMENT created Successfully :"
             + shipmentRegion.toString());
-    
-    
-    
+
     paf = new PartitionAttributesFactory();
     paf.setRedundantCopies(redundantCopies).setLocalMaxMemory(localMaxMemory)
         .setTotalNumBuckets(totalNoofBuckets);
@@ -997,7 +970,6 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
         "Partitioned Region " + PR_NAME2 + " created Successfully :"
             + region2.toString());
 
-    
     paf = new PartitionAttributesFactory();
     paf.setRedundantCopies(redundantCopies).setLocalMaxMemory(localMaxMemory)
         .setTotalNumBuckets(totalNoofBuckets).setPartitionResolver(
@@ -1041,9 +1013,9 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   
   public static void createClientWithLocator(String host, int port0, String group) {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    props.setProperty(DistributionConfig.LOG_FILE_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
+    props.setProperty(LOG_FILE, "");
     PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -1065,8 +1037,8 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   
   public static void create2ClientWithLocator(String host, int port0, String group1, String group2) {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -1092,8 +1064,8 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   
   public static void createClientWith3PoolLocator(String host, int port0, String group1, String group2,String group3) {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -1113,8 +1085,6 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
           250).setSubscriptionEnabled(true).setSubscriptionRedundancy(-1)
           .setReadTimeout(2000).setSocketBufferSize(1000).setMinConnections(6)
           .setMaxConnections(10).setRetryAttempts(3).create(PR_NAME3);
-      
-      
     }
     finally {
       CacheServerTestUtil.enableShufflingOfEndpoints();
@@ -1275,10 +1245,8 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     LogWriterUtils.getLogWriter().info(
         "Distributed Region SHIPMENT created Successfully :"
             + shipmentRegion.toString());
-    
   }
 
-  
   public static int createAccessorServer(int redundantCopies, int numBuckets, String group) {
     PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     cache = test.getCache();
@@ -1348,8 +1316,8 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   
   public static void createClientWithLocatorWithoutSystemProperty(String host, int port0, String group) {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     PartitionedRegionSingleHopWithServerGroupDUnitTest test = new PartitionedRegionSingleHopWithServerGroupDUnitTest();
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
@@ -1369,7 +1337,6 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     createRegionsInClientCache(p.getName());
   }
 
-  
   public static void putIntoPartitionedRegions() {
     for (int i = 0; i <= 800; i++) {
       CustId custid = new CustId(i);
@@ -1418,56 +1385,7 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     region.put(new Integer(7), "update33");
   }
   
-//  public static void putIntoPartitionedRegions2() {
-//    for (int i = 801; i <= 1600; i++) {
-//      CustId custid = new CustId(i);
-//      Customer customer = new Customer("name" + i, "Address" + i);
-//      customerRegion.put(custid, customer);
-//    }
-//    for (int j = 801; j <= 1600; j++) {
-//      CustId custid = new CustId(j);
-//      OrderId orderId = new OrderId(j, custid);
-//      Order order = new Order("OREDR" + j);
-//      orderRegion.put(orderId, order);
-//    }
-//    for (int k = 801; k <= 1600; k++) {
-//      CustId custid = new CustId(k);
-//      OrderId orderId = new OrderId(k, custid);
-//      ShipmentId shipmentId = new ShipmentId(k, orderId);
-//      Shipment shipment = new Shipment("Shipment" + k);
-//      shipmentRegion.put(shipmentId, shipment);
-//    }
-//
-//    region.put(new Integer(8), "create0");
-//    region.put(new Integer(9), "create1");
-//    region.put(new Integer(10), "create2");
-//    region.put(new Integer(11), "create3");
-//    region.put(new Integer(12), "create0");
-//    region.put(new Integer(13), "create1");
-//    region.put(new Integer(14), "create2");
-//    region.put(new Integer(15), "create3");
-//    
-//    region.put(new Integer(8), "update0");
-//    region.put(new Integer(9), "update1");
-//    region.put(new Integer(10), "update2");
-//    region.put(new Integer(11), "update3");
-//    region.put(new Integer(12), "update0");
-//    region.put(new Integer(13), "update1");
-//    region.put(new Integer(14), "update2");
-//    region.put(new Integer(15), "update3");
-//    
-//    region.put(new Integer(8), "update00");
-//    region.put(new Integer(9), "update11");
-//    region.put(new Integer(10), "update22");
-//    region.put(new Integer(11), "update33");
-//    region.put(new Integer(12), "update00");
-//    region.put(new Integer(13), "update11");
-//    region.put(new Integer(14), "update22");
-//    region.put(new Integer(15), "update33");
-//  }
-  
   public static void putIntoPartitionedRegions2Client() {
-    
     for (int i = 0; i <= 800; i++) {
       CustId custid = new CustId(i);
       Customer customer = new Customer("name" + i, "Address" + i);
@@ -1543,7 +1461,6 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     region2.put(new Integer(5), "update11");
     region2.put(new Integer(6), "update22");
     region2.put(new Integer(7), "update33");
-
   }
 
   public static void getFromPartitionedRegions() {
@@ -1572,34 +1489,6 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     region.get(new Integer(6));
     region.get(new Integer(7));
   }
-  
-  
-//  public static void getFromPartitionedRegions2() {
-//    for (int i = 801; i <= 1600; i++) {
-//      CustId custid = new CustId(i);
-//      customerRegion.get(custid);
-//    }
-//    for (int j = 801; j <= 1600; j++) {
-//      CustId custid = new CustId(j);
-//      OrderId orderId = new OrderId(j, custid);
-//      orderRegion.get(orderId);
-//    }
-//    for (int k = 801; k <= 1600; k++) {
-//      CustId custid = new CustId(k);
-//      OrderId orderId = new OrderId(k, custid);
-//      ShipmentId shipmentId = new ShipmentId(k, orderId);
-//      shipmentRegion.get(shipmentId);
-//     }
-//    region.get(new Integer(8));
-//    region.get(new Integer(9));
-//    region.get(new Integer(10));
-//    region.get(new Integer(11));
-//    region.get(new Integer(12));
-//    region.get(new Integer(13));
-//    region.get(new Integer(14));
-//    region.get(new Integer(15));
-//    
-//  }
   
   public static void getFromPartitionedRegions2Client() {
     
@@ -1639,21 +1528,19 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
     region2.get(new Integer(5));
     region2.get(new Integer(6));
     region.get(new Integer(7));
-    
   }
-  public static void startLocatorInVM(final int locatorPort) {
 
+  public static void startLocatorInVM(final int locatorPort) {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
-    props.setProperty(DistributionConfig.LOG_FILE_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
+    props.setProperty(LOG_FILE, "");
 
     try {
       locator = Locator.startLocatorAndDS(locatorPort, null, null, props);
     }
     catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new AssertionError(e);
     }
   }
 
@@ -1662,10 +1549,10 @@ public class PartitionedRegionSingleHopWithServerGroupDUnitTest extends JUnit4Ca
   }
   
   public static void resetHonourServerGroupsInPRSingleHop() {
-    System.setProperty("gemfire.PoolImpl.honourServerGroupsInPRSingleHop", "False");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "PoolImpl.honourServerGroupsInPRSingleHop", "False");
   }
   
   public static void setHonourServerGroupsInPRSingleHop() {
-    System.setProperty("gemfire.PoolImpl.honourServerGroupsInPRSingleHop", "True");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "PoolImpl.honourServerGroupsInPRSingleHop", "True");
   }
 }

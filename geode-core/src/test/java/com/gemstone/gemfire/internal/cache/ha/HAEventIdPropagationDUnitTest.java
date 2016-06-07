@@ -16,7 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -65,7 +66,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Test to verify correct propagation of EventID from server to client
  *
- * @since 5.1
+ * @since GemFire 5.1
  */
 @Category(DistributedTest.class)
 public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
@@ -77,18 +78,13 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
   VM client1 = null;
 
   /** region name* */
-  private static final String REGION_NAME = "HAEventIdPropagationDUnitTest_Region";
+  private static final String REGION_NAME = HAEventIdPropagationDUnitTest.class.getSimpleName() + "_Region";
 
   /** cache * */
   private static Cache cache = null;
 
   /** server * */
   static CacheServerImpl server = null;
-
-  /** test constructor * */
-  public HAEventIdPropagationDUnitTest() {
-    super();
-  }
 
   /** get the hosts and the VMs * */
   @Override
@@ -169,8 +165,8 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
   {
     int PORT1 = port1.intValue();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAEventIdPropagationDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     PoolImpl pi = (PoolImpl)ClientServerTestCase.configureConnectionPool(factory, hostName, new int[] {PORT1}, true, -1, 2, null);
@@ -197,7 +193,6 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
     }
   }
 
-
   /**
    * function to assert that the ThreadIdtoSequence id Map is not Null but is
    * empty *
@@ -222,7 +217,6 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       LogWriterUtils.getLogWriter().info("assertThreadIdToSequenceIdMapisNotNullButEmpty: map size is " + map.size());
       assertTrue(map.size() == 1);
     }
-
   }
 
   /**
@@ -313,8 +307,6 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
    * server 5) asserts that the ThreadIdToSequenceIdMap is not null and has one
    * entry (on the client side) and returns the eventId stored in the map 6)
    * verifies the equality of the two event ids
-   *
-   * @throws Exception
    */
   @Test
   public void testEventIDPropagation() throws Exception
@@ -374,7 +366,6 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
         }
       }
 
-
       client1.invoke(() -> HAEventIdPropagationDUnitTest.setReceivedOperationToFalse());
       eventId1 = server1.invoke(() -> HAEventIdPropagationDUnitTest.removePUTALL_KEY1());
       assertNotNull(eventId1);
@@ -422,10 +413,9 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
     if (!eventId1.equals(eventId2)) {
       fail("Test failed as the clear eventIds are not equal");
     }
-
   }
 
-  @Ignore("TODO: test passes")
+  @Ignore("TODO: test is disabled but passes when run")
   @Test
   public void testEventIDPropagationForDestroyRegion() throws Exception {
     createClientServerConfiguration();
@@ -461,7 +451,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       return eventId;
     }
     catch (Exception e) {
-      fail("put failed due to " + e);
+      fail("put failed due to ", e);
     }
     return null;
   }
@@ -480,7 +470,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       return eventId;
     }
     catch (Exception e) {
-      fail("put failed due to " + e);
+      fail("put failed due to ", e);
     }
     return null;
   }
@@ -517,7 +507,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       return evids;
     }
     catch (Exception e) {
-      fail("put failed due to " + e);
+      fail("put failed due to ", e);
     }
     return null;
   }
@@ -536,7 +526,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       return eventId;
     }
     catch (Exception e) {
-      fail("put failed due to " + e);
+      fail("put failed due to ", e);
     }
     return null;
   }
@@ -555,7 +545,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       return eventId;
     }
     catch (Exception e) {
-      fail("put failed due to " + e);
+      fail("put failed due to ", e);
     }
     return null;
   }
@@ -575,7 +565,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       return eventId;
     }
     catch (Exception e) {
-      fail("put failed due to " + e);
+      fail("put failed due to ", e);
     }
     return null;
   }
@@ -594,7 +584,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       return eventId;
     }
     catch (Exception e) {
-      fail("clear failed due to " + e);
+      fail("clear failed due to ", e);
     }
     return null;
   }
@@ -616,7 +606,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       return eventId;
     }
     catch (Exception e) {
-      fail("Destroy failed due to " + e);
+      fail("Destroy failed due to ", e);
     }
     return null;
   }
@@ -639,7 +629,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
           lockObject.wait(10000);
         }
         catch (InterruptedException e) {
-          fail("interrupted");
+          fail("interrupted", e);
         }
       }
       if (!receivedOperation) {
@@ -652,14 +642,12 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
   /**
    * Listener which sends a notification after create to waiting threads and
    * also extracts teh event id storing it in a static variable
-   *
    */
-  static class HAEventIdPropagationListenerForClient extends
-      CacheListenerAdapter
-  {
+  static class HAEventIdPropagationListenerForClient extends CacheListenerAdapter {
 
     private int putAllReceivedCount = 0;
 
+    @Override
     public void afterCreate(EntryEvent event)
     {
       LogWriterUtils.getLogWriter().fine(" entered after created with " + event.getKey());
@@ -699,6 +687,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterUpdate(EntryEvent event)
     {
       synchronized (lockObject) {
@@ -707,6 +696,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterInvalidate(EntryEvent event)
     {
       synchronized (lockObject) {
@@ -715,6 +705,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterDestroy(EntryEvent event)
     {
       synchronized (lockObject) {
@@ -723,6 +714,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterRegionDestroy(RegionEvent event)
     {
       synchronized (lockObject) {
@@ -732,6 +724,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterRegionClear(RegionEvent event)
     {
       synchronized (lockObject) {
@@ -745,14 +738,12 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
   /**
    * Listener which sends a notification after create to waiting threads and
    * also extracts teh event id storing it in a static variable
-   *
    */
-  static class HAEventIdPropagationListenerForServer extends
-      CacheListenerAdapter
-  {
+  static class HAEventIdPropagationListenerForServer extends CacheListenerAdapter {
 
     private int putAllReceivedCount = 0;
 
+    @Override
     public void afterCreate(EntryEvent event)
     {
       LogWriterUtils.getLogWriter().fine(" entered after created with " + event.getKey());
@@ -799,6 +790,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterUpdate(EntryEvent event)
     {
       eventId = ((EntryEventImpl)event).getEventId();
@@ -809,6 +801,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterInvalidate(EntryEvent event)
     {
       eventId = ((EntryEventImpl)event).getEventId();
@@ -819,6 +812,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterDestroy(EntryEvent event)
     {
       eventId = ((EntryEventImpl)event).getEventId();
@@ -829,6 +823,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       }
     }
 
+    @Override
     public void afterRegionDestroy(RegionEvent event)
     {
       LogWriterUtils.getLogWriter().info("Before Regionestroy in Server");
@@ -841,6 +836,7 @@ public class HAEventIdPropagationDUnitTest extends JUnit4DistributedTestCase {
       LogWriterUtils.getLogWriter().info("After RegionDestroy in Server");
     }
 
+    @Override
     public void afterRegionClear(RegionEvent event)
     {
       eventId = ((RegionEventImpl)event).getEventId();

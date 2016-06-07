@@ -47,7 +47,7 @@ import com.gemstone.gemfire.test.dunit.VM;
 /**
  * Test to make sure PR cache values are lazily deserialized
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 @Category(DistributedTest.class)
 public class Bug38013DUnitTest extends JUnit4CacheTestCase {

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -45,7 +46,6 @@ import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.cache.util.CqListenerAdapter;
 import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
@@ -64,7 +64,7 @@ public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
 
   private static Pool pool = null;
 
-  private static String regionName = "CQWithInterestDUnitTest_region";
+  private static String regionName = DeltaPropagationWithCQDUnitTest.class.getSimpleName() + "_region";
 
   protected VM server1 = null;
 
@@ -131,9 +131,11 @@ public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
         "SAMPLE_KEY", "NEW_VALUE"));
     // 6. Wait for some time
     WaitCriterion wc = new WaitCriterion() {
+      @Override
       public boolean done() {
         return cqEvents == 2 && cqErrors == 0;
       }
+      @Override
       public String description() {
         return "Expected 2 cqEvents and 0 cqErrors, but found " + cqEvents
             + " cqEvents and " + cqErrors + " cqErrors";
@@ -181,11 +183,13 @@ public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
 
   public static void verifyCqListeners(final Integer events) throws Exception {
     WaitCriterion wc = new WaitCriterion() {
+      @Override
       public String description() {
         return "Expected " + events + " listener invocations but found "
             + (cqEvents + cqErrors);
       }
 
+      @Override
       public boolean done() {
         System.out.println("verifyCqListeners: expected total="+events+"; cqEvents="+cqEvents+"; cqErrors="+cqErrors);
         return (cqEvents + cqErrors) == events;
@@ -242,9 +246,6 @@ public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
     assertNotNull(ds);
     cache = CacheFactory.create(ds);
     assertNotNull(cache);
-//    Properties props = new Properties();
-//    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "10333");
-//    cache = new CacheFactory(props).create();
     RegionFactory<Object, Object> rf = ((Cache)cache)
         .createRegionFactory(RegionShortcut.REPLICATE);
     rf.create(regionName);
@@ -257,8 +258,8 @@ public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCache(String host, Integer port, Boolean doRI)
       throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     DeltaPropagationWithCQDUnitTest instance = new DeltaPropagationWithCQDUnitTest();
     DistributedSystem ds = instance.getSystem(props);
     ds.disconnect();
@@ -271,28 +272,23 @@ public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
         true, 1, 2, null, 1000, 250, false, -2);
 
     factory.setScope(Scope.LOCAL);
-//    String poolName = "CQWithInterestDUnitTest_pool";
-//    cache = new ClientCacheFactory(new Properties()).create();
-//    ClientRegionFactory<Object, Object> rf = ((ClientCache)cache)
-//        .createClientRegionFactory(ClientRegionShortcut.CACHING_PROXY);
-//    PoolFactory pf = PoolManager.createFactory().addServer(host, port)
-//        .setSubscriptionEnabled(true);
-//    pool = pf.create(poolName);
-//    rf.setPoolName(poolName);
-//    rf.addCacheListener(new CacheListenerAdapter<Object, Object>() {
     factory.addCacheListener(new CacheListenerAdapter<Object, Object>() {
+      @Override
       public void afterCreate(EntryEvent<Object, Object> event) {
         totalEvents++;
       }
 
+      @Override
       public void afterUpdate(EntryEvent<Object, Object> event) {
         totalEvents++;
       }
 
+      @Override
       public void afterDestroy(EntryEvent<Object, Object> event) {
         totalEvents++;
       }
 
+      @Override
       public void afterInvalidate(EntryEvent<Object, Object> event) {
         totalEvents++;
       }
@@ -312,6 +308,7 @@ public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
     CqListenerAdapter[] cqListeners = new CqListenerAdapter[numOfListeners];
     for (int i = 0; i < numOfListeners; i++) {
       cqListeners[i] = new CqListenerAdapter() {
+        @Override
         public void onEvent(CqEvent event) {
           System.out.println("CqListener.onEvent invoked.  Event="+event);
           if (event.getDeltaValue() != null) {
@@ -332,6 +329,7 @@ public class DeltaPropagationWithCQDUnitTest extends JUnit4DistributedTestCase {
           System.out.println("cqEvents is now " + cqEvents);
         }
 
+        @Override
         public void onError(CqEvent event) {
           System.out.println("CqListener.onError invoked.  Event="+event);
           if (event.getDeltaValue() != null) {

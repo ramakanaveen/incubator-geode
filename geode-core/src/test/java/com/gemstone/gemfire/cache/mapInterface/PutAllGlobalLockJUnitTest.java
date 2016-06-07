@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache.mapInterface;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -45,15 +46,12 @@ public class PutAllGlobalLockJUnitTest { // TODO: reformat
     boolean testOK = false;
     Thread thread;
     
-    public PutAllGlobalLockJUnitTest() {
-    }
-    
     @Before
     public void setUp() throws Exception {
         try {
             Properties properties = new Properties();
-            properties.setProperty("mcast-port", "0");
-            properties.setProperty("locators", "");
+            properties.setProperty(MCAST_PORT, "0");
+            properties.setProperty(LOCATORS, "");
             DistributedSystem distributedSystem = DistributedSystem
                     .connect(properties);
             Cache cache = CacheFactory.create(distributedSystem);
@@ -63,8 +61,7 @@ public class PutAllGlobalLockJUnitTest { // TODO: reformat
             RegionAttributes regionAttributes = factory.create();
             testRegion = cache.createRegion("TestRegion", regionAttributes);
         } catch (Exception e) {
-            e.printStackTrace();
-            fail("test failed to create a distributed system/cache");
+            throw new AssertionError("test failed to create a distributed system/cache", e);
         }
     }
     
@@ -80,7 +77,7 @@ public class PutAllGlobalLockJUnitTest { // TODO: reformat
             ThreadUtils.join(this.thread, 30 * 1000);
             assertTrue(this.testOK);
         } catch (Exception e) {
-            fail("Test has failed due to "+e);
+            throw new AssertionError("Test has failed due to ", e);
         }      
     }
        

@@ -50,7 +50,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * that has a scope of {@link Scope#DISTRIBUTED_NO_ACK distributed no
  * ACK}.
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 @Category(DistributedTest.class)
 public class DistributedNoAckRegionDUnitTest extends MultiVMRegionTestCase {

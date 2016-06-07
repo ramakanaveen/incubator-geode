@@ -16,13 +16,12 @@
  */
 package com.gemstone.gemfire.internal.offheap;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-
+import com.gemstone.gemfire.cache.CacheClosedException;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import com.gemstone.gemfire.internal.DSCODE;
+import com.gemstone.gemfire.internal.cache.EntryEventImpl;
+import com.gemstone.gemfire.internal.offheap.MemoryBlock.State;
+import com.gemstone.gemfire.test.junit.categories.UnitTest;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.After;
 import org.junit.Before;
@@ -33,11 +32,12 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 
-import com.gemstone.gemfire.cache.CacheClosedException;
-import com.gemstone.gemfire.internal.DSCODE;
-import com.gemstone.gemfire.internal.cache.EntryEventImpl;
-import com.gemstone.gemfire.internal.offheap.MemoryBlock.State;
-import com.gemstone.gemfire.test.junit.categories.UnitTest;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.ByteBuffer;
+
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
 
 @Category(UnitTest.class)
 public class MemoryBlockNodeJUnitTest {
@@ -52,7 +52,8 @@ public class MemoryBlockNodeJUnitTest {
   private StoredObject storedObject = null;
 
   @Rule
-  public final ProvideSystemProperty myPropertyHasMyValue = new ProvideSystemProperty("gemfire.OFF_HEAP_DO_EXPENSIVE_VALIDATION", "true");
+  public final ProvideSystemProperty myPropertyHasMyValue = new ProvideSystemProperty(DistributionConfig.GEMFIRE_PREFIX + "OFF_HEAP_DO_EXPENSIVE_VALIDATION",
+      "true");
 
   @Rule
   public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
@@ -336,11 +337,12 @@ public class MemoryBlockNodeJUnitTest {
   public void getDataValueCatchesCacheClosedException() {
     Object obj = getValue();
     storedObject = createValueAsSerializedStoredObject(obj);
-    StoredObject spyStoredObject = spy(storedObject);
-    MemoryBlock mb = new MemoryBlockNode(ma, (MemoryBlock) spyStoredObject);
-    when(((OffHeapStoredObject)spyStoredObject).getRawBytes()).thenCallRealMethod().thenThrow(new CacheClosedException("Unit test forced exception"));
+    OffHeapStoredObject spyStoredObject = spy((OffHeapStoredObject) storedObject);
+    doReturn("java.lang.Long").when(spyStoredObject).getDataType();
+    doThrow(new CacheClosedException("Unit test forced exception")).when(spyStoredObject).getRawBytes();
     ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     System.setErr(new PrintStream(errContent));
+    MemoryBlock mb = new MemoryBlockNode(ma, spyStoredObject);
     softly.assertThat(mb.getDataValue()).isEqualTo("CacheClosedException:Unit test forced exception");
   }
   
@@ -349,11 +351,12 @@ public class MemoryBlockNodeJUnitTest {
   public void getDataValueCatchesClassNotFoundException() throws Exception {
     Object obj = getValue();
     storedObject = createValueAsSerializedStoredObject(obj);
-    StoredObject spyStoredObject = spy(storedObject);
-    MemoryBlock mb = new MemoryBlockNode(ma, (MemoryBlock) spyStoredObject);
-    when(((OffHeapStoredObject)spyStoredObject).getRawBytes()).thenCallRealMethod().thenThrow(ClassNotFoundException.class);
+    OffHeapStoredObject spyStoredObject = spy((OffHeapStoredObject)storedObject);
+    doReturn("java.lang.Long").when(spyStoredObject).getDataType();
+    doThrow(ClassNotFoundException.class).when(spyStoredObject).getRawBytes();
     ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     System.setErr(new PrintStream(errContent));
+    MemoryBlock mb = new MemoryBlockNode(ma, (MemoryBlock) spyStoredObject);
     softly.assertThat(mb.getDataValue()).isEqualTo("ClassNotFoundException:null");
   }
   

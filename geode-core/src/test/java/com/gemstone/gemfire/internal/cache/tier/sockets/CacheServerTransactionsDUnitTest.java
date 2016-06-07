@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -57,10 +58,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase {
 
-  /** constructor */
-  public CacheServerTransactionsDUnitTest() {
-    super();
-  }
+  private static final int PAUSE = 5 * 1000;
 
   private static Cache cache = null;
 
@@ -96,8 +94,6 @@ public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase 
 
   private static VM client2 = null;
 
-//  private static RegionAttributes attrs = null;
-
   protected static boolean destroyed = false;
   
   protected static boolean invalidated = false;
@@ -111,12 +107,9 @@ public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase 
     client2 = host.getVM(3);
   }
 
-  private static final int PAUSE = 5 * 1000;
-
   /**
    * Test for update propagation to the clients when there is one server and two
    * clients connected to the server.
-   * 
    */
   @Test
   public void testOneServerToClientTransactionsPropagation()
@@ -144,12 +137,9 @@ public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase 
     client2.invoke(() -> CacheServerTransactionsDUnitTest.verifyUpdates());
   }
 
-  
-
   /**
    * Test for update propagation to the clients when there are  2 servers and two
    * clients connected to both the servers.
-   * 
    */
   @Test
   public void testServerToClientTransactionsPropagation()
@@ -184,7 +174,6 @@ public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase 
   /**
    * Test for update propagation to the clients when there are  2 servers and two
    * clients connected to separate server.
-   * 
    */
   @Test
   public void testServerToClientTransactionsPropagationWithOneClientConnectedToOneServer()
@@ -272,7 +261,6 @@ public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase 
   /**
    * Test for invalidate propagation to the clients when there are  2 servers and two
    * clients connected to separate servers.
-   * 
    */
   @Test
   public void testInvalidatesServerToClientTransactionsPropagationWithOneConnection()
@@ -302,7 +290,6 @@ public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase 
   /**
    * Test for destroy propagation to the clients when there is one server and two
    * clients connected to the server.
-   * 
    */
   @Test
   public void testDestroysOneServerToClientTransactionsPropagation()
@@ -661,8 +648,8 @@ public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase 
   public static void createClientCache(String host, Integer port) throws Exception
   {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new CacheServerTransactionsDUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(host, port.intValue())
@@ -696,8 +683,8 @@ public class CacheServerTransactionsDUnitTest extends JUnit4DistributedTestCase 
       throws Exception
   {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new CacheServerTransactionsDUnitTest().createCache(props);
     PoolImpl p = (PoolImpl)PoolManager.createFactory()
       .addServer(host, port1.intValue())

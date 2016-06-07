@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -72,8 +73,8 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * Class <code>DurableClientTestCase</code> tests durable client
  * functionality.
  *
- * @since 5.2
- */ 
+ * @since GemFire 5.2
+ */
 @Category(DistributedTest.class)
 public class DurableClientTestCase extends JUnit4DistributedTestCase {
 
@@ -173,7 +174,7 @@ public class DurableClientTestCase extends JUnit4DistributedTestCase {
   @Test
   public void testSimpleDurableClient2() {
     final Properties jp = new Properties();
-    jp.setProperty("gemfire.SPECIAL_DURABLE", "true");
+    jp.setProperty(DistributionConfig.GEMFIRE_PREFIX + "SPECIAL_DURABLE", "true");
 
     try {
       // Start a server
@@ -1590,8 +1591,8 @@ public class DurableClientTestCase extends JUnit4DistributedTestCase {
   
   protected Properties getClientDistributedSystemPropertiesNonDurable(String durableClientId) {
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
     return properties;
   }
   
@@ -1599,10 +1600,10 @@ public class DurableClientTestCase extends JUnit4DistributedTestCase {
   protected Properties getClientDistributedSystemProperties(
       String durableClientId, int durableClientTimeout) {
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    properties.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    properties.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME, durableClientId);
-    properties.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, String.valueOf(durableClientTimeout));
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
+    properties.setProperty(DURABLE_CLIENT_ID, durableClientId);
+    properties.setProperty(DURABLE_CLIENT_TIMEOUT, String.valueOf(durableClientTimeout));
     return properties;
   }
   

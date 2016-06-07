@@ -45,7 +45,7 @@ import com.gemstone.gemfire.test.dunit.WaitCriterion;
  * tests.
  *
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 @Category(DistributedTest.class)
 public class RegionExpirationDUnitTest extends JUnit4CacheTestCase {

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -57,7 +58,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Test to verify correct propagation of operations eventID's for put all
  *
- * @since 5.1
+ * @since GemFire 5.1
  */
 @Category(DistributedTest.class)
 public class PutAllDUnitTest extends JUnit4DistributedTestCase {
@@ -181,8 +182,8 @@ public class PutAllDUnitTest extends JUnit4DistributedTestCase {
   {
     int PORT1 = port1.intValue();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new PutAllDUnitTest().createCache(props);
     props.setProperty("retryAttempts", "2");
     props.setProperty("endpoints", "ep1="+host+":" + PORT1);
@@ -212,8 +213,8 @@ public class PutAllDUnitTest extends JUnit4DistributedTestCase {
   {
     int PORT1 = port1.intValue();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new PutAllDUnitTest().createCache(props);
     props.setProperty("retryAttempts", "2");
     props.setProperty("endpoints", "ep1="+host+":" + PORT1);

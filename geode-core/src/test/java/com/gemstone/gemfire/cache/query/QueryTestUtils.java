@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.cache.query;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -1056,7 +1058,7 @@ public class QueryTestUtils implements Serializable {
       cache = new CacheFactory(prop).create();
     }
     else{
-      cache = new CacheFactory().set("mcast-port", "0").create();
+      cache = new CacheFactory().set(MCAST_PORT, "0").create();
     }
   }
   

@@ -16,19 +16,15 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.SystemFailure;
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -36,7 +32,6 @@ import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedLockService;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.Config;
@@ -58,27 +53,21 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This class tests the functionality of the {@linkplain com.gemstone.gemfire.internal.admin internal
  * admin} API.
  */
 @Category(DistributedTest.class)
-public class ConsoleDistributionManagerDUnitTest 
-  extends JUnit4CacheTestCase implements AlertListener {
+public class ConsoleDistributionManagerDUnitTest extends JUnit4CacheTestCase implements AlertListener {
 
   protected GfManagerAgent agent = null;
   private static boolean firstTime = true;
   
-  public ConsoleDistributionManagerDUnitTest() {
-    super();
-  }
-
-//  private volatile Alert lastAlert = null;
-
   public void alert(Alert alert) {
     LogWriterUtils.getLogWriter().info("DEBUG: alert=" + alert);
-//    this.lastAlert = alert;
   }
 
   @Override
@@ -227,7 +216,7 @@ public class ConsoleDistributionManagerDUnitTest
       String[] attNames = conf.getAttributeNames();
       boolean foundIt = false;      
       for (int j=0; j<attNames.length; j++) {
-        if (attNames[j].equals(DistributionConfig.STATISTIC_SAMPLING_ENABLED_NAME)) {
+        if (attNames[j].equals(STATISTIC_SAMPLING_ENABLED)) {
           foundIt = true;
           assertEquals(conf.getAttribute(attNames[j]), "true");
           break;

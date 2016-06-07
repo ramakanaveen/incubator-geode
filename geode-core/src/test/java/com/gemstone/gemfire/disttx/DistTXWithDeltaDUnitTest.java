@@ -16,19 +16,14 @@
  */
 package com.gemstone.gemfire.disttx;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import java.util.Properties;
 
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.internal.cache.TransactionsWithDeltaDUnitTest;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class DistTXWithDeltaDUnitTest extends TransactionsWithDeltaDUnitTest {
@@ -40,8 +35,7 @@ public class DistTXWithDeltaDUnitTest extends TransactionsWithDeltaDUnitTest {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty(DistributionConfig.DISTRIBUTED_TRANSACTIONS_NAME, "true");
-    // props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
+    props.setProperty(DISTRIBUTED_TRANSACTIONS, "true");
     return props;
   }
 

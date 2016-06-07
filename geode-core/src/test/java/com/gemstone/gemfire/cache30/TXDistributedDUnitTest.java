@@ -22,12 +22,13 @@
  * <code>MultiVMRegionTestCase</code>.
  * 
  *
- * @since 4.0
+ * @since GemFire 4.0
  * @see MultiVMRegionTestCase
  *
  */
 package com.gemstone.gemfire.cache30;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -527,7 +528,7 @@ public class TXDistributedDUnitTest extends JUnit4CacheTestCase {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties p = super.getDistributedSystemProperties();
-    p.put("log-level", LogWriterUtils.getDUnitLogLevel());
+    p.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
     return p;
   }
 
@@ -535,8 +536,6 @@ public class TXDistributedDUnitTest extends JUnit4CacheTestCase {
   @Test
   public void testHighAvailabilityFeatures() throws Exception {
     IgnoredException.addIgnoredException("DistributedSystemDisconnectedException");
-//    final CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
-//    final TXManagerImpl txMgrImpl = (TXManagerImpl) txMgr;
     final String rgnName = getUniqueName();
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -1103,7 +1102,6 @@ public class TXDistributedDUnitTest extends JUnit4CacheTestCase {
    */
   @Test
   public void testLockBatchParticipantsUpdate() throws Exception {
-//    final CacheTransactionManager txMgr = this.getCache().getCacheTransactionManager();
     final String rgnName = getUniqueName();
     Region rgn = getCache().createRegion(rgnName, getRegionAttributes());
     rgn.create("key", null);

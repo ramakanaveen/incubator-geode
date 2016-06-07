@@ -16,15 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +26,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -58,16 +55,14 @@ import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
- * 
  * This class tests bucket Creation and distribution for the multiple Partition
  * regions.
  */
 @Category(DistributedTest.class)
-public class PartitionedRegionBucketCreationDistributionDUnitTest extends
-    PartitionedRegionDUnitTestCase
-{
+public class PartitionedRegionBucketCreationDistributionDUnitTest extends PartitionedRegionDUnitTestCase {
 
   /** Prefix is used in name of Partition Region */
   protected static String prPrefix = null;
@@ -86,11 +81,6 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
 
   /** to store references of 4 vms */
   VM vm[] = new VM[4];
-
-  /** constructor */
-  public PartitionedRegionBucketCreationDistributionDUnitTest() {
-    super();
-  }
 
   /**
    * This test performs following operations <br>
@@ -520,7 +510,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
   private final Cache createLonerCacheWithEnforceUniqueHost() {
     Cache myCache = null;
     try {
-      System.setProperty("gemfire.DISABLE_DISCONNECT_DS_ON_CACHE_CLOSE", "true");
+      System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "DISABLE_DISCONNECT_DS_ON_CACHE_CLOSE", "true");
       myCache = CacheFactory.create(getLonerSystemWithEnforceUniqueHost());
     } catch (CacheExistsException e) {
       Assert.fail("the cache already exists", e);
@@ -531,7 +521,7 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
     } catch (Exception ex) {
       Assert.fail("Checked exception while initializing cache??", ex);
     } finally {
-      System.clearProperty("gemfire.DISABLE_DISCONNECT_DS_ON_CACHE_CLOSE");
+      System.clearProperty(DistributionConfig.GEMFIRE_PREFIX + "DISABLE_DISCONNECT_DS_ON_CACHE_CLOSE");
     }
     return myCache;
   }
@@ -547,10 +537,10 @@ public class PartitionedRegionBucketCreationDistributionDUnitTest extends
    */
   private final InternalDistributedSystem getLonerSystemWithEnforceUniqueHost() {
     Properties props = getDistributedSystemProperties();
-    props.put(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.put(DistributionConfig.LOCATORS_NAME, "");
-    props.put(DistributionConfig.ENFORCE_UNIQUE_HOST_NAME, "true");
-    props.put(DistributionConfig.REDUNDANCY_ZONE_NAME, "zone1");
+    props.put(MCAST_PORT, "0");
+    props.put(LOCATORS, "");
+    props.put(ENFORCE_UNIQUE_HOST, "true");
+    props.put(REDUNDANCY_ZONE, "zone1");
     return getSystem(props);
   }
 

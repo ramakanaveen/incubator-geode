@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -45,7 +46,7 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
  * 
  * Data on disk should reflect data in memory. A put while clear is going on should
  * wait for clear and if it is successfully recorded in memory than it should
- * be recored on disk. Else if not successfully recorded in memory than should not be
+ * be recorded on disk. Else if not successfully recorded in memory than should not be
  * recorded on disk
  *
  * TODO: use DiskRegionTestingBase and DiskRegionHelperFactory
@@ -54,21 +55,16 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 public class DiskRegionClearJUnitTest {
 
   private static Region testRegion = null;
-  private static Object returnObject = null;
-  private static boolean done = false;
   private static volatile int counter = 0;
   private static volatile boolean cleared = false;
-  private static volatile long entries = 0;
   private static Cache cache = null;
   private static DistributedSystem distributedSystem = null;
-  
-  private static String regionName = "TestRegion";
 
   @Before
   public void setUp() throws Exception {
     Properties properties = new Properties();
-    properties.setProperty("mcast-port", "0");
-    properties.setProperty("locators", "");
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
     distributedSystem = DistributedSystem
     .connect(properties);
     cache = CacheFactory.create(distributedSystem);
@@ -117,8 +113,7 @@ public class DiskRegionClearJUnitTest {
       }
     }
   }
-  
-  
+
   /**
    * Make sure the disk region stats are set to zero when the region is cleared.
    */
@@ -192,8 +187,8 @@ public class DiskRegionClearJUnitTest {
     cache.close();
     distributedSystem.disconnect();
     Properties properties = new Properties();
-    properties.setProperty("mcast-port", "0");
-    properties.setProperty("locators", "");
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
     distributedSystem = DistributedSystem.connect(properties);
     cache = CacheFactory.create(distributedSystem);
     AttributesFactory factory = new AttributesFactory();
@@ -208,7 +203,6 @@ public class DiskRegionClearJUnitTest {
   
   @Test
   public void testRecreateRegionAndCachePositive() {
-    int size = 0;
     LocalRegion.ISSUE_CALLBACKS_TO_CACHE_OBSERVER = false;
     for(long i=0;i<1000; i++) {
       testRegion.put(new Long(i), new Long(i));
@@ -221,8 +215,8 @@ public class DiskRegionClearJUnitTest {
     cache.close();
     distributedSystem.disconnect();
     Properties properties = new Properties();
-    properties.setProperty("mcast-port", "0");
-    properties.setProperty("locators", "");
+    properties.setProperty(MCAST_PORT, "0");
+    properties.setProperty(LOCATORS, "");
     distributedSystem = DistributedSystem.connect(properties);
     cache = CacheFactory.create(distributedSystem);
     AttributesFactory factory = new AttributesFactory();
@@ -234,7 +228,7 @@ public class DiskRegionClearJUnitTest {
   }
 
   private static class Thread1 implements Runnable {
-
+    @Override
     public void run() {
       for(long i=0 ; i< 100 ; i++) {     
       testRegion.put(new Long(i), new Long(i));
@@ -244,18 +238,20 @@ public class DiskRegionClearJUnitTest {
   }
 
   private static class Thread2 implements Runnable {
-
+    @Override
     public void run() {
       testRegion.clear();
     }
   }
 
   private static class CacheObserverListener extends CacheObserverAdapter {
-    
+
+    @Override
     public void afterRegionClear(RegionEvent event) {
       cleared = true;
     }
 
+    @Override
     public void beforeDiskClear() {
       for(int i=0; i<3; i++) {
       Thread thread = new Thread(new Thread1());

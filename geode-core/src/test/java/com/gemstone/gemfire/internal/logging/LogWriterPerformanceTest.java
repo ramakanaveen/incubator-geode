@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.logging;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -24,7 +25,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.LogWriter;
@@ -42,10 +42,10 @@ public class LogWriterPerformanceTest extends LoggingPerformanceTestCase {
 
   protected Properties createGemFireProperties() {
     final Properties props = new Properties();
-    this.logFile = new File(this.configDirectory, "gemfire.log");
+    this.logFile = new File(this.configDirectory, DistributionConfig.GEMFIRE_PREFIX + "log");
     final String logFilePath = IOUtils.tryGetCanonicalPathElseGetAbsolutePath(logFile);
-    props.setProperty(DistributionConfig.LOG_FILE_NAME, logFilePath);
-    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "info");
+    props.setProperty(LOG_FILE, logFilePath);
+    props.setProperty(LOG_LEVEL, "info");
     return props;
   }
   

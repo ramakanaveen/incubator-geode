@@ -275,7 +275,7 @@ public class CacheAdvisorDUnitTest extends JUnit4CacheTestCase {
   }
   
   /** coverage for bug 34255
-   * @since 5.0
+   * @since GemFire 5.0
    */
   @Test
   public void testRegionClose() throws Exception {
@@ -283,7 +283,7 @@ public class CacheAdvisorDUnitTest extends JUnit4CacheTestCase {
   }
 
   /** coverage for bug 34255
-   * @since 5.0
+   * @since GemFire 5.0
    */
   @Test
   public void testRegionLocalDestroy() throws Exception {

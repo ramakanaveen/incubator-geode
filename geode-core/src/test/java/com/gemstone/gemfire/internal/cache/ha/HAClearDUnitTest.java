@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -83,10 +84,6 @@ public class HAClearDUnitTest extends JUnit4DistributedTestCase {
 
   static boolean gotDestroyRegionCallback = false;
 
-  public HAClearDUnitTest() {
-    super();
-  }
-
   @Override
   public final void postSetUp() throws Exception {
     final Host host = Host.getHost(0);
@@ -113,7 +110,8 @@ public class HAClearDUnitTest extends JUnit4DistributedTestCase {
     closeCache();
   }
 
-  /* The test perorms following operations
+  /**
+   * The test perorms following operations
    * 1. Create 2 servers and 3 client
    * 2. Perform put operations for knows set of keys directy from the client1.
    * 3. Perform clear operation from client1
@@ -185,7 +183,8 @@ public class HAClearDUnitTest extends JUnit4DistributedTestCase {
     server2.invoke(checkSizeRegion(regionSize));
   }
 
-  /* The test perorms following operations
+  /**
+   * The test performs following operations
    * 1. Create 2 servers and 3 clients
    * 2. Perform put operations for known set of keys directy from the server1.
    * 3. Perform clear operation from server1
@@ -275,7 +274,8 @@ public class HAClearDUnitTest extends JUnit4DistributedTestCase {
   }
 
 
-  /* The test perorms following operations
+  /**
+   * The test performs following operations
    * 1. Create 2 servers and 3 client
    * 2. Perform put operations for knows set of keys directy from the client1.
    * 3. Perform destroyRegion operation from client1
@@ -350,7 +350,8 @@ public class HAClearDUnitTest extends JUnit4DistributedTestCase {
   }
 
 
-  /* The test perorms following operations
+  /**
+   * The test performs following operations
    * 1. Create 2 servers and 3 clients
    * 2. Perform put operations for known set of keys directy from the server1.
    * 3. Perform destroyRegion operation from server1
@@ -605,8 +606,8 @@ public class HAClearDUnitTest extends JUnit4DistributedTestCase {
     boolean isListenerAttached = listenerAttached.booleanValue();
     boolean isRegisterInterest = registerInterest.booleanValue();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAClearDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);

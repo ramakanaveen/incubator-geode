@@ -27,12 +27,12 @@ import java.util.Set;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 
 import com.gemstone.gemfire.InternalGemFireError;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.execute.RegionFunctionContext;
 import com.gemstone.gemfire.cache.lucene.internal.directory.RegionDirectory;
+import com.gemstone.gemfire.cache.lucene.internal.filesystem.FileSystemStats;
 import com.gemstone.gemfire.cache.lucene.internal.repository.IndexRepository;
 import com.gemstone.gemfire.cache.lucene.internal.repository.IndexRepositoryImpl;
 import com.gemstone.gemfire.cache.lucene.internal.repository.RepositoryManager;
@@ -51,7 +51,8 @@ import com.gemstone.gemfire.internal.util.concurrent.CopyOnWriteHashMap;
  * index repository when the bucket returns to this node.
  */
 public class PartitionedRepositoryManager implements RepositoryManager {
-  /** map of the parent bucket region to the index repository 
+
+  /** map of the parent bucket region to the index repository
    * 
    * This is based on the BucketRegion in case a bucket is rebalanced, we don't want to 
    * return a stale index repository. If a bucket moves off of this node and
@@ -68,7 +69,9 @@ public class PartitionedRepositoryManager implements RepositoryManager {
   private final PartitionedRegion chunkRegion;
   private final LuceneSerializer serializer;
   private final Analyzer analyzer;
-  
+  private final LuceneIndexStats indexStats;
+  private final FileSystemStats fileSystemStats;
+
   /**
    * 
    * @param userRegion The user partition region
@@ -76,15 +79,20 @@ public class PartitionedRepositoryManager implements RepositoryManager {
    * @param chunkRegion The partition region users for chunk metadata.
    * @param serializer The serializer that should be used for converting objects to lucene docs.
    */
-  public PartitionedRepositoryManager(PartitionedRegion userRegion, PartitionedRegion fileRegion,
-      PartitionedRegion chunkRegion,
-      LuceneSerializer serializer,
-      Analyzer analyzer) {
+  public PartitionedRepositoryManager(PartitionedRegion userRegion,
+                                      PartitionedRegion fileRegion,
+                                      PartitionedRegion chunkRegion,
+                                      LuceneSerializer serializer,
+                                      Analyzer analyzer,
+                                      LuceneIndexStats indexStats,
+                                      FileSystemStats fileSystemStats) {
     this.userRegion = userRegion;
     this.fileRegion = fileRegion;
     this.chunkRegion = chunkRegion;
     this.serializer = serializer;
     this.analyzer = analyzer;
+    this.indexStats = indexStats;
+    this.fileSystemStats = fileSystemStats;
   }
 
   @Override
@@ -131,10 +139,10 @@ public class PartitionedRepositoryManager implements RepositoryManager {
       try {
         BucketRegion fileBucket = getMatchingBucket(fileRegion, bucketId);
         BucketRegion chunkBucket = getMatchingBucket(chunkRegion, bucketId);
-        RegionDirectory dir = new RegionDirectory(fileBucket, chunkBucket);
+        RegionDirectory dir = new RegionDirectory(fileBucket, chunkBucket, fileSystemStats);
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         IndexWriter writer = new IndexWriter(dir, config);
-        repo = new IndexRepositoryImpl(fileBucket, writer, serializer);
+        repo = new IndexRepositoryImpl(fileBucket, writer, serializer, indexStats);
         IndexRepository oldRepo = indexRepositories.putIfAbsent(bucketId, repo);
         if(oldRepo != null) {
           repo = oldRepo;

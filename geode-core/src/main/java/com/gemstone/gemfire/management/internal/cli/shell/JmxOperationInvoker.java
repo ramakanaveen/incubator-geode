@@ -16,38 +16,6 @@
  */
 package com.gemstone.gemfire.management.internal.cli.shell;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicBoolean;
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.JMX;
-import javax.management.MBeanException;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.Notification;
-import javax.management.NotificationListener;
-import javax.management.ObjectName;
-import javax.management.QueryExp;
-import javax.management.ReflectionException;
-import javax.management.remote.JMXConnectionNotification;
-import javax.management.remote.JMXConnector;
-import javax.management.remote.JMXConnectorFactory;
-import javax.management.remote.JMXServiceURL;
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-
 import com.gemstone.gemfire.internal.lang.StringUtils;
 import com.gemstone.gemfire.internal.util.ArrayUtils;
 import com.gemstone.gemfire.internal.util.IOUtils;
@@ -61,11 +29,29 @@ import com.gemstone.gemfire.management.internal.cli.LogWrapper;
 import com.gemstone.gemfire.management.internal.cli.commands.ShellCommands;
 import com.gemstone.gemfire.management.internal.cli.i18n.CliStrings;
 
+import javax.management.*;
+import javax.management.remote.JMXConnectionNotification;
+import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 /**
  * OperationInvoker JMX Implementation
  *
  *
- * @since 7.0
+ * @since GemFire 7.0
  */
 public class JmxOperationInvoker implements OperationInvoker {
 
@@ -124,7 +110,7 @@ public class JmxOperationInvoker implements OperationInvoker {
         Entry<String, String> entry = it.next();
         String key = entry.getKey();
         String value = entry.getValue();
-        if (key.startsWith("javax.") || key.startsWith("cluster-ssl") || key.startsWith("jmx-manager-ssl") ) {
+        if (key.startsWith("javax.") || key.startsWith("cluster-ssl") || key.startsWith(JMX_MANAGER_SSL)) {
           key =  checkforSystemPropertyPrefix(entry.getKey());
           if((key.equals(Gfsh.SSL_ENABLED_CIPHERS) || key.equals(Gfsh.SSL_ENABLED_PROTOCOLS)) && "any".equals(value)){
             continue;
@@ -239,7 +225,7 @@ public class JmxOperationInvoker implements OperationInvoker {
     String returnKey = key;
     if (key.startsWith("javax."))
       returnKey = key;
-    if (key.startsWith("cluster-ssl") || key.startsWith("jmx-manager-ssl")) {
+    if (key.startsWith("cluster-ssl") || key.startsWith(JMX_MANAGER_SSL)) {
       if (key.endsWith("keystore")) {
         returnKey = Gfsh.SSL_KEYSTORE;
       } else if (key.endsWith("keystore-password")) {
@@ -444,7 +430,7 @@ public class JmxOperationInvoker implements OperationInvoker {
  * A Connection Notification Listener. Notifies Gfsh when a connection gets
  * terminated abruptly.
  *
- * @since 7.0
+ * @since GemFire 7.0
  */
 class JMXConnectionListener implements NotificationListener {
   public static final String CHECK_PERIOD_PROP = "jmx.remote.x.client.connection.check.period";

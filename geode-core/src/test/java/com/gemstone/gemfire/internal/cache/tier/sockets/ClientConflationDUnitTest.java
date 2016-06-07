@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -58,7 +59,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * This test verifies the per-client queue conflation override functionality
  * Taken from the existing ConflationDUnitTest.java and modified.
  *
- * @since 5.7
+ * @since GemFire 5.7
  */
 @Category(DistributedTest.class)
 public class ClientConflationDUnitTest extends JUnit4DistributedTestCase {
@@ -72,11 +73,6 @@ public class ClientConflationDUnitTest extends JUnit4DistributedTestCase {
   private static int poolNameCounter = 0;
   private static final String REGION_NAME1 = "ClientConflationDUnitTest_region1" ;
   private static final String REGION_NAME2 = "ClientConflationDUnitTest_region2" ;
-
-  /** constructor */
-  public ClientConflationDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -162,10 +158,10 @@ public class ClientConflationDUnitTest extends JUnit4DistributedTestCase {
    */
   private static Properties createProperties1(String conflation){
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME, "false");
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    props.setProperty(DistributionConfig.CLIENT_CONFLATION_PROP_NAME, conflation);
+    props.setProperty(DELTA_PROPAGATION, "false");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
+    props.setProperty(CONFLATE_EVENTS, conflation);
     return props;
   }
 
@@ -412,7 +408,7 @@ public class ClientConflationDUnitTest extends JUnit4DistributedTestCase {
   public static Integer createServerCache() throws Exception
   {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME, "false");
+    props.setProperty(DELTA_PROPAGATION, "false");
     ClientConflationDUnitTest test = new ClientConflationDUnitTest();
     cacheServer = test.createCache(props);
     AttributesFactory factory = new AttributesFactory();

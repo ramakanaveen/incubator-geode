@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -92,7 +93,7 @@ public class HARQAddOperationJUnitTest {
    * Creates the cache instance for the test
    */
   private Cache createCache() throws CacheException {
-    return new CacheFactory().set("mcast-port", "0").create();
+    return new CacheFactory().set(MCAST_PORT, "0").create();
   }
 
   /**

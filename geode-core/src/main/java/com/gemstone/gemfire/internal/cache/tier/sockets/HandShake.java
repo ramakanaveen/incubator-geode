@@ -17,50 +17,6 @@
 
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataOutput;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.math.BigInteger;
-import java.net.Socket;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.Principal;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.Signature;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyAgreement;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.DHParameterSpec;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import javax.net.ssl.SSLSocket;
-
-import org.apache.logging.log4j.Logger;
-
 import com.gemstone.gemfire.CancelCriterion;
 import com.gemstone.gemfire.DataSerializer;
 import com.gemstone.gemfire.InternalGemFireException;
@@ -70,20 +26,9 @@ import com.gemstone.gemfire.cache.client.ServerRefusedConnectionException;
 import com.gemstone.gemfire.cache.client.internal.Connection;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DM;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
-import com.gemstone.gemfire.distributed.internal.LonerDistributionManager;
-import com.gemstone.gemfire.distributed.internal.ServerLocation;
+import com.gemstone.gemfire.distributed.internal.*;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
-import com.gemstone.gemfire.internal.ClassLoadUtil;
-import com.gemstone.gemfire.internal.HeapDataOutputStream;
-import com.gemstone.gemfire.internal.InternalDataSerializer;
-import com.gemstone.gemfire.internal.InternalInstantiator;
-import com.gemstone.gemfire.internal.Version;
-import com.gemstone.gemfire.internal.VersionedDataInputStream;
-import com.gemstone.gemfire.internal.VersionedDataOutputStream;
-import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
+import com.gemstone.gemfire.internal.*;
 import com.gemstone.gemfire.internal.cache.tier.Acceptor;
 import com.gemstone.gemfire.internal.cache.tier.ClientHandShake;
 import com.gemstone.gemfire.internal.cache.tier.ConnectionProxy;
@@ -91,11 +36,27 @@ import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.internal.logging.InternalLogWriter;
 import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.pdx.internal.PeerTypeRegistration;
-import com.gemstone.gemfire.security.AuthInitialize;
-import com.gemstone.gemfire.security.AuthenticationFailedException;
-import com.gemstone.gemfire.security.AuthenticationRequiredException;
-import com.gemstone.gemfire.security.Authenticator;
-import com.gemstone.gemfire.security.GemFireSecurityException;
+import com.gemstone.gemfire.security.*;
+import org.apache.logging.log4j.Logger;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyAgreement;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.DHParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.net.ssl.SSLSocket;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.math.BigInteger;
+import java.net.Socket;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.*;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class HandShake implements ClientHandShake
 {
@@ -212,30 +173,30 @@ public class HandShake implements ClientHandShake
 
   public static final String PRIVATE_KEY_PASSWD_PROP = "security-server-kspasswd";
 
-  /** @since 5.7 */
+  /** @since GemFire 5.7 */
   public static final byte CONFLATION_DEFAULT = 0;
-  /** @since 5.7 */
+  /** @since GemFire 5.7 */
   public static final byte CONFLATION_ON = 1;
-  /** @since 5.7 */
+  /** @since GemFire 5.7 */
   public static final byte CONFLATION_OFF = 2;
-  /** @since 5.7 */
+  /** @since GemFire 5.7 */
   private byte clientConflation = CONFLATION_DEFAULT;
 
-  /** @since 6.0.3
+  /** @since GemFire 6.0.3
    *  List of per client property override bits.
    */
   private byte[] overrides = null;
   
   /**
    * Test hooks for per client conflation
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public static byte clientConflationForTesting = 0;
   public static boolean setClientConflationForTesting = false;
 
   /**
    * Test hook for client version support
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private static Version currentClientVersion = ConnectionProxy.VERSION;
   /**
@@ -279,7 +240,7 @@ public class HandShake implements ClientHandShake
           // Note: credentials should always be the last piece in handshake for
           // Diffie-Hellman key exchange to work
           String authenticator = this.system.getProperties().getProperty(
-              DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME);
+              SECURITY_CLIENT_AUTHENTICATOR);
           if (clientVersion.compareTo(Version.GFE_603) >= 0) {
             setOverrides(new byte[] { dis.readByte() });
           } else {
@@ -385,8 +346,7 @@ public class HandShake implements ClientHandShake
    private byte setClientConflation() {
      byte result = CONFLATION_DEFAULT;
      
-     String clientConflationValue = this.system.getProperties().getProperty(
-         DistributionConfig.CLIENT_CONFLATION_PROP_NAME);
+     String clientConflationValue = this.system.getProperties().getProperty(CONFLATE_EVENTS);
      if (DistributionConfig.CLIENT_CONFLATION_PROP_VALUE_ON
          .equalsIgnoreCase(clientConflationValue)) {
        result = CONFLATION_ON;
@@ -521,8 +481,7 @@ public class HandShake implements ClientHandShake
           writeCredentials(dos, dis, p_credentials, ports != null, member, hdos);
         }
       } else {
-        String authInitMethod = this.system.getProperties().getProperty(
-            DistributionConfig.SECURITY_CLIENT_AUTH_INIT_NAME);
+        String authInitMethod = this.system.getProperties().getProperty(SECURITY_CLIENT_AUTH_INIT);
         acceptanceCode = writeCredential(dos, dis, authInitMethod,
             ports != null, member, hdos);
       }
@@ -1293,8 +1252,7 @@ public class HandShake implements ClientHandShake
           REPLY_OK, this.clientReadTimeout, null, this.credentials, member,
           false);
       
-      String authInit = this.system.getProperties().getProperty(
-          DistributionConfig.SECURITY_CLIENT_AUTH_INIT_NAME);
+      String authInit = this.system.getProperties().getProperty(SECURITY_CLIENT_AUTH_INIT);
       if (communicationMode != Acceptor.GATEWAY_TO_GATEWAY
           && intermediateAcceptanceCode != REPLY_AUTH_NOT_REQUIRED
           && (authInit != null && authInit.length() != 0)) {
@@ -1634,8 +1592,7 @@ public class HandShake implements ClientHandShake
 
   private Properties getCredentials(DistributedMember member) {
 
-    String authInitMethod = this.system.getProperties().getProperty(
-        DistributionConfig.SECURITY_CLIENT_AUTH_INIT_NAME);
+    String authInitMethod = this.system.getProperties().getProperty(SECURITY_CLIENT_AUTH_INIT);
     return getCredentials(authInitMethod, this.system.getSecurityProperties(),
         member, false, (InternalLogWriter)this.system.getLogWriter(), 
         (InternalLogWriter)this.system.getSecurityLogWriter());
@@ -1827,7 +1784,7 @@ public class HandShake implements ClientHandShake
       AuthenticationFailedException {
 
     String methodName = this.system.getProperties().getProperty(
-        DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME);
+        SECURITY_CLIENT_AUTHENTICATOR);
     return verifyCredentials(methodName, this.credentials, this.system
         .getSecurityProperties(), (InternalLogWriter)this.system.getLogWriter(), (InternalLogWriter)this.system
         .getSecurityLogWriter(), this.id.getDistributedMember());
@@ -1857,7 +1814,7 @@ public class HandShake implements ClientHandShake
       return;
     }
     String authenticator = this.system.getProperties().getProperty(
-        DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME);
+        SECURITY_CLIENT_AUTHENTICATOR);
     Properties peerWanProps = readCredentials(dis, dos, authenticator,
         this.system);
     verifyCredentials(authenticator, peerWanProps, this.system

@@ -176,7 +176,7 @@ public abstract class DistributedCacheTestCase extends JUnit4DistributedTestCase
   /**
    * Return the distribution manager associate with the cache
    *
-   * @since 2.1
+   * @since GemFire 2.1
    */
   protected static DistributionManager getDistributionManager() {
     if (cache == null) {

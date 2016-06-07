@@ -16,36 +16,28 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.Properties;
 
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Performs eviction stat dunit tests for off-heap regions.
- * @since 9.0
+ *
+ * @since Geode 1.0
  */
 @Category(DistributedTest.class)
 public class OffHeapEvictionStatsDUnitTest extends EvictionStatsDUnitTest {
-
-  public OffHeapEvictionStatsDUnitTest() {
-    super();
-    // TODO Auto-generated constructor stub
-  }
 
   @Override
   public final void preTearDownAssertions() throws Exception {
@@ -64,12 +56,13 @@ public class OffHeapEvictionStatsDUnitTest extends EvictionStatsDUnitTest {
 
   @Override
   public Properties getDistributedSystemProperties() {
-    Properties properties = super.getDistributedSystemProperties();    
-    properties.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "100m");    
+    Properties properties = super.getDistributedSystemProperties();
+    properties.setProperty(OFF_HEAP_MEMORY_SIZE, "100m");
     
     return properties;
   }
 
+  @Override
   public void createCache() {
     try {
       Properties props = new Properties();

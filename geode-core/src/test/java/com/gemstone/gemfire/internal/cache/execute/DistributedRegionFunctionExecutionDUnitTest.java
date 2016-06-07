@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -49,7 +50,6 @@ import com.gemstone.gemfire.cache.execute.ResultCollector;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.DM;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.LonerDistributionManager;
 import com.gemstone.gemfire.internal.AvailablePort;
@@ -853,7 +853,7 @@ public class DistributedRegionFunctionExecutionDUnitTest extends JUnit4Distribut
     assertNotNull(ds);
     ds.disconnect();
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
+    props.setProperty(MCAST_PORT, "0");
     ds = (InternalDistributedSystem)DistributedSystem.connect(props);
     
     DM dm = ds.getDistributionManager();
@@ -941,25 +941,24 @@ public class DistributedRegionFunctionExecutionDUnitTest extends JUnit4Distribut
 
   public static void createCacheInVm_41367() {
     Properties props = new Properties();
-    props.put(DistributionConfig.NAME_NAME, "SecurityServer");
-    props.put("security-client-authenticator", DummyAuthenticator.class.getName() + ".create");
+    props.put(NAME, "SecurityServer");
+    props.put(SECURITY_CLIENT_AUTHENTICATOR, DummyAuthenticator.class.getName() + ".create");
     new DistributedRegionFunctionExecutionDUnitTest().createCache(props);
   }
 
   public static void createCacheInClientVm() {
     Properties props = new Properties();
-    props.put("mcast-port", "0");
-    props.put("locators", "");
-    new DistributedRegionFunctionExecutionDUnitTest()
-        .createCache(new Properties());
+    props.put(MCAST_PORT, "0");
+    props.put(LOCATORS, "");
+    new DistributedRegionFunctionExecutionDUnitTest().createCache(new Properties());
   }
 
   public static void createCacheInClientVm_41367() {
     Properties props = new Properties();
-    props.put("mcast-port", "0");
-    props.put("locators", "");
-    props.put(DistributionConfig.NAME_NAME, "SecurityClient");
-    props.put("security-client-auth-init", UserPasswordAuthInit.class.getName() + ".create");
+    props.put(MCAST_PORT, "0");
+    props.put(LOCATORS, "");
+    props.put(NAME, "SecurityClient");
+    props.put(SECURITY_CLIENT_AUTH_INIT, UserPasswordAuthInit.class.getName() + ".create");
     props.put("security-username", "reader1");
     props.put("security-password", "reader1");
     new DistributedRegionFunctionExecutionDUnitTest().createCache(props);

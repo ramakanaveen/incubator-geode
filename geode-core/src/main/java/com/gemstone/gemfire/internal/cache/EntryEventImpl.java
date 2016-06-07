@@ -17,28 +17,8 @@
 
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
-
-import org.apache.logging.log4j.Logger;
-
-import com.gemstone.gemfire.CopyHelper;
-import com.gemstone.gemfire.DataSerializer;
-import com.gemstone.gemfire.DeltaSerializationException;
-import com.gemstone.gemfire.GemFireIOException;
-import com.gemstone.gemfire.InvalidDeltaException;
-import com.gemstone.gemfire.SerializationException;
-import com.gemstone.gemfire.SystemFailure;
-import com.gemstone.gemfire.cache.EntryEvent;
-import com.gemstone.gemfire.cache.EntryNotFoundException;
-import com.gemstone.gemfire.cache.EntryOperation;
-import com.gemstone.gemfire.cache.Operation;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.SerializedCacheValue;
-import com.gemstone.gemfire.cache.TransactionId;
+import com.gemstone.gemfire.*;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.query.IndexMaintenanceException;
 import com.gemstone.gemfire.cache.query.QueryException;
 import com.gemstone.gemfire.cache.query.internal.IndexUpdater;
@@ -48,16 +28,10 @@ import com.gemstone.gemfire.cache.query.internal.index.IndexUtils;
 import com.gemstone.gemfire.cache.util.TimestampedEntryEvent;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.DistributionMessage;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
-import com.gemstone.gemfire.internal.Assert;
-import com.gemstone.gemfire.internal.ByteArrayDataInput;
-import com.gemstone.gemfire.internal.DSFIDFactory;
-import com.gemstone.gemfire.internal.DataSerializableFixedID;
-import com.gemstone.gemfire.internal.HeapDataOutputStream;
-import com.gemstone.gemfire.internal.InternalDataSerializer;
-import com.gemstone.gemfire.internal.Sendable;
-import com.gemstone.gemfire.internal.Version;
+import com.gemstone.gemfire.internal.*;
 import com.gemstone.gemfire.internal.cache.FilterRoutingInfo.FilterInfo;
 import com.gemstone.gemfire.internal.cache.delta.Delta;
 import com.gemstone.gemfire.internal.cache.lru.Sizeable;
@@ -73,21 +47,19 @@ import com.gemstone.gemfire.internal.lang.StringUtils;
 import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.internal.logging.log4j.LocalizedMessage;
 import com.gemstone.gemfire.internal.logging.log4j.LogMarker;
-import com.gemstone.gemfire.internal.offheap.OffHeapHelper;
-import com.gemstone.gemfire.internal.offheap.OffHeapRegionEntryHelper;
-import com.gemstone.gemfire.internal.offheap.ReferenceCountHelper;
-import com.gemstone.gemfire.internal.offheap.Releasable;
-import com.gemstone.gemfire.internal.offheap.StoredObject;
+import com.gemstone.gemfire.internal.offheap.*;
 import com.gemstone.gemfire.internal.offheap.annotations.Released;
 import com.gemstone.gemfire.internal.offheap.annotations.Retained;
 import com.gemstone.gemfire.internal.offheap.annotations.Unretained;
-
-import static com.gemstone.gemfire.internal.offheap.annotations.OffHeapIdentifier.ENTRY_EVENT_NEW_VALUE;
-import static com.gemstone.gemfire.internal.offheap.annotations.OffHeapIdentifier.ENTRY_EVENT_OLD_VALUE;
-
 import com.gemstone.gemfire.internal.util.ArrayUtils;
 import com.gemstone.gemfire.internal.util.BlobHelper;
 import com.gemstone.gemfire.pdx.internal.PeerTypeRegistration;
+import org.apache.logging.log4j.Logger;
+
+import java.io.*;
+
+import static com.gemstone.gemfire.internal.offheap.annotations.OffHeapIdentifier.ENTRY_EVENT_NEW_VALUE;
+import static com.gemstone.gemfire.internal.offheap.annotations.OffHeapIdentifier.ENTRY_EVENT_OLD_VALUE;
 
 /**
  * Implementation of an entry event
@@ -134,21 +106,21 @@ public class EntryEventImpl
   /**
    * This field will be null unless this event is used for a putAll operation.
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   protected transient DistributedPutAllOperation putAllOp;
 
   /**
    * This field will be null unless this event is used for a removeAll operation.
    *
-   * @since 8.1
+   * @since GemFire 8.1
    */
   protected transient DistributedRemoveAllOperation removeAllOp;
 
   /**
    * The member that originated this event
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   protected DistributedMember distributedMember;
 
@@ -164,7 +136,7 @@ public class EntryEventImpl
   /**
    * The originating membershipId of this event.
    *
-   * @since 5.1
+   * @since GemFire 5.1
    */
   protected ClientProxyMembershipID context = null;
   
@@ -443,7 +415,7 @@ public class EntryEventImpl
    * Creates a PutAllEvent given the distributed operation, the region, and the
    * entry data.
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   @Retained
   static EntryEventImpl createPutAllEvent(
@@ -1192,7 +1164,7 @@ public class EntryEventImpl
    * Returns the value of the EntryEventImpl field.
    * This is for internal use only. Customers should always call
    * {@link #getCallbackArgument}
-   * @since 5.5 
+   * @since GemFire 5.5
    */
   public Object getRawCallbackArgument() {
     return this.keyInfo.getCallbackArg();
@@ -1518,7 +1490,7 @@ public class EntryEventImpl
 
   /**
    * Forces this entry's new value to be in serialized form.
-   * @since 5.0.2
+   * @since GemFire 5.0.2
    */
   public void makeSerializedNewValue() {
     makeSerializedNewValue(false);
@@ -1632,7 +1604,7 @@ public class EntryEventImpl
    * If true (the default) then preserve old values in events.
    * If false then mark non-null values as being NOT_AVAILABLE.
    */
-  private static final boolean EVENT_OLD_VALUE = !Boolean.getBoolean("gemfire.disable-event-old-value");
+  private static final boolean EVENT_OLD_VALUE = !Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "disable-event-old-value");
 
   
   void putExistingEntry(final LocalRegion owner, RegionEntry entry) throws RegionClearedException {
@@ -1655,23 +1627,14 @@ public class EntryEventImpl
         if (requireOldValue ||
             EVENT_OLD_VALUE
             || this.region instanceof HARegion // fix for bug 37909
-            || GemFireCacheImpl.sqlfSystem()
             ) {
           @Retained Object ov;
           if (ReferenceCountHelper.trackReferenceCounts()) {
             ReferenceCountHelper.setReferenceCountOwner(new OldValueOwner());
-            if (GemFireCacheImpl.sqlfSystem()) {
-              ov = reentry.getValueOffHeapOrDiskWithoutFaultIn(this.region);
-            } else {
-              ov = reentry._getValueRetain(owner, true);
-            }
+            ov = reentry._getValueRetain(owner, true);
             ReferenceCountHelper.setReferenceCountOwner(null);
           } else {
-            if (GemFireCacheImpl.sqlfSystem()) {
-              ov = reentry.getValueOffHeapOrDiskWithoutFaultIn(this.region);
-            } else {
-              ov = reentry._getValueRetain(owner, true);
-            }
+            ov = reentry._getValueRetain(owner, true);
           }
           if (ov == null) ov = Token.NOT_AVAILABLE;
           // ov has already been retained so call basicSetOldValue instead of retainAndSetOldValue
@@ -1696,7 +1659,7 @@ public class EntryEventImpl
   /**
    * If we are currently a create op then turn us into an update
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   void makeUpdate()
   {
@@ -1706,7 +1669,7 @@ public class EntryEventImpl
   /**
    * If we are currently an update op then turn us into a create
    *
-   * @since 5.0
+   * @since GemFire 5.0
    */
   void makeCreate()
   {
@@ -2589,7 +2552,7 @@ public class EntryEventImpl
   
   /**
    * Return true if this event came from a server by the client doing a get.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public boolean isFromServer() {
     return testEventFlag(EventFlags.FLAG_FROM_SERVER);
@@ -2599,7 +2562,7 @@ public class EntryEventImpl
    * comes from a server while the affected region entry is not locked.  Among
    * other things it causes version conflict checks to be performed to protect
    * against overwriting a newer version of the entry.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public void setFromServer(boolean v) {
     setEventFlag(EventFlags.FLAG_FROM_SERVER, v);

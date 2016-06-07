@@ -19,6 +19,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -42,7 +43,6 @@ import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.DistributionStats;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
@@ -535,8 +535,8 @@ public class DeltaPropagationStatsDUnitTest extends JUnit4DistributedTestCase {
   public static void createClientCache(String host, Integer port)
       throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     cache = new DeltaPropagationStatsDUnitTest().createCache(props);
     pool = PoolManager.createFactory().addServer(host, port)
         .setThreadLocalConnections(true).setMinConnections(1)
@@ -574,7 +574,7 @@ public class DeltaPropagationStatsDUnitTest extends JUnit4DistributedTestCase {
     Properties props = new Properties();
     if (!flag) {
       props
-          .setProperty(DistributionConfig.DELTA_PROPAGATION_PROP_NAME, "false");
+          .setProperty(DELTA_PROPAGATION, "false");
     }
     cache = test.createCache(props);
     AttributesFactory factory = new AttributesFactory();

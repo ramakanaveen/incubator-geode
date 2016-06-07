@@ -22,6 +22,9 @@ import java.io.File;
 import java.util.Properties;
 import java.util.Set;
 
+import com.gemstone.gemfire.cache.*;
+import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +41,13 @@ import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 
+import java.io.File;
+import java.util.Properties;
+import java.util.Set;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static org.junit.Assert.*;
+
 /**
  * Tests the old disk apis to make sure they do the correct thing.
  * Once we drop these old deprecated disk apis then this unit test can be removed.
@@ -48,19 +58,17 @@ public class DiskOldAPIsJUnitTest {
   protected static Cache cache = null;
 
   protected static DistributedSystem ds = null;
-  protected static Properties props = new Properties();
-
-  static {
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
-    props.setProperty("log-level", "config"); // to keep diskPerf logs smaller
-    props.setProperty("statistic-sampling-enabled", "true");
-    props.setProperty("enable-time-statistics", "true");
-    props.setProperty("statistic-archive-file", "stats.gfs");
-  }
 
   @Before
   public void setUp() throws Exception {
+    Properties props = new Properties();
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
+    props.setProperty(LOG_LEVEL, "config"); // to keep diskPerf logs smaller
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
+    props.setProperty(ENABLE_TIME_STATISTICS, "true");
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "stats.gfs");
+
     cache = new CacheFactory(props).create();
     ds = cache.getDistributedSystem();
     DiskStoreImpl.SET_IGNORE_PREALLOCATE = true;

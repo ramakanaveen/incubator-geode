@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.internal;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,33 +39,32 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.execute.Execution;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.cache.execute.ResultCollector;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import com.gemstone.gemfire.distributed.DistributedSystemConfigProperties;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Unit tests for the JarDeployer class
  * 
- * @since 7.0
+ * @since GemFire 7.0
  */
 @Category(DistributedTest.class)
+@SuppressWarnings("serial")
 public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
-  private static final long serialVersionUID = 1L;
+
   static FileLock savedFileLock = null;
   private final ClassBuilder classBuilder = new ClassBuilder();
-
-  public JarDeployerDUnitTest() {
-    super();
-  }
 
   @Override
   public final void preTearDownCacheTestCase() throws Exception {
@@ -169,7 +161,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     }
   }
 
-  @SuppressWarnings("serial")
   @Test
   public void testDeployExclusiveLock() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
@@ -226,7 +217,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     });
   }
 
-  @SuppressWarnings("serial")
   @Test
   public void testDeploySharedLock() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
@@ -291,7 +281,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     });
   }
 
-  @SuppressWarnings("serial")
   @Test
   public void testUndeploySharedLock() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
@@ -343,7 +332,6 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     });
   }
 
-  @SuppressWarnings("serial")
   @Test
   public void testDeployUpdateByAnotherVM() throws IOException, ClassNotFoundException {
     final JarDeployer jarDeployer = new JarDeployer();
@@ -475,7 +463,7 @@ public class JarDeployerDUnitTest extends JUnit4CacheTestCase {
     // Add the alternate directory to the distributed system, get it back out, and then create
     // a JarDeployer object with it.
     Properties properties = new Properties();
-    properties.put(DistributionConfig.DEPLOY_WORKING_DIR, alternateDir.getAbsolutePath());
+    properties.put(DistributedSystemConfigProperties.DEPLOY_WORKING_DIR, alternateDir.getAbsolutePath());
     InternalDistributedSystem distributedSystem = getSystem(properties);
     final JarDeployer jarDeployer = new JarDeployer(distributedSystem.getConfig().getDeployWorkingDir());
 

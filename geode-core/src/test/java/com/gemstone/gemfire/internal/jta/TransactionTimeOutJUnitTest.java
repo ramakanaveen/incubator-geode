@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.jta;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
@@ -30,7 +31,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.Random;
-
 import javax.naming.Context;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
@@ -48,8 +48,8 @@ import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.datasource.GemFireTransactionDataSource;
-import com.gemstone.gemfire.util.test.TestUtil;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
+import com.gemstone.gemfire.util.test.TestUtil;
 
 /**
  * TODO: this test has no assertions or validations of any sort
@@ -67,7 +67,7 @@ public class TransactionTimeOutJUnitTest {
   @Before
   public void setUp() throws Exception {
     Properties props = new Properties();
-    props.setProperty("mcast-port", "0");
+    props.setProperty(MCAST_PORT, "0");
 
     int pid = new Random().nextInt();
 
@@ -84,7 +84,7 @@ public class TransactionTimeOutJUnitTest {
     wr.flush();
     wr.close();
 
-    props.setProperty("cache-xml-file", path);
+    props.setProperty(CACHE_XML_FILE, path);
 
     ds1 = DistributedSystem.connect(props);
     cache = CacheFactory.create(ds1);

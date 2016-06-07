@@ -63,7 +63,7 @@ import com.gemstone.gemfire.test.dunit.VM;
  * controller and its statistics.
  *
  *
- * @since 3.2
+ * @since GemFire 3.2
  */
 @Category(DistributedTest.class)
 public class LRUEvictionControllerDUnitTest extends JUnit4CacheTestCase {

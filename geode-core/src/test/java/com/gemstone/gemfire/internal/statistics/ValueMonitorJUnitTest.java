@@ -46,7 +46,7 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 /**
  * Integration test for the SampleCollector class.
  *   
- * @since 7.0
+ * @since GemFire 7.0
  */
 @Category(IntegrationTest.class)
 public class ValueMonitorJUnitTest {

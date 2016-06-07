@@ -34,7 +34,6 @@ import com.gemstone.gemfire.cache.client.internal.LocatorTestBase;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.server.ServerLoadProbe;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
@@ -59,10 +58,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 /**
  * Dunit Test containing inter - operations between REST Client and Gemfire cache client
  *
- * @since 8.0
+ * @since GemFire 8.0
  */
 
 @Category(DistributedTest.class)
@@ -188,11 +189,11 @@ public class RestAPIsAndInterOpsDUnitTest extends LocatorTestBase {
       final ServerLoadProbe probe) {
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, String.valueOf(0));
-    props.setProperty(DistributionConfig.LOCATORS_NAME, locators);
-    props.setProperty(DistributionConfig.START_DEV_REST_API_NAME, "true");
-    props.setProperty(DistributionConfig.HTTP_SERVICE_BIND_ADDRESS_NAME, hostName);
-    props.setProperty(DistributionConfig.HTTP_SERVICE_PORT_NAME, String.valueOf(restServicerPort));
+    props.setProperty(MCAST_PORT, String.valueOf(0));
+    props.setProperty(LOCATORS, locators);
+    props.setProperty(START_DEV_REST_API, "true");
+    props.setProperty(HTTP_SERVICE_BIND_ADDRESS, hostName);
+    props.setProperty(HTTP_SERVICE_PORT, String.valueOf(restServicerPort));
 
     DistributedSystem ds = getSystem(props);
     Cache cache = CacheFactory.create(ds);
@@ -840,18 +841,18 @@ public class RestAPIsAndInterOpsDUnitTest extends LocatorTestBase {
       , final ServerLoadProbe probe) throws IOException {
     Properties props = new Properties();
     props
-        .setProperty(DistributionConfig.MCAST_PORT_NAME, String.valueOf(0));
-    props.setProperty(DistributionConfig.LOCATORS_NAME, locators);
+        .setProperty(MCAST_PORT, String.valueOf(0));
+    props.setProperty(LOCATORS, locators);
 
-    props.setProperty("jmx-manager", "true");
-    props.setProperty("jmx-manager-start", "true");
-    props.setProperty(DistributionConfig.JMX_MANAGER_PORT_NAME, "0");
+    props.setProperty(JMX_MANAGER, "true");
+    props.setProperty(JMX_MANAGER_START, "true");
+    props.setProperty(JMX_MANAGER_PORT, "0");
 
     final int httpPort = AvailablePortHelper.getRandomAvailableTCPPort();
     //Set REST service related configuration
-    props.setProperty(DistributionConfig.START_DEV_REST_API_NAME, "true");
-    props.setProperty(DistributionConfig.HTTP_SERVICE_BIND_ADDRESS_NAME, "localhost");
-    props.setProperty(DistributionConfig.HTTP_SERVICE_PORT_NAME, String.valueOf(httpPort));
+    props.setProperty(START_DEV_REST_API, "true");
+    props.setProperty(HTTP_SERVICE_BIND_ADDRESS, "localhost");
+    props.setProperty(HTTP_SERVICE_PORT, String.valueOf(httpPort));
 
     DistributedSystem ds = getSystem(props);
     Cache cache = CacheFactory.create(ds);

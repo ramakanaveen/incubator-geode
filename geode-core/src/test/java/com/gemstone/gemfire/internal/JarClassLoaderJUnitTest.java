@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -48,7 +49,6 @@ import com.gemstone.gemfire.cache.execute.Function;
 import com.gemstone.gemfire.cache.execute.FunctionContext;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.cache.execute.ResultSender;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.InternalCache;
 import com.gemstone.gemfire.internal.cache.execute.FunctionContextImpl;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
@@ -229,7 +229,7 @@ public class JarClassLoaderJUnitTest {
     final File jarFile1 = new File(JAR_PREFIX + "JarClassLoaderJUnit.jar#1");
 
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
+    properties.setProperty(MCAST_PORT, "0");
     CacheFactory cacheFactory = new CacheFactory(properties);
     this.cache = (InternalCache) cacheFactory.create();
 
@@ -301,7 +301,7 @@ public class JarClassLoaderJUnitTest {
     final File jarFile2 = new File(JAR_PREFIX + "JarClassLoaderJUnit.jar#2");
 
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
+    properties.setProperty(MCAST_PORT, "0");
     CacheFactory cacheFactory = new CacheFactory(properties);
     this.cache = (InternalCache) cacheFactory.create();
 
@@ -377,7 +377,7 @@ public class JarClassLoaderJUnitTest {
     final File jarFile2 = new File(JAR_PREFIX + "JarClassLoaderJUnit.jar#2");
 
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
+    properties.setProperty(MCAST_PORT, "0");
     CacheFactory cacheFactory = new CacheFactory(properties);
     this.cache = (InternalCache) cacheFactory.create();
 

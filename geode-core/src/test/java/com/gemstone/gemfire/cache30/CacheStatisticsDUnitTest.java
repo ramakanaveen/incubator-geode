@@ -43,7 +43,7 @@ import com.gemstone.gemfire.test.dunit.Wait;
  * Region} and a {@link com.gemstone.gemfire.cache.Region.Entry}.
  *
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 @Category(DistributedTest.class)
 public class CacheStatisticsDUnitTest extends JUnit4CacheTestCase {

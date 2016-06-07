@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.pdx;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -69,16 +70,12 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 @Category(IntegrationTest.class)
 public class PdxSerializableJUnitTest {
   
-  public PdxSerializableJUnitTest() {
-    super();
-  }
-
   private GemFireCacheImpl c;
 
   @Before
   public void setUp() {
     // make it a loner
-    this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0")
+    this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0")
         .create();
   }
 
@@ -94,7 +91,7 @@ public class PdxSerializableJUnitTest {
   @Test
   public void testNoDiskStore() throws Exception {
     this.c.close();
-    this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0")
+    this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0")
     .setPdxPersistent(true)
     .setPdxDiskStore("doesNotExist")
     .create();
@@ -111,7 +108,7 @@ public class PdxSerializableJUnitTest {
   @Test
   public void testPdxPersistentKeys() throws Exception {
     this.c.close();
-    this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0")
+    this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0")
     .setPdxPersistent(true)
     .setPdxDiskStore("pdxDS")
     .create();
@@ -127,7 +124,7 @@ public class PdxSerializableJUnitTest {
       r2.put(new SimpleClass(1, (byte) 1), new SimpleClass(1, (byte) 1));
       r2.put(new SimpleClass(2, (byte) 2), new SimpleClass(2, (byte) 2));
       this.c.close();
-      this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0")
+      this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0")
       .setPdxPersistent(true)
       .setPdxDiskStore("pdxDS")
       .create();
@@ -144,7 +141,7 @@ public class PdxSerializableJUnitTest {
       assertEquals(new SimpleClass(2, (byte) 2), r2.get(new SimpleClass(2, (byte) 2)));
       this.c.close();
       // use a cache.xml to recover
-      this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0")
+      this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0")
       .create();
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       PrintWriter pw = new PrintWriter(new OutputStreamWriter(baos), true);
@@ -194,7 +191,7 @@ public class PdxSerializableJUnitTest {
   @Test
   public void testPdxPersistentKeysDefDS() throws Exception {
     this.c.close();
-    this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0")
+    this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0")
     .setPdxPersistent(true)
     .create();
     try {
@@ -207,7 +204,7 @@ public class PdxSerializableJUnitTest {
       r2.put(new SimpleClass(1, (byte) 1), new SimpleClass(1, (byte) 1));
       r2.put(new SimpleClass(2, (byte) 2), new SimpleClass(2, (byte) 2));
       this.c.close();
-      this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0")
+      this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0")
       .setPdxPersistent(true)
       .create();
       this.c.createDiskStoreFactory().create("r2DS");
@@ -221,7 +218,7 @@ public class PdxSerializableJUnitTest {
       assertEquals(new SimpleClass(2, (byte) 2), r2.get(new SimpleClass(2, (byte) 2)));
       this.c.close();
       // use a cache.xml to recover
-      this.c = (GemFireCacheImpl) new CacheFactory().set("mcast-port", "0")
+      this.c = (GemFireCacheImpl) new CacheFactory().set(MCAST_PORT, "0")
       .create();
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       PrintWriter pw = new PrintWriter(new OutputStreamWriter(baos), true);

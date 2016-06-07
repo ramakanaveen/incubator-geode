@@ -57,7 +57,7 @@ import com.gemstone.gemfire.test.dunit.VM;
  * Make sure that operations are distributed and done in
  * regions remote from a PROXY
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 @Category(DistributedTest.class)
 public class ProxyDUnitTest extends JUnit4CacheTestCase {

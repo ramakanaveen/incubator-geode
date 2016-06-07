@@ -16,14 +16,8 @@
  */
 package com.gemstone.gemfire.management;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,12 +25,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.Locator;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalLocator;
-import com.gemstone.gemfire.i18n.LogWriterI18n;
-import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.management.internal.ManagementConstants;
@@ -47,35 +42,19 @@ import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
-
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Test cases
  * 
  * DistributedSystem Cache Locator no no yes yes no yes yes yes yes
- * 
- * 
- * 
  */
-
 @Category(DistributedTest.class)
 public class LocatorManagementDUnitTest extends ManagementTestBase {
 
-  /** Default file name for locator log: <code>"locator.log"</code> */
-  public static final String DEFAULT_LOG_FILE = "locator.log";
-
   private static final int MAX_WAIT = 8 * ManagementConstants.REFRESH_TIME;
 
-  private static Properties props = new Properties();
-
   private VM locator;
-  
-
-  public LocatorManagementDUnitTest() {
-    super();
-  }
-
-  private static final long serialVersionUID = 1L;
 
   @Override
   protected final void postSetUpManagementTestBase() throws Exception {
@@ -90,8 +69,6 @@ public class LocatorManagementDUnitTest extends ManagementTestBase {
   /**
    * When plan is to start Distributed System later so that the system can use
    * this locator
-   * 
-   * @throws Exception
    */
   @Test
   public void testPeerLocation() throws Exception {
@@ -102,13 +79,13 @@ public class LocatorManagementDUnitTest extends ManagementTestBase {
     Host host = Host.getHost(0);
     String host0 = getServerHostName(host);
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, host0 + "[" + locPort
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, host0 + "[" + locPort
         + "]");
-    props.setProperty(DistributionConfig.JMX_MANAGER_NAME, "true");
-    props.setProperty(DistributionConfig.JMX_MANAGER_START_NAME, "false");
-    props.setProperty(DistributionConfig.JMX_MANAGER_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.JMX_MANAGER_HTTP_PORT_NAME, "0");
+    props.setProperty(JMX_MANAGER, "true");
+    props.setProperty(JMX_MANAGER_START, "false");
+    props.setProperty(JMX_MANAGER_PORT, "0");
+    props.setProperty(JMX_MANAGER_HTTP_PORT, "0");
     createCache(managingNode, props);
     startManagingNode(managingNode);
     DistributedMember locatorMember = getMember(locator);
@@ -125,13 +102,13 @@ public class LocatorManagementDUnitTest extends ManagementTestBase {
     Host host = Host.getHost(0);
     String host0 = getServerHostName(host);
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, host0 + "[" + locPort
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, host0 + "[" + locPort
         + "]");
-    props.setProperty(DistributionConfig.JMX_MANAGER_NAME, "true");
-    props.setProperty(DistributionConfig.JMX_MANAGER_START_NAME, "false");
-    props.setProperty(DistributionConfig.JMX_MANAGER_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.JMX_MANAGER_HTTP_PORT_NAME, "0");
+    props.setProperty(JMX_MANAGER, "true");
+    props.setProperty(JMX_MANAGER_START, "false");
+    props.setProperty(JMX_MANAGER_PORT, "0");
+    props.setProperty(JMX_MANAGER_HTTP_PORT, "0");
     createCache(managingNode, props);
     startManagingNode(managingNode);
     DistributedMember locatorMember = getMember(locator);
@@ -141,8 +118,6 @@ public class LocatorManagementDUnitTest extends ManagementTestBase {
 
   /**
    * Tests a locator which is co-located with already existing cache
-   * 
-   * @throws Exception
    */
   @Test
   public void testColocatedLocator() throws Exception {
@@ -185,10 +160,10 @@ public class LocatorManagementDUnitTest extends ManagementTestBase {
     String host0 = getServerHostName(host);
     
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, host0 + "[" + locPort
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, host0 + "[" + locPort
         + "]");
-    props.setProperty(DistributionConfig.JMX_MANAGER_NAME, "true");
+    props.setProperty(JMX_MANAGER, "true");
 
     createCache(managedNode2, props);
     createCache(managedNode3, props);
@@ -204,10 +179,10 @@ public class LocatorManagementDUnitTest extends ManagementTestBase {
     String host0 = getServerHostName(host);
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, host0 + "[" + locPort
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, host0 + "[" + locPort
         + "]");
-    props.setProperty(DistributionConfig.JMX_MANAGER_NAME, "true");
+    props.setProperty(JMX_MANAGER, "true");
 
     createCache(managedNode2, props);
     createCache(managedNode3, props);
@@ -231,10 +206,10 @@ public class LocatorManagementDUnitTest extends ManagementTestBase {
         assertFalse(InternalLocator.hasLocator());
 
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.MCAST_PORT_NAME,"0");
-        
-        props.setProperty(DistributionConfig.LOCATORS_NAME, "");
-        props.setProperty(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel());
+        props.setProperty(MCAST_PORT, "0");
+
+        props.setProperty(LOCATORS, "");
+        props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
 
         InetAddress bindAddr = null;
         try {
@@ -413,8 +388,8 @@ public class LocatorManagementDUnitTest extends ManagementTestBase {
    * @return the host name
    */
   public static String getServerHostName(Host host) {
-    return System.getProperty("gemfire.server-bind-address") != null?
-        System.getProperty("gemfire.server-bind-address")
+    return System.getProperty(DistributionConfig.GEMFIRE_PREFIX + "server-bind-address") != null ?
+        System.getProperty(DistributionConfig.GEMFIRE_PREFIX + "server-bind-address")
         : host.getHostName();
   }
 

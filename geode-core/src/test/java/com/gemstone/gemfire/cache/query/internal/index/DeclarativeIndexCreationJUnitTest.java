@@ -20,6 +20,7 @@
  */
 package com.gemstone.gemfire.cache.query.internal.index;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
@@ -48,8 +49,8 @@ public class DeclarativeIndexCreationJUnitTest {
   @Before
   public void setUp() throws Exception {
     Properties props = new Properties();
-    props.setProperty("cache-xml-file", TestUtil.getResourcePath(getClass(), "cachequeryindex.xml"));
-    props.setProperty("mcast-port", "0");
+    props.setProperty(CACHE_XML_FILE, TestUtil.getResourcePath(getClass(), "cachequeryindex.xml"));
+    props.setProperty(MCAST_PORT, "0");
     ds = DistributedSystem.connect(props);
     cache = CacheFactory.create(ds);
   }

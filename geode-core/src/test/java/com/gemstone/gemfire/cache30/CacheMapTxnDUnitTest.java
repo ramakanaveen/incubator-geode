@@ -50,7 +50,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: reformat
-    
+
     protected static Cache cache;
     protected static Properties props = new Properties();
     static DistributedSystem ds = null;
@@ -82,7 +82,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
     
     public static void createCache(){
         try{
-            //            props.setProperty("mcast-port", "1234");
+            //            props.setProperty(DistributionConfig.SystemConfigurationProperties.MCAST_PORT, "1234");
             //            ds = DistributedSystem.connect(props);
             ds = (new CacheMapTxnDUnitTest()).getSystem(props);
             cache = CacheFactory.create(ds);
@@ -93,7 +93,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
             region = cache.createRegion("map", attr);
             
         } catch (Exception ex){
-            ex.printStackTrace();
+            throw new AssertionError(ex);
         }
     }
     
@@ -102,7 +102,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
             cache.close();
             ds.disconnect();            
         } catch (Exception ex){
-            ex.printStackTrace();
+          throw new AssertionError(ex);
         }
     }
     
@@ -264,8 +264,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
             
         }
         catch(Exception ex){
-            ex.printStackTrace();
-            fail("failed in commitTxn");
+          throw new AssertionError(ex);
         }
         finally{
             if(cacheTxnMgr.exists()){
@@ -369,8 +368,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
             
         }
         catch(Exception ex){
-            ex.printStackTrace();
-            fail("failed in rollbackTxn");
+          throw new AssertionError(ex);
         }
         finally{
             if(cacheTxnMgr.exists()){
@@ -414,8 +412,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
         }
         catch(Exception ex){
             cacheTxnMgr = null;
-            ex.printStackTrace();
-            fail("failed in rollbackTxnClear");
+          throw new AssertionError(ex);
         }
         
     }//end of rollbackTxnClear
@@ -466,8 +463,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
             
         }
         catch(Exception ex){
-            ex.printStackTrace();
-            fail("failed in miscMethodsOwner");
+          throw new AssertionError(ex);
         }
         finally{
             if(cacheTxnMgr.exists()){
@@ -507,8 +503,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
             
         }
         catch(Exception ex){
-            ex.printStackTrace();
-            fail("failed in miscMethodsNotOwner");
+          throw new AssertionError(ex);
         }
     }//end of miscMethodsNotOwner
     
@@ -523,8 +518,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
                 obj = region.put(ob, str);
             }
         }catch(Exception ex){
-            ex.printStackTrace();
-            fail("Failed while region.put");
+          throw new AssertionError(ex);
         }
         return obj;
     }
@@ -534,7 +528,7 @@ public class CacheMapTxnDUnitTest extends JUnit4DistributedTestCase { // TODO: r
         try{
             obj = region.get(ob);
         } catch(Exception ex){
-            fail("Failed while region.get");
+          throw new AssertionError(ex);
         }
         return obj;
     }

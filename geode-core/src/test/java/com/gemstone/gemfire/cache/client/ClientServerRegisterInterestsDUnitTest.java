@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache.client;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
  * The ClientServerRegisterInterestsDUnitTest class is a test suite of test cases testing the interaction between a
  * client and a server in a Register Interests scenario.
  *
- * @since 8.0
+ * @since GemFire 8.0
  */
 @Category(DistributedTest.class)
 public class ClientServerRegisterInterestsDUnitTest extends JUnit4DistributedTestCase {
@@ -95,9 +96,9 @@ public class ClientServerRegisterInterestsDUnitTest extends JUnit4DistributedTes
         try {
           Cache cache = new CacheFactory()
             .set("name", "ClientServerRegisterInterestsTestGemFireServer")
-            .set("mcast-port", "0")
-            .set("log-file", "clientServerRegisterInterestsTest.log")
-            .set("log-level", "config")
+              .set(MCAST_PORT, "0")
+              .set(LOG_FILE, "clientServerRegisterInterestsTest.log")
+              .set(LOG_LEVEL, "config")
             //.set("jmx-manager", "true")
             //.set("jmx-manager-http-port", "0")
             //.set("jmx-manager-port", "1199")
@@ -150,7 +151,7 @@ public class ClientServerRegisterInterestsDUnitTest extends JUnit4DistributedTes
 
   private ClientCache setupGemFireClientCache() {
     ClientCache clientCache = new ClientCacheFactory()
-      .set("durable-client-id", "TestDurableClientId")
+        .set(DURABLE_CLIENT_ID, "TestDurableClientId")
       .create();
 
     PoolFactory poolFactory = PoolManager.createFactory();

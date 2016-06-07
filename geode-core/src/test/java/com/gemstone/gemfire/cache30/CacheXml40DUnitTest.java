@@ -16,14 +16,10 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache.MirrorType;
@@ -33,12 +29,13 @@ import com.gemstone.gemfire.internal.cache.xmlcache.CacheCreation;
 import com.gemstone.gemfire.internal.cache.xmlcache.CacheTransactionManagerCreation;
 import com.gemstone.gemfire.internal.cache.xmlcache.CacheXml;
 import com.gemstone.gemfire.internal.cache.xmlcache.RegionAttributesCreation;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests the declarative caching functionality introduced in GemFire
  * 4.0. 
  *
- * @since 4.0
+ * @since GemFire 4.0
  */
 @Category(DistributedTest.class)
 public class CacheXml40DUnitTest extends CacheXml30DUnitTest {
@@ -50,7 +47,7 @@ public class CacheXml40DUnitTest extends CacheXml30DUnitTest {
   /**
    * Tests the cache server attribute
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   @Test
   public void testServer() {
@@ -64,7 +61,7 @@ public class CacheXml40DUnitTest extends CacheXml30DUnitTest {
   /**
    * Tests declarative bridge servers
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   @Test
   public void testBridgeServers() {
@@ -111,7 +108,7 @@ public class CacheXml40DUnitTest extends CacheXml30DUnitTest {
   /**
    * Tests a cache listener with no parameters
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   @Test
   public void testTransactionListener() {
@@ -125,7 +122,7 @@ public class CacheXml40DUnitTest extends CacheXml30DUnitTest {
   /**
    * Tests transaction manager with no listener
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   @Test
   public void testCacheTransactionManager() {
@@ -139,7 +136,7 @@ public class CacheXml40DUnitTest extends CacheXml30DUnitTest {
    * Tests the value constraints region attribute that was added in
    * GemFire 4.0.
    *
-   * @since 4.1
+   * @since GemFire 4.1
    */
   @Test
   public void testConstrainedValues() throws CacheException {

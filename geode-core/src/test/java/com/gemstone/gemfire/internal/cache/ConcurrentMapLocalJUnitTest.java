@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -37,7 +38,7 @@ public class ConcurrentMapLocalJUnitTest { // TODO: reformat
 
     @Before
   public void setUp() throws Exception {
-      this.cache = new CacheFactory().set("mcast-port", "0").set("locators", "").create();
+      this.cache = new CacheFactory().set(MCAST_PORT, "0").set(LOCATORS, "").create();
     }
 
     @After

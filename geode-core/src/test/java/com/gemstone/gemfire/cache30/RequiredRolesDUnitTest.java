@@ -16,19 +16,16 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.SystemFailure;
 import com.gemstone.gemfire.cache.AttributesFactory;
@@ -41,7 +38,6 @@ import com.gemstone.gemfire.cache.RequiredRoles;
 import com.gemstone.gemfire.cache.ResumptionAction;
 import com.gemstone.gemfire.cache.Scope;
 import com.gemstone.gemfire.distributed.Role;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.membership.InternalRole;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
@@ -49,11 +45,12 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.ThreadUtils;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests the functionality of the {@link RequiredRoles} class.
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 @Category(DistributedTest.class)
 public class RequiredRolesDUnitTest extends ReliabilityTestCase {
@@ -62,10 +59,6 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
   protected transient volatile boolean finishTestWaitForRequiredRoles = false;
   protected transient volatile boolean failTestWaitForRequiredRoles = false;
   protected transient Set rolesTestWaitForRequiredRoles = new HashSet();
-  
-  public RequiredRolesDUnitTest() {
-    super();
-  }
   
   /**
    * Tests that RequiredRoles detects missing roles.
@@ -88,7 +81,7 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     // create region in controller...
@@ -151,7 +144,7 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
       Host.getHost(0).getVM(vm).invoke(new SerializableRunnable() {
         public void run() {
           Properties config = new Properties();
-          config.setProperty(DistributionConfig.ROLES_NAME, rolesProp[vm]);
+          config.setProperty(ROLES, rolesProp[vm]);
           getSystem(config);
         }
       });
@@ -159,7 +152,7 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     // create region in controller...
@@ -330,7 +323,7 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
       Host.getHost(0).getVM(vm).invoke(new SerializableRunnable() {
         public void run() {
           Properties config = new Properties();
-          config.setProperty(DistributionConfig.ROLES_NAME, rolesProp[vm]);
+          config.setProperty(ROLES, rolesProp[vm]);
           getSystem(config);
         }
       });
@@ -338,7 +331,7 @@ public class RequiredRolesDUnitTest extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     // create region in controller...

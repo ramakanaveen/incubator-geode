@@ -27,8 +27,14 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Class <code>DurableClientCrashDUnitTest</code> tests durable client
  * functionality when clients crash.
+<<<<<<< HEAD
  *
  * @since 5.2
+=======
+ * 
+ * 
+ * @since GemFire 5.2
+>>>>>>> origin/develop
  */
 @Category(DistributedTest.class)
 public class DurableClientCrashDUnitTest extends DurableClientTestCase {

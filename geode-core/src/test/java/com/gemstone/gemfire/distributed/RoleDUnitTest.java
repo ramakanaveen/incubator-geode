@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.distributed;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -26,7 +27,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.distributed.internal.DM;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.InternalRole;
@@ -55,12 +55,11 @@ public class RoleDUnitTest extends JUnit4DistributedTestCase {
   public void testRolesInLonerVM() {
     final String rolesProp = "A,B,C,D,E,F,G";
     final String[] rolesArray = new String[] {"A","B","C","D","E","F","G"};
-//    final List rolesList = Arrays.asList(rolesArray);
-    
+
     distributionProperties = new Properties();
-    distributionProperties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    distributionProperties.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    distributionProperties.setProperty(DistributionConfig.ROLES_NAME, rolesProp);
+    distributionProperties.setProperty(MCAST_PORT, "0");
+    distributionProperties.setProperty(LOCATORS, "");
+    distributionProperties.setProperty(ROLES, rolesProp);
 
     InternalDistributedSystem system = getSystem(distributionProperties);
     try {
@@ -106,8 +105,8 @@ public class RoleDUnitTest extends JUnit4DistributedTestCase {
         public void run() {
           disconnectFromDS();
           Properties config = new Properties();
-          config.setProperty(DistributionConfig.ROLES_NAME, vmRoles[vm]);
-          config.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
+          config.setProperty(ROLES, vmRoles[vm]);
+          config.setProperty(LOG_LEVEL, "fine");
           distributionProperties = config;
           getSystem();
         }
@@ -156,9 +155,9 @@ public class RoleDUnitTest extends JUnit4DistributedTestCase {
     final String rolesProp = "A,A";
     
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    config.setProperty(DistributionConfig.ROLES_NAME, rolesProp);
+    config.setProperty(MCAST_PORT, "0");
+    config.setProperty(LOCATORS, "");
+    config.setProperty(ROLES, rolesProp);
     distributionProperties = config;
 
     InternalDistributedSystem system = getSystem();

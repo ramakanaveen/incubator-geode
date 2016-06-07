@@ -46,7 +46,7 @@ import java.util.*;
 /**
  * Dunit Test to validate OnRegion function execution with REST APIs
  *
- * @since 8.0
+ * @since GemFire 8.0
  */
 
 @Category(DistributedTest.class)

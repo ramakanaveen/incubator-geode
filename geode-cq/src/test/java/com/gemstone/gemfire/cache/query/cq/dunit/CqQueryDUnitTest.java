@@ -16,14 +16,8 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
@@ -62,11 +59,9 @@ import com.gemstone.gemfire.cache.query.data.Portfolio;
 import com.gemstone.gemfire.cache.query.internal.CqStateImpl;
 import com.gemstone.gemfire.cache.query.internal.DefaultQueryService;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.cache30.CertifiableTestCacheListener;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.DistributedRegion;
@@ -82,16 +77,16 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * This class tests the ContiunousQuery mechanism in GemFire.
  * It does so by creating a cache server with a cache and a pre-defined region and
  * a data loader. The client creates the same region and attaches the connection pool.
- * 
- *
  */
-@SuppressWarnings("serial")
 @Category(DistributedTest.class)
+@SuppressWarnings("serial")
 public class CqQueryDUnitTest extends JUnit4CacheTestCase {
   
   /** The port on which the bridge server was started in this VM */
@@ -176,10 +171,6 @@ public class CqQueryDUnitTest extends JUnit4CacheTestCase {
   private String[] shortTypeCQs = new String[] {
   // 11 - Test for "short" number type
   "SELECT ALL * FROM /root/" + regions[0] + " p where p.shortID IN SET(1,2,3,4,5)" };
-
-  public CqQueryDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -3957,7 +3948,7 @@ public class CqQueryDUnitTest extends JUnit4CacheTestCase {
    * Starts a bridge server on the given port to serve up the given
    * region.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   public void startBridgeServer(int port) throws IOException {
     startBridgeServer(port, CacheServer.DEFAULT_NOTIFY_BY_SUBSCRIPTION);
@@ -3968,7 +3959,7 @@ public class CqQueryDUnitTest extends JUnit4CacheTestCase {
    * deserializeValues and notifyBySubscription to serve up the
    * given region.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   public void startBridgeServer(int port, boolean notifyBySubscription)
   throws IOException {
@@ -3984,7 +3975,7 @@ public class CqQueryDUnitTest extends JUnit4CacheTestCase {
   /**
    * Stops the bridge server that serves up the given cache.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   protected void stopBridgeServer(Cache cache) {
     CacheServer bridge =
@@ -4015,8 +4006,8 @@ public class CqQueryDUnitTest extends JUnit4CacheTestCase {
   private InternalDistributedSystem createLonerDS() {
     disconnectFromDS();
     Properties lonerProps = new Properties();
-    lonerProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    lonerProps.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    lonerProps.setProperty(MCAST_PORT, "0");
+    lonerProps.setProperty(LOCATORS, "");
     InternalDistributedSystem ds = getSystem(lonerProps);
     assertEquals(0, ds.getDistributionManager().getOtherDistributionManagerIds().size());
     return ds;

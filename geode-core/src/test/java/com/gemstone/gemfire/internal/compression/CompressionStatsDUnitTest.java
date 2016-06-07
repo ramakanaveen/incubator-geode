@@ -42,7 +42,7 @@ import com.gemstone.gemfire.test.dunit.VM;
 
 /**
  * Tests compression statistics.
- * @since 8.0
+ * @since GemFire 8.0
  */
 @Category(DistributedTest.class)
 public class CompressionStatsDUnitTest extends JUnit4CacheTestCase {

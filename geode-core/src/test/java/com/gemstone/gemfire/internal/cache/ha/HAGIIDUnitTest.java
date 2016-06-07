@@ -16,7 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
-import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -41,7 +42,6 @@ import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.EventID;
 import com.gemstone.gemfire.internal.cache.FilterRoutingInfo.FilterInfo;
@@ -75,15 +75,10 @@ public class HAGIIDUnitTest extends JUnit4DistributedTestCase {
   private static VM server1 = null;
   private static VM client0 = null;
 
-  private static final String REGION_NAME = "HAGIIDUnitTest_region";
+  private static final String REGION_NAME = HAGIIDUnitTest.class.getSimpleName() + "_region";
   
   protected static GIIChecker checker = new GIIChecker();
   private int PORT2;
-
-  /** constructor */
-  public HAGIIDUnitTest() {
-    super();
-  }
 
   @Override
   public final void postSetUp() throws Exception {
@@ -139,8 +134,8 @@ public class HAGIIDUnitTest extends JUnit4DistributedTestCase {
     int PORT1 = port1.intValue();
     int PORT2 = port2.intValue();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     new HAGIIDUnitTest().createCache(props);
     AttributesFactory factory = new AttributesFactory();
     ClientServerTestCase.configureConnectionPool(factory, host, new int[] {PORT1,PORT2}, true, -1, 2, null, 1000, -1, false, -1);
@@ -193,6 +188,7 @@ public class HAGIIDUnitTest extends JUnit4DistributedTestCase {
       Assert.fail("failed while registering keys ", ex);
     }
   }
+
   public static void createEntries()
   {
     try {
@@ -218,7 +214,7 @@ public class HAGIIDUnitTest extends JUnit4DistributedTestCase {
       }
     }
     catch (Exception e) {
-      fail("failed while stopServer()" + e);
+      fail("failed while stopServer()", e);
     }
   }
 
@@ -375,7 +371,6 @@ public class HAGIIDUnitTest extends JUnit4DistributedTestCase {
       Wait.waitForCriterion(ev, 60 * 1000, 200, true);
       // assertIndexDetailsEquals( "key-2",r.getEntry("key-2").getValue());
 
-
       // wait until
       // we have a
       // dead server
@@ -432,6 +427,7 @@ public class HAGIIDUnitTest extends JUnit4DistributedTestCase {
     private boolean gotThird = false;
     private int updates = 0;
 
+    @Override
     public void afterUpdate(EntryEvent event) {
 
       this.updates++;

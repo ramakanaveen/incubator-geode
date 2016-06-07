@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
@@ -120,8 +122,8 @@ public class OfflineSnapshotJUnitTest {
 
   private void reset() {
     CacheFactory cf = new CacheFactory()
-        .set("mcast-port", "0")
-        .set("log-level", "error")
+        .set(MCAST_PORT, "0")
+        .set(LOG_LEVEL, "error")
         .setPdxSerializer(new MyPdxSerializer())
         .setPdxPersistent(true);
     

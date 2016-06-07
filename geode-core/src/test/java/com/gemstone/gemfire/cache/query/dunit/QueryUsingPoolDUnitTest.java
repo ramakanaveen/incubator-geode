@@ -68,10 +68,12 @@ import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
+
 /**
  * Tests remote (client/server) query execution.
  *
- * @since 5.0.1
+ * @since GemFire 5.0.1
  */
 @Category(DistributedTest.class)
 public class QueryUsingPoolDUnitTest extends JUnit4CacheTestCase {
@@ -547,7 +549,7 @@ public class QueryUsingPoolDUnitTest extends JUnit4CacheTestCase {
 
   private int createAndStartBridgeServer() {
     Properties config = new Properties();
-    config.setProperty("locators", "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
+    config.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
     getSystem(config);
     try {
       return startBridgeServer(0, false);

@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.ha;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
@@ -32,6 +33,7 @@ import com.gemstone.gemfire.cache.client.ClientRegionFactory;
 import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.OSProcess;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
@@ -82,17 +84,16 @@ public class Bug48879DUnitTest extends JUnit4DistributedTestCase {
 
   public static void closeCache() throws Exception {
     HARegionQueue.threadIdExpiryTime = 300;
-    System.setProperty("gemfire.MessageTimeToLive", "180");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "MessageTimeToLive", "180");
     if (cache != null) {
       cache.close();
     }
   }
 
   @SuppressWarnings({ "unused", "deprecation" })
-  public static Integer createCacheServer()
-      throws Exception {
+  public static Integer createCacheServer() throws Exception {
     Bug48879DUnitTest test = new Bug48879DUnitTest();
-    System.setProperty("gemfire.MessageTimeToLive", "30");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "MessageTimeToLive", "30");
     cache = (GemFireCacheImpl)CacheFactory.create(test.getSystem());
     HARegionQueue.threadIdExpiryTime = (SLEEP_TIME/1000) - 10;
     cache.setMessageSyncInterval(SLEEP_TIME/500);
@@ -113,9 +114,9 @@ public class Bug48879DUnitTest extends JUnit4DistributedTestCase {
       throws Exception {
 
     Properties props = new Properties();
-    props.setProperty("statistic-archive-file", "client_" + OSProcess.getId()
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "client_" + OSProcess.getId()
         + ".gfs");
-    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
 
     DistributedSystem ds = new Bug48879DUnitTest().getSystem(props);
     ds.disconnect();

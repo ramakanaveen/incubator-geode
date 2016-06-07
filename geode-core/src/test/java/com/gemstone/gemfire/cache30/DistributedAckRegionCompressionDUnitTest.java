@@ -27,7 +27,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Tests Distributed Ack Region with compression.
  * 
- * @since 8.0
+ * @since GemFire 8.0
  */
 @Category(DistributedTest.class)
 @SuppressWarnings({ "deprecation", "serial" })

@@ -16,14 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import com.gemstone.gemfire.admin.AdminDistributedSystem;
 import com.gemstone.gemfire.admin.AdminDistributedSystemFactory;
 import com.gemstone.gemfire.admin.AdminException;
@@ -49,7 +46,6 @@ import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionFactory;
 import com.gemstone.gemfire.cache.RegionShortcut;
 import com.gemstone.gemfire.cache.persistence.PersistentID;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.internal.ClassBuilder;
@@ -66,12 +62,14 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 /**
  * Tests for the incremental backup feature.
  */
-@SuppressWarnings("serial")
 @Category(DistributedTest.class)
+@SuppressWarnings("serial")
 public class IncrementalBackupDUnitTest extends JUnit4CacheTestCase {
   /**
    * Data load increment.
@@ -99,7 +97,7 @@ public class IncrementalBackupDUnitTest extends JUnit4CacheTestCase {
   private final SerializableRunnable createRegions = new SerializableRunnable() {
     @Override
     public void run() {
-      Cache cache = getCache(new CacheFactory().set("log-level", LogWriterUtils.getDUnitLogLevel()));
+      Cache cache = getCache(new CacheFactory().set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel()));
       cache.createDiskStoreFactory().setDiskDirs(getDiskDirs()).create("fooStore");
       cache.createDiskStoreFactory().setDiskDirs(getDiskDirs()).create("barStore");
       getRegionFactory(cache).setDiskStoreName("fooStore").create("fooRegion");
@@ -123,14 +121,6 @@ public class IncrementalBackupDUnitTest extends JUnit4CacheTestCase {
     }          
   };
   
-  /**
-   * Creates a new IncrementalBackupDUnitTest.
-   * @param name test case name.
-   */
-  public IncrementalBackupDUnitTest() {
-    super();
-  }
-
   /**
    * Abstracts the logging mechanism.
    * @param message a message to log.

@@ -34,7 +34,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 /**
  * Tests 6.1 cache.xml features.
  * 
- * @since 6.1
+ * @since GemFire 6.1
  */
 @Category(DistributedTest.class)
 public class CacheXml61DUnitTest extends CacheXml60DUnitTest {

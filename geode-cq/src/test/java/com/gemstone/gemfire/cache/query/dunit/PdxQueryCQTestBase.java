@@ -16,14 +16,8 @@
  */
 package com.gemstone.gemfire.cache.query.dunit;
 
-import org.junit.experimental.categories.Category;
-import org.junit.Test;
-
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -52,7 +46,6 @@ import com.gemstone.gemfire.cache.query.data.PortfolioPdx;
 import com.gemstone.gemfire.cache.query.data.PositionPdx;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.compression.Compressor;
 import com.gemstone.gemfire.compression.SnappyCompressor;
 import com.gemstone.gemfire.i18n.LogWriterI18n;
@@ -64,6 +57,7 @@ import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
 
 public abstract class PdxQueryCQTestBase extends JUnit4CacheTestCase {
 
@@ -114,8 +108,8 @@ public abstract class PdxQueryCQTestBase extends JUnit4CacheTestCase {
 
   public void createPool(VM vm, String poolName, String server, int port,
       boolean subscriptionEnabled) {
-        createPool(vm, poolName, new String[]{server}, new int[]{port}, subscriptionEnabled);  
-      }
+      createPool(vm, poolName, new String[]{server}, new int[]{port}, subscriptionEnabled);
+    }
 
   public void createPool(VM vm, String poolName, String server, int port) {
     createPool(vm, poolName, new String[]{server}, new int[]{port}, false);  
@@ -132,8 +126,8 @@ public abstract class PdxQueryCQTestBase extends JUnit4CacheTestCase {
           public void run2() throws CacheException {
             // Create Cache.
             Properties props = new Properties();
-            props.setProperty("mcast-port", "0");
-            props.setProperty("locators", "");
+            props.setProperty(MCAST_PORT, "0");
+            props.setProperty(LOCATORS, "");
             getSystem(props );
             getCache();        
             PoolFactory cpf = PoolManager.createFactory();

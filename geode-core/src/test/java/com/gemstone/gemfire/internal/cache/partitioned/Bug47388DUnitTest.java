@@ -19,8 +19,11 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import java.util.Properties;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -38,7 +41,6 @@ import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.ha.HARegionQueueStats;
@@ -73,7 +75,7 @@ public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
 
   private static volatile boolean lastKeyDestroyed = false;
 
-  public static final String REGION_NAME = "Bug47388DUnitTest_region";
+  public static final String REGION_NAME = Bug47388DUnitTest.class.getSimpleName() + "_region";
 
   @Override
   public final void postSetUp() throws Exception {
@@ -115,8 +117,7 @@ public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
   }
 
   @SuppressWarnings("deprecation")
-  public static Integer createCacheServerWithPRDatastore()//Integer mcastPort)
-      throws Exception {
+  public static Integer createCacheServerWithPRDatastore() throws Exception {
     Properties props = new Properties();
     Bug47388DUnitTest test = new Bug47388DUnitTest();
     DistributedSystem ds = test.getSystem(props);
@@ -141,13 +142,11 @@ public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
   }
 
   @SuppressWarnings("deprecation")
-  public static void createClientCache(Host host, Integer[] ports, Boolean doRI)
-      throws Exception {
-
+  public static void createClientCache(Host host, Integer[] ports, Boolean doRI) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME,
+    props.setProperty(DURABLE_CLIENT_ID,
         "my-durable-client-" + ports.length);
-    props.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, "300000");
+    props.setProperty(DURABLE_CLIENT_TIMEOUT, "300000");
 
     DistributedSystem ds = new Bug47388DUnitTest().getSystem(props);
     ds.disconnect();
@@ -180,12 +179,10 @@ public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
       region.registerInterest("ALL_KEYS", true);
       cache.readyForEvents();
     }
-
   }
 
   @SuppressWarnings("unchecked")
-  public static void doPuts(Integer numOfSets, Integer numOfPuts)
-      throws Exception {
+  public static void doPuts(Integer numOfSets, Integer numOfPuts) throws Exception {
     Region<String, String> region = cache.getRegion(REGION_NAME);
 
     for (int i = 0; i < numOfSets; i++) {
@@ -201,8 +198,7 @@ public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
         .getClientProxies().toArray()[0]).isPrimary();
   }
 
-  public static void verifyClientSubscriptionStats(final Boolean isPrimary,
-      final Integer events) throws Exception {
+  public static void verifyClientSubscriptionStats(final Boolean isPrimary, final Integer events) throws Exception {
 
     WaitCriterion wc = new WaitCriterion() {
       private long dispatched;
@@ -260,7 +256,9 @@ public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
     Wait.waitForCriterion(wc, 60 * 1000, 500, true);
   }
 
-  public void bug51931_testQRMOfExpiredEventsProcessedSuccessfully() throws Exception {
+  @Ignore("TODO: test is disabled due to bug51931")
+  @Test
+  public void testQRMOfExpiredEventsProcessedSuccessfully() throws Exception {
     int numOfSets = 2, numOfPuts = 5;
     int totalEvents = 23; // = (numOfSets * numOfPuts) * 2 [eviction-destroys] +
                           // 2 [last key's put and eviction-destroy] + 1 [marker
@@ -275,9 +273,4 @@ public class Bug47388DUnitTest extends JUnit4DistributedTestCase {
     vm0.invoke(() -> Bug47388DUnitTest.verifyClientSubscriptionStats( isvm0Primary, totalEvents ));
     vm1.invoke(() -> Bug47388DUnitTest.verifyClientSubscriptionStats( !isvm0Primary, totalEvents ));
   }
-  @Test
-  public void testNothingBecauseOfBug51931() {
-    // remove this when bug #51931 is fixed
-  }
-
 }

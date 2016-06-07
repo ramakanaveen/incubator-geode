@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.cache.management;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 import java.io.Serializable;
@@ -63,7 +64,6 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
@@ -101,7 +101,7 @@ import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 
 /**
  * Tests the Heap Memory thresholds of {@link ResourceManager}
- * @since 6.0
+ * @since GemFire 6.0
  */
 @Category(DistributedTest.class)
 public class MemoryThresholdsDUnitTest extends ClientServerTestCase {
@@ -1591,14 +1591,14 @@ public class MemoryThresholdsDUnitTest extends ClientServerTestCase {
 
   protected Properties getClientProps() {
     Properties p = new Properties();
-    p.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    p.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    p.setProperty(MCAST_PORT, "0");
+    p.setProperty(LOCATORS, "");
     return p;
   }
 
   protected Properties getServerProperties() {
     Properties p = new Properties();
-    p.setProperty(DistributionConfig.LOCATORS_NAME, "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
+    p.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
     return p;
   }
 

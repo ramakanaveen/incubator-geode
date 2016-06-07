@@ -22,7 +22,7 @@ package com.gemstone.gemfire.cache.operations;
  * Encapsulates a {@link com.gemstone.gemfire.cache.operations.OperationContext.OperationCode#REGION_CLEAR} operation for both the
  * pre-operation and post-operation cases.
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 public class RegionClearOperationContext extends RegionOperationContext {
 
@@ -33,18 +33,6 @@ public class RegionClearOperationContext extends RegionOperationContext {
    *                true to set the post-operation flag
    */
   public RegionClearOperationContext(boolean postOperation) {
-    super(postOperation);
+    super(OperationCode.REGION_CLEAR, postOperation);
   }
-
-  /**
-   * Return the operation associated with the <code>OperationContext</code>
-   * object.
-   * 
-   * @return <code>OperationCode.REGION_CLEAR</code>.
-   */
-  @Override
-  public OperationCode getOperationCode() {
-    return OperationCode.REGION_CLEAR;
-  }
-
 }

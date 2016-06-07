@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.jta.dunit;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.CACHE_XML_FILE;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
@@ -146,9 +147,9 @@ public class IdleTimeOutDUnitTest extends JUnit4DistributedTestCase {
     wr.write(modified_file_str);
     wr.flush();
     wr.close();
-    props.setProperty("cache-xml-file", path);
+    props.setProperty(CACHE_XML_FILE, path);
     String tableName = "";
-    //	        props.setProperty("mcast-port", "10339");
+    //	        props.setProperty(DistributionConfig.DistributedSystemConfigProperties.MCAST_PORT, "10339");
     try {
       //	  	      ds = DistributedSystem.connect(props);
       ds = (new IdleTimeOutDUnitTest()).getSystem(props);

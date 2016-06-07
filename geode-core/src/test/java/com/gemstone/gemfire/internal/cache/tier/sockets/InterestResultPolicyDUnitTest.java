@@ -16,6 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -39,7 +40,6 @@ import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.client.ServerConnectivityException;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
@@ -65,9 +65,9 @@ public class InterestResultPolicyDUnitTest extends JUnit4DistributedTestCase {
   /** the cache instance for the test */
   private static Cache cache = null;
   
-  private int PORT   ; 
+  private int PORT;
 
-  private static final String REGION_NAME = "InterestResultPolicyDUnitTest_region" ;
+  private static final String REGION_NAME = InterestResultPolicyDUnitTest.class.getSimpleName() + "_region" ;
 
   private IgnoredException expectedEx;
 
@@ -290,8 +290,8 @@ public class InterestResultPolicyDUnitTest extends JUnit4DistributedTestCase {
     int PORT = port.intValue() ;
     InterestResultPolicyDUnitTest test = new InterestResultPolicyDUnitTest();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     cache = test.createCache(props);
     Pool p = PoolManager.createFactory()
       .addServer(host, port.intValue())

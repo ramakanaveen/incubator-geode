@@ -100,7 +100,7 @@ public class ClearDAckDUnitTest extends JUnit4DistributedTestCase { // TODO: ref
 
     public static DistributedMember createCacheVM0() {
         try{
-            //            props.setProperty("mcast-port", "1234");
+          //            props.setProperty(DistributionConfig.SystemConfigurationProperties.MCAST_PORT, "1234");
             //            ds = DistributedSystem.connect(props);
             LogWriterUtils.getLogWriter().info("I am vm0");
             ds = (new ClearDAckDUnitTest()).getSystem(props);
@@ -125,7 +125,7 @@ public class ClearDAckDUnitTest extends JUnit4DistributedTestCase { // TODO: ref
     } //end of create cache for VM0
     public static DistributedMember createCacheVM1(){
         try{
-            //   props.setProperty("mcast-port", "1234");
+          //   props.setProperty(DistributionConfig.SystemConfigurationProperties.MCAST_PORT, "1234");
             //   ds = DistributedSystem.connect(props);
             LogWriterUtils.getLogWriter().info("I am vm1");
             ds = (new ClearDAckDUnitTest()).getSystem(props);
@@ -154,7 +154,7 @@ public class ClearDAckDUnitTest extends JUnit4DistributedTestCase { // TODO: ref
     
     public static void createCacheVM2AndLocalClear(){
       try{
-          //   props.setProperty("mcast-port", "1234");
+        //   props.setProperty(DistributionConfig.SystemConfigurationProperties.MCAST_PORT, "1234");
           //   ds = DistributedSystem.connect(props);
           LogWriterUtils.getLogWriter().info("I am vm2");
           ds = (new ClearDAckDUnitTest()).getSystem(props);

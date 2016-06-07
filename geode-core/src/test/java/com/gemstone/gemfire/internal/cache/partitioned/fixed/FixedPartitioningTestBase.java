@@ -47,6 +47,7 @@ import com.gemstone.gemfire.cache.control.RebalanceResults;
 import com.gemstone.gemfire.cache.control.ResourceManager;
 import com.gemstone.gemfire.cache.partition.PartitionRegionHelper;
 import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.FileUtil;
 import com.gemstone.gemfire.internal.cache.FixedPartitionAttributesImpl;
@@ -77,9 +78,7 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class FixedPartitioningTestBase extends JUnit4DistributedTestCase {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected static String Quarter1 = "Q1";  
+  protected static String Quarter1 = "Q1";
   protected static String Quarter2 = "Q2";
   protected static String Quarter3 = "Q3";
   protected static String Quarter4 = "Q4";
@@ -133,7 +132,7 @@ public class FixedPartitioningTestBase extends JUnit4DistributedTestCase {
   }
 
   public static void createCacheOnMember_DisableMovePrimary() {
-    System.setProperty("gemfire.DISABLE_MOVE_PRIMARIES_ON_STARTUP", "true");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "DISABLE_MOVE_PRIMARIES_ON_STARTUP", "true");
     new FixedPartitioningTestBase().createCache();
   }
   
@@ -1388,7 +1387,7 @@ public class FixedPartitioningTestBase extends JUnit4DistributedTestCase {
   }
   
   public static void closeCache() {
-    System.clearProperty("gemfire.DISABLE_MOVE_PRIMARIES_ON_STARTUP");
+    System.clearProperty(DistributionConfig.GEMFIRE_PREFIX + "DISABLE_MOVE_PRIMARIES_ON_STARTUP");
     //System.setProperty("gemfire.DISABLE_MOVE_PRIMARIES_ON_STARTUP", "false");
     if (cache != null && !cache.isClosed()) {
       cache.close();
