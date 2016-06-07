@@ -16,15 +16,16 @@
  */
 package com.gemstone.gemfire.security.generator;
 
+import com.gemstone.gemfire.internal.logging.LogService;
+import com.gemstone.gemfire.security.AuthenticationFailedException;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
-
-import com.gemstone.gemfire.internal.logging.LogService;
-import com.gemstone.gemfire.security.AuthenticationFailedException;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class SSLCredentialGenerator extends CredentialGenerator {
 
@@ -113,10 +114,10 @@ public class SSLCredentialGenerator extends CredentialGenerator {
 
   private Properties getSSLProperties() {
     Properties props = new Properties();
-    props.setProperty("ssl-enabled", "true");
-    props.setProperty("ssl-require-authentication", "true");
-    props.setProperty("ssl-ciphers", "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
-    props.setProperty("ssl-protocols", "TLSv1");
+    props.setProperty(SSL_ENABLED, "true");
+    props.setProperty(SSL_REQUIRE_AUTHENTICATION, "true");
+    props.setProperty(SSL_CIPHERS, "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
+    props.setProperty(SSL_PROTOCOLS, "TLSv1");
     return props;
   }
 }

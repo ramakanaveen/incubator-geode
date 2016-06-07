@@ -16,12 +16,12 @@
  */
 package com.gemstone.gemfire.internal.logging.log4j.custom;
 
-import static com.gemstone.gemfire.internal.logging.log4j.custom.CustomConfiguration.*;
-import static org.assertj.core.api.Assertions.*;
-
-import java.io.File;
-import java.util.Properties;
-
+import com.gemstone.gemfire.LogWriter;
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.internal.logging.LogService;
+import com.gemstone.gemfire.internal.logging.log4j.Configurator;
+import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -36,13 +36,12 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestName;
 
-import com.gemstone.gemfire.LogWriter;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.internal.logging.LogService;
-import com.gemstone.gemfire.internal.logging.log4j.Configurator;
-import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
+import java.io.File;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.internal.logging.log4j.custom.CustomConfiguration.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests with custom log4j2 configuration.
@@ -81,9 +80,9 @@ public class CustomConfigWithCacheIntegrationTest {
     System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, this.customConfigFile.getAbsolutePath());
 
     Properties gemfireProperties = new Properties();
-    gemfireProperties.put(DistributionConfig.LOCATORS_NAME, "");
-    gemfireProperties.put(DistributionConfig.MCAST_PORT_NAME, "0");
-    gemfireProperties.put(DistributionConfig.LOG_LEVEL_NAME, "info");
+    gemfireProperties.put(LOCATORS, "");
+    gemfireProperties.put(MCAST_PORT, "0");
+    gemfireProperties.put(LOG_LEVEL, "info");
     this.cache = new CacheFactory(gemfireProperties).create();
   }
 

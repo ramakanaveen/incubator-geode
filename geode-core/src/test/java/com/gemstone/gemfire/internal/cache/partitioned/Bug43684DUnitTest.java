@@ -16,15 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.cache.PartitionAttributesFactory;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionFactory;
-import com.gemstone.gemfire.cache.RegionShortcut;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.ClientCacheFactory;
 import com.gemstone.gemfire.cache.client.ClientRegionFactory;
 import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
@@ -35,11 +27,13 @@ import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
 import com.gemstone.gemfire.internal.cache.RegionEntry;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
-import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * TODO This doesn't really test the optimised RI behaviour but only that RI
@@ -237,12 +231,10 @@ public class Bug43684DUnitTest extends DistributedTestCase {
   public static Integer createServerCache(Boolean isReplicated, Boolean isPrimaryEmpty) throws Exception {
     DistributedTestCase.disconnectFromDS();
     Properties props = new Properties();
-    props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
-//    props.setProperty("log-file", "server_" + OSProcess.getId() + ".log");
-//    props.setProperty("log-level", "fine");
-    props.setProperty("statistic-archive-file", "server_" + OSProcess.getId()
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "server_" + OSProcess.getId()
         + ".gfs");
-    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
     CacheFactory cf = new CacheFactory(props);
     cache = (GemFireCacheImpl)cf.create();
 
@@ -266,11 +258,9 @@ public class Bug43684DUnitTest extends DistributedTestCase {
   public static void createClientCache(Host host, Integer port) {
     DistributedTestCase.disconnectFromDS();
     Properties props = new Properties();
-//    props.setProperty("log-file", "client_" + OSProcess.getId() + ".log");
-//    props.setProperty("log-level", "fine");
-    props.setProperty("statistic-archive-file", "client_" + OSProcess.getId()
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "client_" + OSProcess.getId()
         + ".gfs");
-    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
     ClientCacheFactory ccf = new ClientCacheFactory(props);
     ccf.addPoolServer(host.getHostName(), port).setPoolSubscriptionEnabled(true);
     cache = (GemFireCacheImpl)ccf.create();

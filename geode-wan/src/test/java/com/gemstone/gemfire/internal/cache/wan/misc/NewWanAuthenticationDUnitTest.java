@@ -16,25 +16,23 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.misc;
 
-import java.util.Properties;
-
+import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.distributed.DistributedMember;
+import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.internal.Assert;
+import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
 import com.gemstone.gemfire.internal.logging.LogService;
 import com.gemstone.gemfire.security.AuthInitialize;
 import com.gemstone.gemfire.security.AuthenticationFailedException;
 import com.gemstone.gemfire.security.SecurityTestUtils;
 import com.gemstone.gemfire.security.generator.CredentialGenerator;
-
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.distributed.DistributedMember;
-import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.internal.Assert;
-import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
-
 import com.gemstone.gemfire.security.generator.DummyCredentialGenerator;
 import com.gemstone.gemfire.security.templates.UserPasswordAuthInit;
-
 import org.apache.logging.log4j.Logger;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class NewWanAuthenticationDUnitTest extends WANTestBase {
 
@@ -188,16 +186,15 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
     Properties authProps = new Properties();
     if (clientauthenticator != null) {
       authProps.setProperty(
-        DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME,
+        SECURITY_CLIENT_AUTHENTICATOR,
         clientauthenticator);
     }
     if (accessor != null) {
-      authProps.setProperty(DistributionConfig.SECURITY_CLIENT_ACCESSOR_NAME,
+      authProps.setProperty(SECURITY_CLIENT_ACCESSOR,
         accessor);
     }
     if (clientAuthInit != null) {
-      authProps.setProperty(DistributionConfig.SECURITY_CLIENT_AUTH_INIT_NAME,
-        clientAuthInit);
+      authProps.setProperty(SECURITY_CLIENT_AUTH_INIT, clientAuthInit);
     }
     if (extraAuthProps != null) {
       authProps.putAll(extraAuthProps);
@@ -209,8 +206,8 @@ public class NewWanAuthenticationDUnitTest extends WANTestBase {
   }
 
   public static void createSecuredCache(Properties authProps, Object javaProps, Integer locPort) {
-    authProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    authProps.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[" + locPort + "]");
+    authProps.setProperty(MCAST_PORT, "0");
+    authProps.setProperty(LOCATORS, "localhost[" + locPort + "]");
 
     logger.info("Set the server properties to: " + authProps);
     logger.info("Set the java properties to: " + javaProps);

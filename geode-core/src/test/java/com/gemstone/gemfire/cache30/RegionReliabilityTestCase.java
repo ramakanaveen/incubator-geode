@@ -16,69 +16,31 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.locks.Lock;
-
-import org.junit.experimental.categories.Category;
-
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.AttributesMutator;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.CacheLoader;
-import com.gemstone.gemfire.cache.CacheLoaderException;
-import com.gemstone.gemfire.cache.CacheTransactionManager;
-import com.gemstone.gemfire.cache.CommitDistributionException;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.ExpirationAction;
-import com.gemstone.gemfire.cache.ExpirationAttributes;
-import com.gemstone.gemfire.cache.LoaderHelper;
-import com.gemstone.gemfire.cache.LossAction;
-import com.gemstone.gemfire.cache.MembershipAttributes;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionAccessException;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.RegionDistributionException;
-import com.gemstone.gemfire.cache.RegionEvent;
-import com.gemstone.gemfire.cache.RegionMembershipListener;
-import com.gemstone.gemfire.cache.RegionReinitializedException;
-import com.gemstone.gemfire.cache.RequiredRoles;
-import com.gemstone.gemfire.cache.ResumptionAction;
-import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.query.Query;
 import com.gemstone.gemfire.cache.query.QueryService;
 import com.gemstone.gemfire.cache.util.RegionMembershipListenerAdapter;
 import com.gemstone.gemfire.distributed.Role;
 import com.gemstone.gemfire.distributed.internal.DM;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.InternalRole;
-import com.gemstone.gemfire.internal.cache.AbstractRegion;
-import com.gemstone.gemfire.internal.cache.DistributedCacheOperation;
-import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
-import com.gemstone.gemfire.internal.cache.LocalRegion;
-import com.gemstone.gemfire.internal.cache.TXManagerImpl;
-import com.gemstone.gemfire.internal.cache.TXState;
-import com.gemstone.gemfire.internal.cache.TXStateInterface;
-import com.gemstone.gemfire.internal.cache.TXStateProxyImpl;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.SerializableRunnableIF;
-import com.gemstone.gemfire.test.dunit.ThreadUtils;
-import com.gemstone.gemfire.test.dunit.Wait;
-import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.internal.cache.*;
+import com.gemstone.gemfire.test.dunit.*;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
+import org.junit.experimental.categories.Category;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * Tests region reliability defined by MembershipAttributes.
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
@@ -109,7 +71,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
       }
     }
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, rolesValue.toString());
+    config.setProperty(ROLES, rolesValue.toString());
     return getSystem(config);
   }
 
@@ -469,7 +431,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -555,7 +517,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -636,7 +598,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -694,7 +656,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -777,7 +739,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -865,7 +827,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -908,7 +870,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -972,7 +934,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -1044,7 +1006,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -1086,7 +1048,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     GemFireCacheImpl cache = (GemFireCacheImpl) getCache();
@@ -1208,7 +1170,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();
@@ -1373,7 +1335,7 @@ public abstract class RegionReliabilityTestCase extends ReliabilityTestCase {
 
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     getCache();

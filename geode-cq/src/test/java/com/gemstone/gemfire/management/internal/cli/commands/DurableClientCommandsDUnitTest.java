@@ -16,33 +16,13 @@
  */
 package com.gemstone.gemfire.management.internal.cli.commands;
 
-import static com.gemstone.gemfire.test.dunit.Assert.*;
-import static com.gemstone.gemfire.test.dunit.DistributedTestUtils.*;
-import static com.gemstone.gemfire.test.dunit.LogWriterUtils.*;
-import static com.gemstone.gemfire.test.dunit.NetworkUtils.*;
-
-import java.util.Properties;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.PartitionAttributesFactory;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.ClientCache;
 import com.gemstone.gemfire.cache.client.ClientCacheFactory;
-import com.gemstone.gemfire.cache.query.CqAttributesFactory;
-import com.gemstone.gemfire.cache.query.CqException;
-import com.gemstone.gemfire.cache.query.CqExistsException;
-import com.gemstone.gemfire.cache.query.QueryService;
-import com.gemstone.gemfire.cache.query.RegionNotFoundException;
+import com.gemstone.gemfire.cache.query.*;
 import com.gemstone.gemfire.cache.query.data.Portfolio;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.DistributedRegion;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
@@ -56,6 +36,16 @@ import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.assertTrue;
+import static com.gemstone.gemfire.test.dunit.DistributedTestUtils.getDUnitLocatorPort;
+import static com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter;
+import static com.gemstone.gemfire.test.dunit.NetworkUtils.getServerHostName;
 
 @Category(DistributedTest.class)
 public class DurableClientCommandsDUnitTest extends CliCommandTestBase {
@@ -249,15 +239,14 @@ public class DurableClientCommandsDUnitTest extends CliCommandTestBase {
   
   private void setupSystem() throws Exception {
     disconnectAllFromDS();
-    final int[] port = AvailablePortHelper.getRandomAvailableTCPPorts(2);
     setUpJmxManagerOnVm0ThenConnect(getServerProperties());
     
     final VM manager = Host.getHost(0).getVM(0);
     final VM server1 = Host.getHost(0).getVM(1);
     final VM client1 = Host.getHost(0).getVM(2);
     
-    startCacheServer(server1, port[0], false, regionName);
-    startDurableClient(client1, server1, port[0], clientName, "300");
+    int listeningPort = startCacheServer(server1, 0, false, regionName);
+    startDurableClient(client1, server1, listeningPort, clientName, "300");
   }
   
   /**
@@ -313,10 +302,10 @@ public class DurableClientCommandsDUnitTest extends CliCommandTestBase {
     });
   }
   
-  private void startCacheServer(VM server, final int port, 
+  private int startCacheServer(VM server, final int port,
       final boolean createPR, final String regionName) throws Exception {
 
-    server.invoke(new SerializableCallable() {
+    Integer listeningPort = (Integer) server.invoke(new SerializableCallable() {
       public Object call() throws Exception {
         getSystem(getServerProperties());
         
@@ -341,9 +330,11 @@ public class DurableClientCommandsDUnitTest extends CliCommandTestBase {
         cacheServer.setPort(port);
         cacheServer.start();
        
-        return null;
+        return cacheServer.getPort();
       }
     });
+
+    return listeningPort.intValue();
   }
   
   private void startDurableClient(VM client, final VM server, final int port,
@@ -407,16 +398,16 @@ public class DurableClientCommandsDUnitTest extends CliCommandTestBase {
   
   protected Properties getClientProps(String durableClientId, String durableClientTimeout) {
     Properties p = new Properties();
-    p.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    p.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    p.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME, durableClientId);
-    p.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, String.valueOf(durableClientTimeout));
+    p.setProperty(MCAST_PORT, "0");
+    p.setProperty(LOCATORS, "");
+    p.setProperty(DURABLE_CLIENT_ID, durableClientId);
+    p.setProperty(DURABLE_CLIENT_TIMEOUT, String.valueOf(durableClientTimeout));
     return p;
   }
 
   protected Properties getServerProperties() {
     Properties p = new Properties();
-    p.setProperty(DistributionConfig.LOCATORS_NAME, "localhost["+getDUnitLocatorPort()+"]");
+    p.setProperty(LOCATORS, "localhost[" + getDUnitLocatorPort() + "]");
     return p;
   }
   

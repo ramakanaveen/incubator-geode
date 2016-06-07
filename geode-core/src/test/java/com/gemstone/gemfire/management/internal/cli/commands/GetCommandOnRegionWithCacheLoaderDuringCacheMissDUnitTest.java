@@ -16,24 +16,7 @@
  */
 package com.gemstone.gemfire.management.internal.cli.commands;
 
-import static com.gemstone.gemfire.distributed.internal.DistributionConfig.*;
-import static com.gemstone.gemfire.test.dunit.Assert.*;
-import static com.gemstone.gemfire.test.dunit.Host.*;
-import static com.gemstone.gemfire.test.dunit.LogWriterUtils.*;
-import static com.gemstone.gemfire.test.dunit.Wait.*;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheLoader;
-import com.gemstone.gemfire.cache.CacheLoaderException;
-import com.gemstone.gemfire.cache.LoaderHelper;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionFactory;
-import com.gemstone.gemfire.cache.RegionShortcut;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.management.DistributedRegionMXBean;
 import com.gemstone.gemfire.management.ManagementService;
 import com.gemstone.gemfire.management.ManagerMXBean;
@@ -49,9 +32,19 @@ import com.gemstone.gemfire.test.dunit.SerializableRunnableIF;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
+import static com.gemstone.gemfire.test.dunit.Host.getHost;
+import static com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter;
+import static com.gemstone.gemfire.test.dunit.Wait.waitForCriterion;
 
 /**
  * The GetCommandOnRegionWithCacheLoaderDuringCacheMissDUnitTest class is test suite of test cases testing the Gfsh
@@ -59,7 +52,7 @@ import org.junit.experimental.categories.Category;
  *
  * @see com.gemstone.gemfire.management.internal.cli.commands.CliCommandTestBase
  * @see com.gemstone.gemfire.management.internal.cli.commands.DataCommands
- * @since 8.0
+ * @since GemFire 8.0
  */
 @SuppressWarnings("unused")
 @Category(DistributedTest.class)
@@ -146,8 +139,8 @@ public class GetCommandOnRegionWithCacheLoaderDuringCacheMissDUnitTest extends C
   private Properties createDistributedSystemProperties(final String gemfireName) {
     Properties distributedSystemProperties = new Properties();
 
-    distributedSystemProperties.setProperty(LOG_LEVEL_NAME, GEMFIRE_LOG_LEVEL);
-    distributedSystemProperties.setProperty(NAME_NAME, gemfireName);
+    distributedSystemProperties.setProperty(LOG_LEVEL, GEMFIRE_LOG_LEVEL);
+    distributedSystemProperties.setProperty(NAME, gemfireName);
 
     return distributedSystemProperties;
   }
@@ -270,7 +263,7 @@ public class GetCommandOnRegionWithCacheLoaderDuringCacheMissDUnitTest extends C
     }
 
     public String getName() {
-      return getConfiguration().getProperty(NAME_NAME);
+      return getConfiguration().getProperty(NAME);
     }
 
     public VM getVm() {

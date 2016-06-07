@@ -16,11 +16,11 @@
  */
 package com.gemstone.gemfire.disttx;
 
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.CacheException;
 import com.gemstone.gemfire.cache30.TXOrderDUnitTest;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import java.util.Properties;
 
 
 /**
@@ -36,8 +36,7 @@ public class DistTXOrderDUnitTest extends TXOrderDUnitTest {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty(DistributionConfig.DISTRIBUTED_TRANSACTIONS_NAME, "true");
-//    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
+    props.setProperty(DISTRIBUTED_TRANSACTIONS, "true");
     return props;
   }
   

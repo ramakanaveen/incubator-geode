@@ -24,7 +24,7 @@ import com.gemstone.gemfire.cache.Region;
  * and value objects for for both the pre-operation case and for post-operation
  * updates.
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 public class PutOperationContext extends KeyValueOperationContext {
 
@@ -61,12 +61,10 @@ public class PutOperationContext extends KeyValueOperationContext {
    * @param isObject
    *                true when the value is an object; false when it is a raw
    *                byte array
-   * @since 6.5
+   * @since GemFire 6.5
    */
-  public PutOperationContext(Object key,Object value,
-      boolean isObject) {
-    super(key, value, isObject);
-    this.opType = UNKNOWN;
+  public PutOperationContext(Object key,Object value, boolean isObject) {
+    this(key, value, isObject, false);
   }
 
   /**
@@ -81,12 +79,10 @@ public class PutOperationContext extends KeyValueOperationContext {
    *                byte array
    * @param postOperation
    *                true if the context is at the time of sending updates
-   * @since 6.5
+   * @since GemFire 6.5
    */
-  public PutOperationContext(Object key, Object value,
-      boolean isObject, boolean postOperation) {
-    super(key, value, isObject, postOperation);
-    this.opType = UNKNOWN;
+  public PutOperationContext(Object key, Object value, boolean isObject, boolean postOperation) {
+    this(key, value, isObject, UNKNOWN, postOperation);
   }
 
   /**
@@ -104,23 +100,11 @@ public class PutOperationContext extends KeyValueOperationContext {
    *                unknown
    * @param isPostOperation
    *                true if the context is at the time of sending updates
-   * @since 6.5
+   * @since GemFire 6.5
    */
-  public PutOperationContext(Object key, Object value,
-      boolean isObject, byte opType, boolean isPostOperation) {
-    super(key, value, isObject, isPostOperation);
+  public PutOperationContext(Object key, Object value, boolean isObject, byte opType, boolean isPostOperation) {
+    super(OperationCode.PUT, key, value, isObject, isPostOperation);
     this.opType = opType;
-  }
-
-  /**
-   * Return the operation associated with the <code>OperationContext</code>
-   * object.
-   * 
-   * @return <code>OperationCode.PUT</code>.
-   */
-  @Override
-  public OperationCode getOperationCode() {
-    return OperationCode.PUT;
   }
 
   /**

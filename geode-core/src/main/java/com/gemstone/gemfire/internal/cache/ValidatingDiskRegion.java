@@ -43,7 +43,7 @@ import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 
 /**
  * A disk region that is created when doing offline validation.
- * @since prPersistSprint3
+ * @since GemFire prPersistSprint3
  */
 public class ValidatingDiskRegion extends DiskRegion implements DiskRecoveryStore {
   protected ValidatingDiskRegion(DiskStoreImpl ds,
@@ -171,9 +171,6 @@ public class ValidatingDiskRegion extends DiskRegion implements DiskRecoveryStor
     }    
     @Override
     public void handleValueOverflow(RegionEntryContext context) {throw new IllegalStateException("should never be called");}
-    
-    @Override
-    public void afterValueOverflow(RegionEntryContext context) {throw new IllegalStateException();}
     
     @Override
     public Object prepareValueForCache(RegionEntryContext r, Object val, boolean isEntryUpdate) {

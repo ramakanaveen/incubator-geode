@@ -73,7 +73,7 @@ import static com.gemstone.gemfire.internal.cache.DistributedCacheOperation.VALU
  * frequently, if they are not then it makes sense to fold the destroy and the
  * invalidate into the same message and use an extra bit to differentiate
  * 
- * @since 6.5
+ * @since GemFire 6.5
  *  
  */
 public class RemoteDestroyMessage extends RemoteOperationMessageWithDirectReply implements OldValueImporter {
@@ -204,7 +204,7 @@ public class RemoteDestroyMessage extends RemoteOperationMessageWithDirectReply 
    * on one of the bridge servers.
    * 
    * @param event underlying event.
-   * @since 5.5
+   * @since GemFire 5.5
    */
   public void setOldValue(EntryEventImpl event){
     if (event.hasOldValue()) {
@@ -357,9 +357,6 @@ public class RemoteDestroyMessage extends RemoteOperationMessageWithDirectReply 
     if (eventSender == null) {
        eventSender = getSender();
     }
-    if (r.keyRequiresRegionContext()) {
-      ((KeyWithRegionContext)this.key).setRegionContext(r);
-    }
     @Released EntryEventImpl event = null;
     try {
     if (this.bridgeContext != null) {
@@ -468,8 +465,6 @@ public class RemoteDestroyMessage extends RemoteOperationMessageWithDirectReply 
     if (this.hasOldValue){
       //out.writeBoolean(this.hasOldValue);
       // below boolean is not strictly required, but this is for compatibility
-      // with SQLFire code which writes as byte here to indicate whether
-      // oldValue is an object, serialized object or byte[]
       in.readByte();
       setOldValBytes(DataSerializer.readByteArray(in));
     }
@@ -595,12 +590,8 @@ public class RemoteDestroyMessage extends RemoteOperationMessageWithDirectReply 
   
   private void setOldValueIsSerialized(boolean isSerialized) {
     if (isSerialized) {
-      if (CachedDeserializableFactory.preferObject()) {
-        this.oldValueIsSerialized = true; //VALUE_IS_OBJECT;
-      } else {
-        // Defer serialization until toData is called.
-        this.oldValueIsSerialized = true; //VALUE_IS_SERIALIZED_OBJECT;
-      }
+      // Defer serialization until toData is called.
+      this.oldValueIsSerialized = true; //VALUE_IS_SERIALIZED_OBJECT;
     } else {
       this.oldValueIsSerialized = false; //VALUE_IS_BYTES;
     }

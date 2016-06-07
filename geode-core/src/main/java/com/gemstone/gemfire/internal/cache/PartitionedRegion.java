@@ -17,136 +17,33 @@
 
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-
-import org.apache.logging.log4j.Logger;
-
 import com.gemstone.gemfire.CancelException;
 import com.gemstone.gemfire.InternalGemFireException;
 import com.gemstone.gemfire.StatisticsFactory;
 import com.gemstone.gemfire.SystemFailure;
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.AttributesMutator;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheClosedException;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.CacheListener;
-import com.gemstone.gemfire.cache.CacheLoader;
-import com.gemstone.gemfire.cache.CacheLoaderException;
-import com.gemstone.gemfire.cache.CacheStatistics;
-import com.gemstone.gemfire.cache.CacheWriter;
-import com.gemstone.gemfire.cache.CacheWriterException;
-import com.gemstone.gemfire.cache.CustomExpiry;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.DiskAccessException;
-import com.gemstone.gemfire.cache.EntryExistsException;
-import com.gemstone.gemfire.cache.EntryNotFoundException;
-import com.gemstone.gemfire.cache.ExpirationAttributes;
-import com.gemstone.gemfire.cache.InterestPolicy;
-import com.gemstone.gemfire.cache.InterestRegistrationEvent;
-import com.gemstone.gemfire.cache.LoaderHelper;
-import com.gemstone.gemfire.cache.LowMemoryException;
-import com.gemstone.gemfire.cache.Operation;
-import com.gemstone.gemfire.cache.PartitionAttributes;
-import com.gemstone.gemfire.cache.PartitionResolver;
-import com.gemstone.gemfire.cache.PartitionedRegionDistributionException;
-import com.gemstone.gemfire.cache.PartitionedRegionStorageException;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.RegionDestroyedException;
-import com.gemstone.gemfire.cache.RegionEvent;
-import com.gemstone.gemfire.cache.RegionExistsException;
-import com.gemstone.gemfire.cache.RegionMembershipListener;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.TimeoutException;
-import com.gemstone.gemfire.cache.TransactionDataNotColocatedException;
-import com.gemstone.gemfire.cache.TransactionDataRebalancedException;
-import com.gemstone.gemfire.cache.TransactionException;
 import com.gemstone.gemfire.cache.asyncqueue.internal.AsyncEventQueueImpl;
-import com.gemstone.gemfire.cache.execute.EmptyRegionFunctionException;
-import com.gemstone.gemfire.cache.execute.Function;
-import com.gemstone.gemfire.cache.execute.FunctionContext;
-import com.gemstone.gemfire.cache.execute.FunctionException;
-import com.gemstone.gemfire.cache.execute.FunctionService;
-import com.gemstone.gemfire.cache.execute.ResultCollector;
+import com.gemstone.gemfire.cache.execute.*;
 import com.gemstone.gemfire.cache.partition.PartitionListener;
 import com.gemstone.gemfire.cache.partition.PartitionNotAvailableException;
-import com.gemstone.gemfire.cache.query.FunctionDomainException;
-import com.gemstone.gemfire.cache.query.Index;
-import com.gemstone.gemfire.cache.query.IndexCreationException;
-import com.gemstone.gemfire.cache.query.IndexExistsException;
-import com.gemstone.gemfire.cache.query.IndexInvalidException;
-import com.gemstone.gemfire.cache.query.IndexNameConflictException;
-import com.gemstone.gemfire.cache.query.IndexType;
-import com.gemstone.gemfire.cache.query.MultiIndexCreationException;
-import com.gemstone.gemfire.cache.query.NameResolutionException;
-import com.gemstone.gemfire.cache.query.QueryException;
-import com.gemstone.gemfire.cache.query.QueryInvocationTargetException;
-import com.gemstone.gemfire.cache.query.SelectResults;
-import com.gemstone.gemfire.cache.query.TypeMismatchException;
-import com.gemstone.gemfire.cache.query.internal.CompiledSelect;
-import com.gemstone.gemfire.cache.query.internal.DefaultQuery;
-import com.gemstone.gemfire.cache.query.internal.ExecutionContext;
-import com.gemstone.gemfire.cache.query.internal.QCompiler;
-import com.gemstone.gemfire.cache.query.internal.QueryExecutor;
-import com.gemstone.gemfire.cache.query.internal.ResultsBag;
-import com.gemstone.gemfire.cache.query.internal.ResultsCollectionWrapper;
-import com.gemstone.gemfire.cache.query.internal.ResultsSet;
-import com.gemstone.gemfire.cache.query.internal.index.AbstractIndex;
-import com.gemstone.gemfire.cache.query.internal.index.IndexCreationData;
-import com.gemstone.gemfire.cache.query.internal.index.IndexManager;
-import com.gemstone.gemfire.cache.query.internal.index.IndexUtils;
-import com.gemstone.gemfire.cache.query.internal.index.PartitionedIndex;
+import com.gemstone.gemfire.cache.query.*;
+import com.gemstone.gemfire.cache.query.internal.*;
+import com.gemstone.gemfire.cache.query.internal.index.*;
 import com.gemstone.gemfire.cache.query.internal.types.ObjectTypeImpl;
 import com.gemstone.gemfire.cache.query.types.ObjectType;
 import com.gemstone.gemfire.cache.wan.GatewaySender;
 import com.gemstone.gemfire.distributed.DistributedLockService;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.LockServiceDestroyedException;
-import com.gemstone.gemfire.distributed.internal.DM;
-import com.gemstone.gemfire.distributed.internal.DistributionAdvisee;
-import com.gemstone.gemfire.distributed.internal.DistributionAdvisor;
+import com.gemstone.gemfire.distributed.internal.*;
 import com.gemstone.gemfire.distributed.internal.DistributionAdvisor.Profile;
-import com.gemstone.gemfire.distributed.internal.DistributionManager;
-import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem.DisconnectListener;
-import com.gemstone.gemfire.distributed.internal.MembershipListener;
-import com.gemstone.gemfire.distributed.internal.ProfileListener;
-import com.gemstone.gemfire.distributed.internal.ReplyException;
-import com.gemstone.gemfire.distributed.internal.ReplyProcessor21;
 import com.gemstone.gemfire.distributed.internal.locks.DLockRemoteToken;
 import com.gemstone.gemfire.distributed.internal.locks.DLockService;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.distributed.internal.membership.MemberAttributes;
+import com.gemstone.gemfire.i18n.StringId;
 import com.gemstone.gemfire.internal.Assert;
 import com.gemstone.gemfire.internal.NanoTimer;
 import com.gemstone.gemfire.internal.SetUtils;
@@ -160,63 +57,27 @@ import com.gemstone.gemfire.internal.cache.control.InternalResourceManager;
 import com.gemstone.gemfire.internal.cache.control.InternalResourceManager.ResourceType;
 import com.gemstone.gemfire.internal.cache.control.MemoryEvent;
 import com.gemstone.gemfire.internal.cache.control.MemoryThresholds;
-import com.gemstone.gemfire.internal.cache.execute.AbstractExecution;
-import com.gemstone.gemfire.internal.cache.execute.FunctionExecutionNodePruner;
-import com.gemstone.gemfire.internal.cache.execute.FunctionRemoteContext;
-import com.gemstone.gemfire.internal.cache.execute.InternalFunctionInvocationTargetException;
-import com.gemstone.gemfire.internal.cache.execute.LocalResultCollector;
-import com.gemstone.gemfire.internal.cache.execute.PartitionedRegionFunctionExecutor;
-import com.gemstone.gemfire.internal.cache.execute.PartitionedRegionFunctionResultSender;
-import com.gemstone.gemfire.internal.cache.execute.PartitionedRegionFunctionResultWaiter;
-import com.gemstone.gemfire.internal.cache.execute.RegionFunctionContextImpl;
-import com.gemstone.gemfire.internal.cache.execute.ServerToClientFunctionResultSender;
+import com.gemstone.gemfire.internal.cache.execute.*;
 import com.gemstone.gemfire.internal.cache.ha.ThreadIdentifier;
 import com.gemstone.gemfire.internal.cache.lru.HeapEvictor;
 import com.gemstone.gemfire.internal.cache.lru.LRUStatistics;
-import com.gemstone.gemfire.internal.cache.partitioned.ContainsKeyValueMessage;
+import com.gemstone.gemfire.internal.cache.partitioned.*;
 import com.gemstone.gemfire.internal.cache.partitioned.ContainsKeyValueMessage.ContainsKeyValueResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.DestroyMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.DestroyMessage.DestroyResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.DestroyRegionOnDataStoreMessage;
-import com.gemstone.gemfire.internal.cache.partitioned.DumpAllPRConfigMessage;
-import com.gemstone.gemfire.internal.cache.partitioned.DumpB2NRegion;
 import com.gemstone.gemfire.internal.cache.partitioned.DumpB2NRegion.DumpB2NResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.DumpBucketsMessage;
-import com.gemstone.gemfire.internal.cache.partitioned.FetchBulkEntriesMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.FetchBulkEntriesMessage.FetchBulkEntriesResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.FetchEntriesMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.FetchEntriesMessage.FetchEntriesResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.FetchEntryMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.FetchEntryMessage.FetchEntryResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.FetchKeysMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.FetchKeysMessage.FetchKeysResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.GetMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.GetMessage.GetResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.IdentityRequestMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.IdentityRequestMessage.IdentityResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.IdentityUpdateMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.IdentityUpdateMessage.IdentityUpdateResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.IndexCreationMsg;
-import com.gemstone.gemfire.internal.cache.partitioned.InterestEventMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.InterestEventMessage.InterestEventResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.InvalidateMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.InvalidateMessage.InvalidateResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.PREntriesIterator;
-import com.gemstone.gemfire.internal.cache.partitioned.PRLocallyDestroyedException;
-import com.gemstone.gemfire.internal.cache.partitioned.PRSanityCheckMessage;
-import com.gemstone.gemfire.internal.cache.partitioned.PRUpdateEntryVersionMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.PRUpdateEntryVersionMessage.UpdateEntryVersionResponse;
 import com.gemstone.gemfire.internal.cache.partitioned.PartitionMessage.PartitionResponse;
-import com.gemstone.gemfire.internal.cache.partitioned.PartitionedRegionObserver;
-import com.gemstone.gemfire.internal.cache.partitioned.PartitionedRegionObserverHolder;
-import com.gemstone.gemfire.internal.cache.partitioned.PutAllPRMessage;
-import com.gemstone.gemfire.internal.cache.partitioned.PutMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.PutMessage.PutResult;
-import com.gemstone.gemfire.internal.cache.partitioned.RegionAdvisor;
 import com.gemstone.gemfire.internal.cache.partitioned.RegionAdvisor.PartitionProfile;
-import com.gemstone.gemfire.internal.cache.partitioned.RemoveAllPRMessage;
-import com.gemstone.gemfire.internal.cache.partitioned.RemoveIndexesMessage;
-import com.gemstone.gemfire.internal.cache.partitioned.SizeMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.SizeMessage.SizeResponse;
 import com.gemstone.gemfire.internal.cache.persistence.PRPersistentConfig;
 import com.gemstone.gemfire.internal.cache.tier.InterestType;
@@ -245,7 +106,17 @@ import com.gemstone.gemfire.internal.offheap.annotations.Unretained;
 import com.gemstone.gemfire.internal.sequencelog.RegionLogger;
 import com.gemstone.gemfire.internal.util.TransformUtils;
 import com.gemstone.gemfire.internal.util.concurrent.StoppableCountDownLatch;
-import com.gemstone.gemfire.i18n.StringId;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
 
 /**
  * A Region whose total storage is split into chunks of data (partitions) which
@@ -257,7 +128,7 @@ public class PartitionedRegion extends LocalRegion implements
   CacheDistributionAdvisee, QueryExecutor {
 
   public static final Random rand = new Random(Long.getLong(
-      "gemfire.PartitionedRegionRandomSeed", NanoTimer.getTime()).longValue());
+      DistributionConfig.GEMFIRE_PREFIX + "PartitionedRegionRandomSeed", NanoTimer.getTime()).longValue());
   
   private static final AtomicInteger SERIAL_NUMBER_GENERATOR = new AtomicInteger();
   
@@ -266,7 +137,7 @@ public class PartitionedRegion extends LocalRegion implements
    * Changes scope of replication to secondary bucket to SCOPE.DISTRIBUTED_NO_ACK
    */
   public static final boolean DISABLE_SECONDARY_BUCKET_ACK = Boolean.getBoolean(
-      "gemfire.disablePartitionedRegionBucketAck");
+      DistributionConfig.GEMFIRE_PREFIX + "disablePartitionedRegionBucketAck");
   
   /**
    * A debug flag used for testing calculation of starting bucket id
@@ -681,8 +552,8 @@ public class PartitionedRegion extends LocalRegion implements
    * 
    */
 
-  static public final String RETRY_TIMEOUT_PROPERTY = 
-      "gemfire.partitionedRegionRetryTimeout";
+  static public final String RETRY_TIMEOUT_PROPERTY =
+      DistributionConfig.GEMFIRE_PREFIX + "partitionedRegionRetryTimeout";
   
   private final PartitionRegionConfigValidator validator ;
   
@@ -740,10 +611,10 @@ public class PartitionedRegion extends LocalRegion implements
     
     // No redundancy required for writes
     this.minimumWriteRedundancy = Integer.getInteger(
-        "gemfire.mimimumPartitionedRegionWriteRedundancy", 0).intValue();
+        DistributionConfig.GEMFIRE_PREFIX + "mimimumPartitionedRegionWriteRedundancy", 0).intValue();
     // No redundancy required for reads
     this.minimumReadRedundancy = Integer.getInteger(
-        "gemfire.mimimumPartitionedRegionReadRedundancy", 0).intValue();
+        DistributionConfig.GEMFIRE_PREFIX + "mimimumPartitionedRegionReadRedundancy", 0).intValue();
 
     this.haveCacheLoader = ra.getCacheLoader() != null;
 
@@ -1164,16 +1035,6 @@ public class PartitionedRegion extends LocalRegion implements
   }
   
   @Override
-  void distributeUpdatedProfileOnHubCreation()
-  {
-    if (!(this.isClosed || this.isLocallyDestroyed)) {
-      // tell others of the change in status
-      this.requiresNotification = true;
-      new UpdateAttributesProcessor(this).distribute(false);      
-    }
-  }
-
-  @Override
   void distributeUpdatedProfileOnSenderCreation()
   {
     if (!(this.isClosed || this.isLocallyDestroyed)) {
@@ -1505,11 +1366,7 @@ public class PartitionedRegion extends LocalRegion implements
     boolean colocatedLockAcquired = false;
     try {
       boolean colocationComplete = false;
-      if (colocatedRegion != null && !prConfig.isColocationComplete() &&
-        // if the current node is marked uninitialized (SQLF DDL replay in
-        // progress) then colocation will definitely not be marked complete so
-        // avoid taking the expensive region lock
-          !getCache().isUnInitializedMember(getDistributionManager().getId())) {
+      if (colocatedRegion != null && !prConfig.isColocationComplete()) {
         colocatedLock = colocatedRegion.getRegionLock();
         colocatedLock.lock();
         colocatedLockAcquired = true;
@@ -1518,16 +1375,7 @@ public class PartitionedRegion extends LocalRegion implements
         if (parentConf.isColocationComplete()
             && parentConf.hasSameDataStoreMembers(prConfig)) {
           colocationComplete = true;
-          // check if all the nodes have been initialized (SQLF bug #42089)
-          for (Node node : nodes) {
-            if (getCache().isUnInitializedMember(node.getMemberId())) {
-              colocationComplete = false;
-              break;
-            }
-          }
-          if (colocationComplete) {
-            prConfig.setColocationComplete();
-          }
+          prConfig.setColocationComplete();
         }
       }
 
@@ -1730,7 +1578,7 @@ public class PartitionedRegion extends LocalRegion implements
   // /////////////////////////////////////////////////////////////////
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1740,7 +1588,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1752,7 +1600,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1762,7 +1610,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1772,7 +1620,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1781,7 +1629,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1792,7 +1640,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1814,7 +1662,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1826,7 +1674,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1843,7 +1691,7 @@ public class PartitionedRegion extends LocalRegion implements
    * 
    * @see DefaultQuery#execute()
    * 
-   * @since 5.1
+   * @since GemFire 5.1
    */
   public Object executeQuery(DefaultQuery query, Object[] parameters,
       Set buckets) throws FunctionDomainException, TypeMismatchException,
@@ -1988,7 +1836,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -1998,7 +1846,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -2008,7 +1856,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    * @throws UnsupportedOperationException
    * OVERRIDES
    */
@@ -2064,13 +1912,6 @@ public class PartitionedRegion extends LocalRegion implements
       if (targetNode == null) {
         try {
           bucketStorageAssigned=false;
-          // if this is a Delta update, then throw exception since the key doesn't
-          // exist if there is no bucket for it yet
-          if (event.hasDelta()) {
-            throw new EntryNotFoundException(LocalizedStrings.
-              PartitionedRegion_CANNOT_APPLY_A_DELTA_WITHOUT_EXISTING_ENTRY
-                .toLocalizedString());
-          }
           targetNode = createBucket(bucketId.intValue(), event.getNewValSizeForPR(),
               null);
         }
@@ -3333,7 +3174,7 @@ public class PartitionedRegion extends LocalRegion implements
   /**
    * Gets the Node for reading or performing a load from a specific bucketId.
    * @return the member from which to read or load
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private InternalDistributedMember getNodeForBucketReadOrLoad(int bucketId) {
     InternalDistributedMember targetNode;
@@ -3531,7 +3372,7 @@ public class PartitionedRegion extends LocalRegion implements
    * @param function
    * @param execution
    * @param rc
-   * @since 6.0
+   * @since GemFire 6.0
    */
   public ResultCollector executeFunction(final Function function,
       final PartitionedRegionFunctionExecutor execution, ResultCollector rc,
@@ -3591,10 +3432,8 @@ public class PartitionedRegion extends LocalRegion implements
       boolean isBucketSetAsFilter) {
     final Set routingKeys = execution.getFilter();
     final boolean primaryMembersNeeded = function.optimizeForWrite();
-    final boolean hasRoutingObjects = execution.hasRoutingObjects();
     HashMap<Integer, HashSet> bucketToKeysMap = FunctionExecutionNodePruner
-        .groupByBucket(this, routingKeys, primaryMembersNeeded,
-            hasRoutingObjects, isBucketSetAsFilter);
+        .groupByBucket(this, routingKeys, primaryMembersNeeded, false, isBucketSetAsFilter);
     HashMap<InternalDistributedMember, HashSet> memberToKeysMap = new HashMap<InternalDistributedMember, HashSet>();
     HashMap<InternalDistributedMember, HashSet<Integer>> memberToBuckets = FunctionExecutionNodePruner
     .groupByMemberToBuckets(this, bucketToKeysMap.keySet(), primaryMembersNeeded);    
@@ -3684,7 +3523,7 @@ public class PartitionedRegion extends LocalRegion implements
     else {
       localBucketSet = FunctionExecutionNodePruner
       .getBucketSet(PartitionedRegion.this, localKeys,
-                    hasRoutingObjects, isBucketSetAsFilter);
+                    false, isBucketSetAsFilter);
       
       remoteOnly = false;
     }
@@ -3720,7 +3559,7 @@ public class PartitionedRegion extends LocalRegion implements
         FunctionRemoteContext context = new FunctionRemoteContext(function,
             execution.getArgumentsForMember(recip.getId()), memKeys,
             FunctionExecutionNodePruner.getBucketSet(this, memKeys,
-                hasRoutingObjects, isBucketSetAsFilter), execution.isReExecute(),
+                false, isBucketSetAsFilter), execution.isReExecute(),
                 execution.isFnSerializationReqd());
         recipMap.put(recip, context);
       }
@@ -3739,7 +3578,7 @@ public class PartitionedRegion extends LocalRegion implements
    * 
    * @param function
    * @param execution
-   * @since 6.0
+   * @since GemFire 6.0
    */
   private ResultCollector executeOnSingleNode(final Function function,
       final PartitionedRegionFunctionExecutor execution, ResultCollector rc, 
@@ -3750,15 +3589,8 @@ public class PartitionedRegion extends LocalRegion implements
     if (isBucketSetAsFilter) {
       bucketId = ((Integer) key).intValue();
     } else {
-      if (execution.hasRoutingObjects()) {
-        bucketId = Integer.valueOf(PartitionedRegionHelper
-            .getHashKey(this, key));
-      } else {
-        // bucketId = Integer.valueOf(PartitionedRegionHelper.getHashKey(this,
-        // Operation.FUNCTION_EXECUTION, key, null));
-        bucketId = Integer.valueOf(PartitionedRegionHelper.getHashKey(this,
+      bucketId = Integer.valueOf(PartitionedRegionHelper.getHashKey(this,
             Operation.FUNCTION_EXECUTION, key, null, null));
-      }
     }
     InternalDistributedMember targetNode = null;
     if (function.optimizeForWrite()) {
@@ -4006,7 +3838,7 @@ public class PartitionedRegion extends LocalRegion implements
    * @param function
    * @param execution
    * @return ResultCollector
-   * @since 6.0
+   * @since GemFire 6.0
    */
   private ResultCollector executeOnAllBuckets(final Function function,
       final PartitionedRegionFunctionExecutor execution, ResultCollector rc, boolean isPRSingleHop) {
@@ -5195,21 +5027,6 @@ public class PartitionedRegion extends LocalRegion implements
   /**
    * generates new partitioned region ID globally.
    */
-  // !!!:ezoerner:20080321 made this function public and static.
-  // @todo should be moved to the Distributed System level as a general service
-  // for getting a unique id, with different "domains" for different
-  // contexts
-  // :soubhik:pr_func merge20914:21056: overloaded static and non-static version of generatePRId.
-  //   static version is used mainly with sqlf & non-static in gfe.
-  public static int generatePRId(InternalDistributedSystem sys, Cache cache) {
-    
-    GemFireCacheImpl gfcache = (GemFireCacheImpl) cache;
-    
-    if(gfcache == null) return 0;
-    
-    return _generatePRId(sys, gfcache.getPartitionedRegionLockService());
-  }
-  
   public int generatePRId(InternalDistributedSystem sys) {
     final DistributedLockService lockService = getPartitionedRegionLockService();
     return _generatePRId(sys, lockService);
@@ -5310,7 +5127,13 @@ public class PartitionedRegion extends LocalRegion implements
     }
     
     fillInProfile((PartitionProfile) profile);
-    
+
+    if (cacheServiceProfiles != null) {
+      for (CacheServiceProfile csp : cacheServiceProfiles.values()) {
+        profile.addCacheServiceProfile(csp);
+      }
+    }
+
     profile.isOffHeap = getOffHeap();
   }
 
@@ -5985,7 +5808,7 @@ public class PartitionedRegion extends LocalRegion implements
    * Called after the cache close has closed all regions. This clean up static
    * pr resources.
    * 
-   * @since 5.0
+   * @since GemFire 5.0
    */
   static void afterRegionsClosedByCacheClose(GemFireCacheImpl cache) {
     PRQueryProcessor.shutdown();
@@ -6380,19 +6203,10 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * Currently used by SQLFabric to get a non-wrapped iterator for all entries
-   * for index consistency check.
-   */
-  public Set allEntries() {
-    return new PREntriesSet();
-  }
-
-
-  /**
    * Set view of entries. This currently extends the keySet iterator and
    * performs individual getEntry() operations using the keys
    * 
-   * @since 5.1
+   * @since GemFire 5.1
    */
   protected class PREntriesSet extends KeysSet {
 
@@ -6633,7 +6447,7 @@ public class PartitionedRegion extends LocalRegion implements
    * Set view of values. This currently extends the keySet iterator and performs
    * individual get() operations using the keys
    * 
-   * @since 5.1
+   * @since GemFire 5.1
    */
   protected class ValuesSet extends KeysSet  {
 
@@ -6700,7 +6514,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
     /**
-   * @since 6.6
+   * @since GemFire 6.6
    */
   @Override
   public boolean containsValue(final Object value) {
@@ -7140,7 +6954,7 @@ public class PartitionedRegion extends LocalRegion implements
    * created the lock, typically used for locking buckets, but not restricted to
    * that usage.
    * 
-   * @since 5.0
+   * @since GemFire 5.0
    */
   static class BucketLock {
 
@@ -7801,20 +7615,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
         
   @Override
-  public void localDestroyRegion(Object aCallbackArgument) {
-    localDestroyRegion(aCallbackArgument, false);
-  }
-
-  /**
-   * Locally destroy a region.
-   * 
-   * SQLFabric change: The parameter "ignoreParent" has been added to allow
-   * skipping the check for parent colocated region. This is because SQLFabric
-   * DDLs are distributed in any case and are guaranteed to be atomic (i.e. no
-   * concurrent DMLs on that table). Without this it is quite ugly to implement
-   * "TRUNCATE TABLE" which first drops the table and recreates it.
-   */
-  public void localDestroyRegion(Object aCallbackArgument, boolean ignoreParent)
+  public void localDestroyRegion(Object aCallbackArgument)
   {
     getDataView().checkSupportsRegionDestroy();
     String prName = this.getColocatedWith();
@@ -7830,7 +7631,7 @@ public class PartitionedRegion extends LocalRegion implements
       }
     }
 
-    if ((!ignoreParent && prName != null)
+    if ((prName != null)
         || (!childRegionsWithoutSendersList.isEmpty())) {
       throw new UnsupportedOperationException(
           "Any Region in colocation chain cannot be destroyed locally.");
@@ -8858,7 +8659,7 @@ public class PartitionedRegion extends LocalRegion implements
    * from queries like getKeysWithRegEx. The implementor creates a method,
    * receiveSet, that consumes the chunks.
    * 
-   * @since 5.1
+   * @since GemFire 5.1
    */
   public static interface SetCollector {
     public void receiveSet(Set theSet) throws IOException;
@@ -9553,8 +9354,6 @@ public class PartitionedRegion extends LocalRegion implements
 
   /**
    * This method is intended for testing purposes only.
-   * DO NOT use in product code else it will break SQLFabric that has cases
-   * where routing object is not part of only the key.
    */
   @Override
   public Object getValueOnDisk(Object key) throws EntryNotFoundException {
@@ -9567,8 +9366,6 @@ public class PartitionedRegion extends LocalRegion implements
   
   /**
    * This method is intended for testing purposes only.
-   * DO NOT use in product code else it will break SQLFabric that has cases
-   * where routing object is not part of only the key.
    */
   @Override
   public Object getValueOnDiskOrBuffer(Object key) throws EntryNotFoundException {
@@ -9633,7 +9430,7 @@ public class PartitionedRegion extends LocalRegion implements
 
   /**
    * Return the primary for the local bucket. Returns null if no primary
-   * can be found within {@link com.gemstone.gemfire.distributed.internal.DistributionConfig#getMemberTimeout}.
+   * can be found within {@link DistributionConfig#getMemberTimeout}.
    * @param bucketId
    * @return the primary bucket member
    */
@@ -9688,31 +9485,11 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   public PartitionResolver getPartitionResolver() {
-    // [SQLFabric] use PartitionAttributes to get the the resolver
-    // since it may change after ALTER TABLE
     return this.partitionAttributes.getPartitionResolver();
   }
 
   public String getColocatedWith() {
-    // [SQLFabric] use PartitionAttributes to get colocated region
-    // since it may change after ALTER TABLE
     return this.partitionAttributes.getColocatedWith();
-  }
-
-  // For SQLFabric ALTER TABLE. Need to set the colocated region using
-  // PartitionAttributesImpl and also reset the parentAdvisor for
-  // BucketAdvisors.
-  /**
-   * Set the colocated with region path and adjust the BucketAdvisor's. This
-   * should *only* be invoked when region is just newly created and has no data
-   * or existing buckets else will have undefined behaviour.
-   * 
-   * @since 6.5
-   */
-  public void setColocatedWith(String colocatedRegionFullPath) {
-    ((PartitionAttributesImpl)this.partitionAttributes)
-        .setColocatedWith(colocatedRegionFullPath);
-    this.getRegionAdvisor().resetBucketAdvisorParents();
   }
 
   /**
@@ -9720,7 +9497,7 @@ public class PartitionedRegion extends LocalRegion implements
    * RegionMembershipListener invocations. This is copied almost in whole from
    * DistributedRegion
    * 
-   * @since 5.7
+   * @since GemFire 5.7
    */
   protected class AdvisorListener implements MembershipListener
   {
@@ -9772,98 +9549,6 @@ public class PartitionedRegion extends LocalRegion implements
     }
   }
   
-  /*
-   * This is an internal API for sqlFabric only <br>
-   * This is usefull to execute a function on set of nodes irrelevant of the
-   * routinKeys <br>
-   * notes : This API uses DefaultResultCollector. If you want your Custome
-   * Result collector, let me know
-   * 
-   * @param functionName
-   * @param args
-   * @param nodes
-   *                Set of DistributedMembers on which this function will be
-   *                executed
-   * @throws Exception
-   *//*
-  public ResultCollector executeFunctionOnNodes(String functionName,
-      Serializable args, Set nodes) throws Exception {
-    Assert.assertTrue(functionName != null, "Error: functionName is null");
-    Assert.assertTrue(nodes != null, "Error: nodes set is null");
-    Assert.assertTrue(nodes.size() != 0, "Error: empty nodes Set");
-    ResultCollector rc = new DefaultResultCollector();
-    boolean isSelf = nodes.remove(getMyId());
-    PartitionedRegionFunctionResponse response = null;
-    //TODO Yogesh: this API is broken after Resultsender implementation
-    //response = new PartitionedRegionFunctionResponse(this.getSystem(), nodes,
-    //    rc);
-    Iterator i = nodes.iterator();
-    while (i.hasNext()) {
-      InternalDistributedMember recip = (InternalDistributedMember)i.next();
-      PartitionedRegionFunctionMessage.send(recip, this, functionName, args,
-          null routingKeys , response, null);
-    }
-    if (isSelf) {
-      // execute locally and collect the result
-      if (this.dataStore != null) {
-        this.dataStore.executeOnDataStore(
-            null routingKeys , functionName, args, 0,null,rc,null);
-      }
-    }
-    return response;
-  }*/
-
-
-  /*
-   * This is an internal API for sqlFabric only <br>
-   * API for invoking a function using primitive ints as the routing objects
-   * (i.e. passing the hashcodes of the routing objects directly). <br>
-   * notes : This API uses DefaultResultCollector. If you want to pass your
-   * Custom Result collector, let me know
-   * 
-   * @param functionName
-   * @param args
-   * @param hashcodes
-   *          hashcodes of the routing objects
-   * @throws Exception
-   *//*
-  public ResultCollector executeFunctionUsingHashCodes(String functionName,
-      Serializable args, int hashcodes[]) throws Exception {
-    Assert.assertTrue(functionName != null, "Error: functionName is null");
-    Assert.assertTrue(hashcodes != null, "Error: hashcodes array is null");
-    Assert.assertTrue(hashcodes.length != 0, "Error: empty hashcodes array");
-    Set nodes = new HashSet();
-    for (int i = 0; i < hashcodes.length; i++) {
-      int bucketId = hashcodes[i] % getTotalNumberOfBuckets();
-      InternalDistributedMember n = getNodeForBucketRead(bucketId);
-      nodes.add(n);
-    }
-    return executeFunctionOnNodes(functionName, args, nodes);
-  }*/
-
-  /**
-   * This is an internal API for sqlFabric only <br>
-   * Given a array of routing objects, returns a set of members on which the (owner of each
-   * buckets)
-   * 
-   * @param routingObjects array of routing objects passed 
-   * @return Set of  InternalDistributedMembers
-   */
-  public Set getMembersFromRoutingObjects(Object[] routingObjects) {
-    Assert.assertTrue(routingObjects != null, "Error: null routingObjects ");
-    Assert.assertTrue(routingObjects.length != 0, "Error: empty routingObjects ");
-    Set nodeSet = new HashSet();
-    int bucketId;
-    for (int i = 0; i < routingObjects.length; i++) {
-      bucketId = PartitionedRegionHelper.getHashKey(routingObjects[i],
-                                                    getTotalNumberOfBuckets());
-      InternalDistributedMember lnode = getOrCreateNodeForBucketRead(bucketId);
-      if (lnode != null) {
-        nodeSet.add(lnode);
-      }
-    }
-    return nodeSet;
-  }
   @Override
   protected RegionEntry basicGetTXEntry(KeyInfo keyInfo) {
     int bucketId = keyInfo.getBucketId();
@@ -10637,7 +10322,7 @@ public class PartitionedRegion extends LocalRegion implements
   /**
    * Returns the local BucketRegion given the key.
    * Returns null if no BucketRegion exists.
-   * @since 6.1.2.9
+   * @since GemFire 6.1.2.9
    */
   public BucketRegion getBucketRegion(Object key) {
     if (this.dataStore == null)
@@ -10648,9 +10333,7 @@ public class PartitionedRegion extends LocalRegion implements
   }
 
   /**
-   * Returns the local BucketRegion given the key and value. Particularly useful
-   * for SQLFabric where the routing object may be part of value and determining
-   * from key alone will require an expensive global index lookup.
+   * Returns the local BucketRegion given the key and value.
    * Returns null if no BucketRegion exists.
    */
   public BucketRegion getBucketRegion(Object key, Object value) {
@@ -10665,7 +10348,7 @@ public class PartitionedRegion extends LocalRegion implements
   /**
    * Test hook to return the per entry overhead for a bucket region.
    * Returns -1 if no buckets exist in this vm. 
-   * @since 6.1.2.9
+   * @since GemFire 6.1.2.9
    */
   public int getPerEntryLRUOverhead() {
     if (this.dataStore == null) { // this is an accessor
@@ -10875,74 +10558,6 @@ public class PartitionedRegion extends LocalRegion implements
         throw new PartitionedRegionException(LocalizedStrings.PartitionedRegion_UPDATE_VERSION_OF_ENTRY_ON_0_FAILED.toLocalizedString(recipient), ce);
       }
     }  
-  }
-
-  /**
-   * Clear local primary buckets.
-   * This is currently only used by gemfirexd truncate table
-   * to clear the partitioned region.
-   */
-  public void clearLocalPrimaries() {
- // rest of it should be done only if this is a store while RecoveryLock
-    // above still required even if this is an accessor
-    if (getLocalMaxMemory() > 0) {
-      // acquire the primary bucket locks
-      // do this in a loop to handle the corner cases where a primary
-      // bucket region ceases to be so when we actually take the lock
-      // (probably not required to do this in loop after the recovery lock)
-      // [sumedh] do we need both recovery lock and bucket locks?
-      boolean done = false;
-      Set<BucketRegion> lockedRegions = null;
-      while (!done) {
-        lockedRegions = getDataStore().getAllLocalPrimaryBucketRegions();
-        done = true;
-        for (BucketRegion br : lockedRegions) {
-          try {
-            br.doLockForPrimary(false);
-          } catch (RegionDestroyedException rde) {
-            done = false;
-            break;
-          } catch (PrimaryBucketException pbe) {
-            done = false;
-            break;
-          } catch (Exception e) {
-            // ignore any other exception
-            logger.debug(
-                "GemFireContainer#clear: ignoring exception "
-                    + "in bucket lock acquire", e);
-          }
-        }
-      }
-      
-      try {
-        // now clear the bucket regions; we go through the primary bucket
-        // regions so there is distribution for every bucket but that
-        // should be performant enough
-        for (BucketRegion br : lockedRegions) {
-          try {
-            br.clear();
-          } catch (Exception e) {
-            // ignore any other exception
-            logger.debug(
-                "GemFireContainer#clear: ignoring exception "
-                    + "in bucket clear", e);
-          }
-        }
-      } finally {
-        // release the bucket locks
-        for (BucketRegion br : lockedRegions) {
-          try {
-            br.doUnlockForPrimary();
-          } catch (Exception e) {
-            // ignore all exceptions at this stage
-            logger.debug(
-                "GemFireContainer#clear: ignoring exception "
-                    + "in bucket lock release", e);
-          }
-        }
-      }
-    }
-    
   }
 
   public void shadowPRWaitForBucketRecovery() {

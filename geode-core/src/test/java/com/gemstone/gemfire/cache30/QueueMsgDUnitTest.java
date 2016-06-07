@@ -16,35 +16,22 @@
  */
 package com.gemstone.gemfire.cache30;
 
+import com.gemstone.gemfire.cache.*;
+import com.gemstone.gemfire.internal.cache.CachePerfStats;
+import com.gemstone.gemfire.internal.cache.DistributedRegion;
+import com.gemstone.gemfire.test.dunit.*;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.CacheEvent;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.EntryEvent;
-import com.gemstone.gemfire.cache.InterestPolicy;
-import com.gemstone.gemfire.cache.Operation;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionEvent;
-import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.cache.SubscriptionAttributes;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.internal.cache.CachePerfStats;
-import com.gemstone.gemfire.internal.cache.DistributedRegion;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.VM;
-import com.gemstone.gemfire.test.dunit.Wait;
-import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * Test to make sure message queuing works.
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 public class QueueMsgDUnitTest extends ReliabilityTestCase {
 
@@ -93,7 +80,7 @@ public class QueueMsgDUnitTest extends ReliabilityTestCase {
     vm.invoke(new SerializableRunnable() {
         public void run() {
           Properties config = new Properties();
-          config.setProperty(DistributionConfig.ROLES_NAME, "missing");
+          config.setProperty(ROLES, "missing");
           getSystem(config);
         }
       });
@@ -233,7 +220,7 @@ public class QueueMsgDUnitTest extends ReliabilityTestCase {
     vm.invoke(new SerializableRunnable() {
         public void run() {
           Properties config = new Properties();
-          config.setProperty(DistributionConfig.ROLES_NAME, "pubFirst");
+          config.setProperty(ROLES, "pubFirst");
           getSystem(config);
         }
       });
@@ -271,7 +258,7 @@ public class QueueMsgDUnitTest extends ReliabilityTestCase {
     vm.invoke(new SerializableRunnable() {
         public void run() {
           Properties config = new Properties();
-          config.setProperty(DistributionConfig.ROLES_NAME, "subFirst");
+          config.setProperty(ROLES, "subFirst");
           getSystem(config);
         }
       });

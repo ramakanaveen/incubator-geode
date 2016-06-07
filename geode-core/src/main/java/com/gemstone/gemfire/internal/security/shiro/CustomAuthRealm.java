@@ -16,8 +16,23 @@
  */
 package com.gemstone.gemfire.internal.security.shiro;
 
-import static com.gemstone.gemfire.management.internal.security.ResourceConstants.*;
+import com.gemstone.gemfire.cache.operations.OperationContext;
+import com.gemstone.gemfire.internal.ClassLoadUtil;
+import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
+import com.gemstone.gemfire.internal.lang.StringUtils;
+import com.gemstone.gemfire.management.internal.security.ResourceConstants;
+import com.gemstone.gemfire.security.AccessControl;
+import com.gemstone.gemfire.security.Authenticator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.shiro.authc.*;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.Permission;
+import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.subject.PrincipalCollection;
 
+import javax.management.remote.JMXPrincipal;
+import javax.security.auth.Subject;
 import java.lang.reflect.Method;
 import java.security.AccessControlContext;
 import java.security.AccessController;
@@ -26,29 +41,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import javax.management.remote.JMXPrincipal;
-import javax.security.auth.Subject;
 
-import com.gemstone.gemfire.cache.operations.OperationContext;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.internal.ClassLoadUtil;
-import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
-import com.gemstone.gemfire.internal.lang.StringUtils;
-import com.gemstone.gemfire.management.internal.security.ResourceConstants;
-import com.gemstone.gemfire.security.AccessControl;
-import com.gemstone.gemfire.security.Authenticator;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.Permission;
-import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.subject.PrincipalCollection;
+import static com.gemstone.gemfire.management.internal.security.ResourceConstants.ACCESS_DENIED_MESSAGE;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class CustomAuthRealm extends AuthorizingRealm{
   public static final String REALM_NAME = "CUSTOMAUTHREALM";
@@ -63,9 +58,9 @@ public class CustomAuthRealm extends AuthorizingRealm{
 
   public CustomAuthRealm(Properties securityProps) {
     this.securityProps = securityProps;
-    this.authzFactoryName = securityProps.getProperty(DistributionConfig.SECURITY_CLIENT_ACCESSOR_NAME);
-    this.postAuthzFactoryName = securityProps.getProperty(DistributionConfig.SECURITY_CLIENT_ACCESSOR_PP_NAME);
-    this.authenticatorFactoryName = securityProps.getProperty(DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME);
+    this.authzFactoryName = securityProps.getProperty(SECURITY_CLIENT_ACCESSOR);
+    this.postAuthzFactoryName = securityProps.getProperty(SECURITY_CLIENT_ACCESSOR_PP);
+    this.authenticatorFactoryName = securityProps.getProperty(SECURITY_CLIENT_AUTHENTICATOR);
     this.cachedAuthZCallback = new ConcurrentHashMap<>();
     this.cachedPostAuthZCallback = new ConcurrentHashMap<>();
   }
@@ -94,11 +89,12 @@ public class CustomAuthRealm extends AuthorizingRealm{
 
   @Override
   public boolean isPermitted(PrincipalCollection principals, Permission permission) {
-    OperationContext context =(OperationContext)permission;
-    Principal principal = (Principal)principals.getPrimaryPrincipal();
+    OperationContext context = (OperationContext) permission;
+    Principal principal = (Principal) principals.getPrimaryPrincipal();
+
     // if no access control is specified, then we allow all
-    if(StringUtils.isBlank(authzFactoryName))
-      return true;
+    if (StringUtils.isBlank(authzFactoryName)) return true;
+
     AccessControl accessControl = getAccessControl(principal, false);
     return accessControl.authorizeOperation(context.getRegionName(), context);
   }
@@ -144,8 +140,7 @@ public class CustomAuthRealm extends AuthorizingRealm{
       Method instanceGetter = ClassLoadUtil.methodFromName(this.authenticatorFactoryName);
       auth = (Authenticator) instanceGetter.invoke(null, (Object[]) null);
     } catch (Exception ex) {
-      throw new AuthenticationException(
-          ex.toString(), ex);
+      throw new AuthenticationException(ex.toString(), ex);
     }
     if (auth == null) {
       throw new AuthenticationException(

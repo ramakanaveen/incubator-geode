@@ -23,7 +23,6 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.server.ServerLoadProbe;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.PoolFactoryImpl;
 import com.gemstone.gemfire.test.dunit.*;
 
@@ -33,6 +32,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  *
@@ -94,10 +95,10 @@ public abstract class LocatorTestBase extends DistributedTestCase {
     final String testName = getUniqueName();
     disconnectFromDS();
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, String.valueOf(0));
-    props.setProperty(DistributionConfig.LOCATORS_NAME, otherLocators);
-    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel());
-    props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    props.setProperty(MCAST_PORT, String.valueOf(0));
+    props.setProperty(LOCATORS, otherLocators);
+    props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+    props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
     try {
       File logFile = new File(testName + "-locator" + locatorPort + ".log");
       InetAddress bindAddr = null;
@@ -185,8 +186,8 @@ public abstract class LocatorTestBase extends DistributedTestCase {
   protected int startBridgeServer(final String[] groups, final String locators, final String[] regions, final ServerLoadProbe probe)
       throws IOException {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, locators);
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, locators);
     DistributedSystem ds = getSystem(props);
     Cache cache = CacheFactory.create(ds);
     AttributesFactory factory = new AttributesFactory();
@@ -211,9 +212,9 @@ public abstract class LocatorTestBase extends DistributedTestCase {
   protected int startBridgeServerWithEmbeddedLocator(final String[] groups, final String locators, final String[] regions, final ServerLoadProbe probe)
       throws IOException {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, String.valueOf(0));
-    props.setProperty(DistributionConfig.START_LOCATOR_NAME, locators);
-    props.setProperty(DistributionConfig.LOCATORS_NAME, locators);
+    props.setProperty(MCAST_PORT, String.valueOf(0));
+    props.setProperty(START_LOCATOR, locators);
+    props.setProperty(LOCATORS, locators);
     DistributedSystem ds = getSystem(props);
     Cache cache = CacheFactory.create(ds);
     AttributesFactory factory = new AttributesFactory();
@@ -290,8 +291,8 @@ public abstract class LocatorTestBase extends DistributedTestCase {
 
   protected void startBridgeClient(final Pool pool, final String[] regions) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, String.valueOf(0));
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, String.valueOf(0));
+    props.setProperty(LOCATORS, "");
     DistributedSystem ds = getSystem(props);
     Cache cache = CacheFactory.create(ds);
     AttributesFactory factory = new AttributesFactory();

@@ -16,26 +16,18 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import java.util.Properties;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.cache.*;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.util.Properties;
 
 /**
  * This class tests the functionality of a cache {@link Region region}
  * that has a scope of {@link Scope#DISTRIBUTED_ACK distributed ACK}.
  *
- * @since 3.0
+ * @since GemFire 3.0
  */
 public class DistributedAckRegionDUnitTest extends MultiVMRegionTestCase {
 
@@ -57,8 +49,8 @@ public class DistributedAckRegionDUnitTest extends MultiVMRegionTestCase {
 
   public Properties getDistributedSystemProperties() {
     Properties p = new Properties();
-    p.put(DistributionConfig.STATISTIC_SAMPLING_ENABLED_NAME, "true");
-    p.put(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel());
+    p.put(STATISTIC_SAMPLING_ENABLED, "true");
+    p.put(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
     return p;
   }
 

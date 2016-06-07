@@ -17,48 +17,6 @@
 
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.net.BindException;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.channels.CancelledKeyException;
-import java.nio.channels.ClosedChannelException;
-import java.nio.channels.ClosedSelectorException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.net.ssl.SSLException;
-
-import org.apache.logging.log4j.Logger;
-
 import com.gemstone.gemfire.CancelException;
 import com.gemstone.gemfire.SystemFailure;
 import com.gemstone.gemfire.ToDataException;
@@ -67,12 +25,7 @@ import com.gemstone.gemfire.cache.RegionDestroyedException;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.wan.GatewayTransportFilter;
-import com.gemstone.gemfire.distributed.internal.DM;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
-import com.gemstone.gemfire.distributed.internal.LonerDistributionManager;
-import com.gemstone.gemfire.distributed.internal.PooledExecutorWithDMStats;
-import com.gemstone.gemfire.distributed.internal.ReplyProcessor21;
+import com.gemstone.gemfire.distributed.internal.*;
 import com.gemstone.gemfire.internal.SocketCreator;
 import com.gemstone.gemfire.internal.SystemTimer;
 import com.gemstone.gemfire.internal.cache.BucketAdvisor;
@@ -90,12 +43,26 @@ import com.gemstone.gemfire.internal.logging.LoggingThreadGroup;
 import com.gemstone.gemfire.internal.logging.log4j.LocalizedMessage;
 import com.gemstone.gemfire.internal.tcp.ConnectionTable;
 import com.gemstone.gemfire.internal.util.ArrayUtils;
+import org.apache.logging.log4j.Logger;
+
+import javax.net.ssl.SSLException;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * Implements the acceptor thread on the bridge server. Accepts connections from
  * the edge and starts up threads to process requests from these.
  * 
- * @since 2.0.2
+ * @since GemFire 2.0.2
  */
 @SuppressWarnings("deprecation")
 public class AcceptorImpl extends Acceptor implements Runnable
@@ -243,7 +210,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
    * The ip address or host name this acceptor is to bind to;
    * <code>null</code> or "" indicates
    * it will listen on all local addresses.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private final String bindHostName;
   
@@ -296,7 +263,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
    * 
    * @see SocketCreator#createServerSocket(int, int, InetAddress)
    * @see ClientHealthMonitor
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public AcceptorImpl(int port,
                       String bindHostName, boolean notifyBySubscription,
@@ -636,13 +603,12 @@ public class AcceptorImpl extends Acceptor implements Runnable
     }
 
     String authenticator = this.cache.getDistributedSystem().getProperties()
-        .getProperty(DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME);
+        .getProperty(SECURITY_CLIENT_AUTHENTICATOR);
     isAuthenticationRequired = (authenticator != null && authenticator.length() > 0) ? true
         : false;
 
     String postAuthzFactoryName = this.cache.getDistributedSystem()
-        .getProperties().getProperty(
-            DistributionConfig.SECURITY_CLIENT_ACCESSOR_PP_NAME);
+        .getProperties().getProperty(SECURITY_CLIENT_ACCESSOR_PP);
 
     isPostAuthzCallbackPresent = (postAuthzFactoryName != null && postAuthzFactoryName
         .length() > 0) ? true : false;
@@ -1700,7 +1666,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
 //   /**
 //    * Calculates the bind address based on gemfire.properties.
 //    * Returns null if no bind address is configured.
-//    * @since 5.7
+//    * @since GemFire 5.7
 //    */
 //   public static InetAddress calcBindAddress(Cache cache) throws IOException {
 //     InternalDistributedSystem system = (InternalDistributedSystem)cache
@@ -1728,7 +1694,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
    * @return the ip address or host name this acceptor will listen on.
    *         An "" if all local addresses will be listened to.
    
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private static String calcBindHostName(Cache cache, String bindName) {
     if (bindName != null && !bindName.equals("")) {
@@ -1766,7 +1732,7 @@ public class AcceptorImpl extends Acceptor implements Runnable
   /**
    * Gets the address that this bridge server can be contacted on from external
    * processes.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public String getExternalAddress() {
     String result = this.bindHostName;

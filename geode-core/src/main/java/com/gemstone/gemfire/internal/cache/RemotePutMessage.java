@@ -72,7 +72,7 @@ import static com.gemstone.gemfire.internal.cache.DistributedCacheOperation.VALU
  * A Replicate Region update message.  Meant to be sent only to
  * the peer who hosts transactional data.
  *
- * @since 6.5
+ * @since GemFire 6.5
  */
 public final class RemotePutMessage extends RemoteOperationMessageWithDirectReply
   implements NewValueImporter, OldValueImporter {
@@ -135,8 +135,7 @@ public final class RemotePutMessage extends RemoteOperationMessageWithDirectRepl
   
   /**
    * Indicates if and when the new value should be deserialized on the
-   * the receiver. Distinguishes between Deltas which need to be eagerly
-   * deserialized (DESERIALIZATION_POLICY_EAGER), a non-byte[] value that was
+   * the receiver. Distinguishes between a non-byte[] value that was
    * serialized (DESERIALIZATION_POLICY_LAZY) and a
    * byte[] array value that didn't need to be serialized
    * (DESERIALIZATION_POLICY_NONE). While this seems like an extra data, it
@@ -252,11 +251,7 @@ public final class RemotePutMessage extends RemoteOperationMessageWithDirectRepl
     event.setOriginRemote(useOriginRemote);
 
     if (event.hasNewValue()) {
-      if (CachedDeserializableFactory.preferObject() || event.hasDelta()) {
-        this.deserializationPolicy = DistributedCacheOperation.DESERIALIZATION_POLICY_EAGER;
-      } else {
-        this.deserializationPolicy = DistributedCacheOperation.DESERIALIZATION_POLICY_LAZY;
-      }
+      this.deserializationPolicy = DistributedCacheOperation.DESERIALIZATION_POLICY_LAZY;
       event.exportNewValue(this);
     }
     else {
@@ -568,13 +563,7 @@ public final class RemotePutMessage extends RemoteOperationMessageWithDirectRepl
       this.oldValueIsSerialized = (in.readByte() == 1);
       setOldValBytes(DataSerializer.readByteArray(in));
     }
-    if (this.deserializationPolicy ==
-        DistributedCacheOperation.DESERIALIZATION_POLICY_EAGER) {
-      setValObj(DataSerializer.readObject(in));
-    }
-    else {
-      setValBytes(DataSerializer.readByteArray(in));
-    }
+    setValBytes(DataSerializer.readByteArray(in));
     if ((flags & HAS_DELTA_BYTES) != 0) {
       this.applyDeltaBytes = true;
       this.deltaBytes = DataSerializer.readByteArray(in);
@@ -681,9 +670,6 @@ public final class RemotePutMessage extends RemoteOperationMessageWithDirectRepl
     if (eventSender == null) {
        eventSender = getSender();
     }
-    if (r.keyRequiresRegionContext()) {
-      ((KeyWithRegionContext)this.key).setRegionContext(r);
-    }
     @Released EntryEventImpl eei = EntryEventImpl.create(
         r,
         getOperation(),
@@ -731,10 +717,6 @@ public final class RemotePutMessage extends RemoteOperationMessageWithDirectRepl
           break;
         case DistributedCacheOperation.DESERIALIZATION_POLICY_NONE:
           event.setNewValue(getValBytes());
-          break;
-        case DistributedCacheOperation.DESERIALIZATION_POLICY_EAGER:
-          // new value is a Delta
-          event.setNewValue(this.valObj); // sets the delta field
           break;
         default:
           throw new AssertionError("unknown deserialization policy: "
@@ -1087,7 +1069,7 @@ public final class RemotePutMessage extends RemoteOperationMessageWithDirectRepl
 
   /**
    * A processor to capture the value returned by {@link RemotePutMessage}
-   * @since 5.1
+   * @since GemFire 5.1
    */
   public static class RemotePutResponse extends RemoteOperationResponse  {
     private volatile boolean returnValue;
@@ -1212,12 +1194,8 @@ public final class RemotePutMessage extends RemoteOperationMessageWithDirectRepl
   
   private void setOldValueIsSerialized(boolean isSerialized) {
     if (isSerialized) {
-      if (CachedDeserializableFactory.preferObject()) {
-        this.oldValueIsSerialized = true; //VALUE_IS_OBJECT;
-      } else {
-        // Defer serialization until toData is called.
-        this.oldValueIsSerialized = true; //VALUE_IS_SERIALIZED_OBJECT;
-      }
+      // Defer serialization until toData is called.
+      this.oldValueIsSerialized = true; //VALUE_IS_SERIALIZED_OBJECT;
     } else {
       this.oldValueIsSerialized = false; //VALUE_IS_BYTES;
     }

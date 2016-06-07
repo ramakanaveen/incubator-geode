@@ -19,21 +19,26 @@ package com.gemstone.gemfire.cache30;
 import com.company.app.DBLoader;
 import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.DistributedRegion;
-import com.gemstone.gemfire.internal.cache.xmlcache.*;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
+import com.gemstone.gemfire.internal.cache.xmlcache.CacheCreation;
+import com.gemstone.gemfire.internal.cache.xmlcache.CacheTransactionManagerCreation;
+import com.gemstone.gemfire.internal.cache.xmlcache.CacheXml;
+import com.gemstone.gemfire.internal.cache.xmlcache.RegionAttributesCreation;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.VM;
 
-import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * Tests the declarative caching functionality introduced in GemFire
  * 5.0 (i.e. congo1). Don't be confused by the 45 in my name :-)
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
 
@@ -159,7 +164,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
       // make our system play the roles used by this test so the create regions
       // will not think the a required role is missing
       Properties config = new Properties();
-      config.setProperty("roles", MY_ROLES);
+      config.setProperty(ROLES, MY_ROLES);
       this.xmlProps = config;
     }
     DistributedRegion.ignoreReconnect = true;
@@ -177,7 +182,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
 
   /**
    * Tests multiple cache listeners on one region
-   * @since 5.0
+   * @since GemFire 5.0
    */
   public void testMultipleCacheListener() throws CacheException {
     CacheCreation cache = new CacheCreation();
@@ -247,7 +252,7 @@ public class CacheXml45DUnitTest extends CacheXml41DUnitTest {
 
   /**
    * Tests multiple transaction listeners
-   * @since 5.0
+   * @since GemFire 5.0
    */
   public void testMultipleTXListener() throws CacheException {
     CacheCreation cache = new CacheCreation();

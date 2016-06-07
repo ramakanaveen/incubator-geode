@@ -16,12 +16,13 @@
  */
 package com.gemstone.gemfire.management.internal.security;
 
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import org.junit.rules.ExternalResource;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class JsonAuthorizationCacheStartRule extends ExternalResource {
   private Cache cache;
@@ -51,17 +52,17 @@ public class JsonAuthorizationCacheStartRule extends ExternalResource {
 
   protected void before() throws Throwable {
     Properties properties = new Properties();
-    properties.put(DistributionConfig.NAME_NAME, JsonAuthorizationCacheStartRule.class.getSimpleName());
-    properties.put(DistributionConfig.LOCATORS_NAME, "");
-    properties.put(DistributionConfig.MCAST_PORT_NAME, "0");
-    properties.put(DistributionConfig.JMX_MANAGER_NAME, "true");
-    properties.put(DistributionConfig.JMX_MANAGER_START_NAME, "true");
-    properties.put(DistributionConfig.JMX_MANAGER_PORT_NAME, String.valueOf(jmxManagerPort));
-    properties.put(DistributionConfig.HTTP_SERVICE_PORT_NAME, String.valueOf(httpPort));
-    properties.put(DistributionConfig.SECURITY_CLIENT_AUTHENTICATOR_NAME,
+    properties.put(NAME, JsonAuthorizationCacheStartRule.class.getSimpleName());
+    properties.put(LOCATORS, "");
+    properties.put(MCAST_PORT, "0");
+    properties.put(JMX_MANAGER, "true");
+    properties.put(JMX_MANAGER_START, "true");
+    properties.put(JMX_MANAGER_PORT, String.valueOf(jmxManagerPort));
+    properties.put(HTTP_SERVICE_PORT, String.valueOf(httpPort));
+    properties.put(SECURITY_CLIENT_AUTHENTICATOR,
         JSONAuthorization.class.getName() + ".create");
     if (doAuthorization) {
-      properties.put(DistributionConfig.SECURITY_CLIENT_ACCESSOR_NAME, JSONAuthorization.class.getName() + ".create");
+      properties.put(SECURITY_CLIENT_ACCESSOR, JSONAuthorization.class.getName() + ".create");
     }
     JSONAuthorization.setUpWithJsonFile(jsonFile);
 

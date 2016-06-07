@@ -16,10 +16,13 @@
  */
 package com.gemstone.gemfire.internal.cache.wan.disttx;
 
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.wan.WANTestBase;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class DistTXWANDUnitTest extends WANTestBase {
 
@@ -34,7 +37,7 @@ public class DistTXWANDUnitTest extends WANTestBase {
     Invoke.invokeInEveryVM(new SerializableCallable() {
       @Override
       public Object call() throws Exception {
-        System.setProperty("gemfire.log-level", LogWriterUtils.getDUnitLogLevel());
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
         return null;
       }
     }); 

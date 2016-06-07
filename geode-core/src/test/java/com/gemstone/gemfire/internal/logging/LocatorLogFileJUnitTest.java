@@ -16,19 +16,7 @@
  */
 package com.gemstone.gemfire.internal.logging;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.TestName;
-
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import com.gemstone.gemfire.distributed.Locator;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
@@ -38,6 +26,19 @@ import com.gemstone.gemfire.internal.logging.log4j.LogWriterLogger;
 import com.gemstone.gemfire.test.dunit.Wait;
 import com.gemstone.gemfire.test.dunit.WaitCriterion;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.rules.TestName;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.MCAST_PORT;
+import static org.junit.Assert.*;
 
 /**
  * Creates Locator and tests logging behavior at a high level.
@@ -71,13 +72,13 @@ public class LocatorLogFileJUnitTest {
     final String locators = "localhost[" + port + "]";
 
     final Properties properties = new Properties();
-    properties.put("log-level", "config");
-    properties.put("mcast-port", "0");
-    properties.put("locators", locators);
-    properties.put("enable-network-partition-detection", "false");
-    properties.put("disable-auto-reconnect", "true");
-    properties.put("member-timeout", "2000");
-    properties.put(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    properties.put(LOG_LEVEL, "config");
+    properties.put(MCAST_PORT, "0");
+    properties.put(LOCATORS, locators);
+    properties.put(ENABLE_NETWORK_PARTITION_DETECTION, "false");
+    properties.put(DISABLE_AUTO_RECONNECT, "true");
+    properties.put(MEMBER_TIMEOUT, "2000");
+    properties.put(ENABLE_CLUSTER_CONFIGURATION, "false");
     
     final File logFile = new File(name.getMethodName() + "-locator-" + port + ".log");
     if (logFile.exists()) {

@@ -16,15 +16,16 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.control.InternalResourceManager.ResourceType;
 import com.gemstone.gemfire.internal.cache.control.OffHeapMemoryMonitor;
 import com.gemstone.gemfire.internal.cache.lru.HeapEvictor;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class PartitionedRegionOffHeapEvictionDUnitTest extends
     PartitionedRegionEvictionDUnitTest {
@@ -50,8 +51,8 @@ public class PartitionedRegionOffHeapEvictionDUnitTest extends
 
   @Override
   public Properties getDistributedSystemProperties() {
-    Properties properties = super.getDistributedSystemProperties();    
-    properties.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "100m");    
+    Properties properties = super.getDistributedSystemProperties();
+    properties.setProperty(OFF_HEAP_MEMORY_SIZE, "100m");
     
     return properties;
   }

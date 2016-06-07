@@ -44,6 +44,7 @@ import javax.management.ReflectionException;
 import javax.management.loading.ClassLoaderRepository;
 import javax.management.remote.MBeanServerForwarder;
 
+import com.gemstone.gemfire.cache.operations.internal.ResourceOperationContext;
 import com.gemstone.gemfire.management.internal.ManagementConstants;
 import com.gemstone.gemfire.security.GemFireSecurityException;
 import com.gemstone.gemfire.internal.security.GeodeSecurityUtil;
@@ -51,7 +52,7 @@ import com.gemstone.gemfire.internal.security.GeodeSecurityUtil;
 /**
  * This class intercepts all MBean requests for GemFire MBeans and passed it to
  * ManagementInterceptor for authorization
- * @since 9.0
+ * @since Geode 1.0
  *
  */
 public class MBeanServerWrapper implements MBeanServerForwarder {
@@ -256,7 +257,7 @@ public class MBeanServerWrapper implements MBeanServerForwarder {
     String resource = (String)descriptor.getFieldValue("resource");
     String operationCode = (String)descriptor.getFieldValue("operation");
     if(resource!=null && operationCode!=null){
-      return new ResourceOperationContext(resource, operationCode, null);
+      return new ResourceOperationContext(resource, operationCode, null, false);
     }
     return defaultValue;
   }

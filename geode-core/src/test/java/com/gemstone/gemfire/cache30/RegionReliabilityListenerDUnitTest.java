@@ -16,30 +16,21 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import java.util.Properties;
-import java.util.Set;
-
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.LossAction;
-import com.gemstone.gemfire.cache.MembershipAttributes;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.RegionRoleListener;
-import com.gemstone.gemfire.cache.ResumptionAction;
-import com.gemstone.gemfire.cache.RoleEvent;
-import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.util.RegionRoleListenerAdapter;
 import com.gemstone.gemfire.distributed.Role;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.membership.InternalRole;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 
+import java.util.Properties;
+import java.util.Set;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 /**
  * Tests the functionality of the {@link RegionRoleListener} class.
  *
- * @since 5.0
+ * @since GemFire 5.0
  */
 public class RegionReliabilityListenerDUnitTest extends ReliabilityTestCase {
 
@@ -73,7 +64,7 @@ public class RegionReliabilityListenerDUnitTest extends ReliabilityTestCase {
       Host.getHost(0).getVM(vm).invoke(new SerializableRunnable() {
         public void run() {
           Properties config = new Properties();
-          config.setProperty(DistributionConfig.ROLES_NAME, rolesProp[vm]);
+          config.setProperty(ROLES, rolesProp[vm]);
           getSystem(config);
         }
       });
@@ -92,7 +83,7 @@ public class RegionReliabilityListenerDUnitTest extends ReliabilityTestCase {
     
     // connect controller to system...
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.ROLES_NAME, "");
+    config.setProperty(ROLES, "");
     getSystem(config);
     
     // create region in controller...

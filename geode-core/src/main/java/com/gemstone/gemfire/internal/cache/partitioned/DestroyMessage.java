@@ -48,7 +48,6 @@ import com.gemstone.gemfire.internal.cache.EnumListenerEvent;
 import com.gemstone.gemfire.internal.cache.EventID;
 import com.gemstone.gemfire.internal.cache.FilterRoutingInfo;
 import com.gemstone.gemfire.internal.cache.ForceReattemptException;
-import com.gemstone.gemfire.internal.cache.KeyWithRegionContext;
 import com.gemstone.gemfire.internal.cache.PartitionedRegion;
 import com.gemstone.gemfire.internal.cache.PartitionedRegionDataStore;
 import com.gemstone.gemfire.internal.cache.PartitionedRegionHelper;
@@ -71,7 +70,7 @@ import com.gemstone.gemfire.internal.offheap.annotations.Retained;
  * frequently, if they are not then it makes sense to fold the destroy and the
  * invalidate into the same message and use an extra bit to differentiate
  * 
- * @since 5.0
+ * @since GemFire 5.0
  *  
  */
 public class DestroyMessage extends PartitionMessageWithDirectReply {
@@ -253,9 +252,6 @@ public class DestroyMessage extends PartitionMessageWithDirectReply {
     }
     @Released EntryEventImpl event = null;
     try {
-    if (r.keyRequiresRegionContext()) {
-      ((KeyWithRegionContext)this.key).setRegionContext(r);
-    }
     if (this.bridgeContext != null) {
       event = EntryEventImpl.create(r, getOperation(), this.key, null/*newValue*/,
           getCallbackArg(), false/*originRemote*/, eventSender, 

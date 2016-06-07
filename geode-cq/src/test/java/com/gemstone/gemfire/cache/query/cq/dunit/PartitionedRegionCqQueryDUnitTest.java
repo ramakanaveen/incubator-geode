@@ -16,7 +16,7 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
-import hydra.Log;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -42,9 +42,9 @@ import com.gemstone.gemfire.cache.query.SelectResults;
 import com.gemstone.gemfire.cache.query.Struct;
 import com.gemstone.gemfire.cache.query.data.Portfolio;
 import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.cache30.CacheTestCase;
+import com.gemstone.gemfire.cache30.ClientServerTestCase;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
@@ -53,14 +53,14 @@ import com.gemstone.gemfire.test.dunit.NetworkUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.Wait;
+
 /**
  * Test class for Partitioned Region and CQs
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
 
-  
   public PartitionedRegionCqQueryDUnitTest(String name) {
     super(name);
   }
@@ -1436,8 +1436,6 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
         if (localRegion != null) {
 
           // REGION NULL
-          Log.getLogWriter().info("Local region is NOT null in client 1");
-          
           Wait.pause(5*1000);
           CqQuery[] cqs = getCache().getQueryService().getCqs();
           if (cqs != null && cqs.length > 0) {
@@ -1592,7 +1590,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
    * deserializeValues and notifyBySubscription to serve up the
    * given region.
    *
-   * @since 5.5
+   * @since GemFire 5.5
    */
   protected void startBridgeServer(int port, boolean notifyBySubscription)
   throws IOException {
@@ -1754,7 +1752,7 @@ public class PartitionedRegionCqQueryDUnitTest extends CacheTestCase {
         ClientCacheFactory ccf = new ClientCacheFactory();
         ccf.addPoolServer(serverHosts[0]/*getServerHostName(Host.getHost(0))*/, serverPorts[0]);
         ccf.setPoolSubscriptionEnabled(true);
-        ccf.set("log-level", LogWriterUtils.getDUnitLogLevel());
+        ccf.set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
         
         // Create Client Cache.
         getClientCache(ccf);

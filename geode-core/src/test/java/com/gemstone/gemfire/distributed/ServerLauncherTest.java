@@ -16,14 +16,14 @@
  */
 package com.gemstone.gemfire.distributed;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.server.CacheServer;
+import com.gemstone.gemfire.distributed.ServerLauncher.Builder;
+import com.gemstone.gemfire.distributed.ServerLauncher.Command;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import com.gemstone.gemfire.distributed.support.DistributedSystemAdapter;
+import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
+import com.gemstone.gemfire.test.junit.categories.UnitTest;
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 import org.jmock.Expectations;
@@ -38,14 +38,14 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestName;
 
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.distributed.ServerLauncher.Builder;
-import com.gemstone.gemfire.distributed.ServerLauncher.Command;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.support.DistributedSystemAdapter;
-import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
-import com.gemstone.gemfire.test.junit.categories.UnitTest;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.Assert.*;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * The ServerLauncherTest class is a test suite of unit tests testing the contract, functionality and invariants
@@ -56,7 +56,7 @@ import com.gemstone.gemfire.test.junit.categories.UnitTest;
  * @see com.gemstone.gemfire.distributed.ServerLauncher.Command
  * @see org.junit.Assert
  * @see org.junit.Test
- * @since 7.0
+ * @since GemFire 7.0
  */
 @SuppressWarnings({"deprecation", "unused"})
 @Category(UnitTest.class)
@@ -501,18 +501,18 @@ public class ServerLauncherTest {
     ServerLauncher launcher = new Builder()
       .setCommand(ServerLauncher.Command.START)
       .setMemberName(null)
-      .set(DistributionConfig.NAME_NAME, "serverABC")
+        .set(NAME, "serverABC")
       .build();
 
     assertNotNull(launcher);
     assertEquals(ServerLauncher.Command.START, launcher.getCommand());
     assertNull(launcher.getMemberName());
-    assertEquals("serverABC", launcher.getProperties().getProperty(DistributionConfig.NAME_NAME));
+    assertEquals("serverABC", launcher.getProperties().getProperty(NAME));
   }
 
   @Test
   public void testBuildWithMemberNameSetInSystemPropertiesOnStart() {
-    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + DistributionConfig.NAME_NAME, "serverXYZ");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + NAME, "serverXYZ");
 
     ServerLauncher launcher = new Builder()
       .setCommand(ServerLauncher.Command.START)

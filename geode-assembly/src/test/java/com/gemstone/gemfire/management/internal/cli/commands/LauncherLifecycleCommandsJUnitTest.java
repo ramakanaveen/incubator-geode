@@ -16,21 +16,6 @@
  */
 package com.gemstone.gemfire.management.internal.cli.commands;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Stack;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import com.gemstone.gemfire.GemFireException;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.distributed.ServerLauncher;
@@ -41,6 +26,16 @@ import com.gemstone.gemfire.internal.lang.SystemUtils;
 import com.gemstone.gemfire.internal.util.IOUtils;
 import com.gemstone.gemfire.management.internal.cli.i18n.CliStrings;
 import com.gemstone.gemfire.test.junit.categories.UnitTest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.io.File;
+import java.util.*;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static org.junit.Assert.*;
 
 /**
  * The LauncherLifecycleCommandsJUnitTest class is a test suite of test cases testing the contract and functionality of
@@ -49,7 +44,7 @@ import com.gemstone.gemfire.test.junit.categories.UnitTest;
  * @see com.gemstone.gemfire.management.internal.cli.commands.LauncherLifecycleCommands
  * @see org.junit.Assert
  * @see org.junit.Test
- * @since 7.0
+ * @since GemFire 7.0
  */
 @SuppressWarnings("unused")
 @Category(UnitTest.class)
@@ -103,11 +98,11 @@ public class LauncherLifecycleCommandsJUnitTest {
 
     final Properties gemfireProperties = new Properties();
 
-    gemfireProperties.setProperty(DistributionConfig.LOCATORS_NAME, "localhost[11235]");
-    gemfireProperties.setProperty(DistributionConfig.LOG_LEVEL_NAME, "config");
-    gemfireProperties.setProperty(DistributionConfig.LOG_FILE_NAME, StringUtils.EMPTY_STRING);
-    gemfireProperties.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    gemfireProperties.setProperty(DistributionConfig.NAME_NAME, "tidepool");
+    gemfireProperties.setProperty(LOCATORS, "localhost[11235]");
+    gemfireProperties.setProperty(LOG_LEVEL, "config");
+    gemfireProperties.setProperty(LOG_FILE, StringUtils.EMPTY_STRING);
+    gemfireProperties.setProperty(MCAST_PORT, "0");
+    gemfireProperties.setProperty(NAME, "tidepool");
 
     getLauncherLifecycleCommands().addGemFireSystemProperties(commandLine, gemfireProperties);
 
@@ -118,10 +113,10 @@ public class LauncherLifecycleCommandsJUnitTest {
       final String propertyValue = gemfireProperties.getProperty(propertyName);
       if (StringUtils.isBlank(propertyValue)) {
         for (final String systemProperty : commandLine) {
-          assertFalse(systemProperty.startsWith("-Dgemfire.".concat(propertyName).concat("=")));
+          assertFalse(systemProperty.startsWith("-D" + DistributionConfig.GEMFIRE_PREFIX + "".concat(propertyName).concat("=")));
         }
       } else {
-        assertTrue(commandLine.contains("-Dgemfire.".concat(propertyName).concat("=").concat(propertyValue)));
+        assertTrue(commandLine.contains("-D" + DistributionConfig.GEMFIRE_PREFIX + "".concat(propertyName).concat("=").concat(propertyValue)));
       }
     }
   }

@@ -16,20 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.Logger;
-
 import com.gemstone.gemfire.SerializationException;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.Assert;
 import com.gemstone.gemfire.internal.HeapDataOutputStream;
 import com.gemstone.gemfire.internal.Version;
@@ -41,6 +29,18 @@ import com.gemstone.gemfire.internal.logging.log4j.LocalizedMessage;
 import com.gemstone.gemfire.internal.offheap.StoredObject;
 import com.gemstone.gemfire.internal.offheap.annotations.Unretained;
 import com.gemstone.gemfire.internal.util.BlobHelper;
+import org.apache.logging.log4j.Logger;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class encapsulates the wire protocol. It provides accessors to
@@ -85,7 +85,7 @@ public class Message  {
   /**
    * maximum size of an outgoing message.  See GEODE-478
    */
-  public static int MAX_MESSAGE_SIZE = Integer.getInteger("gemfire.client.max-message-size", DEFAULT_MAX_MESSAGE_SIZE).intValue();
+  public static int MAX_MESSAGE_SIZE = Integer.getInteger(DistributionConfig.GEMFIRE_PREFIX + "client.max-message-size", DEFAULT_MAX_MESSAGE_SIZE).intValue();
 
   private static final Logger logger = LogService.getLogger();
   
@@ -513,18 +513,21 @@ public class Message  {
       // Keep track of the fact that we are making progress.
       this.sc.updateProcessingMessage();
     }
-    if (this.socket != null) {
+    if (this.socket == null) {
+      throw new IOException(LocalizedStrings.Message_DEAD_CONNECTION.toLocalizedString());
+    }
+    try {
       final ByteBuffer cb = getCommBuffer();
       if (cb == null) {
         throw new IOException("No buffer");
       }
       int msgLen = 0;
-      synchronized(cb) {
+      synchronized (cb) {
         long totalPartLen = 0;
         long headerLen = 0;
         int partsToTransmit = this.numberOfParts;
-        
-        for (int i=0; i < this.numberOfParts; i++) {
+
+        for (int i = 0; i < this.numberOfParts; i++) {
           Part part = this.partsList[i];
           headerLen += PART_HEADER_SIZE;
           totalPartLen += part.getLength();
@@ -540,27 +543,27 @@ public class Message  {
           partsToTransmit++;
         }
 
-        if ( (headerLen + totalPartLen) > Integer.MAX_VALUE ) {
-          throw new MessageTooLargeException("Message size (" + (headerLen + totalPartLen) 
+        if ((headerLen + totalPartLen) > Integer.MAX_VALUE) {
+          throw new MessageTooLargeException("Message size (" + (headerLen + totalPartLen)
               + ") exceeds maximum integer value");
         }
-        
-        msgLen = (int)(headerLen + totalPartLen);
-        
+
+        msgLen = (int) (headerLen + totalPartLen);
+
         if (msgLen > MAX_MESSAGE_SIZE) {
           throw new MessageTooLargeException("Message size (" + msgLen
               + ") exceeds gemfire.client.max-message-size setting (" + MAX_MESSAGE_SIZE + ")");
         }
-        
+
         cb.clear();
         packHeaderInfoForSending(msgLen, (securityPart != null));
-        for (int i=0; i < partsToTransmit; i++) {
+        for (int i = 0; i < partsToTransmit; i++) {
           Part part = (i == this.numberOfParts) ? securityPart : partsList[i];
 
           if (cb.remaining() < PART_HEADER_SIZE) {
             flushBuffer();
           }
-          
+
           int partLen = part.getLength();
           cb.putInt(partLen);
           cb.put(part.getTypeCode());
@@ -586,12 +589,10 @@ public class Message  {
           this.os.flush();
         }
       }
-      if(clearMessage) {
+    } finally {
+      if (clearMessage) {
         clearParts();
       }
-    }
-    else {
-      throw new IOException(LocalizedStrings.Message_DEAD_CONNECTION.toLocalizedString());
     }
   }
 
@@ -1038,7 +1039,7 @@ public class Message  {
   }
   /**
    * Undo any state changes done by setComms.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public void unsetComms() {
     this.socket = null;

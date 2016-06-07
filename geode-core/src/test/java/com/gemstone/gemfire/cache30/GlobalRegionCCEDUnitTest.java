@@ -20,17 +20,7 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import java.util.Properties;
-
-import org.junit.Ignore;
-
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.RegionFactory;
-import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
 import com.gemstone.gemfire.internal.cache.RegionClearedException;
 import com.gemstone.gemfire.internal.cache.RegionEntry;
@@ -40,6 +30,11 @@ import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+import org.junit.Ignore;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * This test is only for GLOBAL REPLICATE Regions. Tests are
@@ -63,9 +58,9 @@ public class GlobalRegionCCEDUnitTest extends GlobalRegionDUnitTest {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties p = super.getDistributedSystemProperties();
-    p.put(DistributionConfig.CONSERVE_SOCKETS_NAME, "false");
+    p.put(CONSERVE_SOCKETS, "false");
     if (distributedSystemID > 0) {
-      p.put(DistributionConfig.DISTRIBUTED_SYSTEM_ID_NAME, ""
+      p.put(DISTRIBUTED_SYSTEM_ID, ""
           + distributedSystemID);
     }
     return p;

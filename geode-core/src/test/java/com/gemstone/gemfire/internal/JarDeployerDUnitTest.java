@@ -16,15 +16,20 @@
  */
 package com.gemstone.gemfire.internal;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
+import com.gemstone.gemfire.cache.execute.Execution;
+import com.gemstone.gemfire.cache.execute.FunctionService;
+import com.gemstone.gemfire.cache.execute.ResultCollector;
+import com.gemstone.gemfire.cache30.CacheTestCase;
+import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.distributed.DistributedSystemConfigProperties;
+import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
+import com.gemstone.gemfire.test.dunit.Assert;
+import com.gemstone.gemfire.test.dunit.Host;
+import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+import com.gemstone.gemfire.test.dunit.VM;
+import org.junit.Test;
+
+import java.io.*;
 import java.nio.channels.FileLock;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -36,24 +41,10 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
-
-import com.gemstone.gemfire.cache.execute.Execution;
-import com.gemstone.gemfire.cache.execute.FunctionService;
-import com.gemstone.gemfire.cache.execute.ResultCollector;
-import com.gemstone.gemfire.cache30.CacheTestCase;
-import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.VM;
-
 /**
  * Unit tests for the JarDeployer class
  * 
- * @since 7.0
+ * @since GemFire 7.0
  */
 public class JarDeployerDUnitTest extends CacheTestCase {
   private static final long serialVersionUID = 1L;
@@ -465,7 +456,7 @@ public class JarDeployerDUnitTest extends CacheTestCase {
     // Add the alternate directory to the distributed system, get it back out, and then create
     // a JarDeployer object with it.
     Properties properties = new Properties();
-    properties.put(DistributionConfig.DEPLOY_WORKING_DIR, alternateDir.getAbsolutePath());
+    properties.put(DistributedSystemConfigProperties.DEPLOY_WORKING_DIR, alternateDir.getAbsolutePath());
     InternalDistributedSystem distributedSystem = getSystem(properties);
     final JarDeployer jarDeployer = new JarDeployer(distributedSystem.getConfig().getDeployWorkingDir());
 

@@ -28,7 +28,7 @@ import java.io.*;
  * Represents a single operation that can be queued for reliable delivery.
  * Instances are owned in the context of a region.
  * 
- * @since 5.0
+ * @since GemFire 5.0
  */
 public class QueuedOperation
   {
@@ -161,13 +161,7 @@ public class QueuedOperation
       key = DataSerializer.readObject(in);
       if (op.isUpdate() || op.isCreate()) {
         deserializationPolicy = in.readByte();
-        if (deserializationPolicy ==
-            DistributedCacheOperation.DESERIALIZATION_POLICY_EAGER) {
-          valueObj = DataSerializer.readObject(in);
-        }
-        else {
-          value = DataSerializer.readByteArray(in);
-        }
+        value = DataSerializer.readByteArray(in);
       }
     }
     return new QueuedOperation(op, key, value, valueObj, deserializationPolicy,
@@ -183,13 +177,7 @@ public class QueuedOperation
       DataSerializer.writeObject(this.key, out);
       if (this.op.isUpdate() || this.op.isCreate()) {
         out.writeByte(this.deserializationPolicy);
-        if (this.deserializationPolicy !=
-            DistributedCacheOperation.DESERIALIZATION_POLICY_EAGER) {
-          DataSerializer.writeByteArray(this.value, out);
-        }
-        else {
-          DataSerializer.writeObject(this.valueObj, out);
-        }
+        DataSerializer.writeByteArray(this.value, out);
       }
     }
   }

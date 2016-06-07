@@ -16,16 +16,17 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import java.util.Properties;
-
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.OffHeapTestUtil;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 /**
  * Runs force invalidate eviction tests with off-heap regions.
- * @since 9.0
+ * @since Geode 1.0
  */
 public class ForceInvalidateOffHeapEvictionDUnitTest extends
     ForceInvalidateEvictionDUnitTest {
@@ -51,8 +52,8 @@ public class ForceInvalidateOffHeapEvictionDUnitTest extends
 
   @Override
   public Properties getDistributedSystemProperties() {
-    Properties properties = super.getDistributedSystemProperties();    
-    properties.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "100m");    
+    Properties properties = super.getDistributedSystemProperties();
+    properties.setProperty(OFF_HEAP_MEMORY_SIZE, "100m");
     
     return properties;
   }

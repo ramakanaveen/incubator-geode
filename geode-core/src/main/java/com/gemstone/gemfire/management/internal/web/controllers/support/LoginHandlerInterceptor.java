@@ -24,10 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.logging.LogService;
-import com.gemstone.gemfire.management.internal.security.ResourceConstants;
-import com.gemstone.gemfire.security.Authenticator;
 import com.gemstone.gemfire.internal.security.GeodeSecurityUtil;
+import com.gemstone.gemfire.management.internal.cli.multistep.CLIMultiStepHelper;
+import com.gemstone.gemfire.management.internal.security.ResourceConstants;
+import com.gemstone.gemfire.management.internal.web.util.UriUtils;
+import com.gemstone.gemfire.security.Authenticator;
 
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -39,7 +42,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @see javax.servlet.http.HttpServletRequest
  * @see javax.servlet.http.HttpServletResponse
  * @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter
- * @since 8.0
+ * @since GemFire 8.0
  */
 @SuppressWarnings("unused")
 public class LoginHandlerInterceptor extends HandlerInterceptorAdapter {
@@ -59,7 +62,7 @@ public class LoginHandlerInterceptor extends HandlerInterceptorAdapter {
 
   protected static final String ENVIRONMENT_VARIABLE_REQUEST_PARAMETER_PREFIX = "vf.gf.env.";
 
-  protected static final String SECURITY_VARIABLE_REQUEST_HEADER_PREFIX = "security-";
+  protected static final String SECURITY_VARIABLE_REQUEST_HEADER_PREFIX = DistributionConfig.SECURITY_PREFIX_NAME;
 
   public static Map<String, String> getEnvironment() {
     return ENV.get();
@@ -73,10 +76,14 @@ public class LoginHandlerInterceptor extends HandlerInterceptorAdapter {
 
     for (Enumeration<String> requestParameters = request.getParameterNames(); requestParameters.hasMoreElements(); ) {
       final String requestParameter = requestParameters.nextElement();
-
       if (requestParameter.startsWith(ENVIRONMENT_VARIABLE_REQUEST_PARAMETER_PREFIX)) {
+        String requestValue = request.getParameter(requestParameter);
+        //GEODE-1469: since we enced stepArgs, we will need to decode it here. See #ClientHttpRequest
+        if(requestParameter.contains(CLIMultiStepHelper.STEP_ARGS)){
+          requestValue = UriUtils.decode(requestValue);
+        }
         requestParameterValues.put(requestParameter.substring(ENVIRONMENT_VARIABLE_REQUEST_PARAMETER_PREFIX.length()),
-          request.getParameter(requestParameter));
+          requestValue);
       }
     }
 

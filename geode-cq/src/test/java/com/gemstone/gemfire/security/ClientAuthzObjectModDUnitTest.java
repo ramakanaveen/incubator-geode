@@ -16,21 +16,11 @@
  */
 package com.gemstone.gemfire.security;
 
-import static com.gemstone.gemfire.distributed.internal.DistributionConfig.*;
-import static com.gemstone.gemfire.security.SecurityTestUtils.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
-
-import com.gemstone.gemfire.internal.AvailablePortHelper;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import com.gemstone.gemfire.DataSerializable;
 import com.gemstone.gemfire.Instantiator;
 import com.gemstone.gemfire.cache.operations.OperationContext.OperationCode;
+import com.gemstone.gemfire.distributed.DistributedSystemConfigProperties;
+import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.security.FilterPostAuthorization;
 import com.gemstone.gemfire.internal.security.FilterPreAuthorization;
 import com.gemstone.gemfire.internal.security.ObjectWithAuthz;
@@ -41,6 +31,16 @@ import com.gemstone.gemfire.security.templates.UserPasswordAuthInit;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 import com.gemstone.gemfire.test.junit.categories.SecurityTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+
+import static com.gemstone.gemfire.security.SecurityTestUtils.closeCache;
+import static com.gemstone.gemfire.security.SecurityTestUtils.getLocatorPort;
 
 /**
  * Tests for authorization callback that modify objects and callbacks from
@@ -56,7 +56,7 @@ import com.gemstone.gemfire.test.junit.categories.SecurityTest;
  * This enables testing of object and callback modification both in
  * pre-processing and post-processing phases.
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 @Category({ DistributedTest.class, SecurityTest.class })
 public class ClientAuthzObjectModDUnitTest extends ClientAuthorizationTestCase {
@@ -212,13 +212,13 @@ public class ClientAuthzObjectModDUnitTest extends ClientAuthorizationTestCase {
   private Properties buildProperties(final String authenticator, final Properties extraProps, final String preAccessor, final String postAccessor) {
     Properties authProps = new Properties();
     if (authenticator != null) {
-      authProps.setProperty(SECURITY_CLIENT_AUTHENTICATOR_NAME, authenticator);
+      authProps.setProperty(DistributedSystemConfigProperties.SECURITY_CLIENT_AUTHENTICATOR, authenticator);
     }
     if (preAccessor != null) {
-      authProps.setProperty(SECURITY_CLIENT_ACCESSOR_NAME, preAccessor);
+      authProps.setProperty(DistributedSystemConfigProperties.SECURITY_CLIENT_ACCESSOR, preAccessor);
     }
     if (postAccessor != null) {
-      authProps.setProperty(SECURITY_CLIENT_ACCESSOR_PP_NAME, postAccessor);
+      authProps.setProperty(DistributedSystemConfigProperties.SECURITY_CLIENT_ACCESSOR_PP, postAccessor);
     }
     if (extraProps != null) {
       authProps.putAll(extraProps);

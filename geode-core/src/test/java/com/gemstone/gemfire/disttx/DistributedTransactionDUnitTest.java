@@ -16,59 +16,26 @@
  */
 package com.gemstone.gemfire.disttx;
 
+import com.gemstone.gemfire.cache.*;
+import com.gemstone.gemfire.cache.server.CacheServer;
+import com.gemstone.gemfire.cache30.CacheTestCase;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import com.gemstone.gemfire.i18n.LogWriterI18n;
+import com.gemstone.gemfire.internal.AvailablePort;
+import com.gemstone.gemfire.internal.cache.*;
+import com.gemstone.gemfire.internal.cache.execute.CustomerIDPartitionResolver;
+import com.gemstone.gemfire.internal.cache.execute.data.CustId;
+import com.gemstone.gemfire.internal.cache.execute.data.Customer;
+import com.gemstone.gemfire.internal.cache.execute.data.Order;
+import com.gemstone.gemfire.internal.cache.execute.data.OrderId;
+import com.gemstone.gemfire.test.dunit.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheTransactionManager;
-import com.gemstone.gemfire.cache.CommitConflictException;
-import com.gemstone.gemfire.cache.CommitIncompleteException;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.DiskStore;
-import com.gemstone.gemfire.cache.InterestPolicy;
-import com.gemstone.gemfire.cache.PartitionAttributesFactory;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.cache.SubscriptionAttributes;
-import com.gemstone.gemfire.cache.server.CacheServer;
-import com.gemstone.gemfire.cache30.CacheTestCase;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.ReplyException;
-import com.gemstone.gemfire.i18n.LogWriterI18n;
-import com.gemstone.gemfire.internal.AvailablePort;
-import com.gemstone.gemfire.internal.cache.CacheServerImpl;
-import com.gemstone.gemfire.internal.cache.BucketRegion;
-import com.gemstone.gemfire.internal.cache.DistTXState;
-import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
-import com.gemstone.gemfire.internal.cache.LocalRegion;
-import com.gemstone.gemfire.internal.cache.PartitionedRegion;
-import com.gemstone.gemfire.internal.cache.RegionEntry;
-import com.gemstone.gemfire.internal.cache.TXManagerImpl;
-import com.gemstone.gemfire.internal.cache.TXState;
-import com.gemstone.gemfire.internal.cache.TXStateInterface;
-import com.gemstone.gemfire.internal.cache.TXStateProxyImpl;
-import com.gemstone.gemfire.internal.cache.execute.CustomerIDPartitionResolver;
-import com.gemstone.gemfire.internal.cache.execute.data.CustId;
-import com.gemstone.gemfire.internal.cache.execute.data.Customer;
-import com.gemstone.gemfire.internal.cache.execute.data.Order;
-import com.gemstone.gemfire.internal.cache.execute.data.OrderId;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.Invoke;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.SerializableCallable;
-import com.gemstone.gemfire.test.dunit.VM;
-
-/**
- * Port of GemFireXD's corresponding test for distributed transactions
- * 
- *
- */
 @SuppressWarnings("deprecation")
 public class DistributedTransactionDUnitTest extends CacheTestCase {
   final protected String CUSTOMER_PR = "customerPRRegion";
@@ -83,7 +50,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     Invoke.invokeInEveryVM(new SerializableCallable() {
       @Override
       public Object call() throws Exception {
-        System.setProperty("gemfire.sync-commits", "true");
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "sync-commits", "true");
         return null;
       }
     });
@@ -103,7 +70,7 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
     Invoke.invokeInEveryVM(new SerializableCallable() {
       @Override
       public Object call() throws Exception {
-        System.setProperty("gemfire.sync-commits", "false");
+        System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "sync-commits", "false");
         return null;
       }
     });
@@ -178,8 +145,6 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    //props.put("distributed-transactions", "true");
-//    props.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
     return props;
   }
 
@@ -375,11 +340,6 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
   
 
   
-  /**
-   * From GemFireXD: testTransactionalInsertOnReplicatedTable
-   * 
-   * @throws Exception
-   */
   public void testTransactionalPutOnReplicatedRegion() throws Exception {
     Host host = Host.getHost(0);
     VM server1 = host.getVM(0);
@@ -653,8 +613,6 @@ public class DistributedTransactionDUnitTest extends CacheTestCase {
   }
   
   /*
-   * [sjigyasu] This adapation of test from GemFireXD allows the difference in 
-   * the way GemFire and GemFireXD handle server groups.
    * We create 2 partitioned regions one on each server and have a third node
    * as accessor and fire transactional operations on it.
    */

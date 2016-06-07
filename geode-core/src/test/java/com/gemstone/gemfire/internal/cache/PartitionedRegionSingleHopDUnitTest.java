@@ -16,38 +16,9 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
-import com.jayway.awaitility.Awaitility;
-import org.jgroups.blocks.locking.AwaitInfo;
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
-
 import com.gemstone.gemfire.DataSerializable;
 import com.gemstone.gemfire.DataSerializer;
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.DiskStore;
-import com.gemstone.gemfire.cache.PartitionAttributesFactory;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.Scope;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.Pool;
 import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.client.internal.ClientMetadataService;
@@ -61,7 +32,6 @@ import com.gemstone.gemfire.cache30.CacheSerializableRunnable;
 import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.ServerLocation;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.BucketAdvisor.ServerBucketProfile;
@@ -69,17 +39,22 @@ import com.gemstone.gemfire.internal.cache.execute.data.CustId;
 import com.gemstone.gemfire.internal.cache.execute.data.OrderId;
 import com.gemstone.gemfire.internal.cache.execute.data.ShipmentId;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheServerTestUtil;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.NetworkUtils;
-import com.gemstone.gemfire.test.dunit.VM;
-import com.gemstone.gemfire.test.dunit.Wait;
-import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.*;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
+import com.jayway.awaitility.Awaitility;
+import org.junit.Ignore;
+import org.junit.experimental.categories.Category;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
 
@@ -157,7 +132,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
     File logFile = new File("locator-" + locatorPort + ".log");
 
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
 
     try {
       locator = Locator.startLocatorAndDS(locatorPort, logFile, null, props);
@@ -176,15 +151,14 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
 
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("locators", locString);
+    props.setProperty(LOCATORS, locString);
     CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
         "PartitionedRegionSingleHopDUnitTest");
     DistributedSystem ds = test.getSystem(props);
     cache = CacheFactory.create(ds);
 
     CacheServer server = cache.addCacheServer();
-    int port = AvailablePort.getRandomAvailablePort(AvailablePort.SOCKET);
-    server.setPort(port);
+    server.setPort(0);
     server.setHostnameForClients("localhost");
     try {
       server.start();
@@ -246,7 +220,7 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
     LogWriterUtils.getLogWriter().info(
         "Partitioned Region SHIPMENT created Successfully :"
             + shipmentRegion.toString());
-    return port;
+    return server.getPort();
   }
 
   public static void clearMetadata() {
@@ -1103,8 +1077,8 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   public static void createClientWithoutPRSingleHopEnabled(int port0) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
         "PartitionedRegionSingleHopDUnitTest");
     DistributedSystem ds = test.getSystem(props);
@@ -1585,8 +1559,8 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   public static void createClient(int port0) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
         "PartitionedRegionSingleHopDUnitTest");
     DistributedSystem ds = test.getSystem(props);
@@ -1611,8 +1585,8 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   public static void createClient(int port0, int port1) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
         "PartitionedRegionSingleHopDUnitTest");
     DistributedSystem ds = test.getSystem(props);
@@ -1637,8 +1611,8 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   public static void createClientWithLocator(String host, int port0) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
         "PartitionedRegionSingleHopDUnitTest");
     DistributedSystem ds = test.getSystem(props);
@@ -1662,8 +1636,8 @@ public class PartitionedRegionSingleHopDUnitTest extends CacheTestCase {
   public static void createClient(int port0, int port1, int port2, int port3) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     CacheTestCase test = new PartitionedRegionSingleHopDUnitTest(
         "PartitionedRegionSingleHopDUnitTest");
     DistributedSystem ds = test.getSystem(props);

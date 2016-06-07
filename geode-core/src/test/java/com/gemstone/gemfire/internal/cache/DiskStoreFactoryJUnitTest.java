@@ -16,22 +16,21 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.*;
-import java.util.*;
-
+import com.gemstone.gemfire.cache.*;
+import com.gemstone.gemfire.distributed.DistributedSystem;
+import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.Arrays;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.cache.*;
-import com.gemstone.gemfire.internal.Assert;
-import com.gemstone.gemfire.distributed.*;
-import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
-
-import junit.framework.TestCase;
 
 /**
  * Tests DiskStoreFactory
@@ -48,12 +47,12 @@ public class DiskStoreFactoryJUnitTest
   protected static Properties props = new Properties();
 
   static {
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
-    props.setProperty("log-level", "config"); // to keep diskPerf logs smaller
-    props.setProperty("statistic-sampling-enabled", "true");
-    props.setProperty("enable-time-statistics", "true");
-    props.setProperty("statistic-archive-file", "stats.gfs");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
+    props.setProperty(LOG_LEVEL, "config"); // to keep diskPerf logs smaller
+    props.setProperty(STATISTIC_SAMPLING_ENABLED, "true");
+    props.setProperty(ENABLE_TIME_STATISTICS, "true");
+    props.setProperty(STATISTIC_ARCHIVE_FILE, "stats.gfs");
   }
 
   @Before

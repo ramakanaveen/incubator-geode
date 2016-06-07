@@ -16,14 +16,7 @@
  */
 package com.gemstone.gemfire.management.internal.cli.commands;
 
-import static com.gemstone.gemfire.test.dunit.Assert.*;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
-
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
+import com.gemstone.gemfire.distributed.DistributedSystemConfigProperties;
 import com.gemstone.gemfire.internal.ClassBuilder;
 import com.gemstone.gemfire.internal.ClassPathLoader;
 import com.gemstone.gemfire.internal.FileUtil;
@@ -33,14 +26,20 @@ import com.gemstone.gemfire.management.internal.cli.result.CommandResult;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.test.dunit.Assert.assertEquals;
 
 /**
  * Unit tests for configuring user commands.
  *
- * @since 8.0
+ * @since GemFire 8.0
  */
 @Category(DistributedTest.class)
 public class UserCommandsDUnitTest extends CliCommandTestBase {
@@ -155,7 +154,7 @@ public class UserCommandsDUnitTest extends CliCommandTestBase {
     });
 
     Properties properties = new Properties();
-    properties.setProperty(DistributionConfig.USER_COMMAND_PACKAGES, "junit.ucdunit");
+    properties.setProperty(DistributedSystemConfigProperties.USER_COMMAND_PACKAGES, "junit.ucdunit");
     setUpJmxManagerOnVm0ThenConnect(properties);
 
     CommandResult cmdResult = executeCommand("ucdunitcmd");

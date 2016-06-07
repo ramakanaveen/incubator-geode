@@ -16,48 +16,15 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-
-import org.apache.logging.log4j.Logger;
-
-import com.gemstone.gemfire.CancelException;
-import com.gemstone.gemfire.CopyHelper;
-import com.gemstone.gemfire.DataSerializer;
-import com.gemstone.gemfire.DeltaSerializationException;
-import com.gemstone.gemfire.InternalGemFireError;
-import com.gemstone.gemfire.InvalidDeltaException;
-import com.gemstone.gemfire.SystemFailure;
-import com.gemstone.gemfire.cache.CacheClosedException;
-import com.gemstone.gemfire.cache.CacheException;
-import com.gemstone.gemfire.cache.CacheWriter;
-import com.gemstone.gemfire.cache.CacheWriterException;
-import com.gemstone.gemfire.cache.DiskAccessException;
-import com.gemstone.gemfire.cache.EntryNotFoundException;
-import com.gemstone.gemfire.cache.EvictionAction;
-import com.gemstone.gemfire.cache.EvictionAlgorithm;
-import com.gemstone.gemfire.cache.EvictionAttributes;
-import com.gemstone.gemfire.cache.ExpirationAction;
-import com.gemstone.gemfire.cache.Operation;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.RegionDestroyedException;
-import com.gemstone.gemfire.cache.TimeoutException;
+import com.gemstone.gemfire.*;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.partition.PartitionListener;
-import com.gemstone.gemfire.cache.query.internal.IndexUpdater;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.AtomicLongWithTerminalState;
 import com.gemstone.gemfire.distributed.internal.DirectReplyProcessor;
 import com.gemstone.gemfire.distributed.internal.DistributionAdvisor.Profile;
+import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.DistributionStats;
 import com.gemstone.gemfire.distributed.internal.membership.InternalDistributedMember;
 import com.gemstone.gemfire.internal.Assert;
@@ -66,7 +33,6 @@ import com.gemstone.gemfire.internal.Version;
 import com.gemstone.gemfire.internal.cache.BucketAdvisor.BucketProfile;
 import com.gemstone.gemfire.internal.cache.FilterRoutingInfo.FilterInfo;
 import com.gemstone.gemfire.internal.cache.control.MemoryEvent;
-import com.gemstone.gemfire.internal.cache.delta.Delta;
 import com.gemstone.gemfire.internal.cache.partitioned.Bucket;
 import com.gemstone.gemfire.internal.cache.partitioned.DestroyMessage;
 import com.gemstone.gemfire.internal.cache.partitioned.InvalidateMessage;
@@ -84,6 +50,7 @@ import com.gemstone.gemfire.internal.cache.versions.VersionSource;
 import com.gemstone.gemfire.internal.cache.versions.VersionStamp;
 import com.gemstone.gemfire.internal.cache.versions.VersionTag;
 import com.gemstone.gemfire.internal.cache.wan.GatewaySenderEventImpl;
+import com.gemstone.gemfire.internal.concurrent.AtomicLong5;
 import com.gemstone.gemfire.internal.concurrent.Atomics;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 import com.gemstone.gemfire.internal.logging.LogService;
@@ -92,7 +59,14 @@ import com.gemstone.gemfire.internal.logging.log4j.LogMarker;
 import com.gemstone.gemfire.internal.offheap.annotations.Released;
 import com.gemstone.gemfire.internal.offheap.annotations.Retained;
 import com.gemstone.gemfire.internal.offheap.annotations.Unretained;
-import com.gemstone.gemfire.internal.concurrent.AtomicLong5;
+import org.apache.logging.log4j.Logger;
+
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
 
 
 /**
@@ -103,7 +77,7 @@ import com.gemstone.gemfire.internal.concurrent.AtomicLong5;
  * Primary election for a BucketRegion can be found in the 
  * {@link com.gemstone.gemfire.internal.cache.BucketAdvisor} class
  * 
- * @since 5.1
+ * @since GemFire 5.1
  *
  */
 public class BucketRegion extends DistributedRegion
@@ -215,8 +189,8 @@ implements Bucket
   /* one map per bucket region */
   public HashMap allKeysMap = new HashMap();
 
-  static final boolean FORCE_LOCAL_LISTENERS_INVOCATION = 
-    Boolean.getBoolean("gemfire.BucketRegion.alwaysFireLocalListeners");
+  static final boolean FORCE_LOCAL_LISTENERS_INVOCATION =
+      Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "BucketRegion.alwaysFireLocalListeners");
   // gemfire.BucktRegion.alwaysFireLocalListeners=true
   
   private volatile AtomicLong5 eventSeqNum = null;
@@ -1327,7 +1301,7 @@ implements Bucket
    * Return true if this bucket has been destroyed.
    * Don't bother checking to see if the PR that owns this bucket was destroyed;
    * that has already been checked.
-   * @since 6.0
+   * @since GemFire 6.0
    */
   public boolean isBucketDestroyed() {
     return super.isDestroyed();
@@ -1502,7 +1476,6 @@ implements Bucket
     .append("[path='").append(getFullPath())
     .append(";serial=").append(getSerialNumber())
     .append(";primary=").append(getBucketAdvisor().getProxyBucketRegion().isPrimary())
-    .append(";indexUpdater=").append(getIndexUpdater())
     .append("]")
     .toString();
   }
@@ -1727,10 +1700,8 @@ implements Bucket
       setDeltaIfNeeded(event);
     }
     if (msg != null) {
-      // The primary bucket member which is being modified remotely by a GemFire
+      // The primary bucket member which is being modified remotely by a
       // thread via a received PartitionedMessage
-      //Asif: Some of the adjunct recepients include those members which 
-      // are sqlFabricHub & would need old value along with news
       msg = msg.getMessageForRelayToListeners(event, adjunctRecipients);
       msg.setSender(this.partitionedRegion.getDistributionManager()
           .getDistributionManagerId());
@@ -2019,32 +1990,10 @@ implements Bucket
   public CacheWriter basicGetWriter() {
     return this.partitionedRegion.basicGetWriter();
   }
-   @Override
-  void cleanUpOnIncompleteOp(EntryEventImpl event,   RegionEntry re, 
-      boolean eventRecorded, boolean updateStats, boolean isReplace) {
-     
-    
-    if(!eventRecorded || isReplace) {
-      //No indexes updated so safe to remove.
-      this.entries.removeEntry(event.getKey(), re, updateStats) ;      
-    }/*else {
-      //if event recorded is true, that means as per event tracker entry is in
-      //system. As per sqlfabric, indexes have been updated. What is not done
-      // is basicPutPart2( distribution etc). So we do nothing as PR's re-attempt
-      // will do the required basicPutPart2. If we remove the entry here, than 
-      //event tracker will not allow re insertion. So either we do nothing or
-      //if we remove ,than we have to update sqlfindexes as well as undo recording
-      // of event.
-       //TODO:OQL indexes? : Hope they get updated during retry. The issue is that oql indexes
-       // get updated after distribute , so it is entirely possible that oql index are 
-        // not updated. what if retry fails?
-       
-    }*/
-  }
 
   /* (non-Javadoc)
    * @see com.gemstone.gemfire.internal.cache.partitioned.Bucket#getBucketOwners()
-   * @since gemfire59poc
+   * @since GemFire 5.9
    */
   public Set getBucketOwners() {
     return getBucketAdvisor().getProxyBucketRegion().getBucketOwners();    
@@ -2090,7 +2039,7 @@ implements Bucket
       return 0;
     }
     if (!(value instanceof byte[]) && !(value instanceof CachedDeserializable)
-        && !(value instanceof com.gemstone.gemfire.Delta) && !(value instanceof Delta)
+        && !(value instanceof com.gemstone.gemfire.Delta)
         && !(value instanceof GatewaySenderEventImpl)) {
     // ezoerner:20090401 it's possible this value is a Delta
       throw new InternalGemFireError("DEBUG: calcMemSize: weird value (class " 
@@ -2230,10 +2179,6 @@ implements Bucket
   
 
   public void preDestroyBucket(int bucketId) {
-    final IndexUpdater indexUpdater = getIndexUpdater();
-    if (indexUpdater != null) {
-      indexUpdater.clearIndexes(this, bucketId);
-    }
   }
   @Override
   public void cleanupFailedInitialization()

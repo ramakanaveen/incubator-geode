@@ -19,21 +19,18 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.DiskStore;
-import com.gemstone.gemfire.cache.PartitionAttributesFactory;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionFactory;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.admin.remote.ShutdownAllRequest;
-import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 
 import java.io.File;
 import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.MCAST_PORT;
 
 /**
  *
@@ -50,9 +47,9 @@ public class RunCacheInOldGemfire {
   
   protected Cache createCache(String mcastPort) {
     Properties config = new Properties();
-    config.setProperty(DistributionConfig.MCAST_PORT_NAME, mcastPort);
-    config.setProperty(DistributionConfig.LOCATORS_NAME, "");
-    config.setProperty(DistributionConfig.LOG_FILE_NAME, "oldgemfire.log");
+    config.setProperty(MCAST_PORT, mcastPort);
+    config.setProperty(LOCATORS, "");
+    config.setProperty(LOG_FILE, "oldgemfire.log");
     InternalDistributedSystem localsystem = (InternalDistributedSystem)DistributedSystem.connect(config);
     Cache cache = CacheFactory.create(localsystem);
     return cache;

@@ -16,19 +16,20 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.LogWriterUtils;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 /**
  * Performs eviction stat dunit tests for off-heap regions.
- * @since 9.0
+ * @since Geode 1.0
  */
 public class OffHeapEvictionStatsDUnitTest extends EvictionStatsDUnitTest {
 
@@ -54,8 +55,8 @@ public class OffHeapEvictionStatsDUnitTest extends EvictionStatsDUnitTest {
 
   @Override
   public Properties getDistributedSystemProperties() {
-    Properties properties = super.getDistributedSystemProperties();    
-    properties.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "100m");    
+    Properties properties = super.getDistributedSystemProperties();
+    properties.setProperty(OFF_HEAP_MEMORY_SIZE, "100m");
     
     return properties;
   }

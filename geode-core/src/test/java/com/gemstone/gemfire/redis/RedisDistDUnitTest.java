@@ -16,23 +16,18 @@
  */
 package com.gemstone.gemfire.redis;
 
-import java.util.Random;
-
+import com.gemstone.gemfire.cache.CacheFactory;
+import com.gemstone.gemfire.distributed.DistributedSystemConfigProperties;
+import com.gemstone.gemfire.internal.AvailablePortHelper;
+import com.gemstone.gemfire.internal.SocketCreator;
+import com.gemstone.gemfire.test.dunit.*;
+import com.gemstone.gemfire.test.junit.categories.FlakyTest;
 import org.junit.experimental.categories.Category;
 import redis.clients.jedis.Jedis;
 
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.internal.AvailablePortHelper;
-import com.gemstone.gemfire.internal.SocketCreator;
-import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
-import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.SerializableCallable;
-import com.gemstone.gemfire.test.dunit.VM;
-import com.gemstone.gemfire.test.junit.categories.FlakyTest;
+import java.util.Random;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class RedisDistDUnitTest extends DistributedTestCase {
 
@@ -84,11 +79,11 @@ public class RedisDistDUnitTest extends DistributedTestCase {
         int port = ports[VM.getCurrentVMNum()];
         CacheFactory cF = new CacheFactory();
         String locator = SocketCreator.getLocalHost().getHostName() + "[" + locatorPort + "]";
-        cF.set("log-level", LogWriterUtils.getDUnitLogLevel());
-        cF.set("redis-bind-address", localHost);
-        cF.set("redis-port", ""+port);
-        cF.set("mcast-port", "0");
-        cF.set("locators", locator);
+        cF.set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+        cF.set(DistributedSystemConfigProperties.REDIS_BIND_ADDRESS, localHost);
+        cF.set(DistributedSystemConfigProperties.REDIS_PORT, "" + port);
+        cF.set(MCAST_PORT, "0");
+        cF.set(LOCATORS, locator);
         cF.create();
         return Integer.valueOf(port);
       }

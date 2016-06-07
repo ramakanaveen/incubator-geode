@@ -70,7 +70,7 @@ import com.gemstone.gemfire.internal.offheap.annotations.Retained;
  * basis. It lives on the node where transaction data exists.
  *
  * 
- * @since 4.0
+ * @since GemFire 4.0
  * 
  * @see TXManagerImpl
  */
@@ -863,7 +863,7 @@ public class TXState implements TXStateInterface {
   /**
    * Used to keep track of the region and key associated with a TXEntryState.
    * Also used to sort the entries into the order in which they will be applied.
-   * @since 5.7
+   * @since GemFire 5.7
    */
   static class TXEntryStateWithRegionAndKey implements Comparable {
     public final TXEntryState es;
@@ -1325,13 +1325,10 @@ public class TXState implements TXStateInterface {
    * @param rememberRead true if the value read from committed state
    *   needs to be remembered in tx state for repeatable read.
    * @param createIfAbsent should a transactional entry be created if not present. 
-   *        Used by sql fabric system
    * @return a txEntryState or null if the entry doesn't exist in the transaction and/or committed state. 
    */
   public TXEntryState txReadEntry(KeyInfo keyInfo, LocalRegion localRegion,
       boolean rememberRead, boolean createIfAbsent) {
-    // EntryNotFoundException can be expected in case of sqlfabric and should
-    // not be caught.
     localRegion.cache.getCancelCriterion().checkCancelInProgress(null);
     return txReadEntry(keyInfo, localRegion, rememberRead, null, createIfAbsent);
   }
@@ -1764,7 +1761,7 @@ public class TXState implements TXStateInterface {
 //	        final boolean requiresRegionContext = theRegion.keyRequiresRegionContext();
 	        InternalDistributedMember myId = theRegion.getDistributionManager().getDistributionManagerId();
 	        for (int i = 0; i < putallOp.putAllDataSize; ++i) {
-	          @Released EntryEventImpl ev = PutAllPRMessage.getEventFromEntry(theRegion, myId,myId, i, putallOp.putAllData, false, putallOp.getBaseEvent().getContext(), false, !putallOp.getBaseEvent().isGenerateCallbacks(), false);
+	          @Released EntryEventImpl ev = PutAllPRMessage.getEventFromEntry(theRegion, myId,myId, i, putallOp.putAllData, false, putallOp.getBaseEvent().getContext(), false, !putallOp.getBaseEvent().isGenerateCallbacks());
 	          try {
 	          ev.setPutAllOperation(putallOp);
 	          if (theRegion.basicPut(ev, false, false, null, false)) {

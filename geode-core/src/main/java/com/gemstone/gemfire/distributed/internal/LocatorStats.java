@@ -16,25 +16,22 @@
  */
 package com.gemstone.gemfire.distributed.internal;
 
+import com.gemstone.gemfire.*;
+import com.gemstone.gemfire.internal.StatisticsTypeFactoryImpl;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.gemstone.gemfire.StatisticDescriptor;
-import com.gemstone.gemfire.Statistics;
-import com.gemstone.gemfire.StatisticsFactory;
-import com.gemstone.gemfire.StatisticsType;
-import com.gemstone.gemfire.StatisticsTypeFactory;
-import com.gemstone.gemfire.internal.StatisticsTypeFactoryImpl;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
 
 /**
  * This class maintains statistics for the locator
- * @since 5.7
+ * @since GemFire 5.7
  */
 public class LocatorStats {
   private static StatisticsType type;
-  
-  
-  private static final String KNOWN_LOCATORS = "locators"; // gauge
+
+  private static final String KNOWN_LOCATORS = LOCATORS; // gauge
   private static final String REQUESTS_TO_LOCATOR = "locatorRequests"; // counter
   private static final String RESPONSES_FROM_LOCATOR = "locatorResponses"; // counter
   private static final String ENDPOINTS_KNOWN = "servers"; // gauge
@@ -74,7 +71,7 @@ public class LocatorStats {
         statName, 
         statDescription,
         new StatisticDescriptor[] {
-            f.createIntGauge(KNOWN_LOCATORS, "Number of locators known to this locator", "locators"),
+            f.createIntGauge(KNOWN_LOCATORS, "Number of locators known to this locator", LOCATORS),
             f.createLongCounter(REQUESTS_TO_LOCATOR, "Number of requests this locator has received from clients", "requests"),
             f.createLongCounter(RESPONSES_FROM_LOCATOR, "Number of responses this locator has sent to clients", "responses"),
             f.createIntGauge(ENDPOINTS_KNOWN, "Number of servers this locator knows about", "servers"),

@@ -16,22 +16,9 @@
  */
 package com.gemstone.gemfire.management.internal.cli.commands;
 
-import static com.gemstone.gemfire.test.dunit.Assert.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.DiskStoreFactory;
-import com.gemstone.gemfire.cache.EvictionAction;
-import com.gemstone.gemfire.cache.EvictionAttributes;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionFactory;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.query.Index;
 import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.InternalLocator;
 import com.gemstone.gemfire.distributed.internal.SharedConfiguration;
 import com.gemstone.gemfire.internal.AvailablePort;
@@ -41,19 +28,18 @@ import com.gemstone.gemfire.management.internal.cli.domain.Stock;
 import com.gemstone.gemfire.management.internal.cli.i18n.CliStrings;
 import com.gemstone.gemfire.management.internal.cli.result.CommandResult;
 import com.gemstone.gemfire.management.internal.cli.util.CommandStringBuilder;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.SerializableCallable;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.VM;
-import com.gemstone.gemfire.test.dunit.Wait;
-import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.*;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static com.gemstone.gemfire.test.dunit.Assert.*;
 
 @Category(DistributedTest.class)
 public class IndexCommandsDUnitTest extends CliCommandTestBase {
@@ -611,10 +597,10 @@ public class IndexCommandsDUnitTest extends CliCommandTestBase {
 
         final File locatorLogFile = new File("locator-" + locatorPort + ".log");
         final Properties locatorProps = new Properties();
-        locatorProps.setProperty(DistributionConfig.NAME_NAME, "Locator");
-        locatorProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-        locatorProps.setProperty(DistributionConfig.LOG_LEVEL_NAME, "fine");
-        locatorProps.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "true");
+        locatorProps.setProperty(NAME, "Locator");
+        locatorProps.setProperty(MCAST_PORT, "0");
+        locatorProps.setProperty(LOG_LEVEL, "fine");
+        locatorProps.setProperty(ENABLE_CLUSTER_CONFIGURATION, "true");
         try {
           final InternalLocator locator = (InternalLocator) Locator.startLocatorAndDS(locatorPort, locatorLogFile, null,
               locatorProps);
@@ -639,8 +625,8 @@ public class IndexCommandsDUnitTest extends CliCommandTestBase {
 
     // Start the default manager
     Properties managerProps = new Properties();
-    managerProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    managerProps.setProperty(DistributionConfig.LOCATORS_NAME, "localhost:" + locatorPort);
+    managerProps.setProperty(MCAST_PORT, "0");
+    managerProps.setProperty(LOCATORS, "localhost:" + locatorPort);
     setUpJmxManagerOnVm0ThenConnect(managerProps);
 
     // Create a cache in VM 1
@@ -649,9 +635,9 @@ public class IndexCommandsDUnitTest extends CliCommandTestBase {
       @Override
       public void run() {
         Properties localProps = new Properties();
-        localProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-        localProps.setProperty(DistributionConfig.LOCATORS_NAME, "localhost:" + locatorPort);
-        localProps.setProperty(DistributionConfig.GROUPS_NAME, groupName);
+        localProps.setProperty(MCAST_PORT, "0");
+        localProps.setProperty(LOCATORS, "localhost:" + locatorPort);
+        localProps.setProperty(GROUPS, groupName);
         getSystem(localProps);
         assertNotNull(getCache());
 
@@ -692,10 +678,10 @@ public class IndexCommandsDUnitTest extends CliCommandTestBase {
         getCache().close();
 
         Properties localProps = new Properties();
-        localProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-        localProps.setProperty(DistributionConfig.LOCATORS_NAME, "localhost:" + locatorPort);
-        localProps.setProperty(DistributionConfig.GROUPS_NAME, groupName);
-        localProps.setProperty(DistributionConfig.USE_CLUSTER_CONFIGURATION_NAME, "true");
+        localProps.setProperty(MCAST_PORT, "0");
+        localProps.setProperty(LOCATORS, "localhost:" + locatorPort);
+        localProps.setProperty(GROUPS, groupName);
+        localProps.setProperty(USE_CLUSTER_CONFIGURATION, "true");
         getSystem(localProps);
         Cache cache = getCache();
         assertNotNull(cache);
@@ -737,10 +723,10 @@ public class IndexCommandsDUnitTest extends CliCommandTestBase {
         getCache().close();
 
         Properties localProps = new Properties();
-        localProps.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-        localProps.setProperty(DistributionConfig.LOCATORS_NAME, "localhost:" + locatorPort);
-        localProps.setProperty(DistributionConfig.GROUPS_NAME, groupName);
-        localProps.setProperty(DistributionConfig.USE_CLUSTER_CONFIGURATION_NAME, "true");
+        localProps.setProperty(MCAST_PORT, "0");
+        localProps.setProperty(LOCATORS, "localhost:" + locatorPort);
+        localProps.setProperty(GROUPS, groupName);
+        localProps.setProperty(USE_CLUSTER_CONFIGURATION, "true");
         getSystem(localProps);
         Cache cache = getCache();
         assertNotNull(cache);
@@ -777,8 +763,8 @@ public class IndexCommandsDUnitTest extends CliCommandTestBase {
       @Override
       public Object call() throws Exception {
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.NAME_NAME, VM1Name);
-        props.setProperty(DistributionConfig.GROUPS_NAME, group1);
+        props.setProperty(NAME, VM1Name);
+        props.setProperty(GROUPS, group1);
         getSystem(props);
         Region parReg = createParReg(parRegName, getCache(), String.class, Stock.class);
         parReg.put("MSFT", new Stock("MSFT", 27));
@@ -811,8 +797,8 @@ public class IndexCommandsDUnitTest extends CliCommandTestBase {
       @Override
       public Object call() throws Exception {
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.NAME_NAME, VM1Name);
-        props.setProperty(DistributionConfig.GROUPS_NAME, group1);
+        props.setProperty(NAME, VM1Name);
+        props.setProperty(GROUPS, group1);
         getSystem(props);
         Region parReg = createParReg(parRegName, getCache(), String.class, Stock.class);
         parReg.put("MSFT", new Stock("MSFT", 27));

@@ -16,19 +16,20 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.EvictionAttributes;
 import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * Tests PartitionedRegion localMaxMemory with Off-Heap memory.
  * 
- * @since 9.0
+ * @since Geode 1.0
  */
 @SuppressWarnings({ "deprecation", "serial" })
 public class PartitionedRegionLocalMaxMemoryOffHeapDUnitTest extends PartitionedRegionLocalMaxMemoryDUnitTest {
@@ -56,7 +57,7 @@ public class PartitionedRegionLocalMaxMemoryOffHeapDUnitTest extends Partitioned
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
     // test creates a bit more than 1m of off heap so we need to total off heap size to be >1m
-    props.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "2m");
+    props.setProperty(OFF_HEAP_MEMORY_SIZE, "2m");
     return props;
   }
   

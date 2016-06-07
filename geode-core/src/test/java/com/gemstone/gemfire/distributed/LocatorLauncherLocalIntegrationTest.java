@@ -16,41 +16,36 @@
  */
 package com.gemstone.gemfire.distributed;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.net.BindException;
-import java.net.InetAddress;
-
+import com.gemstone.gemfire.distributed.AbstractLauncher.Status;
+import com.gemstone.gemfire.distributed.LocatorLauncher.Builder;
+import com.gemstone.gemfire.distributed.LocatorLauncher.LocatorState;
+import com.gemstone.gemfire.distributed.internal.InternalLocator;
+import com.gemstone.gemfire.internal.*;
+import com.gemstone.gemfire.internal.process.ProcessControllerFactory;
+import com.gemstone.gemfire.internal.process.ProcessType;
+import com.gemstone.gemfire.internal.process.ProcessUtils;
+import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 import com.gemstone.gemfire.test.junit.runners.CategoryWithParameterizedRunnerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import com.gemstone.gemfire.distributed.AbstractLauncher.Status;
-import com.gemstone.gemfire.distributed.LocatorLauncher.Builder;
-import com.gemstone.gemfire.distributed.LocatorLauncher.LocatorState;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.distributed.internal.InternalLocator;
-import com.gemstone.gemfire.internal.AvailablePort;
-import com.gemstone.gemfire.internal.AvailablePortHelper;
-import com.gemstone.gemfire.internal.DistributionLocator;
-import com.gemstone.gemfire.internal.GemFireVersion;
-import com.gemstone.gemfire.internal.SocketCreator;
-import com.gemstone.gemfire.internal.process.ProcessControllerFactory;
-import com.gemstone.gemfire.internal.process.ProcessType;
-import com.gemstone.gemfire.internal.process.ProcessUtils;
-import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.net.BindException;
+import java.net.InetAddress;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests usage of LocatorLauncher as a local API in existing JVM.
  *
- * @since 8.0
+ * @since GemFire 8.0
  */
 @Category(IntegrationTest.class)
 @RunWith(Parameterized.class)
@@ -75,10 +70,10 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setMemberName(getUniqueName())
         .setPort(this.locatorPort)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.DISABLE_AUTO_RECONNECT_NAME, "true")
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config")
-        .set(DistributionConfig.MCAST_PORT_NAME, "0")
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(DISABLE_AUTO_RECONNECT, "true")
+        .set(LOG_LEVEL, "config")
+        .set(MCAST_PORT, "0")
         .build();
 
     try {
@@ -91,10 +86,10 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
       final DistributedSystem distributedSystem = locator.getDistributedSystem();
   
       assertNotNull(distributedSystem);
-      assertEquals("true", distributedSystem.getProperties().getProperty(DistributionConfig.DISABLE_AUTO_RECONNECT_NAME));
-      assertEquals("0", distributedSystem.getProperties().getProperty(DistributionConfig.MCAST_PORT_NAME));
-      assertEquals("config", distributedSystem.getProperties().getProperty(DistributionConfig.LOG_LEVEL_NAME));
-      assertEquals(getUniqueName(), distributedSystem.getProperties().getProperty(DistributionConfig.NAME_NAME));
+      assertEquals("true", distributedSystem.getProperties().getProperty(DISABLE_AUTO_RECONNECT));
+      assertEquals("0", distributedSystem.getProperties().getProperty(MCAST_PORT));
+      assertEquals("config", distributedSystem.getProperties().getProperty(LOG_LEVEL));
+      assertEquals(getUniqueName(), distributedSystem.getProperties().getProperty(NAME));
     } catch (Throwable e) {
       this.errorCollector.addError(e);
     }
@@ -120,8 +115,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config")
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config")
         .build();
 
     try {
@@ -172,8 +167,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config");
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config");
 
     assertFalse(builder.getForce());
     this.launcher = builder.build();
@@ -225,8 +220,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config");
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config");
 
     assertFalse(builder.getForce());
     this.launcher = builder.build();
@@ -261,7 +256,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
   @Test
   @Ignore("Need to rewrite this without using dunit.Host")
   public void testStartUsingForceOverwritesExistingPidFile() throws Throwable {
-  }/*
+  }
+  /*
     assertTrue(getUniqueName() + " is broken if PID == Integer.MAX_VALUE", ProcessUtils.identifyPid() != Integer.MAX_VALUE);
     
     // create existing pid file
@@ -276,7 +272,6 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setMemberName(getUniqueName())
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config");
 
     assertTrue(builder.getForce());
     this.launcher = builder.build();
@@ -343,8 +338,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setMemberName(getUniqueName())
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config")
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config")
         .build();
     
     assertEquals(this.locatorPort, this.launcher.getPort().intValue());
@@ -426,7 +421,7 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setMemberName(getUniqueName())
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config");
+        .set(logLevel, "config");
 
     assertFalse(builder.getForce());
     this.launcher = builder.build();
@@ -502,8 +497,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(freeTCPPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config")
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config")
         .build();
 
     int pid = 0;
@@ -554,8 +549,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config")
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config")
         .build();
     
     RuntimeException expected = null;
@@ -616,8 +611,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config");
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config");
     
     assertFalse(builder.getForce());
     this.launcher = builder.build();
@@ -679,8 +674,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config");
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config");
     
     assertFalse(builder.getForce());
     this.launcher = builder.build();
@@ -742,8 +737,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config");
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config");
 
     assertFalse(builder.getForce());
     this.launcher = builder.build();
@@ -794,8 +789,8 @@ public class LocatorLauncherLocalIntegrationTest extends AbstractLocatorLauncher
         .setPort(this.locatorPort)
         .setRedirectOutput(true)
         .setWorkingDirectory(this.workingDirectory)
-        .set(DistributionConfig.CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
-        .set(DistributionConfig.LOG_LEVEL_NAME, "config");
+        .set(CLUSTER_CONFIGURATION_DIR, this.clusterConfigDirectory)
+        .set(LOG_LEVEL, "config");
 
     assertFalse(builder.getForce());
     this.launcher = builder.build();

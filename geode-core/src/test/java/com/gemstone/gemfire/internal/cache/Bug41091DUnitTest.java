@@ -16,30 +16,26 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.PartitionAttributesFactory;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.DistributionManager;
 import com.gemstone.gemfire.distributed.internal.DistributionMessage;
 import com.gemstone.gemfire.distributed.internal.DistributionMessageObserver;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.InitialImageOperation.RequestImageMessage;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.NetworkUtils;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * 
@@ -96,8 +92,8 @@ public class Bug41091DUnitTest extends CacheTestCase {
         });
    
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.ENABLE_NETWORK_PARTITION_DETECTION_NAME, "true");
-        props.setProperty(DistributionConfig.LOCATORS_NAME, NetworkUtils.getServerHostName(host) + "[" + locatorPort + "]");
+        props.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+        props.setProperty(LOCATORS, NetworkUtils.getServerHostName(host) + "[" + locatorPort + "]");
         getSystem(props);
         
         
@@ -116,8 +112,8 @@ public class Bug41091DUnitTest extends CacheTestCase {
       
       public void run() {
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.ENABLE_NETWORK_PARTITION_DETECTION_NAME, "true");
-        props.setProperty(DistributionConfig.LOCATORS_NAME, NetworkUtils.getServerHostName(host) + "[" + locatorPort + "]");
+        props.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+        props.setProperty(LOCATORS, NetworkUtils.getServerHostName(host) + "[" + locatorPort + "]");
         getSystem(props);
         Cache cache = getCache();
         AttributesFactory af = new AttributesFactory();
@@ -150,10 +146,10 @@ public class Bug41091DUnitTest extends CacheTestCase {
       public void run() {
         disconnectFromDS();
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.MCAST_PORT_NAME, String.valueOf(0));
-        props.setProperty(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel());
-        props.setProperty(DistributionConfig.ENABLE_NETWORK_PARTITION_DETECTION_NAME, "true");
-        props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+        props.setProperty(MCAST_PORT, String.valueOf(0));
+        props.setProperty(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
+        props.setProperty(ENABLE_NETWORK_PARTITION_DETECTION, "true");
+        props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
         try {
           File logFile = new File(testName + "-locator" + locatorPort
               + ".log");

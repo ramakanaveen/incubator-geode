@@ -22,7 +22,7 @@ package com.gemstone.gemfire.cache.operations;
  * Encapsulates a {@link com.gemstone.gemfire.cache.operations.OperationContext.OperationCode#UNREGISTER_INTEREST} region operation for
  * the pre-operation case.
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 public class UnregisterInterestOperationContext extends InterestOperationContext {
 
@@ -36,18 +36,7 @@ public class UnregisterInterestOperationContext extends InterestOperationContext
    */
   public UnregisterInterestOperationContext(Object key,
       InterestType interestType) {
-    super(key, interestType);
-  }
-
-  /**
-   * Return the operation associated with the <code>OperationContext</code>
-   * object.
-   * 
-   * @return <code>OperationCode.UNREGISTER_INTEREST</code>.
-   */
-  @Override
-  public OperationCode getOperationCode() {
-    return OperationCode.UNREGISTER_INTEREST;
+    super(OperationCode.UNREGISTER_INTEREST, key, interestType);
   }
 
 }

@@ -56,17 +56,6 @@ public class TXEntry implements Region.Entry
     this.keyInfo = key;
     this.myTX = tx;
     this.rememberReads = rememberReads;
-    
-    //Assert that these contructors are invoked only 
-    // via factory path. I am not able to make them private
-    // because SqlfabricTxEntry needs extending TxEntry
-    /*if(logger.isDebugEnabled()) {
-      StackTraceElement[] traces =Thread.currentThread().getStackTrace();
-      //The third element should be the factory one
-      StackTraceElement trace = traces[2];
-      Assert.assertTrue(TxEntryFactory.class.isAssignableFrom(trace.getClass()));
-      Assert.assertTrue(trace.getMethodName().equals("createEntry"));
-    }*/
   }
 
   public boolean isLocal() {
@@ -265,7 +254,7 @@ public class TXEntry implements Region.Entry
   }
 
   /**
-   * @since 5.0
+   * @since GemFire 5.0
    */
   public Object setValue(Object arg0)
   {

@@ -16,26 +16,22 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.regex.Pattern;
-
-import org.junit.experimental.categories.Category;
-
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.internal.InternalDistributedSystem;
 import com.gemstone.gemfire.internal.logging.InternalLogWriter;
 import com.gemstone.gemfire.test.junit.categories.FlakyTest;
+import org.junit.experimental.categories.Category;
+
+import java.io.*;
+import java.util.Properties;
+import java.util.regex.Pattern;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * Test to make sure cache close is working.
  *
- * @since 6.5
+ * @since GemFire 6.5
  */
 public class CacheLogRollDUnitTest extends CacheTestCase {
 
@@ -223,10 +219,10 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
     Properties props = new Properties();
     String baseLogName = "diskarito";
     String logfile = baseLogName+".log";
-    props.put("log-file", logfile);
-    props.put("log-file-size-limit", "1");
+    props.put(LOG_FILE, logfile);
+    props.put(LOG_FILE_SIZE_LIMIT, "1");
     DistributedSystem ds = this.getSystem(props);
-    props.put("log-disk-space-limit", "200");
+    props.put(LOG_DISK_SPACE_LIMIT, "200");
     for(int i=0;i<10;i++) {
      ds = this.getSystem(props);
      ds.disconnect();
@@ -242,10 +238,10 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
     Properties props = new Properties();
     String baseLogName = "restarto";
     String logfile = baseLogName+".log";
-    props.put("log-file", logfile);
-    props.put("log-file-size-limit", "1");
-    props.put("log-disk-space-limit", "200");
-    props.put("log-level", "config");
+    props.put(LOG_FILE, logfile);
+    props.put(LOG_FILE_SIZE_LIMIT, "1");
+    props.put(LOG_DISK_SPACE_LIMIT, "200");
+    props.put(LOG_LEVEL, "config");
     InternalDistributedSystem ids = getSystem(props);
     assertEquals(InternalLogWriter.INFO_LEVEL, ((InternalLogWriter)ids.getLogWriter()).getLogWriterLevel());
     ids.disconnect();
@@ -302,9 +298,9 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
     Properties props = new Properties();
     String baseLogName = "biscuits";
     String logfile = baseLogName+".log";
-    props.put("log-file", logfile);
-    props.put("log-file-size-limit", "1");
-    props.put("log-level", "config");
+    props.put(LOG_FILE, logfile);
+    props.put(LOG_FILE_SIZE_LIMIT, "1");
+    props.put(LOG_LEVEL, "config");
     DistributedSystem ds = getSystem(props);
     InternalDistributedSystem ids = (InternalDistributedSystem) ds;
     assertEquals(InternalLogWriter.INFO_LEVEL, ((InternalLogWriter)ids.getLogWriter()).getLogWriterLevel());
@@ -329,7 +325,7 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
      * Ok now we have rolled and yada yada. Let's disconnect and reconnect with same name!
      */
     int dsId = System.identityHashCode(ds);
-    props.put("log-disk-space-limit", "200");
+    props.put(LOG_DISK_SPACE_LIMIT, "200");
     
     File f1m = new File(logfile);
     assertTrue(f1m.exists());
@@ -379,9 +375,9 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
       Properties props = new Properties();
       
       String logfile = baseLogName+".log";
-      props.put("log-file", logfile);
-      props.put("log-file-size-limit", "1");
-      props.put("log-level", "config");
+    props.put(LOG_FILE, logfile);
+    props.put(LOG_FILE_SIZE_LIMIT, "1");
+    props.put(LOG_LEVEL, "config");
       
       DistributedSystem ds = getSystem(props);
       InternalDistributedSystem ids = (InternalDistributedSystem) ds;
@@ -414,11 +410,11 @@ public class CacheLogRollDUnitTest extends CacheTestCase {
       
       String logfile = baseLogName+".log";
       String sec_logfile = "sec_"+baseLogName+".log";
-      props.put("log-file", logfile);
-      props.put("log-file-size-limit", "1");
-      props.put("log-level", "config");
-      props.put("security-log-file", sec_logfile);
-      props.put("security-log-level", "config");
+    props.put(LOG_FILE, logfile);
+    props.put(LOG_FILE_SIZE_LIMIT, "1");
+    props.put(LOG_LEVEL, "config");
+    props.put(SECURITY_LOG_FILE, sec_logfile);
+    props.put(SECURITY_LOG_LEVEL, "config");
       
       DistributedSystem ds = getSystem(props);
       InternalDistributedSystem ids = (InternalDistributedSystem) ds;

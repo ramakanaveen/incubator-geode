@@ -16,22 +16,18 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.util.Properties;
-
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.PartitionAttributes;
-import com.gemstone.gemfire.cache.PartitionAttributesFactory;
-import com.gemstone.gemfire.cache.Region;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedMember;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.test.dunit.Host;
 import com.gemstone.gemfire.test.dunit.SerializableCallable;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 import com.gemstone.gemfire.test.dunit.VM;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class PartitionedRegionRedundancyZoneDUnitTest extends CacheTestCase {
 
@@ -133,7 +129,7 @@ public class PartitionedRegionRedundancyZoneDUnitTest extends CacheTestCase {
     return (DistributedMember) vm.invoke(new SerializableCallable("set redundancy zone") {
       public Object call() {
         Properties props = new Properties();
-        props.setProperty(DistributionConfig.REDUNDANCY_ZONE_NAME, zone);
+        props.setProperty(REDUNDANCY_ZONE, zone);
         DistributedSystem system = getSystem(props);
         return system.getDistributedMember();
         

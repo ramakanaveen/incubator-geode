@@ -88,7 +88,7 @@ import jline.console.ConsoleReader;
  * information like: environment TODO
  *
  *
- * @since 7.0
+ * @since GemFire 7.0
  */
 public class Gfsh extends JLineShell {
   public static final int     DEFAULT_APP_FETCH_SIZE                 = 1000;
@@ -499,7 +499,7 @@ public class Gfsh extends JLineShell {
     if (full) {
       return GemFireVersion.asString();
     } else {
-      return "v" + GemFireVersion.getGemFireVersion();
+      return GemFireVersion.getGemFireVersion();
     }
   }
 

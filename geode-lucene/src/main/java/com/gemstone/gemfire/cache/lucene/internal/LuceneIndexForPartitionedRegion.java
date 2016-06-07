@@ -29,23 +29,30 @@ import com.gemstone.gemfire.cache.RegionAttributes;
 import com.gemstone.gemfire.cache.RegionShortcut;
 import com.gemstone.gemfire.cache.asyncqueue.AsyncEventQueue;
 import com.gemstone.gemfire.cache.asyncqueue.internal.AsyncEventQueueFactoryImpl;
+import com.gemstone.gemfire.cache.execute.FunctionService;
+import com.gemstone.gemfire.cache.execute.ResultCollector;
+import com.gemstone.gemfire.cache.lucene.internal.directory.DumpDirectoryFiles;
 import com.gemstone.gemfire.cache.lucene.internal.filesystem.ChunkKey;
 import com.gemstone.gemfire.cache.lucene.internal.filesystem.File;
+import com.gemstone.gemfire.cache.lucene.internal.filesystem.FileSystemStats;
 import com.gemstone.gemfire.cache.lucene.internal.repository.serializer.HeterogeneousLuceneSerializer;
 import com.gemstone.gemfire.internal.cache.PartitionedRegion;
 
 /* wrapper of IndexWriter */
 public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
+  FileSystemStats fileSystemStats;
 
   public LuceneIndexForPartitionedRegion(String indexName, String regionPath, Cache cache) {
     super(indexName, regionPath, cache);
+    final String statsName = indexName + "-" + regionPath;
+    this.fileSystemStats = new FileSystemStats(cache.getDistributedSystem(), statsName);
   }
 
   @Override
   public void initialize() {
     if (!hasInitialized) {
       /* create index region */
-      PartitionedRegion dataRegion = (PartitionedRegion) cache.getRegion(regionPath);
+      PartitionedRegion dataRegion = getDataRegion();
       //assert dataRegion != null;
       RegionAttributes ra = dataRegion.getAttributes();
       DataPolicy dp = ra.getDataPolicy();
@@ -84,7 +91,8 @@ public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
 
       // we will create RegionDirectories on the fly when data comes in
       HeterogeneousLuceneSerializer mapper = new HeterogeneousLuceneSerializer(getFieldNames());
-      repositoryManager = new PartitionedRepositoryManager(dataRegion, (PartitionedRegion)fileRegion, (PartitionedRegion)chunkRegion, mapper, analyzer);
+      repositoryManager = new PartitionedRepositoryManager(dataRegion, (PartitionedRegion) fileRegion,
+        (PartitionedRegion) chunkRegion, mapper, analyzer, this.indexStats, this.fileSystemStats);
       
       // create AEQ, AEQ listener and specify the listener to repositoryManager
       createAEQ(dataRegion);
@@ -92,6 +100,10 @@ public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
       addExtension(dataRegion);
       hasInitialized = true;
     }
+  }
+
+  private PartitionedRegion getDataRegion() {
+    return (PartitionedRegion) cache.getRegion(regionPath);
   }
 
   private AsyncEventQueueFactoryImpl createAEQFactory(final Region dataRegion) {
@@ -171,5 +183,12 @@ public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
     // TODO Auto-generated method stub
     
   }
-  
+
+  @Override
+  public void dumpFiles(final String directory) {
+    ResultCollector results = FunctionService.onRegion(getDataRegion())
+      .withArgs(new String[] {directory, indexName})
+      .execute(DumpDirectoryFiles.ID);
+    results.getResult();
+  }
 }

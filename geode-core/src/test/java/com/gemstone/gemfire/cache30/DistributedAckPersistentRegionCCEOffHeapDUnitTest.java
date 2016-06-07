@@ -16,19 +16,20 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.AttributesFactory;
 import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.OffHeapTestUtil;
 import com.gemstone.gemfire.test.dunit.Invoke;
 import com.gemstone.gemfire.test.dunit.SerializableRunnable;
 
+import java.util.Properties;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
+
 /**
  * Tests Distributed Ack Persistent Region with ConcurrencyChecksEnabled and OffHeap memory.
  * 
- * @since 9.0
+ * @since Geode 1.0
  */
 @SuppressWarnings({ "deprecation", "serial" })
 public class DistributedAckPersistentRegionCCEOffHeapDUnitTest extends DistributedAckPersistentRegionCCEDUnitTest {
@@ -55,7 +56,7 @@ public class DistributedAckPersistentRegionCCEOffHeapDUnitTest extends Distribut
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty(DistributionConfig.OFF_HEAP_MEMORY_SIZE_NAME, "10m");
+    props.setProperty(OFF_HEAP_MEMORY_SIZE, "10m");
     return props;
   }
   

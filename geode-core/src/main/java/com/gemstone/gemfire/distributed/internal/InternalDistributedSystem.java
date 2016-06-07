@@ -17,42 +17,7 @@
 
 package com.gemstone.gemfire.distributed.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.logging.log4j.Logger;
-
-import com.gemstone.gemfire.CancelCriterion;
-import com.gemstone.gemfire.CancelException;
-import com.gemstone.gemfire.ForcedDisconnectException;
-import com.gemstone.gemfire.GemFireConfigException;
-import com.gemstone.gemfire.GemFireIOException;
-import com.gemstone.gemfire.LogWriter;
-import com.gemstone.gemfire.StatisticDescriptor;
-import com.gemstone.gemfire.Statistics;
-import com.gemstone.gemfire.StatisticsType;
-import com.gemstone.gemfire.StatisticsTypeFactory;
-import com.gemstone.gemfire.SystemConnectException;
-import com.gemstone.gemfire.SystemFailure;
+import com.gemstone.gemfire.*;
 import com.gemstone.gemfire.admin.AlertLevel;
 import com.gemstone.gemfire.cache.CacheClosedException;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -69,21 +34,7 @@ import com.gemstone.gemfire.distributed.internal.membership.QuorumChecker;
 import com.gemstone.gemfire.distributed.internal.membership.gms.Services;
 import com.gemstone.gemfire.distributed.internal.membership.gms.mgr.GMSMembershipManager;
 import com.gemstone.gemfire.i18n.LogWriterI18n;
-import com.gemstone.gemfire.internal.Assert;
-import com.gemstone.gemfire.internal.DSFIDFactory;
-import com.gemstone.gemfire.internal.DummyStatisticsImpl;
-import com.gemstone.gemfire.internal.GemFireStatSampler;
-import com.gemstone.gemfire.internal.InternalDataSerializer;
-import com.gemstone.gemfire.internal.InternalInstantiator;
-import com.gemstone.gemfire.internal.LinuxProcFsStatistics;
-import com.gemstone.gemfire.internal.LocalStatisticsImpl;
-import com.gemstone.gemfire.internal.OSProcess;
-import com.gemstone.gemfire.internal.OsStatisticsFactory;
-import com.gemstone.gemfire.internal.SocketCreator;
-import com.gemstone.gemfire.internal.StatisticsImpl;
-import com.gemstone.gemfire.internal.StatisticsManager;
-import com.gemstone.gemfire.internal.StatisticsTypeFactoryImpl;
-import com.gemstone.gemfire.internal.SystemTimer;
+import com.gemstone.gemfire.internal.*;
 import com.gemstone.gemfire.internal.admin.remote.DistributionLocatorId;
 import com.gemstone.gemfire.internal.cache.CacheConfig;
 import com.gemstone.gemfire.internal.cache.CacheServerImpl;
@@ -109,12 +60,27 @@ import com.gemstone.gemfire.internal.util.concurrent.StoppableCondition;
 import com.gemstone.gemfire.internal.util.concurrent.StoppableReentrantLock;
 import com.gemstone.gemfire.management.ManagementException;
 import com.gemstone.gemfire.security.GemFireSecurityException;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Array;
+import java.net.InetAddress;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.MCAST_PORT;
 
 /**
  * The concrete implementation of {@link DistributedSystem} that
  * provides internal-only functionality.
  *
- * @since 3.0
+ * @since GemFire 3.0
  *
  */
 public class InternalDistributedSystem
@@ -122,8 +88,8 @@ public class InternalDistributedSystem
   implements OsStatisticsFactory, StatisticsManager
 {
   private static final Logger logger = LogService.getLogger();
-  
-  public static final String DISABLE_MANAGEMENT_PROPERTY = "gemfire.disableManagement";
+
+  public static final String DISABLE_MANAGEMENT_PROPERTY = DistributionConfig.GEMFIRE_PREFIX + "disableManagement";
   
   /**
    * If auto-reconnect is going on this will hold a reference to it
@@ -218,9 +184,6 @@ public class InternalDistributedSystem
    * a live locator can be contacted.
    */
   private QuorumChecker quorumChecker;
-  
-  /** sqlfire disconnect listener */
-  private DisconnectListener sqlfDisconnectListener;
 
   /**
    * A Constant that matches the ThreadGroup name of the shutdown hook.
@@ -232,12 +195,12 @@ public class InternalDistributedSystem
    * A property to prevent shutdown hooks from being registered with the VM.
    * This is regarding bug 38407
    */
-  public final static String DISABLE_SHUTDOWN_HOOK_PROPERTY = "gemfire.disableShutdownHook";
+  public final static String DISABLE_SHUTDOWN_HOOK_PROPERTY = DistributionConfig.GEMFIRE_PREFIX + "disableShutdownHook";
 
   /**
    * A property to append to existing log-file instead of truncating it.
    */
-  public final static String APPEND_TO_LOG_FILE = "gemfire.append-log";
+  public final static String APPEND_TO_LOG_FILE = DistributionConfig.GEMFIRE_PREFIX + "append-log";
 
   ////////////////////  Configuration Fields  ////////////////////
 
@@ -247,7 +210,7 @@ public class InternalDistributedSystem
   /** The config object to which most configuration work is delegated */
   private DistributionConfig config;
 
-  private final boolean statsDisabled = Boolean.getBoolean("gemfire.statsDisabled");
+  private final boolean statsDisabled = Boolean.getBoolean(DistributionConfig.GEMFIRE_PREFIX + "statsDisabled");
 
   private volatile boolean shareSockets = DistributionConfig.DEFAULT_CONSERVE_SOCKETS;
 
@@ -306,7 +269,7 @@ public class InternalDistributedSystem
    * for administration.  For administration, we are not as strict
    * when it comes to existing connections.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   public static DistributedSystem connectForAdmin(Properties props) {
     return DistributedSystem.connectForAdmin(props);
@@ -318,7 +281,7 @@ public class InternalDistributedSystem
    * This method synchronizes on the existingSystems collection.
    *
    * <p>author bruce
-   * @since 5.0
+   * @since GemFire 5.0
    */
   public static InternalDistributedSystem getConnectedInstance() {
     InternalDistributedSystem result = null;
@@ -337,7 +300,7 @@ public class InternalDistributedSystem
    * Returns the current distributed system, if there is one.
    * Note: this method is no longer unsafe size existingSystems uses copy-on-write.
    * <p>author bruce
-   * @since 5.0
+   * @since GemFire 5.0
    */
   public static InternalDistributedSystem unsafeGetConnectedInstance() {
     InternalDistributedSystem result = getAnyInstance();
@@ -534,9 +497,9 @@ public class InternalDistributedSystem
     if (this.originalConfig.getLocators().equals("")) {
       if (this.originalConfig.getMcastPort() != 0) {
         throw new GemFireConfigException("The "
-                                          + DistributionConfig.LOCATORS_NAME
+            + LOCATORS
                                           + " attribute can not be empty when the "
-                                          + DistributionConfig.MCAST_PORT_NAME
+            + MCAST_PORT
                                           + " attribute is non-zero.");
       } else {
         // no distribution
@@ -729,7 +692,7 @@ public class InternalDistributedSystem
   }
 
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private void startInitLocator() throws InterruptedException {
     String locatorString = this.originalConfig.getStartLocator();
@@ -777,7 +740,7 @@ public class InternalDistributedSystem
   }
   
   /**
-   * @since 5.7
+   * @since GemFire 5.7
    */
   private void endInitLocator() throws IOException {
     InternalLocator loc = this.startedLocator;
@@ -1473,7 +1436,7 @@ public class InternalDistributedSystem
    * to the same distributed system as this
    * <code>InternalDistributedSystem</code> connection.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   public boolean sameSystemAs(Properties props) {
     DistributionConfig other = DistributionConfigImpl.produce(props);
@@ -1504,7 +1467,7 @@ public class InternalDistributedSystem
   /**
    * Canonicalizes a locators string so that they may be compared.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   private static String canonicalizeLocators(String locators) {
     SortedSet sorted = new TreeSet();
@@ -2149,40 +2112,6 @@ public class InternalDistributedSystem
       }
     }
   }
-  
-  /**
-   * sqlfire's disconnect listener is invoked before the cache is closed when
-   * there is a forced disconnect
-   */
-  public void setSqlfForcedDisconnectListener(DisconnectListener listener) {
-    synchronized(this.listeners) { 
-      this.sqlfDisconnectListener = listener;
-    }
-  }
-  
-  private void notifySqlfForcedDisconnectListener() {
-    if (this.sqlfDisconnectListener != null) {
-      final boolean isDebugEnabled = logger.isDebugEnabled();
-      try {
-        if (isDebugEnabled) {
-          logger.debug("notifying sql disconnect listener");
-        }
-        this.sqlfDisconnectListener.onDisconnect(this);
-      } catch (VirtualMachineError e) {
-        SystemFailure.initiateFailure(e);
-        throw e;
-      } catch (Throwable e) {
-        SystemFailure.checkFailure();
-        // TODO: should these be logged or ignored?  We need to see them
-        logger.info("", e);
-      }
-      if (isDebugEnabled) {
-        logger.debug("finished notifying sql disconnect listener");
-      }
-    }
-  }
-  
-  
 
   /**
    * Makes note of a <code>DisconnectListener</code> whose
@@ -2264,7 +2193,7 @@ public class InternalDistributedSystem
    * Fires an "informational" <code>SystemMembershipEvent</code> in
    * admin VMs.
    *
-   * @since 4.0
+   * @since GemFire 4.0
    */
   public void fireInfoEvent(Object callback) {
     throw new UnsupportedOperationException(LocalizedStrings.InternalDistributedSystem_NOT_IMPLEMENTED_YET.toLocalizedString());
@@ -2519,12 +2448,9 @@ public class InternalDistributedSystem
           }
 
           if (isDebugEnabled) {
-            logger.debug("tryReconnect: forcedDisconnect={} sqlf listener={}", forcedDisconnect, this.sqlfDisconnectListener);
+            logger.debug("tryReconnect: forcedDisconnect={}", forcedDisconnect);
           }
           if (forcedDisconnect) {
-            // allow the fabric-service to stop before dismantling everything
-            notifySqlfForcedDisconnectListener();
-
             if (config.getDisableAutoReconnect()) {
               if (isDebugEnabled) {
                 logger.debug("tryReconnect: auto reconnect after forced disconnect is disabled");
@@ -2751,7 +2677,6 @@ public class InternalDistributedSystem
 
         DM newDM = this.reconnectDS.getDistributionManager();
         if (newDM instanceof DistributionManager) {
-          // sqlfire will have already replayed DDL and recovered.
           // Admin systems don't carry a cache, but for others we can now create
           // a cache
           if (((DistributionManager)newDM).getDMType() != DistributionManager.ADMIN_ONLY_DM_TYPE) {
@@ -2973,7 +2898,7 @@ public class InternalDistributedSystem
 
   /**
    * see {@link com.gemstone.gemfire.admin.AdminDistributedSystemFactory}
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public static void setEnableAdministrationOnly(boolean adminOnly) {
     DistributedSystem.setEnableAdministrationOnly(adminOnly);

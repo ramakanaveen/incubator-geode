@@ -17,30 +17,19 @@
 
 package com.gemstone.gemfire.internal;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Array;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeSet;
-
 import com.gemstone.gemfire.InternalGemFireException;
 import com.gemstone.gemfire.UnmodifiableException;
 import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.distributed.internal.FlowControlParams;
 import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
 
+import java.io.*;
+import java.lang.reflect.Array;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.*;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 /**
  * Provides an implementation of the {@link Config} interface
  * that implements functionality that all {@link Config} implementations
@@ -172,7 +161,7 @@ public abstract class AbstractConfig implements Config {
         }
       }
       // hide the shiro-init configuration for now. Remove after we can allow customer to specify shiro.ini file
-      if(attName.equals(DistributionConfig.SECURITY_SHIRO_INIT_NAME)){
+      if(attName.equals(DistributionConfig.SECURITY_SHIRO_INIT)){
         continue;
       }
       pw.print(attName);
@@ -219,15 +208,15 @@ public abstract class AbstractConfig implements Config {
   }
   
   public boolean isDeprecated(String attName) {
-    if (attName.equals(DistributionConfig.SSL_CIPHERS_NAME)) {
+    if (attName.equals(SSL_CIPHERS)) {
       return true;
-    } else if (attName.equals(DistributionConfig.SSL_ENABLED_NAME)) {
+    } else if (attName.equals(SSL_ENABLED)) {
       return true;
-    } else if (attName.equals(DistributionConfig.SSL_PROTOCOLS_NAME)) {
+    } else if (attName.equals(SSL_PROTOCOLS)) {
       return true;
-    } else if (attName.equals(DistributionConfig.SSL_REQUIRE_AUTHENTICATION_NAME)) {
+    } else if (attName.equals(SSL_REQUIRE_AUTHENTICATION)) {
       return true;
-    } else if (attName.equals(DistributionConfig.JMX_MANAGER_SSL_NAME)) {
+    } else if (attName.equals(JMX_MANAGER_SSL)) {
       return true;
     }
     return false; 
@@ -316,7 +305,7 @@ public abstract class AbstractConfig implements Config {
       return (String)result;
     }
 
-    if (attName.equalsIgnoreCase(DistributionConfig.MEMBERSHIP_PORT_RANGE_NAME)) {
+    if (attName.equalsIgnoreCase(MEMBERSHIP_PORT_RANGE)) {
       int[] value = (int[])result;
       return ""+value[0]+"-"+value[1];
     }

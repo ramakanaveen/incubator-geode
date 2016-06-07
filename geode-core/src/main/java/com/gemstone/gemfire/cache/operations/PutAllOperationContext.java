@@ -19,22 +19,19 @@ package com.gemstone.gemfire.cache.operations;
 
 import java.util.Map;
 
-import com.gemstone.gemfire.cache.operations.OperationContext;
+import com.gemstone.gemfire.cache.operations.internal.ResourceOperationContext;
 import com.gemstone.gemfire.cache.operations.internal.UpdateOnlyMap;
 
 /**
  * Encapsulates a {@link com.gemstone.gemfire.cache.operations.OperationContext.OperationCode#PUTALL} operation for both the
  * pre-operation and post-operation cases.
  * 
- * @since 5.7
+ * @since GemFire 5.7
  */
-public class PutAllOperationContext extends OperationContext {
+public class PutAllOperationContext extends ResourceOperationContext {
 
   /** The set of keys for the operation */
   private final UpdateOnlyMap map;
-  
-  /** True if this is a post-operation context */
-  private boolean postOperation = false;
   
   private Object callbackArg;
 
@@ -43,33 +40,8 @@ public class PutAllOperationContext extends OperationContext {
    * 
    */
   public PutAllOperationContext(Map map) {
+    super(Resource.DATA, OperationCode.PUTALL, false);
     this.map = new UpdateOnlyMap(map);
-  }
-
-  /**
-   * Return the operation associated with the <code>OperationContext</code>
-   * object.
-   * 
-   * @return <code>OperationCode.PUTALL</code>.
-   */
-  @Override
-  public OperationCode getOperationCode() {
-    return OperationCode.PUTALL;
-  }
-
-  /**
-   * True if the context is for post-operation.
-   */
-  @Override
-  public boolean isPostOperation() {
-    return this.postOperation;
-  }
-
-  /**
-   * Set the post-operation flag to true.
-   */
-  protected void setPostOperation() {
-    this.postOperation = true;
   }
 
   /**
@@ -114,7 +86,7 @@ public class PutAllOperationContext extends OperationContext {
    * Get the callback argument object for this operation.
    * 
    * @return the callback argument object for this operation.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public Object getCallbackArg() {
     return this.callbackArg;
@@ -125,7 +97,7 @@ public class PutAllOperationContext extends OperationContext {
    * 
    * @param callbackArg
    *                the callback argument object for this operation.
-   * @since 8.1
+   * @since GemFire 8.1
    */
   public void setCallbackArg(Object callbackArg) {
     this.callbackArg = callbackArg;

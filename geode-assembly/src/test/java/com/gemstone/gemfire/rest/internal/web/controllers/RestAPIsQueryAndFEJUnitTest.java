@@ -16,33 +16,7 @@
  */
 package com.gemstone.gemfire.rest.internal.web.controllers;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.cache.CacheLoader;
-import com.gemstone.gemfire.cache.CacheWriter;
-import com.gemstone.gemfire.cache.CacheWriterException;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.Declarable;
-import com.gemstone.gemfire.cache.EntryEvent;
-import com.gemstone.gemfire.cache.LoaderHelper;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.RegionDestroyedException;
-import com.gemstone.gemfire.cache.RegionEvent;
-import com.gemstone.gemfire.cache.RegionFactory;
-import com.gemstone.gemfire.cache.RegionShortcut;
-import com.gemstone.gemfire.cache.TimeoutException;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.distributed.ServerLauncher;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
@@ -51,20 +25,21 @@ import com.gemstone.gemfire.internal.SocketCreator;
 import com.gemstone.gemfire.management.internal.AgentUtil;
 import com.gemstone.gemfire.management.internal.ManagementConstants;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
-
+import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.experimental.categories.Category;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.*;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 @Category(IntegrationTest.class)
 public class RestAPIsQueryAndFEJUnitTest extends TestCase {
@@ -1339,12 +1314,12 @@ public class RestAPIsQueryAndFEJUnitTest extends TestCase {
     String workingDirectory = System.getProperty("geode.build.dir", System.getProperty("user.dir"));
     
     ServerLauncher serverLauncher = new ServerLauncher.Builder()
-    .set("mcast-port", "0")
+        .set(MCAST_PORT, "0")
     .setServerBindAddress(this.hostName)
-    .setServerPort(AvailablePortHelper.getRandomAvailableTCPPort())
-    .set("start-dev-rest-api", "true")
-    .set("http-service-port", String.valueOf(this.restServicePort))
-    .set("http-service-bind-address", this.hostName)
+    .setServerPort(0)
+        .set(START_DEV_REST_API, "true")
+        .set(HTTP_SERVICE_PORT, String.valueOf(this.restServicePort))
+        .set(HTTP_SERVICE_BIND_ADDRESS, this.hostName)
     .setPdxReadSerialized(true)
     .setWorkingDirectory(workingDirectory)
     .build();

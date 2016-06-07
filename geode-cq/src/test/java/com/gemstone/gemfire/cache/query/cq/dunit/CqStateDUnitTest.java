@@ -16,23 +16,17 @@
  */
 package com.gemstone.gemfire.cache.query.cq.dunit;
 
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.query.CqQuery;
 import com.gemstone.gemfire.cache.query.dunit.CloseCacheAuthorization;
 import com.gemstone.gemfire.cache.query.dunit.HelperTestCase;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.security.templates.DummyAuthenticator;
 import com.gemstone.gemfire.security.templates.UserPasswordAuthInit;
-import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.NetworkUtils;
-import com.gemstone.gemfire.test.dunit.SerializableCallable;
-import com.gemstone.gemfire.test.dunit.ThreadUtils;
-import com.gemstone.gemfire.test.dunit.VM;
-import com.gemstone.gemfire.test.dunit.Wait;
-import com.gemstone.gemfire.test.dunit.WaitCriterion;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class CqStateDUnitTest extends HelperTestCase {
 
@@ -111,22 +105,22 @@ public class CqStateDUnitTest extends HelperTestCase {
   
   public Properties getAuthenticatedServerProperties() {
     Properties props = new Properties();
-    props.put("mcast-port", "0");
-    props.put("security-client-accessor", CloseCacheAuthorization.class.getName() + ".create");
-    props.put("security-client-accessor-pp", CloseCacheAuthorization.class.getName() + ".create");
-    props.put("security-client-authenticator", DummyAuthenticator.class.getName() + ".create");
+    props.put(MCAST_PORT, "0");
+    props.put(SECURITY_CLIENT_ACCESSOR, CloseCacheAuthorization.class.getName() + ".create");
+    props.put(SECURITY_CLIENT_ACCESSOR_PP, CloseCacheAuthorization.class.getName() + ".create");
+    props.put(SECURITY_CLIENT_AUTHENTICATOR, DummyAuthenticator.class.getName() + ".create");
     return props;
   }
   
   public Properties getServerProperties() {
     Properties props = new Properties();
-    props.put("mcast-port", "0");
+    props.put(MCAST_PORT, "0");
     return props;
   }
   
   public Properties getClientProperties() {
     Properties props = new Properties();
-    props.put("security-client-auth-init", UserPasswordAuthInit.class.getName() + ".create");
+    props.put(SECURITY_CLIENT_AUTH_INIT, UserPasswordAuthInit.class.getName() + ".create");
     props.put("security-username", "root");
     props.put("security-password", "root");
     return props;

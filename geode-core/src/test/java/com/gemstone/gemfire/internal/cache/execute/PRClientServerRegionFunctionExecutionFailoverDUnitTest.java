@@ -16,18 +16,7 @@
  */
 package com.gemstone.gemfire.internal.cache.execute;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.PartitionAttributesFactory;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionAttributes;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.Pool;
 import com.gemstone.gemfire.cache.client.PoolManager;
 import com.gemstone.gemfire.cache.execute.Execution;
@@ -38,22 +27,20 @@ import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache30.CacheTestCase;
 import com.gemstone.gemfire.distributed.DistributedSystem;
 import com.gemstone.gemfire.distributed.Locator;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.LocalRegion;
 import com.gemstone.gemfire.internal.cache.functions.TestFunction;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheServerTestUtil;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.NetworkUtils;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.ThreadUtils;
-import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     PRClientServerTestBase {
@@ -380,7 +367,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
 
     Properties props = new Properties();
     props = DistributedTestUtils.getAllDistributedSystemProperties(props);
-    props.setProperty(DistributionConfig.ENABLE_CLUSTER_CONFIGURATION_NAME, "false");
+    props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
     
     try {
       locator = Locator.startLocatorAndDS(locatorPort, logFile, null, props);
@@ -399,7 +386,7 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
     "PRClientServerRegionFunctionExecutionFailoverDUnitTest");
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("locators", locator);
+    props.setProperty(LOCATORS, locator);
     DistributedSystem ds = test.getSystem(props);
     cache = new CacheFactory(props).create(ds);
     
@@ -433,8 +420,8 @@ public class PRClientServerRegionFunctionExecutionFailoverDUnitTest extends
   public static void createClientWithLocator(String host, int port0) {
     Properties props = new Properties();
     props = new Properties();
-    props.setProperty("mcast-port", "0");
-    props.setProperty("locators", "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     CacheTestCase test = new PRClientServerRegionFunctionExecutionFailoverDUnitTest(
         "PRClientServerRegionFunctionExecutionFailoverDUnitTest");
     DistributedSystem ds = test.getSystem(props);

@@ -24,7 +24,7 @@ import java.util.Set;
  * Encapsulates a {@link com.gemstone.gemfire.cache.operations.OperationContext.OperationCode#STOP_CQ} operation for the pre-operation
  * case.
  * 
- * @since 5.5
+ * @since GemFire 5.5
  */
 public class StopCQOperationContext extends ExecuteCQOperationContext {
 
@@ -38,28 +38,8 @@ public class StopCQOperationContext extends ExecuteCQOperationContext {
    * @param regionNames
    *                names of regions that are part of the query string
    */
-  public StopCQOperationContext(String cqName, String queryString,
-      Set regionNames) {
-    super(cqName, queryString, regionNames, false);
-  }
-
-  /**
-   * Return the operation associated with the <code>OperationContext</code>
-   * object.
-   * 
-   * @return <code>OperationCode.STOP_CQ</code>.
-   */
-  @Override
-  public OperationCode getOperationCode() {
-    return OperationCode.STOP_CQ;
-  }
-
-  /**
-   * True if the context is for post-operation.
-   */
-  @Override
-  public boolean isPostOperation() {
-    return false;
+  public StopCQOperationContext(String cqName, String queryString, Set regionNames) {
+    super(OperationCode.STOP_CQ, cqName, queryString, regionNames, false);
   }
 
 }

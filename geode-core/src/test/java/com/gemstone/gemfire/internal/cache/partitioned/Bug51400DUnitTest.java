@@ -19,8 +19,6 @@
  */
 package com.gemstone.gemfire.internal.cache.partitioned;
 
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.CacheFactory;
 import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.RegionFactory;
@@ -35,12 +33,11 @@ import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientNotifier;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientProxy;
 import com.gemstone.gemfire.internal.cache.tier.sockets.CacheClientProxyStats;
-import com.gemstone.gemfire.test.dunit.AsyncInvocation;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
-import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.NetworkUtils;
-import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
 
 /**
  * 
@@ -93,12 +90,7 @@ public class Bug51400DUnitTest extends DistributedTestCase {
   public static Integer createServerCache(Integer mcastPort,
       Integer maxMessageCount) throws Exception {
     Properties props = new Properties();
-    props.setProperty("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
-//    props.setProperty("log-file", "server_" + OSProcess.getId() + ".log");
-//    props.setProperty("log-level", "fine");
-//    props.setProperty("statistic-archive-file", "server_" + OSProcess.getId()
-//        + ".gfs");
-//    props.setProperty("statistic-sampling-enabled", "true");
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
 
     Bug51400DUnitTest test = new Bug51400DUnitTest("Bug51400DUnitTest");
     DistributedSystem ds = test.getSystem(props);
@@ -123,14 +115,6 @@ public class Bug51400DUnitTest extends DistributedTestCase {
   public static void createClientCache(String hostName, Integer[] ports,
       Integer interval) throws Exception {
     Properties props = new Properties();
-//    props.setProperty(DistributionConfig.DURABLE_CLIENT_ID_NAME,
-//        "my-durable-client-" + ports.length);
-//    props.setProperty(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, "300000");
-//    props.setProperty("log-file", "client_" + OSProcess.getId() + ".log");
-//    props.setProperty("log-level", "fine");
-//    props.setProperty("statistic-archive-file", "client_" + OSProcess.getId()
-//        + ".gfs");
-//    props.setProperty("statistic-sampling-enabled", "true");
 
     DistributedSystem ds = new Bug51400DUnitTest("Bug51400DUnitTest").getSystem(props);
     ds.disconnect();

@@ -36,6 +36,7 @@ import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static junit.framework.Assert.*;
 
 public abstract class TestSessionsBase {
@@ -56,8 +57,8 @@ public abstract class TestSessionsBase {
     server = new EmbeddedTomcat("/test", port, "JVM-1");
 
     PeerToPeerCacheLifecycleListener p2pListener = new PeerToPeerCacheLifecycleListener();
-    p2pListener.setProperty("mcast-port", "0");
-    p2pListener.setProperty("log-level", "config");
+    p2pListener.setProperty(MCAST_PORT, "0");
+    p2pListener.setProperty(LOG_LEVEL, "config");
     server.getEmbedded().addLifecycleListener(p2pListener);
     sessionManager = manager;
     sessionManager.setEnableCommitValve(true);

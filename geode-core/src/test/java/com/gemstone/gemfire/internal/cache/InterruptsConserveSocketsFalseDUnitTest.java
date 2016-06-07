@@ -16,6 +16,8 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
 import java.util.Properties;
 
 public class InterruptsConserveSocketsFalseDUnitTest extends
@@ -28,7 +30,7 @@ public class InterruptsConserveSocketsFalseDUnitTest extends
   @Override
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
-    props.setProperty("conserve-sockets", "false");
+    props.setProperty(CONSERVE_SOCKETS, "false");
     return props;
   }
   

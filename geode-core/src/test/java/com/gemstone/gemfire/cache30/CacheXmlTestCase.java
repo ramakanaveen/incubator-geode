@@ -16,21 +16,18 @@
  */
 package com.gemstone.gemfire.cache30;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Properties;
-
 import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.cache.xmlcache.CacheCreation;
 import com.gemstone.gemfire.internal.cache.xmlcache.CacheXml;
 import com.gemstone.gemfire.internal.cache.xmlcache.CacheXmlGenerator;
 import com.gemstone.gemfire.internal.cache.xmlcache.ClientCacheCreation;
 import com.gemstone.gemfire.test.dunit.Assert;
 import com.gemstone.gemfire.util.test.TestUtil;
+
+import java.io.*;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 public class CacheXmlTestCase extends CacheTestCase {
 
@@ -91,14 +88,14 @@ public class CacheXmlTestCase extends CacheTestCase {
   public Properties getDistributedSystemProperties() {
     Properties props = super.getDistributedSystemProperties();
     if (this.xmlFile != null) {
-      props.setProperty(DistributionConfig.CACHE_XML_FILE_NAME,
+      props.setProperty(CACHE_XML_FILE,
                         this.xmlFile.toString());
     }
 
     // make it a loner
     if (lonerDistributedSystem) {
-      props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-      props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+      props.setProperty(MCAST_PORT, "0");
+      props.setProperty(LOCATORS, "");
     }
 
     return props;

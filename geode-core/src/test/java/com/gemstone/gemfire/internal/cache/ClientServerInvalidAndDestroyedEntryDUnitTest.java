@@ -16,36 +16,24 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.gemstone.gemfire.LogWriter;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.EntryEvent;
-import com.gemstone.gemfire.cache.InterestResultPolicy;
-import com.gemstone.gemfire.cache.Operation;
-import com.gemstone.gemfire.cache.PartitionAttributesFactory;
-import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.RegionFactory;
-import com.gemstone.gemfire.cache.RegionShortcut;
+import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.cache.client.ClientCache;
 import com.gemstone.gemfire.cache.client.ClientCacheFactory;
 import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
 import com.gemstone.gemfire.cache.server.CacheServer;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 import com.gemstone.gemfire.cache30.CacheTestCase;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.internal.cache.tier.InterestType;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.Host;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
-import com.gemstone.gemfire.test.dunit.SerializableCallable;
-import com.gemstone.gemfire.test.dunit.SerializableCallableIF;
-import com.gemstone.gemfire.test.dunit.SerializableRunnable;
-import com.gemstone.gemfire.test.dunit.VM;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
 /**
  * This tests the fix for bug #43407 under a variety of configurations and
@@ -194,7 +182,7 @@ public class ClientServerInvalidAndDestroyedEntryDUnitTest extends CacheTestCase
     com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("creating client cache");
     ClientCache c = new ClientCacheFactory()
                     .addPoolServer("localhost", serverPort)
-                    .set(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel())
+                    .set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel())
                     .create();
     Region myRegion = c.createClientRegionFactory(ClientRegionShortcut.CACHING_PROXY).create(regionName);;
     if (useTX) {
@@ -312,7 +300,7 @@ public class ClientServerInvalidAndDestroyedEntryDUnitTest extends CacheTestCase
     com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("creating client cache");
     ClientCache c = new ClientCacheFactory()
                     .addPoolServer("localhost", serverPort)
-                    .set(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel())
+                    .set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel())
                     .create();
     Region myRegion = c.createClientRegionFactory(ClientRegionShortcut.CACHING_PROXY).create(regionName);;
     if (useTX) {
@@ -434,7 +422,7 @@ public class ClientServerInvalidAndDestroyedEntryDUnitTest extends CacheTestCase
     com.gemstone.gemfire.test.dunit.LogWriterUtils.getLogWriter().info("creating client cache");
     ClientCache c = new ClientCacheFactory()
                     .addPoolServer("localhost", serverPort)
-                    .set(DistributionConfig.LOG_LEVEL_NAME, LogWriterUtils.getDUnitLogLevel())
+                    .set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel())
                     .setPoolSubscriptionEnabled(true)
                     .create();
     

@@ -16,24 +16,23 @@
  */
 package com.gemstone.gemfire.internal.cache;
 
-import java.io.File;
-import java.util.*;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
-
-import junit.framework.*;
-
 import com.gemstone.gemfire.SystemFailure;
 import com.gemstone.gemfire.cache.*;
 import com.gemstone.gemfire.distributed.DistributedSystem;
-import com.gemstone.gemfire.distributed.internal.DistributionConfig;
-import com.gemstone.gemfire.util.test.TestUtil;
 import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
+import com.gemstone.gemfire.util.test.TestUtil;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This test is for testing Disk attributes set via xml.
@@ -41,7 +40,7 @@ import com.gemstone.gemfire.test.junit.categories.IntegrationTest;
  * A cache and region are created using an xml. The regions are then verified to make sure
  * that all the attributes have been correctly set
  * 
- * @since 5.1
+ * @since GemFire 5.1
  */
 @Category(IntegrationTest.class)
 public class DiskRegCacheXmlJUnitTest
@@ -69,10 +68,10 @@ public class DiskRegCacheXmlJUnitTest
     dirs[2] = file3;
     // Connect to the GemFire distributed system
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.NAME_NAME, "test");
+    props.setProperty(NAME, "test");
     String path = TestUtil.getResourcePath(getClass(), "DiskRegCacheXmlJUnitTest.xml");
-    props.setProperty("mcast-port", "0");
-    props.setProperty("cache-xml-file", path);
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(CACHE_XML_FILE, path);
     ds = DistributedSystem.connect(props);
     try {
       // Create the cache which causes the cache-xml-file to be parsed

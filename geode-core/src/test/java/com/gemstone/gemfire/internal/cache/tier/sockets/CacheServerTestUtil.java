@@ -16,28 +16,10 @@
  */
 package com.gemstone.gemfire.internal.cache.tier.sockets;
 
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Properties;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 
-import com.gemstone.gemfire.cache.AttributesFactory;
-import com.gemstone.gemfire.cache.Cache;
-import com.gemstone.gemfire.cache.CacheFactory;
-import com.gemstone.gemfire.cache.DataPolicy;
-import com.gemstone.gemfire.cache.Declarable;
-import com.gemstone.gemfire.cache.EntryEvent;
-import com.gemstone.gemfire.cache.RegionAttributes;
-import com.gemstone.gemfire.cache.Scope;
-import com.gemstone.gemfire.cache.client.ClientCache;
-import com.gemstone.gemfire.cache.client.ClientCacheFactory;
-import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
-import com.gemstone.gemfire.cache.client.Pool;
-import com.gemstone.gemfire.cache.client.PoolManager;
+import com.gemstone.gemfire.cache.*;
+import com.gemstone.gemfire.cache.client.*;
 import com.gemstone.gemfire.cache.client.internal.PoolImpl;
 import com.gemstone.gemfire.cache.query.CqEvent;
 import com.gemstone.gemfire.cache.server.CacheServer;
@@ -49,12 +31,19 @@ import com.gemstone.gemfire.internal.AvailablePort;
 import com.gemstone.gemfire.internal.cache.GemFireCacheImpl;
 import com.gemstone.gemfire.internal.cache.PoolFactoryImpl;
 import com.gemstone.gemfire.internal.cache.PoolFactoryImpl.PoolAttributes;
-import com.gemstone.gemfire.internal.i18n.LocalizedStrings;
-import com.gemstone.gemfire.test.dunit.Assert;
-import com.gemstone.gemfire.test.dunit.DistributedTestCase;
-import com.gemstone.gemfire.test.dunit.DistributedTestUtils;
-import com.gemstone.gemfire.test.dunit.IgnoredException;
-import com.gemstone.gemfire.test.dunit.LogWriterUtils;
+import com.gemstone.gemfire.test.dunit.*;
+
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Properties;
+
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.LOCATORS;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.MCAST_PORT;
 /**
  *
  *
@@ -129,8 +118,8 @@ public class CacheServerTestUtil extends DistributedTestCase
   
   public static void createPool(PoolAttributes poolAttr) throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     
     DistributedSystem ds = new CacheServerTestUtil("tmp").getSystem(props);;
     
@@ -215,17 +204,17 @@ public class CacheServerTestUtil extends DistributedTestCase
     ClientCacheFactory ccf = new ClientCacheFactory();
     try {
       File cacheXmlFile = new File(url.toURI().getPath());
-      ccf.set("cache-xml-file", cacheXmlFile.toURI().getPath());
+      ccf.set(CACHE_XML_FILE, cacheXmlFile.toURI().getPath());
       
     }
     catch (URISyntaxException e) {
       throw new ExceptionInInitializerError(e);
     }
-    ccf.set("mcast-port", "0");
-    ccf.set(DistributionConfig.DURABLE_CLIENT_ID_NAME, durableClientId);
-    ccf.set(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, String.valueOf(timeout));
-    ccf.set("log-file", "abs_client_system.log");
-    ccf.set("log-level", LogWriterUtils.getDUnitLogLevel());
+    ccf.set(MCAST_PORT, "0");
+    ccf.set(DURABLE_CLIENT_ID, durableClientId);
+    ccf.set(DURABLE_CLIENT_TIMEOUT, String.valueOf(timeout));
+    ccf.set(LOG_FILE, "abs_client_system.log");
+    ccf.set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
     cache = (Cache)ccf.create();
     expected = IgnoredException.addIgnoredException("java.net.ConnectionException||java.net.SocketException");
     pool = (PoolImpl)PoolManager.find(poolName);
@@ -236,15 +225,15 @@ public class CacheServerTestUtil extends DistributedTestCase
     ClientCacheFactory ccf = new ClientCacheFactory();
     try {
       File cacheXmlFile = new File(url.toURI().getPath());
-      ccf.set("cache-xml-file", cacheXmlFile.toURI().getPath());
+      ccf.set(CACHE_XML_FILE, cacheXmlFile.toURI().getPath());
       
     }
     catch (URISyntaxException e) {
       throw new ExceptionInInitializerError(e);
     }
-    ccf.set("mcast-port", "0");
-    ccf.set(DistributionConfig.DURABLE_CLIENT_ID_NAME, durableClientId);
-    ccf.set(DistributionConfig.DURABLE_CLIENT_TIMEOUT_NAME, String.valueOf(timeout));
+    ccf.set(MCAST_PORT, "0");
+    ccf.set(DURABLE_CLIENT_ID, durableClientId);
+    ccf.set(DURABLE_CLIENT_TIMEOUT, String.valueOf(timeout));
     cache = (Cache)ccf.create();
     expected = IgnoredException.addIgnoredException("java.net.ConnectionException||java.net.SocketException");
     pool = (PoolImpl)PoolManager.find(poolName);
@@ -255,11 +244,11 @@ public class CacheServerTestUtil extends DistributedTestCase
     CacheFactory ccf = new CacheFactory();
     try {
       File cacheXmlFile = new File(url.toURI().getPath());
-      ccf.set("cache-xml-file", cacheXmlFile.toURI().getPath());
-      ccf.set("mcast-port", "0");
-      ccf.set("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
-      ccf.set("log-file", "abs_server_system.log");
-      ccf.set("log-level", LogWriterUtils.getDUnitLogLevel());
+      ccf.set(CACHE_XML_FILE, cacheXmlFile.toURI().getPath());
+      ccf.set(MCAST_PORT, "0");
+      ccf.set(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
+      ccf.set(LOG_FILE, "abs_server_system.log");
+      ccf.set(LOG_LEVEL, LogWriterUtils.getDUnitLogLevel());
     }
     catch (URISyntaxException e) {
       throw new ExceptionInInitializerError(e);
@@ -272,9 +261,9 @@ public class CacheServerTestUtil extends DistributedTestCase
     CacheFactory ccf = new CacheFactory();
     try {
       File cacheXmlFile = new File(url.toURI().getPath());
-      ccf.set("cache-xml-file", cacheXmlFile.toURI().getPath());
-      ccf.set("mcast-port", "0");
-      ccf.set("locators", "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
+      ccf.set(CACHE_XML_FILE, cacheXmlFile.toURI().getPath());
+      ccf.set(MCAST_PORT, "0");
+      ccf.set(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
     }
     catch (URISyntaxException e) {
       throw new ExceptionInInitializerError(e);
@@ -311,16 +300,16 @@ public class CacheServerTestUtil extends DistributedTestCase
   private static Properties getClientProperties()
   {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     return props;
   }
   
   private static Properties getClientProperties(boolean durable)
   {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "");
     return props;
   }
 
@@ -328,8 +317,8 @@ public class CacheServerTestUtil extends DistributedTestCase
       Boolean notifyBySubscription) throws Exception
   {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
     new CacheServerTestUtil("temp").createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -350,8 +339,8 @@ public class CacheServerTestUtil extends DistributedTestCase
   {
     Properties props = new Properties();
 //    int mcastPort = AvailablePort.getRandomAvailablePort(AvailablePort.JGROUPS);
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
     new CacheServerTestUtil("temp").createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -371,8 +360,8 @@ public class CacheServerTestUtil extends DistributedTestCase
       Boolean notifyBySubscription, Integer serverPort)
       throws Exception {
     Properties props = new Properties();
-    props.setProperty(DistributionConfig.MCAST_PORT_NAME, "0");
-    props.setProperty(DistributionConfig.LOCATORS_NAME, "localhost["+DistributedTestUtils.getDUnitLocatorPort()+"]");
+    props.setProperty(MCAST_PORT, "0");
+    props.setProperty(LOCATORS, "localhost[" + DistributedTestUtils.getDUnitLocatorPort() + "]");
     new CacheServerTestUtil("temp").createCache(props);
     AttributesFactory factory = new AttributesFactory();
     factory.setScope(Scope.DISTRIBUTED_ACK);
@@ -515,18 +504,18 @@ public class CacheServerTestUtil extends DistributedTestCase
   public static void disableShufflingOfEndpoints()
   {
     // TODO DISABLE_RANDOM doesn't seem to be used anywhere
-    System.setProperty("gemfire.PoolImpl.DISABLE_RANDOM", "true");
-    System.setProperty("gemfire.bridge.disableShufflingOfEndpoints", "true");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "PoolImpl.DISABLE_RANDOM", "true");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "bridge.disableShufflingOfEndpoints", "true");
   }
   /**
    * Enables the shuffling of endpoints for a client
-   * @since 5.7
+   * @since GemFire 5.7
    */
   public static void enableShufflingOfEndpoints()
   {
     // TODO DISABLE_RANDOM doesn't seem to be used anywhere
-    System.setProperty("gemfire.PoolImpl.DISABLE_RANDOM", "false");
-    System.setProperty("gemfire.bridge.disableShufflingOfEndpoints", "false");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "PoolImpl.DISABLE_RANDOM", "false");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "bridge.disableShufflingOfEndpoints", "false");
   }
 
   /**
@@ -535,7 +524,7 @@ public class CacheServerTestUtil extends DistributedTestCase
    */
   public static void resetDisableShufflingOfEndpointsFlag()
   {
-    System.setProperty("gemfire.bridge.disableShufflingOfEndpoints", "false");
+    System.setProperty(DistributionConfig.GEMFIRE_PREFIX + "bridge.disableShufflingOfEndpoints", "false");
   }
   
   public static class EventWrapper {
