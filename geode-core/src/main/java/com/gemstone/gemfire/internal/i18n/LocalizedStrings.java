@@ -734,7 +734,6 @@ public class LocalizedStrings {
   public static final StringId PartitionedRegion_FAILED_REGISTRATION_PRID_0_NAMED_1 = new StringId(1872, "FAILED_REGISTRATION prId={0} named {1}");
   public static final StringId PartitionedRegion_FORCEREATTEMPT_EXCEPTION___0 = new StringId(1873, "ForceReattempt exception :  {0}");
   public static final StringId PartitionedRegion_NEWLY_ADDED_MEMBER_TO_THE_PR_IS_AN_ACCESSOR_AND_WILL_NOT_RECEIVE_INDEX_INFORMATION_0 = new StringId(1874, "Newly added member to the PR is an accessor and will not receive index information : {0}");
-  public static final StringId FunctionService_ROUTING_OBJECTS_SET_IS_NULL = new StringId(1875, "Set for routing objects passed is null");
 
   public static final StringId PartitionedRegion_NO_VM_AVAILABLE_FOR_CONTAINS_KEY_IN_1_ATTEMPTS = new StringId(1877, "No VM available for contains key in {1} attempts");
   public static final StringId PartitionedRegion_NO_VM_AVAILABLE_FOR_CONTAINS_VALUE_FOR_KEY_IN_1_ATTEMPTS = new StringId(1878, "No VM available for contains value for key in {1} attempts");
@@ -836,8 +835,6 @@ public class LocalizedStrings {
 
   public static final StringId LocalRegion_THE_FOLLOWING_EXCEPTION_OCCURRED_ATTEMPTING_TO_GET_KEY_0 = new StringId(1995, "The following exception occurred attempting to get key={0}");
 
-  public static final StringId RegionAdvisor_CANNOT_RESET_EXISTING_BUCKET = new StringId(
-                                                                                                1997, "For region {0}: RegionAdvisor cannot reset existing bucket with ID {1}");
   public static final StringId SystemAdmin_LRU_OPTION_HELP = new StringId(1998, "-lru=<type> Sets region''s lru algorithm. Valid types are: none, lru-entry-count, lru-heap-percentage, or lru-memory-size");
   public static final StringId SystemAdmin_LRUACTION_OPTION_HELP = new StringId(1999, "-lruAction=<action> Sets the region''s lru action. Valid actions are: none, overflow-to-disk, local-destroy");
   public static final StringId SystemAdmin_LRULIMIT_OPTION_HELP = new StringId(2000, "-lruLimit=<int> Sets the region''s lru limit. Valid values are >= 0");
@@ -2973,9 +2970,6 @@ public class LocalizedStrings {
   public static final StringId GemFireCache_INITIALIZATION_FAILED_FOR_REGION_0 = new StringId(4609, "Initialization failed for Region {0}");
   public static final StringId LocalRegion_INITIALIZATION_FAILED_FOR_REGION_0 = new StringId(4610, "Initialization failed for Region {0}");
   public static final StringId PartitionedRegion_0_EVICTIONATTRIBUTES_1_DO_NOT_MATCH_WITH_OTHER_2 = new StringId(4611, "For Partitioned Region {0} the locally configured EvictionAttributes {1} do not match with other EvictionAttributes {2} and may cause misses during reads from VMs with smaller maximums.");
-  public static final StringId DSFIDFactory_COULD_NOT_INSTANTIATE_SQLFABRIC_MESSAGE_CLASSID_0_1 = new StringId(4616, "Could not instantiate SQLFabric message [classId:{0}]:{1}");
-  public static final StringId DSFIDFactory_ILLEGAL_ACCESS_FOR_SQLFABRIC_MESSAGE_CLASSID_0_1 = new StringId(4617, "Illegal access for SQLFabric message [classId:{0}]:{1}");
-  public static final StringId DSFIDFactory_UNKNOWN_CLASSID_0_FOR_SQLFABRIC_MESSAGE = new StringId(4618, "Unknown ClassId [{0}] for SQLFabric message");
   public static final StringId AbstractRegionMap_THE_CURRENT_VALUE_WAS_NOT_EQUAL_TO_EXPECTED_VALUE = new StringId(4619, "The current value was not equal to expected value.");
   public static final StringId AbstractRegionEntry_THE_CURRENT_VALUE_WAS_NOT_EQUAL_TO_EXPECTED_VALUE = new StringId(4620, "The current value was not equal to expected value.");
   public static final StringId AbstractRegionMap_ENTRY_NOT_FOUND_WITH_EXPECTED_VALUE = new StringId(4621, "entry not found with expected value");
@@ -3112,11 +3106,6 @@ public class LocalizedStrings {
   public static final StringId AttributesFactory_INVALIDATE_REGION_NOT_SUPPORTED_FOR_PR = new StringId(4784,"ExpirationAction INVALIDATE or LOCAL_INVALIDATE for region is not supported for Partitioned Region.");
   public static final StringId AttributesFactory_LOCAL_DESTROY_IS_NOT_SUPPORTED_FOR_PR = new StringId(4785,"ExpirationAction LOCAL_DESTROY is not supported for Partitioned Region.");
   public static final StringId AttributesFactory_LOCAL_INVALIDATE_IS_NOT_SUPPORTED_FOR_PR = new StringId(4786,"ExpirationAction LOCAL_INVALIDATE is not supported for Partitioned Region.");
-  public static final StringId GemFireUtilLauncher_ARGUMENTS = new StringId(4789, "Usage:\n{0} [{1}] <arguments for the utility specified>\n\nThe command to display a particular utility''s usage is:\n{0} <utility name> --help");
-  public static final StringId GemFireUtilLauncher_INVALID_UTILITY_0 = new StringId(4790, "Invalid utility name: {0} was specified.");
-  public static final StringId GemFireUtilLauncher_PROBLEM_STARTING_0 = new StringId(4791, "Problem starting {0}.");
-  public static final StringId GemFireUtilLauncher_MISSING_COMMAND = new StringId(4792, "** Missing command");
-  public static final StringId GemFireUtilLauncher_HELP = new StringId(4793, "** Displaying help information");
   public static final StringId AttributesFactory_DESTROY_REGION_NOT_SUPPORTED_FOR_PR = new StringId(4794,"ExpirationAction DESTROY or LOCAL_DESTROY for region is not supported for Partitioned Region.");
   public static final StringId ExecuteFunction_DS_NOT_CREATED_OR_NOT_READY = new StringId(4795, "DistributedSystem is either not created or not ready");
 
@@ -3761,7 +3750,15 @@ public class LocalizedStrings {
   public static final StringId SwaggerConfig_DOC_TITLE = new StringId(6621, "Apache Geode Documentation");
   public static final StringId SwaggerConfig_DOC_LINK = new StringId(6622, "http://geode.incubator.apache.org/docs/");
 
-  public static final StringId LuceneXmlParser_CLASS_0_IS_NOT_AN_INSTANCE_OF_ANALYZER = new StringId(6623, "Class \"{0}\" is not an instance of Analyzer.");
+  public static final StringId LuceneXmlParser_CLASS_0_IS_NOT_AN_INSTANCE_OF_ANALYZER = new StringId(6623, "Class {0} is not an instance of Analyzer.");
+  public static final StringId LuceneService_CANNOT_CREATE_INDEX_0_ON_REGION_1_WITH_FIELDS_2_BECAUSE_ANOTHER_MEMBER_DEFINES_THE_SAME_INDEX_WITH_FIELDS_3 = new StringId(6624, "Cannot create Lucene index {0} on region {1} with fields {2} because another member defines the same index with fields {3}.");
+  public static final StringId LuceneService_CANNOT_CREATE_INDEX_0_ON_REGION_1_WITH_ANALYZER_2_BECAUSE_ANOTHER_MEMBER_DEFINES_THE_SAME_INDEX_WITH_ANALYZER_3 = new StringId(6625, "Cannot create Lucene index {0} on region {1} with analyzer {2} because another member defines the same index with analyzer {3}.");
+  public static final StringId LuceneService_CANNOT_CREATE_INDEX_0_ON_REGION_1_WITH_FIELD_ANALYZERS_2_BECAUSE_ANOTHER_MEMBER_DEFINES_THE_SAME_INDEX_WITH_NO_FIELD_ANALYZERS = new StringId(6626, "Cannot create Lucene index {0} on region {1} with field analyzers {2} because another member defines the same index with no field analyzers.");
+  public static final StringId LuceneService_CANNOT_CREATE_INDEX_0_ON_REGION_1_WITH_NO_FIELD_ANALYZERS_BECAUSE_ANOTHER_MEMBER_DEFINES_THE_SAME_INDEX_WITH_FIELD_ANALYZERS_2 = new StringId(6627, "Cannot create Lucene index {0} on region {1} with no field analyzers because another member defines the same index with field analyzers {2}.");
+  public static final StringId LuceneService_CANNOT_CREATE_INDEX_0_ON_REGION_1_WITH_FIELD_ANALYZERS_2_BECAUSE_ANOTHER_MEMBER_DEFINES_THE_SAME_INDEX_WITH_FIELD_ANALYZERS_3 = new StringId(6628, "Cannot create Lucene index {0} on region {1} with field analyzers {2} because another member defines the same index with field analyzers {3}.");
+  public static final StringId LuceneService_CANNOT_CREATE_INDEX_0_ON_REGION_1_WITH_NO_ANALYZER_ON_FIELD_2_BECAUSE_ANOTHER_MEMBER_DEFINES_THE_SAME_INDEX_WITH_ANALYZER_3_ON_THAT_FIELD = new StringId(6629, "Cannot create Lucene index {0} on region {1} with no analyzer on field {2} because another member defines the same index with analyzer {3} on that field.");
+  public static final StringId LuceneService_CANNOT_CREATE_INDEX_0_ON_REGION_1_WITH_ANALYZER_2_ON_FIELD_3_BECAUSE_ANOTHER_MEMBER_DEFINES_THE_SAME_INDEX_WITH_NO_ANALYZER_ON_THAT_FIELD = new StringId(6630, "Cannot create Lucene index {0} on region {1} with analyzer {2} on field {3} because another member defines the same index with no analyzer on that field.");
+  public static final StringId LuceneService_CANNOT_CREATE_INDEX_0_ON_REGION_1_WITH_ANALYZER_2_ON_FIELD_3_BECAUSE_ANOTHER_MEMBER_DEFINES_THE_SAME_INDEX_WITH_ANALYZER_4_ON_THAT_FIELD = new StringId(6631, "Cannot create Lucene index {0} on region {1} with analyzer {2} on field {3} because another member defines the same index with analyzer {4} on that field.");
 
   /** Testing strings, messageId 90000-99999 **/
   

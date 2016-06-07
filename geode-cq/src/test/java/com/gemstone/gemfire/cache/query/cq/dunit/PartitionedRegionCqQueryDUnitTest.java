@@ -18,7 +18,6 @@ package com.gemstone.gemfire.cache.query.cq.dunit;
 
 import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
 import static com.gemstone.gemfire.test.dunit.Assert.*;
-import static com.gemstone.gemfire.test.dunit.LogWriterUtils.*;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -68,12 +67,12 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
 
-  static public final String[] regions = new String[] {
+  public static final String[] regions = new String[] {
       "regionA",
       "regionB"
   };
-  
-  static public final String KEY = "key-";
+
+  public static final String KEY = "key-";
   
   protected final CqQueryDUnitTest cqHelper = new CqQueryDUnitTest();
   
@@ -167,7 +166,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
     
     cqHelper.closeClient(client);
     Wait.pause(10 * 1000);
-    //cc1 = server1.invoke(() -> PartitionedRegionCqQueryDUnitTest.getCqCountFromRegionProfile());
     cc2 = server2.invoke(() -> PartitionedRegionCqQueryDUnitTest.getCqCountFromRegionProfile());
     
     //assertIndexDetailsEquals("Should have one", 0, cc1);
@@ -220,8 +218,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         /* queryDeletes: */ 0,
         /* totalEvents: */ size);
     
-    //size = 2;
-    
     // do updates
     createValues(server1, regions[0], size);
     
@@ -244,7 +240,7 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
     
     cqHelper.waitForDestroyed(client, "testCQEvents_0", KEY+numDestroys);
     
-    // validate cqs after destroyes on server2.
+    // validate cqs after destroys on server2.
  
     cqHelper.validateCQ(client, "testCQEvents_0",
         /* resultSize: */ CqQueryDUnitTest.noTest,
@@ -255,30 +251,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         /* queryUpdates: */ size,
         /* queryDeletes: */ numDestroys,
         /* totalEvents: */ (size+size+numDestroys));
-    
-    // invalidate some entries.
-    /*final int numInvalidates = 5;
-    
-    server2.invoke(new CacheSerializableRunnable("Invalidate values") {
-      public void run2() throws CacheException {
-        Region region1 = getRootRegion().getSubregion(regions[0]);
-        for (int i = numInvalidates; i <= (numInvalidates+4); i++) {
-          region1.invalidate(KEY+i);
-        }
-      }
-    });
-     
-    cqHelper.waitForInvalidated(client, "testCQEvents_0", KEY+(numInvalidates+4));
-    */
-   // cqHelper.validateCQ(client, "testCQEvents_0",
-    //    /* resultSize: */ cqHelper.noTest,
-    //    /* creates: */ size,
-    //    /* updates: */ size,
-    //    /* deletes; */ (numDestroys+numInvalidates),
-    //    /* queryInserts: */ size,
-     //   /* queryUpdates: */ size,
-     //   /* queryDeletes: */ (numDestroys+numInvalidates),
-    //    /* totalEvents: */ (size+size+numDestroys + numInvalidates));
     
     cqHelper.closeClient(client);
     cqHelper.closeServer(server2);
@@ -334,8 +306,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         /* queryDeletes: */ 0,
         /* totalEvents: */ size);
     
-    //size = 2;
-    
     // do updates
     createValues(server1, regions[0], size);
     
@@ -363,9 +333,8 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
       cqHelper.waitForDestroyed(client, "testCQEvents_0", KEY+i);
     }
     
-    // validate cqs after destroyes on server2.
+    // validate cqs after destroys on server2.
  
-        
     cqHelper.validateCQ(client, "testCQEvents_0",
         /* resultSize: */ CqQueryDUnitTest.noTest,
         /* creates: */ size,
@@ -425,8 +394,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         /* queryDeletes: */ 0,
         /* totalEvents: */ size);
     
-    //size = 2;
-    
     // do updates
     createValues(server1, regions[0], size);
     
@@ -444,7 +411,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         /* queryUpdates: */ size,
         /* queryDeletes: */ 0,
         /* totalEvents: */ (size+size));
-    
     
     // destroy all the values.
     int numDestroys = size;
@@ -630,7 +596,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         /* queryUpdates: */ size,
         /* queryDeletes: */ 0,
         /* totalEvents: */ (size+size));
-    
     
     // invalidate all the values.
     int numInvalidates = size;
@@ -911,8 +876,7 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
     // do updates
     createValues(client2, regions[0], size);
     createValues(client2, regions[1], size);
-    
- 
+
     for (int i=1; i <= size; i++){
       cqHelper.waitForUpdated(client, "testCQEvents_0", KEY+i);
       cqHelper.waitForUpdated(client, "testCQEvents_1", KEY+i);
@@ -1275,7 +1239,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
           region.put("KEY-"+i, p);
         }
       }
-      
     });
     
     client1.invokeAsync(new CacheSerializableRunnable("Wait for CqEvent") {
@@ -1316,8 +1279,6 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         if (localRegion != null) {
 
           // REGION NULL
-          getLogWriter().info("Local region is NOT null in client 1");
-          
           Wait.pause(5*1000);
           CqQuery[] cqs = getCache().getQueryService().getCqs();
           if (cqs != null && cqs.length > 0) {
@@ -1375,27 +1336,27 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         "Create Cache Server") {
       public void run2() throws CacheException
       {
-          LogWriterUtils.getLogWriter().info("### Create Cache Server. ###");
-          AttributesFactory attr = new AttributesFactory();
-          PartitionAttributesFactory paf = new PartitionAttributesFactory();
-          if (isAccessor){
-            paf.setLocalMaxMemory(0);
-          }
-          PartitionAttributes prAttr = paf.setTotalNumBuckets(197).setRedundantCopies(redundantCopies).create();
-          attr.setPartitionAttributes(prAttr);
-          
-          assertFalse(getSystem().isLoner());
-          //assertTrue(getSystem().getDistributionManager().getOtherDistributionManagerIds().size() > 0);
-          for (int i = 0; i < regions.length; i++) {
-            Region r = createRegion(regions[i], attr.create());
-            LogWriterUtils.getLogWriter().info("Server created the region: "+r);
-          }
-          try {
-            startBridgeServer(port, true);
-          }
-          catch (Exception ex) {
-            Assert.fail("While starting CacheServer", ex);
-          }
+        LogWriterUtils.getLogWriter().info("### Create Cache Server. ###");
+        AttributesFactory attr = new AttributesFactory();
+        PartitionAttributesFactory paf = new PartitionAttributesFactory();
+        if (isAccessor){
+          paf.setLocalMaxMemory(0);
+        }
+        PartitionAttributes prAttr = paf.setTotalNumBuckets(197).setRedundantCopies(redundantCopies).create();
+        attr.setPartitionAttributes(prAttr);
+
+        assertFalse(getSystem().isLoner());
+        //assertTrue(getSystem().getDistributionManager().getOtherDistributionManagerIds().size() > 0);
+        for (int i = 0; i < regions.length; i++) {
+          Region r = createRegion(regions[i], attr.create());
+          LogWriterUtils.getLogWriter().info("Server created the region: "+r);
+        }
+        try {
+          startBridgeServer(port, true);
+        }
+        catch (Exception ex) {
+          Assert.fail("While starting CacheServer", ex);
+        }
       }
     };
 
@@ -1415,27 +1376,27 @@ public class PartitionedRegionCqQueryDUnitTest extends JUnit4CacheTestCase {
         "Create Cache Server") {
       public void run2() throws CacheException
       {
-          LogWriterUtils.getLogWriter().info("### Create Cache Server. ###");
-          AttributesFactory attr = new AttributesFactory();
-          PartitionAttributesFactory paf = new PartitionAttributesFactory();
-          if (isAccessor){
-            paf.setLocalMaxMemory(0);
-          }
-          PartitionAttributes prAttr = paf.setTotalNumBuckets(1).setRedundantCopies(redundantCopies).create();
-          attr.setPartitionAttributes(prAttr);
-          
-          assertFalse(getSystem().isLoner());
-          //assertTrue(getSystem().getDistributionManager().getOtherDistributionManagerIds().size() > 0);
-          for (int i = 0; i < regions.length; i++) {
-            Region r = createRegionWithoutRoot(regions[i], attr.create());
-            LogWriterUtils.getLogWriter().info("Server created the region: "+r);
-          }
-          try {
-            startBridgeServer(port, true);
-          }
-          catch (Exception ex) {
-            Assert.fail("While starting CacheServer", ex);
-          }
+        LogWriterUtils.getLogWriter().info("### Create Cache Server. ###");
+        AttributesFactory attr = new AttributesFactory();
+        PartitionAttributesFactory paf = new PartitionAttributesFactory();
+        if (isAccessor){
+          paf.setLocalMaxMemory(0);
+        }
+        PartitionAttributes prAttr = paf.setTotalNumBuckets(1).setRedundantCopies(redundantCopies).create();
+        attr.setPartitionAttributes(prAttr);
+
+        assertFalse(getSystem().isLoner());
+        //assertTrue(getSystem().getDistributionManager().getOtherDistributionManagerIds().size() > 0);
+        for (int i = 0; i < regions.length; i++) {
+          Region r = createRegionWithoutRoot(regions[i], attr.create());
+          LogWriterUtils.getLogWriter().info("Server created the region: "+r);
+        }
+        try {
+          startBridgeServer(port, true);
+        }
+        catch (Exception ex) {
+          Assert.fail("While starting CacheServer", ex);
+        }
       }
 
       private Region createRegionWithoutRoot(String regionName,

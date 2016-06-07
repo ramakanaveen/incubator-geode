@@ -68,9 +68,6 @@ import com.gemstone.gemfire.test.dunit.VM;
 import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
 import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
-/**
- * Port of GemFireXD's corresponding test for distributed transactions
- */
 @SuppressWarnings("deprecation")
 @Category(DistributedTest.class)
 public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
@@ -374,14 +371,6 @@ public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
     });
   }
   
-  
-
-  
-  /**
-   * From GemFireXD: testTransactionalInsertOnReplicatedTable
-   * 
-   * @throws Exception
-   */
   @Test
   public void testTransactionalPutOnReplicatedRegion() throws Exception {
     Host host = Host.getHost(0);
@@ -660,8 +649,6 @@ public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
   }
   
   /*
-   * [sjigyasu] This adapation of test from GemFireXD allows the difference in 
-   * the way GemFire and GemFireXD handle server groups.
    * We create 2 partitioned regions one on each server and have a third node
    * as accessor and fire transactional operations on it.
    */

@@ -87,7 +87,7 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
   protected static final int REQUIRES_NOTIFICATION_MASK = 0x8000;
   private static final int HAS_CACHE_SERVER_MASK = 0x10000;
   private static final int REQUIRES_OLD_VALUE_MASK = 0x20000;
-  private static final int MEMBER_UNINITIALIZED_MASK = 0x40000;
+  // unused 0x40000;
   private static final int PERSISTENCE_INITIALIZED_MASK = 0x80000;
   //Important below mentioned bit masks are not available 
   /**
@@ -99,6 +99,8 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
 
   private static final int ASYNC_EVENT_QUEUE_IDS_MASK = 0x400000;
   private static final int IS_OFF_HEAP_MASK =           0x800000;
+  private static final int CACHE_SERVICE_PROFILES_MASK = 0x1000000;
+
   
   // moved initializ* to DistributionAdvisor
 
@@ -227,8 +229,7 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
         CacheProfile prof = (CacheProfile)profile;
 
         // if region in cache is not yet initialized, exclude
-        if (!prof.regionInitialized          // fix for bug 41102
-            || prof.memberUnInitialized) {
+        if (!prof.regionInitialized) { // fix for bug 41102
           return false;
         }
 
@@ -265,10 +266,6 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
           CacheProfile cp = (CacheProfile)profile;
           // if region in cache is not yet initialized, exclude
           if (!cp.regionInitialized) {
-            return false;
-          }
-          // if member is not yet initialized, exclude
-          if (cp.memberUnInitialized) {
             return false;
           }
           if (!cp.cachedOrAllEventsWithListener()) {
@@ -325,8 +322,7 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
       public boolean include(Profile profile) {
         assert profile instanceof CacheProfile;
         CacheProfile cp = (CacheProfile)profile;
-        if (cp.dataPolicy.withReplication() && cp.regionInitialized
-            && !cp.memberUnInitialized) {
+        if (cp.dataPolicy.withReplication() && cp.regionInitialized) {
           return true;
         }
         return false;
@@ -346,10 +342,6 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
         CacheProfile cp = (CacheProfile)profile;
         // if region in cache is not yet initialized, exclude
         if (!cp.regionInitialized) {
-          return false;
-        }
-        // if member is not yet initialized, exclude
-        if (cp.memberUnInitialized) {
           return false;
         }
         DataPolicy dp = cp.dataPolicy;
@@ -542,14 +534,6 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
      */
     public boolean regionInitialized;
 
-    /**
-     * True when member is still not ready to receive cache operations. Note
-     * that {@link #regionInitialized} may be still true so other members can
-     * proceed with GII etc. Currently used by SQLFabric to indicate that DDL
-     * replay is in progress and so cache operations/functions should not be
-     * routed to that node.
-     */
-    public boolean memberUnInitialized = false;
     
     /**
      * True when a members persistent store is initialized. Note that
@@ -566,6 +550,8 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
      * local profiles (i.e., a profile representing this vm)
      */
     public boolean hasCacheServer = false;
+
+    public List<CacheServiceProfile> cacheServiceProfiles = new ArrayList<>();
 
     /** for internal use, required for DataSerializer.readObject */
     public CacheProfile() {
@@ -611,7 +597,6 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
       if (this.isGatewayEnabled) s |= IS_GATEWAY_ENABLED_MASK;
       if (this.isPersistent) s |= PERSISTENT_MASK;
       if (this.regionInitialized) s|= REGION_INITIALIZED_MASK;
-      if (this.memberUnInitialized) s |= MEMBER_UNINITIALIZED_MASK;
       if (this.persistentID != null) s|= PERSISTENT_ID_MASK;
       if (this.hasCacheServer) s|= HAS_CACHE_SERVER_MASK;
       if (this.requiresOldValueInEvents) s|= REQUIRES_OLD_VALUE_MASK;
@@ -619,6 +604,7 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
       if (!this.gatewaySenderIds.isEmpty()) s |= GATEWAY_SENDER_IDS_MASK;
       if (!this.asyncEventQueueIds.isEmpty()) s |= ASYNC_EVENT_QUEUE_IDS_MASK;
       if (this.isOffHeap) s |= IS_OFF_HEAP_MASK;
+      if (!this.cacheServiceProfiles.isEmpty()) s |= CACHE_SERVICE_PROFILES_MASK;
       Assert.assertTrue(!this.scope.isLocal());
       return s;
     }
@@ -688,7 +674,6 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
       this.isGatewayEnabled = (s & IS_GATEWAY_ENABLED_MASK) != 0;
       this.isPersistent = (s & PERSISTENT_MASK) != 0;
       this.regionInitialized = ( (s & REGION_INITIALIZED_MASK) != 0 );
-      this.memberUnInitialized = (s & MEMBER_UNINITIALIZED_MASK) != 0;
       this.hasCacheServer = ( (s & HAS_CACHE_SERVER_MASK) != 0 );
       this.requiresOldValueInEvents = ((s & REQUIRES_OLD_VALUE_MASK) != 0);
       this.persistenceInitialized = (s & PERSISTENCE_INITIALIZED_MASK) != 0;
@@ -722,6 +707,14 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
      */
     public boolean allEvents() {
       return this.subscriptionAttributes.getInterestPolicy().isAll();
+    }
+
+    public void addCacheServiceProfile(CacheServiceProfile profile) {
+      this.cacheServiceProfiles.add(profile);
+    }
+
+    private boolean hasCacheServiceProfiles(int bits) {
+      return (bits & CACHE_SERVICE_PROFILES_MASK) != 0;
     }
 
     /**
@@ -829,9 +822,12 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
         writeSet(asyncEventQueueIds, out);
       }
       DataSerializer.writeObject(this.filterProfile, out);
+      if (!cacheServiceProfiles.isEmpty()) {
+        DataSerializer.writeObject(cacheServiceProfiles, out);
+      }
     }
 
-    private void writeSet(Set<String> set, DataOutput out) throws IOException {
+    private void writeSet(Set<?> set, DataOutput out) throws IOException {
       // to fix bug 47205 always serialize the Set as a HashSet.
       out.writeByte(DSCODE.HASH_SET);
       InternalDataSerializer.writeSet(set, out);
@@ -853,6 +849,9 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
         asyncEventQueueIds = DataSerializer.readObject(in);
       }
       this.filterProfile = DataSerializer.readObject(in);
+      if (hasCacheServiceProfiles(bits)) {
+        cacheServiceProfiles = DataSerializer.readObject(in);
+      }
     }
 
     @Override
@@ -871,8 +870,6 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
       sb.append("; scope=" + this.scope);
       sb.append("; regionInitialized=").append(
           String.valueOf(this.regionInitialized));
-      sb.append("; memberUnInitialized=").append(
-          String.valueOf(this.memberUnInitialized));
       sb.append("; inRecovery=" + this.inRecovery);
       sb.append("; subcription=" + this.subscriptionAttributes);
       sb.append("; isPartitioned=" + this.isPartitioned);
@@ -885,6 +882,7 @@ public class CacheDistributionAdvisor extends DistributionAdvisor  {
       sb.append("; gatewaySenderIds =" + this.gatewaySenderIds);
       sb.append("; asyncEventQueueIds =" + this.asyncEventQueueIds);
       sb.append("; IsOffHeap=" + this.isOffHeap);
+      sb.append("; cacheServiceProfiles=" + this.cacheServiceProfiles);
     }
   }
 
