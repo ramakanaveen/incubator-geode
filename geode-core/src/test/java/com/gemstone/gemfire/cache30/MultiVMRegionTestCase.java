@@ -403,7 +403,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
    * DISABLED 4-16-04 - the current implementation assumes events
    * are processed synchronously, which is no longer true.
    */
-  @Ignore("DISABLED 4-16-04 - the current implementation assumes events are processed synchronously, which is no longer true")
+  @Ignore("TODO: test is DISABLED 4-16-04 - the current implementation assumes events are processed synchronously, which is no longer true")
   @Test
   public void testOrderedUpdates() throws Exception {
     assumeFalse(getRegionAttributes().getScope() == Scope.DISTRIBUTED_NO_ACK);
@@ -1703,7 +1703,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
     final String name = this.getUniqueName();
     final Object key = "KEY";
-//    final Object value = "VALUE";
 
     SerializableRunnable create =
       new CacheSerializableRunnable("Create Region") {
@@ -1712,7 +1711,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
             createRegion(name);
           }
         };
-
 
     Host host = Host.getHost(0);
     VM vm0 = host.getVM(0);
@@ -1772,10 +1770,8 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
     // some tests use mirroring by default (e.g. persistBackup regions)
     // if so, then this test won't work right
-    if (getRegionAttributes().getDataPolicy().withReplication()
-        || getRegionAttributes().getDataPolicy().isPreloaded()) {
-      return;
-    }
+    assumeFalse(getRegionAttributes().getDataPolicy().withReplication());
+    assumeFalse(getRegionAttributes().getDataPolicy().isPreloaded());
 
     final String name = this.getUniqueName();
     final Object key = this.getUniqueName();
@@ -1787,19 +1783,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     vm1.invoke(new CacheSerializableRunnable("set remote value") {
       @Override
       public void run2() throws CacheException {
-//        final TestCacheLoader remoteloader = new TestCacheLoader() {
-//            public Object load2(LoaderHelper helper)
-//              throws CacheLoaderException {
-//
-//              assertIndexDetailsEquals(key, helper.getKey());
-//              assertIndexDetailsEquals(name, helper.getRegion().getName());
-//              return value;
-//            }
-//          };
-//
-//        AttributesFactory factory =
-//          new AttributesFactory(getRegionAttributes());
-//        factory.setCacheLoader(remoteloader);
         Region rgn = createRegion(name);
         rgn.put(key, value);
         flushIfNecessary(rgn);
@@ -1850,7 +1833,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       }
     });
 
-//    com.gemstone.gemfire.internal.util.DebuggerSupport.waitForJavaDebugger(getLogWriter());
     assertEquals(value, region.get(key));
     // if global scope, then a netSearch is done BEFORE the loader is invoked,
     // so we get the value but the loader is never invoked.
@@ -1867,12 +1849,9 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   public void testCacheLoaderWithNetLoad() throws Exception {
     // replicated regions and partitioned regions make no sense for this
     // test
-    if (getRegionAttributes().getDataPolicy().withReplication() ||
-        getRegionAttributes().getDataPolicy().isPreloaded() ||
-        getRegionAttributes().getPartitionAttributes() != null)
-    {
-      return;
-    }
+    assumeFalse(getRegionAttributes().getDataPolicy().withReplication());
+    assumeFalse(getRegionAttributes().getDataPolicy().isPreloaded());
+    assumeTrue(getRegionAttributes().getPartitionAttributes() == null);
 
     final String name = this.getUniqueName();
     final Object key = this.getUniqueName();
@@ -1937,7 +1916,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     assertNotNull(entry);
     assertNull(entry.getValue());
 
-//    com.gemstone.gemfire.internal.util.DebuggerSupport.waitForJavaDebugger(getLogWriter());
     assertEquals(value, region.get(key));
 
     assertTrue(loader1.wasInvoked());
@@ -1955,7 +1933,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
 
     final String name = this.getUniqueName();
     final Object key = "KEY";
-//    final Object value = "VALUE";
 
     SerializableRunnable create =
       new CacheSerializableRunnable("Create Region") {
@@ -2033,7 +2010,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
         public void run2() throws CacheException {
           Region region =
             getRootRegion().getSubregion(name);
-// DebuggerSupport.waitForJavaDebugger(getLogWriter());
           assertEquals(value, region.get(key));
           assertTrue(loader.wasInvoked());
         }
@@ -2676,14 +2652,10 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     vm1.invoke(new CacheSerializableRunnable("Validate callback") {
         @Override
         public void run2() throws CacheException {
-//          if (getRootRegion().getSubregion(name).getAttributes()
-//              .getPartitionAttributes() == null) { // bug 36500 - remove check when fixed
-            assertTrue(writer.wasInvoked());
-//          }
+          assertTrue(writer.wasInvoked());
         }
       });
   }
-
 
   /**
    * Tests that invoking <code>netSearch</code> in a remote loader
@@ -3006,8 +2978,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
   public void testReplicate() throws Exception {
     assumeTrue(supportsReplication());
 
-    //pauseIfNecessary(100); // wait for previous tearDown to complete
-
     final String name = this.getUniqueName();
     final Object key1 = "KEY1";
     final Object value1 = "VALUE1";
@@ -3136,7 +3106,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
           createRegion(name, factory.create());
         }
       };
-
 
     vm0.invoke(create);
 
@@ -4975,7 +4944,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       });
   }
 
-  @Ignore("Disabled for 51542")
+  @Ignore("TODO: test is disabled for 51542")
   @Test
   public void testNBRegionInvalidationDuringGetInitialImage() throws Exception {
     assumeTrue(supportsReplication());
@@ -7599,7 +7568,7 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     }
   }
 
-  @Ignore("TODO")
+  @Ignore("TODO: test is disabled")
   @Test
   public void testTXAlgebra() throws Exception {
     assumeFalse(getRegionAttributes().getScope().isGlobal());
@@ -8376,18 +8345,13 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
       }
     }
   }
-  
-  
+
   private RegionVersionVector getVersionVector(VM vm) throws Exception {
     byte[] serializedForm = (byte[])vm.invoke(() -> this.getCCRegionVersionVector());
     DataInputStream dis = new DataInputStream(new ByteArrayInputStream(serializedForm));
     return (RegionVersionVector)DataSerializer.readObject(dis);
   }
-  
-  
-  
-  
-  
+
   /** comparison method that allows one or both arguments to be null */
   private boolean notEqual(Object o1, Object o2) {
     if (o1 == null) {
@@ -8462,10 +8426,6 @@ public abstract class MultiVMRegionTestCase extends RegionTestCase {
     waitForAsyncProcessing(a0, "");
     waitForAsyncProcessing(a1, "");
 
-//    if (a0failed && a1failed) {
-//      fail("neither member saw event conflation - check stats for " + name);
-//    }
-    
     // check consistency of the regions
     Map r0Contents = (Map)vm0.invoke(() -> this.getCCRegionContents());
     Map r1Contents = (Map)vm1.invoke(() -> this.getCCRegionContents());

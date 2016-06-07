@@ -72,12 +72,12 @@ import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 @Category(DistributedTest.class)
 public class DistributedTransactionDUnitTest extends JUnit4CacheTestCase {
 
-  final protected String CUSTOMER_PR = "customerPRRegion";
-  final protected String ORDER_PR = "orderPRRegion";
-  final protected String D_REFERENCE = "distrReference";
-  final protected String PERSISTENT_CUSTOMER_PR = "persistentCustomerPRRegion";
+  protected final String CUSTOMER_PR = "customerPRRegion";
+  protected final String ORDER_PR = "orderPRRegion";
+  protected final String D_REFERENCE = "distrReference";
+  protected final String PERSISTENT_CUSTOMER_PR = "persistentCustomerPRRegion";
 
-  final protected String CUSTOMER_RR = "customerRRRegion";
+  protected final String CUSTOMER_RR = "customerRRRegion";
   
   @Override
   public final void postSetUp() throws Exception{
