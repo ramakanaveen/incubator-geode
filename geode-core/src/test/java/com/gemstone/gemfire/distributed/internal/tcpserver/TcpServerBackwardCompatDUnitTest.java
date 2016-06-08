@@ -103,7 +103,7 @@ public class TcpServerBackwardCompatDUnitTest extends JUnit4DistributedTestCase 
     props.setProperty(LOCATORS, locators);
     props.setProperty(MCAST_PORT, "0");
     props.setProperty(ENABLE_CLUSTER_CONFIGURATION, "false");
-    props.setProperty(LOG_LEVEL, "finest");
+//    props.setProperty(LOG_LEVEL, "finest");
     
     // Start locator0 with props.
     //props.setProperty(DistributionConfig.START_LOCATOR_NAME, host.getHostName() + "["+port0+"]");
