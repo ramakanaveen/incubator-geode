@@ -16,14 +16,13 @@
  */
 package com.gemstone.gemfire.rest.internal.web.controllers;
 
-import org.junit.experimental.categories.Category;
+import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+
+import java.util.Properties;
+
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.gemstone.gemfire.test.dunit.cache.internal.JUnit4CacheTestCase;
-import com.gemstone.gemfire.test.dunit.internal.JUnit4DistributedTestCase;
-import com.gemstone.gemfire.test.junit.categories.DistributedTest;
+import org.junit.experimental.categories.Category;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheClosedException;
@@ -32,19 +31,10 @@ import com.gemstone.gemfire.cache.execute.FunctionContext;
 import com.gemstone.gemfire.cache.execute.FunctionService;
 import com.gemstone.gemfire.internal.AvailablePortHelper;
 import com.gemstone.gemfire.rest.internal.web.RestFunctionTemplate;
-import org.apache.http.client.methods.CloseableHttpResponse;
-
-import java.util.Properties;
-import static com.gemstone.gemfire.distributed.DistributedSystemConfigProperties.*;
+import com.gemstone.gemfire.test.junit.categories.DistributedTest;
 
 @Category(DistributedTest.class)
 public class RestAPIsOnMembersFunctionExecutionDUnitTest extends RestAPITestBase {
-
-  private static final long serialVersionUID = 1L;
-
-  public RestAPIsOnMembersFunctionExecutionDUnitTest() {
-    super();
-  }
 
   private class OnMembersFunction extends RestFunctionTemplate {
     public static final String Id = "OnMembersFunction";
