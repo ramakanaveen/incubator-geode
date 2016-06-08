@@ -440,6 +440,7 @@ public class TxnManagerMultiThreadDUnitTest extends JUnit4DistributedTestCase {
    * The following method test3Commit2Rollback test the scenario in which 3
    * threads are committing and 2 threads are rolling back the transaction
    */
+  @Ignore("TODO: test is disabled")
   @Test
   public void test3Commit2Rollback() throws Exception {
     VM vm0 = Host.getHost(0).getVM(0);
